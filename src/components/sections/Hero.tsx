@@ -67,7 +67,7 @@ export function Hero() {
       />
 
       {/* Content */}
-      <div className="relative z-10 w-full px-8">
+      <div className="relative z-10 w-full px-10 lg:px-20 xl:px-32">
         <div className="max-w-2xl">
 
           {/* Eyebrow badge */}
@@ -144,7 +144,7 @@ export function Hero() {
       >
         <div className="flex items-center h-16">
           {/* Label */}
-          <div className="shrink-0 flex items-center gap-4 pl-8 pr-6">
+          <div className="shrink-0 flex items-center gap-4 pl-10 lg:pl-20 xl:pl-32 pr-6">
             <span className="text-[10.5px] font-bold tracking-[0.18em] uppercase text-white/30 whitespace-nowrap">
               Trusted by
             </span>
