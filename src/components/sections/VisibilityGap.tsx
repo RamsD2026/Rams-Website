@@ -67,45 +67,49 @@ export function VisibilityGap() {
     <section className="bg-white py-24">
 
       {/* ── Heading ── */}
-      <div className="px-8 lg:px-16 mb-12">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#FF6A00] mb-5"
-        >
-          The Visibility Gap
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-          className="text-[48px] md:text-[62px] font-bold text-[#0E0E0F] leading-[1.04] max-w-[680px]"
-        >
-          Your systems record.
-          <br />
-          <span className="text-[#FF6A00]">RAMS verifies.</span>
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="mt-5 text-[15px] text-[#33363A]/50 leading-relaxed max-w-[500px]"
-        >
-          RAMS complements ERP, WMS and maintenance systems by creating intelligence
-          around what physically happened inside the operation.
-        </motion.p>
+      <div className="px-8 lg:px-16 mb-12 flex items-end justify-between gap-8">
 
-        {/* Chevrons */}
+        {/* Left — text */}
+        <div>
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#FF6A00] mb-5"
+          >
+            The Visibility Gap
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[48px] md:text-[62px] font-bold text-[#0E0E0F] leading-[1.04] max-w-[680px]"
+          >
+            Your systems record.
+            <br />
+            <span className="text-[#FF6A00]">RAMS verifies.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mt-5 text-[15px] text-[#33363A]/50 leading-relaxed max-w-[500px]"
+          >
+            RAMS complements ERP, WMS and maintenance systems by creating intelligence
+            around what physically happened inside the operation.
+          </motion.p>
+        </div>
+
+        {/* Right — chevrons */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex items-center gap-2 mt-8"
+          className="flex items-center gap-2 shrink-0"
         >
           <button
             onClick={() => scroll("left")}
