@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SYSTEM_ITEMS = [
   "A task was created",
@@ -54,6 +56,13 @@ const CARD_W = 300;
 const CARD_H = 520;
 
 export function VisibilityGap() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  function scroll(dir: "left" | "right") {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: dir === "right" ? 640 : -640, behavior: "smooth" });
+  }
+
   return (
     <section className="bg-white py-24">
 
@@ -89,10 +98,35 @@ export function VisibilityGap() {
           RAMS complements ERP, WMS and maintenance systems by creating intelligence
           around what physically happened inside the operation.
         </motion.p>
+
+        {/* Chevrons */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="flex items-center gap-2 mt-8"
+        >
+          <button
+            onClick={() => scroll("left")}
+            className="w-10 h-10 flex items-center justify-center border border-[#E2E2E0] hover:border-[#FF6A00] hover:text-[#FF6A00] text-[#33363A]/50 transition-colors duration-200"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="w-10 h-10 flex items-center justify-center border border-[#E2E2E0] hover:border-[#FF6A00] hover:text-[#FF6A00] text-[#33363A]/50 transition-colors duration-200"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </motion.div>
       </div>
 
       {/* ── Horizontal scroll track ── */}
       <div
+        ref={scrollRef}
         className="overflow-x-auto"
         style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
       >
