@@ -16,44 +16,62 @@ const SYSTEM_ITEMS = [
 const RAMS_CARDS = [
   {
     category: "Physical Execution",
-    title: "Movement verified.",
-    detail: "Whether the physical movement occurred and which operator and MHE performed it.",
+    title: "Did the movement actually occur?",
+    detail: "Whether the physical movement occurred as recorded in the system.",
     image: "/People.png",
   },
   {
+    category: "Operator & Equipment",
+    title: "Who performed it and with what?",
+    detail: "Which operator and MHE executed the task — linked, timestamped, verified.",
+    image: "/MHE.png",
+  },
+  {
     category: "Inventory Accuracy",
-    title: "Location confirmed.",
-    detail: "Whether the pallet reached the correct bay — or was misplaced against WMS records.",
+    title: "Did the pallet reach the right location?",
+    detail: "Whether the pallet reached the correct bay or was misplaced against WMS records.",
     image: "/Pallets.png",
   },
   {
     category: "MHE Intelligence",
-    title: "Fleet behaviour.",
-    detail: "Whether the MHE travelled loaded or empty, and whether speed limits were respected.",
+    title: "Did the MHE travel loaded or empty?",
+    detail: "Actual travel behaviour — loaded vs empty runs tracked continuously.",
     image: "/MHE.png",
   },
   {
     category: "Safety",
-    title: "Unsafe interactions.",
-    detail: "Whether restricted zones were entered, near-misses occurred, or safety protocols breached.",
+    title: "Did an unsafe interaction occur?",
+    detail: "Whether restricted zones were entered, near-misses occurred, or protocols were breached.",
     image: "/Racks.png",
   },
   {
     category: "Asset Health",
-    title: "Condition changes.",
+    title: "Did the asset condition change?",
     detail: "Whether equipment condition changed after use, impact, or an inspection event.",
     image: "/AI Vision.png",
   },
   {
     category: "Execution",
-    title: "Task closed.",
-    detail: "Whether execution was delayed, the task completed correctly, and corrective action resolved.",
+    title: "Was execution delayed?",
+    detail: "Whether the task started and completed on time against the assigned schedule.",
     image: "/Analyze.png",
+  },
+  {
+    category: "Task Completion",
+    title: "Was the task completed correctly?",
+    detail: "Physical confirmation that the task was executed as assigned — not just logged.",
+    image: "/People.png",
+  },
+  {
+    category: "Corrective Action",
+    title: "Was corrective action closed?",
+    detail: "Whether the follow-up action was physically completed and verified on the floor.",
+    image: "/Racks.png",
   },
 ];
 
 const CARD_W = 300;
-const CARD_H = 520;
+const CARD_H = 420;
 
 export function VisibilityGap() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -128,49 +146,57 @@ export function VisibilityGap() {
         </motion.div>
       </div>
 
-      {/* ── Horizontal scroll track ── */}
-      <div
-        ref={scrollRef}
-        className="overflow-x-auto"
-        style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
-      >
-        <div
-          className="flex gap-3"
-          style={{ width: "max-content", paddingLeft: "inherit" }}
+      {/* ── Labels row ── */}
+      <div className="flex gap-3 pl-8 lg:pl-16 mb-3">
+        <div className="shrink-0" style={{ width: CARD_W }}>
+          <p className="text-[13px] font-bold tracking-[0.12em] uppercase text-[#33363A]/40">
+            What existing systems record
+          </p>
+        </div>
+        <div className="flex-1">
+          <p className="text-[13px] font-bold tracking-[0.12em] uppercase text-[#FF6A00]">
+            RAMS helps determine
+          </p>
+        </div>
+      </div>
+
+      {/* ── Card row: first card fixed left + scrollable RAMS cards ── */}
+      <div className="flex gap-3 pl-8 lg:pl-16">
+
+        {/* ── First card — fixed, never scrolls ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="shrink-0 flex flex-col p-8 bg-[#FF6A00]/90 relative overflow-hidden"
+          style={{ width: CARD_W, height: CARD_H }}
         >
-          {/* Invisible spacer so sticky card starts at section padding */}
-          <div className="shrink-0 w-8 lg:w-16 h-1" aria-hidden="true" />
 
-          {/* ── First card — sticky ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="sticky left-8 lg:left-16 z-10 shrink-0 bg-[#0E0E0F] flex flex-col p-8"
-            style={{ width: CARD_W, height: CARD_H }}
-          >
-            <p className="text-[9.5px] font-bold tracking-[0.22em] uppercase text-[#33363A]/50 mb-8">
-              What systems record
+          <div className="relative z-10 flex flex-col gap-3 flex-1">
+            {SYSTEM_ITEMS.map((item, i) => (
+              <div key={i} className="flex items-start gap-3 border-b border-white/20 pb-3 last:border-0">
+                <span className="text-[10px] font-mono text-white/50 shrink-0 mt-0.5">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="text-[13px] text-white/90 leading-snug font-medium">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="relative z-10 pt-4">
+            <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40">
+              Logged. Not verified.
             </p>
-            <div className="flex flex-col gap-4 flex-1">
-              {SYSTEM_ITEMS.map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="mt-[5px] w-1.5 h-1.5 rounded-full bg-white/15 shrink-0" />
-                  <span className="text-[13px] text-white/30 leading-snug line-through decoration-white/10">
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="border-t border-white/8 pt-5">
-              <p className="text-[11px] text-white/20 leading-relaxed tracking-wide uppercase font-bold">
-                Logged. Not verified.
-              </p>
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* ── RAMS cards ── */}
+        {/* ── RAMS cards — scrollable ── */}
+        <div className="flex flex-col flex-1 min-w-0">
+          <div
+            ref={scrollRef}
+            className="flex gap-3 overflow-x-auto overflow-y-hidden pr-8 lg:pr-16 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none" } as React.CSSProperties}
+          >
           {RAMS_CARDS.map((card, i) => (
             <motion.div
               key={card.category}
@@ -178,7 +204,7 @@ export function VisibilityGap() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              className="relative shrink-0 overflow-hidden bg-[#0E0E0F]"
+              className="group relative shrink-0 overflow-hidden bg-[#0E0E0F]"
               style={{ width: CARD_W, height: CARD_H }}
             >
               {/* Background image */}
@@ -187,10 +213,15 @@ export function VisibilityGap() {
                 src={card.image}
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover opacity-30"
+                className="absolute inset-0 w-full h-full object-cover opacity-30 transition-transform duration-700 ease-out scale-110 group-hover:scale-100"
               />
               {/* Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E0F] via-[#0E0E0F]/55 to-[#0E0E0F]/10" />
+
+              {/* Large number — absolute top-right */}
+              <span className="absolute top-6 right-6 text-[64px] font-mono font-bold text-white/25 leading-none z-10 pointer-events-none">
+                {String(i + 1).padStart(2, "0")}
+              </span>
 
               {/* Content */}
               <div className="relative z-10 h-full flex flex-col p-8">
@@ -198,19 +229,22 @@ export function VisibilityGap() {
                   {card.category}
                 </p>
                 <div className="flex-1" />
-                <h3 className="text-[24px] font-bold text-white leading-[1.1] mb-3">
-                  {card.title}
-                </h3>
-                <p className="text-[12.5px] text-white/50 leading-relaxed">
-                  {card.detail}
-                </p>
+                <div style={{ minHeight: "90px" }} className="flex flex-col justify-end mb-3">
+                  <h3 className="text-[19px] font-bold text-white leading-[1.15]">
+                    {card.title}
+                  </h3>
+                </div>
+                <div style={{ minHeight: "52px" }}>
+                  <p className="text-[12px] text-white/50 leading-relaxed">
+                    {card.detail}
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
-
-          {/* Right spacer */}
-          <div className="shrink-0 w-8 lg:w-16 h-1" aria-hidden="true" />
+          </div>
         </div>
+
       </div>
 
     </section>
