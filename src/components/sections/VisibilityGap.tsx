@@ -48,27 +48,54 @@ export function VisibilityGap() {
     <section className="bg-white py-24 px-8 lg:px-16">
 
       {/* ── Heading ── */}
-      <div className="text-center mb-20">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
+      <div className="mb-20 flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-16">
+
+        {/* Left — problem statement */}
+        <div className="flex-1">
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#FF6A00] mb-5"
+          >
+            The Visibility Gap
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[48px] md:text-[58px] lg:text-[68px] font-bold text-[#0E0E0F] leading-[1.04]"
+          >
+            Systems track
+            <br />
+            the record.
+            <br />
+            <span className="text-[#FF6A00]">RAMS tracks
+            <br />
+            the floor.</span>
+          </motion.h2>
+        </div>
+
+        {/* Right — context paragraph + divider */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#FF6A00] mb-5"
+          transition={{ duration: 0.6, delay: 0.18 }}
+          className="md:max-w-[360px] shrink-0"
         >
-          The Visibility Gap
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-          className="text-[48px] md:text-[62px] font-bold text-[#0E0E0F] leading-[1.06]"
-        >
-          Your systems record transactions.
-          <br />
-          <span className="text-[#FF6A00]">RAMS brings clarity to physical reality.</span>
-        </motion.h2>
+          <div className="w-8 h-[3px] bg-[#FF6A00] mb-5" />
+          <p className="text-[15px] text-[#33363A]/55 leading-relaxed">
+            Your ERP, WMS and CMMS log every transaction — but none of them
+            can confirm what physically happened on the warehouse floor.
+          </p>
+          <p className="mt-4 text-[15px] text-[#33363A]/55 leading-relaxed">
+            RAMS operates where your systems can&apos;t see — in real time,
+            with physical verification at every step.
+          </p>
+        </motion.div>
       </div>
 
       {/* ── Three-panel visual ── */}
