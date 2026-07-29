@@ -1,6 +1,7 @@
 import { HeroVersioned } from "@/components/sections/HeroVersioned";
 import { ProblemSelector } from "@/components/sections/ProblemSelector";
 import { PhysicalOperation } from "@/components/sections/PhysicalOperation";
+import { VisibilityGap } from "@/components/sections/VisibilityGap";
 
 export default function HomePage() {
   return (
@@ -8,6 +9,7 @@ export default function HomePage() {
       <HeroVersioned />
       <ProblemSelector />
       <PhysicalOperation />
+      <VisibilityGap />
     </>
   );
 }
