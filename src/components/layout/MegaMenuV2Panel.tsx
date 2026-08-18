@@ -105,7 +105,7 @@ function FeaturedCard({
           exit={{ opacity: 0, transition: { duration: 0.08 } }}
           className="absolute top-5 left-5"
         >
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FF6A00] text-white text-[10px] font-bold tracking-[0.14em] uppercase">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-signal-orange text-white text-xs font-bold tracking-[0.14em] uppercase">
             <span className="w-[5px] h-[5px] rounded-full bg-white/70" aria-hidden="true" />
             {data.eyebrow}
           </span>
@@ -122,7 +122,7 @@ function FeaturedCard({
           exit="exit"
           className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2"
         >
-          <h3 className="text-[20px] font-bold text-white leading-snug">
+          <h3 className="text-xl font-bold text-white leading-snug">
             {data.title}
           </h3>
           <p className="text-[12.5px] text-white/60 leading-relaxed max-w-[36ch]">
@@ -135,8 +135,8 @@ function FeaturedCard({
               onClick={onClose}
               className={cn(
                 "inline-flex items-center gap-1.5 group",
-                "text-[12.5px] font-semibold text-[#FF6A00] hover:text-white transition-colors duration-150",
-                "outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] focus-visible:ring-offset-1 focus-visible:ring-offset-[#0E0E0F] rounded-sm"
+                "text-[12.5px] font-semibold text-signal-orange hover:text-white transition-colors duration-150",
+                "outline-none focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-1 focus-visible:ring-offset-carbon rounded-sm"
               )}
             >
               {data.cta}
@@ -144,7 +144,7 @@ function FeaturedCard({
             </Link>
 
             {productCount !== undefined && (
-              <span className="text-[11px] text-white/30 font-medium">
+              <span className="text-xs text-white/30 font-medium">
                 {productCount} product{productCount !== 1 ? "s" : ""}
               </span>
             )}
@@ -184,8 +184,8 @@ function LinkRow({
       {/* Fixed 48px number gutter — never touched by the active card */}
       <div className="flex items-center justify-center pt-px">
         <span className={cn(
-          "text-[11px] font-bold tabular-nums transition-colors duration-150",
-          isActive ? "text-[#FF6A00]" : "text-[#33363A]/30 group-hover:text-[#33363A]/50"
+          "text-xs font-bold tabular-nums transition-colors duration-150",
+          isActive ? "text-signal-orange" : "text-graphite/30 group-hover:text-graphite/50"
         )}>
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -197,14 +197,14 @@ function LinkRow({
         onClick={onClose}
         className={cn(
           "relative flex items-center gap-3 py-3 pl-3 pr-4 rounded-lg transition-colors duration-150",
-          "outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] focus-visible:ring-offset-1",
-          isActive ? "bg-[#FF6A00]/5" : "hover:bg-[#F3F1EC]/70"
+          "outline-none focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-1",
+          isActive ? "bg-signal-orange/5" : "hover:bg-off-white/70"
         )}
       >
         {/* 3px left accent — stays inside content column */}
         <motion.div
           aria-hidden="true"
-          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-[#FF6A00]"
+          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-signal-orange"
           animate={{ opacity: isActive ? 1 : 0, scaleY: isActive ? 1 : 0.3 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
           style={{ originY: "50%" }}
@@ -213,19 +213,19 @@ function LinkRow({
         <div className="flex flex-col min-w-0 flex-1 pl-1">
           <span className={cn(
             "text-[13.5px] leading-tight transition-all duration-150",
-            isActive ? "font-bold text-[#0E0E0F]" : "font-semibold text-[#0E0E0F]/80"
+            isActive ? "font-bold text-carbon" : "font-semibold text-carbon/80"
           )}>
             {link.label}
           </span>
-          <span className="mt-0.5 text-[12px] text-[#33363A]/55 leading-snug">
+          <span className="mt-0.5 text-xs text-graphite/55 leading-snug">
             {link.description}
           </span>
         </div>
         <ArrowRight className={cn(
           "w-3.5 h-3.5 ml-auto shrink-0 transition-all duration-150",
           isActive
-            ? "text-[#FF6A00] opacity-100 translate-x-0"
-            : "text-[#33363A]/30 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
+            ? "text-signal-orange opacity-100 translate-x-0"
+            : "text-graphite/30 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
         )} aria-hidden="true" />
       </Link>
     </div>
@@ -240,8 +240,8 @@ function StandardPanel({ config, onClose }: { config: NavItemV2; onClose: () => 
     <div className="flex gap-8 items-stretch">
       <div className="w-[42%] shrink-0 flex flex-col">
         <div className="mb-5 flex items-center gap-3 pl-[48px]">
-          <div className="w-5 h-[2px] rounded-full bg-[#FF6A00]" aria-hidden="true" />
-          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#33363A]/50">
+          <div className="w-5 h-[2px] rounded-full bg-signal-orange" aria-hidden="true" />
+          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-graphite/50">
             {config.tagline}
           </p>
         </div>
@@ -258,11 +258,11 @@ function StandardPanel({ config, onClose }: { config: NavItemV2; onClose: () => 
             />
           ))}
         </div>
-        <div className="mt-5 pt-5 border-t border-[#D9DBDD] pl-[48px]">
+        <div className="mt-5 pt-5 border-t border-steel pl-[48px]">
           <Link
             href={config.href}
             onClick={onClose}
-            className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-[#33363A]/60 hover:text-[#FF6A00] transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] rounded-sm"
+            className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-graphite/60 hover:text-signal-orange transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-signal-orange rounded-sm"
           >
             View all {config.label}
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-1" aria-hidden="true" />
@@ -270,7 +270,7 @@ function StandardPanel({ config, onClose }: { config: NavItemV2; onClose: () => 
         </div>
       </div>
 
-      <div className="w-px bg-[#D9DBDD] self-stretch shrink-0" aria-hidden="true" />
+      <div className="w-px bg-steel self-stretch shrink-0" aria-hidden="true" />
 
       <div className="flex-1 min-w-0">
         <FeaturedCard data={activeFeatured} onClose={onClose} />
@@ -299,14 +299,14 @@ function FamilyTab({
       className={cn(
         "relative cursor-default pl-5 pr-4 py-3.5 rounded-md transition-all duration-150",
         isActive
-          ? "bg-[#FF6A00]/[0.04]"
-          : "hover:bg-[#F3F1EC]/60"
+          ? "bg-signal-orange/[0.04]"
+          : "hover:bg-off-white/60"
       )}
     >
       {/* 3px left rail — active only */}
       <motion.div
         aria-hidden="true"
-        className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-[#FF6A00]"
+        className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-signal-orange"
         animate={{ opacity: isActive ? 1 : 0, scaleY: isActive ? 1 : 0.3 }}
         transition={{ duration: 0.18, ease: "easeOut" }}
         style={{ originY: "50%" }}
@@ -314,11 +314,11 @@ function FamilyTab({
 
       <p className={cn(
         "text-[13.5px] leading-tight transition-all duration-150",
-        isActive ? "font-bold text-[#0E0E0F]" : "font-semibold text-[#0E0E0F]/80"
+        isActive ? "font-bold text-carbon" : "font-semibold text-carbon/80"
       )}>
         {family.label}
       </p>
-      <p className="mt-1 text-[11.5px] leading-snug text-[#33363A]/45">
+      <p className="mt-1 text-[11.5px] leading-snug text-graphite/45">
         {family.tagline}
       </p>
     </div>
@@ -364,16 +364,16 @@ function ProductRow({
           "relative flex items-center overflow-hidden rounded-xl transition-all duration-200",
           // Internal padding: 16px top/bottom, text at 34px from left, 20px right
           "py-4 pl-[34px] pr-5",
-          "outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] focus-visible:ring-offset-1",
+          "outline-none focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-1",
           isActive
-            ? "bg-[#FF6A00]/[0.045]"
-            : "hover:bg-[#F3F1EC]/70"
+            ? "bg-signal-orange/[0.045]"
+            : "hover:bg-off-white/70"
         )}
       >
         {/* Accent bar: absolute inside card, 16px from left edge, 2px wide */}
         <motion.div
           aria-hidden="true"
-          className="absolute left-4 top-3 bottom-3 w-[2px] rounded-full bg-[#FF6A00]"
+          className="absolute left-4 top-3 bottom-3 w-[2px] rounded-full bg-signal-orange"
           animate={{ opacity: isActive ? 1 : 0, scaleY: isActive ? 1 : 0.3 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           style={{ originY: "50%" }}
@@ -382,12 +382,12 @@ function ProductRow({
         {/* Text — always at the same left position (pl-[34px] on parent) */}
         <div className="flex flex-col min-w-0 flex-1">
           <span className={cn(
-            "text-[13px] font-semibold leading-tight transition-colors duration-200",
-            isActive ? "text-[#FF6A00]" : "text-[#0E0E0F]"
+            "text-sm font-semibold leading-tight transition-colors duration-200",
+            isActive ? "text-signal-orange" : "text-carbon"
           )}>
             {link.label}
           </span>
-          <span className="mt-0.5 text-[11.5px] text-[#33363A]/55 leading-snug">
+          <span className="mt-0.5 text-[11.5px] text-graphite/55 leading-snug">
             {link.description}
           </span>
         </div>
@@ -396,8 +396,8 @@ function ProductRow({
         <ArrowRight className={cn(
           "w-3.5 h-3.5 shrink-0 ml-3 transition-all duration-200",
           isActive
-            ? "text-[#FF6A00] opacity-100 translate-x-0"
-            : "text-[#33363A]/30 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+            ? "text-signal-orange opacity-100 translate-x-0"
+            : "text-graphite/30 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
         )} aria-hidden="true" />
       </Link>
     </div>
@@ -428,8 +428,8 @@ function HardwarePanel({ config, onClose }: { config: NavItemV2; onClose: () => 
 
       {/* Full-width tagline header */}
       <div className="mb-4 flex items-center gap-3">
-        <div className="w-5 h-[2px] rounded-full bg-[#FF6A00] shrink-0" aria-hidden="true" />
-        <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#33363A]/50 whitespace-nowrap">
+        <div className="w-5 h-[2px] rounded-full bg-signal-orange shrink-0" aria-hidden="true" />
+        <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-graphite/50 whitespace-nowrap">
           {config.tagline}
         </p>
       </div>
@@ -450,11 +450,11 @@ function HardwarePanel({ config, onClose }: { config: NavItemV2; onClose: () => 
           ))}
         </div>
 
-        <div className="mt-4 pt-4 border-t border-[#D9DBDD]">
+        <div className="mt-4 pt-4 border-t border-steel">
           <Link
             href="/hardware"
             onClick={onClose}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#33363A]/50 hover:text-[#FF6A00] transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] rounded-sm"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-graphite/50 hover:text-signal-orange transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-signal-orange rounded-sm"
           >
             View all Hardware
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
@@ -463,12 +463,12 @@ function HardwarePanel({ config, onClose }: { config: NavItemV2; onClose: () => 
       </div>
 
       {/* Divider */}
-      <div className="w-px bg-[#D9DBDD] self-stretch shrink-0" aria-hidden="true" />
+      <div className="w-px bg-steel self-stretch shrink-0" aria-hidden="true" />
 
       {/* ── Col 2 (30%) — Products for selected family ── */}
       {/* px-2 ensures cards never touch the column dividers */}
       <div className="w-[30%] shrink-0 flex flex-col px-2">
-        <p className="mb-3 text-[10px] font-bold tracking-[0.22em] uppercase text-[#33363A]/40">
+        <p className="mb-3 text-xs font-bold tracking-[0.22em] uppercase text-graphite/40">
           Products
         </p>
 
@@ -494,11 +494,11 @@ function HardwarePanel({ config, onClose }: { config: NavItemV2; onClose: () => 
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-4 pt-4 border-t border-[#D9DBDD]">
+        <div className="mt-4 pt-4 border-t border-steel">
           <Link
             href={activeFamily.href}
             onClick={onClose}
-            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#33363A]/50 hover:text-[#FF6A00] transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] rounded-sm"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-graphite/50 hover:text-signal-orange transition-colors duration-150 group outline-none focus-visible:ring-2 focus-visible:ring-signal-orange rounded-sm"
           >
             Explore {activeFamily.label}
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
@@ -507,7 +507,7 @@ function HardwarePanel({ config, onClose }: { config: NavItemV2; onClose: () => 
       </div>
 
       {/* Divider */}
-      <div className="w-px bg-[#D9DBDD] self-stretch shrink-0" aria-hidden="true" />
+      <div className="w-px bg-steel self-stretch shrink-0" aria-hidden="true" />
 
       {/* ── Col 3 (45%) — Dynamic featured card ── */}
       <div className="flex-1 min-w-0">
@@ -537,11 +537,11 @@ export function MegaMenuV2Panel({ config, onClose }: MegaMenuV2PanelProps) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full left-0 right-0 z-50 bg-white border-t border-[#D9DBDD] shadow-[0_24px_64px_-12px_rgba(14,14,15,0.18)]"
+      className="absolute top-full left-0 right-0 z-50 bg-white border-t border-steel shadow-[0_24px_64px_-12px_rgba(14,14,15,0.18)]"
       role="region"
       aria-label={`${config.label} navigation panel`}
     >
-      <div className="px-8 py-8">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-8">
         {config.families ? (
           <HardwarePanel config={config} onClose={onClose} />
         ) : (
@@ -550,30 +550,30 @@ export function MegaMenuV2Panel({ config, onClose }: MegaMenuV2PanelProps) {
       </div>
 
       {/* Footer strip */}
-      <div className="border-t border-[#D9DBDD] bg-[#F3F1EC]/50">
-        <div className="px-8 py-3.5 flex items-center gap-6">
-          <span className="text-[11px] text-[#33363A]/40 font-medium tracking-wide uppercase">
+      <div className="border-t border-steel bg-off-white/50">
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-3.5 flex items-center gap-6">
+          <span className="text-xs text-graphite/40 font-medium tracking-wide uppercase">
             Quick access
           </span>
-          <div className="w-px h-3 bg-[#D9DBDD]" aria-hidden="true" />
+          <div className="w-px h-3 bg-steel" aria-hidden="true" />
           {config.families ? (
             <>
-              <Link href="/hardware" onClick={onClose} className="text-[12px] font-semibold text-[#0E0E0F] hover:text-[#FF6A00] transition-colors flex items-center gap-1.5 group">
+              <Link href="/hardware" onClick={onClose} className="text-xs font-semibold text-carbon hover:text-signal-orange transition-colors flex items-center gap-1.5 group">
                 View All Hardware
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>
-              <Link href="/book-demo?topic=hardware" onClick={onClose} className="text-[12px] font-semibold text-[#33363A]/50 hover:text-[#0E0E0F] transition-colors flex items-center gap-1.5 group">
+              <Link href="/book-demo?topic=hardware" onClick={onClose} className="text-xs font-semibold text-graphite/50 hover:text-carbon transition-colors flex items-center gap-1.5 group">
                 Book Hardware Demo
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>
             </>
           ) : (
             <>
-              <Link href="/get-started" onClick={onClose} className="text-[12px] font-semibold text-[#0E0E0F] hover:text-[#FF6A00] transition-colors flex items-center gap-1.5 group">
+              <Link href="/get-started" onClick={onClose} className="text-xs font-semibold text-carbon hover:text-signal-orange transition-colors flex items-center gap-1.5 group">
                 Find Your Starting Point
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>
-              <Link href="/book-demo" onClick={onClose} className="text-[12px] font-semibold text-[#33363A]/50 hover:text-[#0E0E0F] transition-colors flex items-center gap-1.5 group">
+              <Link href="/book-demo" onClick={onClose} className="text-xs font-semibold text-graphite/50 hover:text-carbon transition-colors flex items-center gap-1.5 group">
                 Book a Demo
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>

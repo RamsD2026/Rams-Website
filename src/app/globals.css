@@ -66,6 +66,47 @@
   --color-forest-green:  #1E5B3A;   /* Safety, compliance, verified */
   --color-warm-beige:    #E8E1D5;   /* Soft neutral, warm supporting tone */
 
+  /* ── Extended dark surface scale (dark sections/cards) ── */
+  --color-surface-void:      #050506;   /* deepest bg (immersive sections) */
+  --color-surface-dark:      #0B0B0C;   /* primary dark bg */
+  --color-surface-card:      #101012;   /* dark card fill */
+  --color-surface-elevated:  #101214;   /* elevated dark surface */
+
+  /* ── Signal-orange variants ── */
+  --color-signal-orange-soft:   #FF9B4D;   /* text on dark, tinted labels */
+  --color-signal-orange-warm:   #E88A5C;   /* warm accent */
+  --color-signal-orange-deep:   #D96A2C;   /* deeper cta */
+
+  /* ── Extended neutrals ── */
+  --color-carbon-alt:      #1D1D1F;   /* deep neutral alt */
+  --color-graphite-alt:    #6E6E73;   /* mid-neutral alt */
+  --color-off-white-alt:   #F5F5F7;   /* near-white alt */
+  --color-off-white-warm:  #F2F0EC;   /* warm near-white */
+  --color-steel-soft:      #E2E2E0;   /* soft steel border */
+
+  /* ── Success semantic ── */
+  --color-success:  #22C55E;
+
+  /* ── Extended cool/warm neutrals ── */
+  --color-off-white-cool:   #F7F5F0;   /* cool near-white section bg */
+  --color-off-white-hover:  #FAFAFA;   /* card hover bg */
+  --color-steel-cool:       #E0E5E7;   /* cool border */
+  --color-carbon-teal:      #0B1619;   /* deep teal-carbon */
+
+  /* ── Signal-orange hover ── */
+  --color-signal-orange-hover: #E55F00;
+
+  /* ── RAG risk tones (fill + text) ── */
+  --color-rag-green:        #54DE91;
+  --color-rag-green-deep:   #2BCB74;
+  --color-rag-amber:        #FFBE47;
+  --color-rag-red:          #FF6C6C;
+
+  /* ── Teal-dark surface variants (analytics dashboards) ── */
+  --color-surface-teal-void:  #041216;
+  --color-surface-teal-dark:  #071A1F;
+  --color-surface-teal-card:  #0D2227;
+
   /* ── Semantic aliases ── */
   --color-rams-bg:        var(--color-off-white);
   --color-rams-surface:   #FFFFFF;
@@ -128,6 +169,41 @@
   --header-total: 120px; /* announcement + nav */
 }
 
+/* ═══════════════════════════════════════════════════════
+   Global 12-column layout system
+   Used by every page section to guarantee shared width,
+   padding, and column rhythm.
+═══════════════════════════════════════════════════════ */
+:root {
+  --page-max-width: 1280px;
+  --page-padding-x: 24px;   /* 48px total → 24px each side */
+  --grid-gap: 24px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --page-padding-x: 20px; /* 40px total */
+    --grid-gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-padding-x: 16px; /* 32px total */
+    --grid-gap: 16px;
+  }
+}
+
+.rams-container {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-padding-x);
+  padding-right: var(--page-padding-x);
+  box-sizing: border-box;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -138,6 +214,7 @@
     font-family: var(--font-body), system-ui, sans-serif;
     font-size: 16px;
     line-height: 1.6;
+    overflow-x: hidden;
     letter-spacing: 0.01em;
     word-spacing: 0.02em;
     -webkit-font-smoothing: antialiased;
@@ -167,4 +244,12 @@
   html {
     scroll-behavior: smooth;
   }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -1,15 +1,11 @@
 import { HeroVersioned } from "@/components/sections/HeroVersioned";
-import { ProblemSelector } from "@/components/sections/ProblemSelector";
-import { PhysicalOperation } from "@/components/sections/PhysicalOperation";
-import { VisibilityGap } from "@/components/sections/VisibilityGap";
+import { SectionsVersioned } from "@/components/sections/SectionsVersioned";
 
 export default function HomePage() {
   return (
     <>
       <HeroVersioned />
-      <ProblemSelector />
-      <PhysicalOperation />
-      <VisibilityGap />
+      <SectionsVersioned />
     </>
   );
 }

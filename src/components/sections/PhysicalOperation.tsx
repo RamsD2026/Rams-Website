@@ -63,7 +63,8 @@ const GRID_TEMPLATES = [
   "2.33fr 2.33fr 2.33fr 5fr",
 ];
 
-export function PhysicalOperation() {
+/* ── Desktop scroll-scrub section ── */
+function DesktopScrollSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -78,37 +79,38 @@ export function PhysicalOperation() {
 
   return (
     <div ref={containerRef} style={{ height: "400vh" }} className="bg-white">
-      <div className="sticky top-0 h-screen relative flex flex-col justify-center px-8 lg:px-16 py-8">
+      <div className="sticky top-0 h-screen relative flex flex-col justify-center py-6 lg:py-8 gap-5">
 
-        {/* ── Heading with entrance animation ── */}
+        {/* ── Heading — 1280px container ── */}
         <motion.div
-          className="mb-6"
+          className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-5% 0px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="text-[36px] md:text-[48px] font-bold text-[#0E0E0F] leading-[1.04] whitespace-nowrap">
+          <h2 className="text-[28px] md:text-[40px] lg:text-[48px] font-bold text-carbon leading-[1.04]">
             Racks
-            <span className="mx-6 text-[#FF6A00] font-light">|</span>
+            <span className="mx-3 lg:mx-6 text-signal-orange font-light">|</span>
             MHEs
-            <span className="mx-6 text-[#FF6A00] font-light">|</span>
+            <span className="mx-3 lg:mx-6 text-signal-orange font-light">|</span>
             Pallets
-            <span className="mx-6 text-[#FF6A00] font-light">|</span>
+            <span className="mx-3 lg:mx-6 text-signal-orange font-light">|</span>
             People
           </h2>
-          <p className="mt-3 text-[15px] text-[#33363A]/55 leading-relaxed max-w-[480px]">
+          <p className="mt-2 lg:mt-3 text-[14px] lg:text-[15px] text-graphite/55 leading-relaxed max-w-[480px]">
             RAMS creates clarity around each operational element — and around the interactions between them.
           </p>
         </motion.div>
 
-        {/* ── Animated grid ── */}
+        {/* ── Animated grid — inside 1280px container ── */}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <motion.div
-          className="w-full border border-[#E2E2E0] overflow-hidden"
+          className="w-full border border-steel-soft overflow-hidden"
           style={{
             display: "grid",
             gridTemplateColumns: GRID_TEMPLATES[0],
-            height: "520px",
+            height: "460px",
           }}
           animate={{ gridTemplateColumns: GRID_TEMPLATES[activeIndex] }}
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
@@ -118,9 +120,8 @@ export function PhysicalOperation() {
             return (
               <div
                 key={card.id}
-                className="relative overflow-hidden border-r border-[#E2E2E0] last:border-r-0"
+                className="relative overflow-hidden border-r border-steel-soft last:border-r-0"
               >
-
                 {/* ── Active: full image + layered text ── */}
                 <motion.div
                   animate={{ opacity: isActive ? 1 : 0 }}
@@ -128,29 +129,20 @@ export function PhysicalOperation() {
                   className="absolute inset-0"
                   aria-hidden={!isActive}
                 >
-                  {/* Image */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={card.image}
                     alt={card.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-
-                  {/* Gradient — heavier at bottom for text legibility */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
-                  {/* Backdrop blur behind text area */}
                   <div className="absolute bottom-0 left-0 right-0 h-[65%] backdrop-blur-[2px]" />
 
-                  {/* Content */}
                   <div className="absolute inset-0 flex flex-col p-8">
-                    {/* Number badge */}
-                    <span className="text-[10px] font-bold tracking-[0.22em] font-mono text-[#FF6A00]">
+                    <span className="text-[10px] font-bold tracking-[0.22em] font-mono text-signal-orange">
                       {card.number}
                     </span>
-
                     <div className="flex-1" />
-
-                    {/* Title */}
                     <motion.h3
                       animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 8 }}
                       transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -158,8 +150,6 @@ export function PhysicalOperation() {
                     >
                       {card.title}
                     </motion.h3>
-
-                    {/* Story — first line bold as hook, rest muted */}
                     <motion.div
                       animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 6 }}
                       transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
@@ -178,8 +168,6 @@ export function PhysicalOperation() {
                         </p>
                       ))}
                     </motion.div>
-
-                    {/* CTA */}
                     <motion.div
                       animate={{ opacity: isActive ? 1 : 0 }}
                       transition={{ duration: 0.4, delay: 0.2 }}
@@ -187,7 +175,7 @@ export function PhysicalOperation() {
                     >
                       <Link
                         href={card.cta.href}
-                        className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.15em] uppercase text-white hover:text-[#FF6A00] transition-colors duration-200 group"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.15em] uppercase text-white hover:text-signal-orange transition-colors duration-200 group"
                       >
                         {card.cta.label}
                         <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -196,14 +184,13 @@ export function PhysicalOperation() {
                   </div>
                 </motion.div>
 
-                {/* ── Collapsed: faded teaser + number + vertical title ── */}
+                {/* ── Collapsed ── */}
                 <motion.div
                   animate={{ opacity: isActive ? 0 : 1 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0 flex flex-col items-start p-6 bg-white"
                   aria-hidden={isActive}
                 >
-                  {/* Faded teaser image */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={card.image}
@@ -211,30 +198,25 @@ export function PhysicalOperation() {
                     aria-hidden="true"
                     className="absolute inset-0 w-full h-full object-cover opacity-[0.1]"
                   />
-
-                  {/* Number */}
-                  <p className="text-[10px] font-bold tracking-[0.22em] font-mono text-[#FF6A00] mb-6 relative z-10">
+                  <p className="text-[10px] font-bold tracking-[0.22em] font-mono text-signal-orange mb-6 relative z-10">
                     {card.number}
                   </p>
-
-                  {/* Vertical title */}
                   <p
-                    className="text-[13px] font-bold text-[#FF6A00] whitespace-nowrap relative z-10"
+                    className="text-[13px] font-bold text-signal-orange whitespace-nowrap relative z-10"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
                     {card.title}
                   </p>
                 </motion.div>
-
               </div>
             );
           })}
         </motion.div>
+        </div>
 
-        {/* ── Progress bar — flush below cards ── */}
-        <div className="mt-4 flex items-center gap-4">
-          {/* Step labels */}
-          <div className="flex gap-6 shrink-0">
+        {/* ── Progress bar ── */}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center gap-4">
+          <div className="flex gap-3 sm:gap-6 shrink-0">
             {CARDS.map((card, i) => (
               <motion.span
                 key={card.id}
@@ -258,23 +240,19 @@ export function PhysicalOperation() {
               </motion.span>
             ))}
           </div>
-
-          {/* Track */}
-          <div className="flex-1 h-[2px] bg-[#E2E2E0] rounded-full overflow-hidden">
+          <div className="flex-1 h-[2px] bg-steel-soft rounded-none overflow-hidden">
             <motion.div
-              className="h-full bg-[#FF6A00] rounded-full"
+              className="h-full bg-signal-orange rounded-none"
               animate={{ width: `${((activeIndex + 1) / 4) * 100}%` }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
-
-          {/* Counter */}
           <motion.span
             key={activeIndex}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-[10.5px] font-bold font-mono text-[#FF6A00] shrink-0 tracking-widest"
+            className="text-[10.5px] font-bold font-mono text-signal-orange shrink-0 tracking-widest"
           >
             0{activeIndex + 1} / 04
           </motion.span>
@@ -282,5 +260,100 @@ export function PhysicalOperation() {
 
       </div>
     </div>
+  );
+}
+
+/* ── Mobile stacked cards ── */
+function MobileSection() {
+  return (
+    <div className="bg-white py-16">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-8"
+      >
+        <h2 className="text-[28px] sm:text-[36px] font-bold text-carbon leading-tight">
+          Racks · MHEs · Pallets · People
+        </h2>
+        <p className="mt-3 text-[14px] sm:text-[15px] text-graphite/55 leading-relaxed max-w-[480px]">
+          RAMS creates clarity around each operational element — and around the interactions between them.
+        </p>
+      </motion.div>
+
+      <div className="flex flex-col gap-4">
+        {CARDS.map((card, i) => (
+          <motion.div
+            key={card.id}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+            className="relative overflow-hidden"
+            style={{ height: "320px" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={card.image}
+              alt={card.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10" />
+
+            <div className="absolute inset-0 flex flex-col p-6">
+              <span className="text-[10px] font-bold tracking-[0.22em] font-mono text-signal-orange">
+                {card.number}
+              </span>
+              <div className="flex-1" />
+              <h3 className="text-[22px] font-bold text-white leading-tight mb-3">
+                {card.title}
+              </h3>
+              <div className="flex flex-col gap-1.5 mb-4">
+                {card.story.map((para, j) => (
+                  <p
+                    key={j}
+                    className={`leading-relaxed ${
+                      j === 0
+                        ? "text-[13px] font-semibold text-white/90"
+                        : "text-[12px] text-white/50"
+                    }`}
+                  >
+                    {para}
+                  </p>
+                ))}
+              </div>
+              <div className="pt-3 border-t border-white/15">
+                <Link
+                  href={card.cta.href}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.15em] uppercase text-white hover:text-signal-orange transition-colors duration-200 group"
+                >
+                  {card.cta.label}
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      </div>
+    </div>
+  );
+}
+
+export function PhysicalOperation() {
+  return (
+    <>
+      {/* Mobile — stacked cards (hidden on md+) */}
+      <div className="md:hidden">
+        <MobileSection />
+      </div>
+
+      {/* Desktop — scroll-scrub (hidden below md) */}
+      <div className="hidden md:block">
+        <DesktopScrollSection />
+      </div>
+    </>
   );
 }

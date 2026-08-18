@@ -149,13 +149,13 @@ export function SolutionsGrid() {
 
         {/* ── Centered header ── */}
         <div className="text-center mb-14 max-w-[680px] mx-auto">
-          <h2 className="text-[38px] md:text-[52px] font-bold text-[#0E0E0F] leading-[1.06]">
+          <h2 className="text-[38px] md:text-[52px] font-bold text-carbon leading-[1.06]">
             One Intelligent Platform.
             <br />
             Six Connected Solutions.
           </h2>
 
-          <p className="mt-5 text-[15px] text-[#33363A]/55 leading-relaxed font-normal">
+          <p className="mt-5 text-[15px] text-graphite/55 leading-relaxed font-normal">
             RAMS brings AI Vision, Digital Twin, Guided Inspection, Location Intelligence,
             OmniBox, and Analytics together in one connected warehouse platform. Explore
             each solution to see how they work together.
@@ -164,7 +164,7 @@ export function SolutionsGrid() {
           <div className="mt-8">
             <Link
               href="/platform"
-              className="inline-flex items-center gap-2 bg-[#0E0E0F] hover:bg-[#1a1a1b] text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-200 hover:-translate-y-px"
+              className="inline-flex items-center gap-2 bg-carbon hover:bg-[#1a1a1b] text-white px-6 py-3 rounded-full text-[14px] font-semibold transition-all duration-200 hover:-translate-y-px"
             >
               Explore Platform
               <ArrowRight className="w-4 h-4" />

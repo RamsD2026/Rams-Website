@@ -6,7 +6,7 @@ export interface NavLink {
 }
 
 export interface NavGroup {
-  title: string;
+  title?: string;
   links: NavLink[];
 }
 
@@ -37,13 +37,13 @@ export const NAV_CONFIG: NavItemConfig[] = [
         title: "By Business Challenge",
         links: [
           {
-            label: "Rack Intelligence",
-            href: "/solutions/rack-intelligence",
+            label: "Rack Safety and Intelligence",
+            href: "/solutions/rack-safety-intelligence",
             description: "Improve rack safety, compliance, and lifecycle management",
             meta: "Powered by IRDS",
           },
           {
-            label: "MHE Intelligence",
+            label: "MHE Safety and Productivity",
             href: "/solutions/mhe-intelligence",
             description: "Improve vehicle safety and operator productivity",
             meta: "Powered by MEPS + RTSS",
@@ -60,7 +60,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
             meta: "Powered by ATOS",
           },
           {
-            label: "MHE Diagnostics",
+            label: "MHE Diagnostics and Maintenance",
             href: "/solutions/mhe-diagnostics",
             description: "Predictive maintenance before failures occur",
             meta: "Powered by IMDS",
@@ -80,7 +80,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
       description:
         "Answer a few questions and we'll map the right solution to your warehouse operation.",
       cta: "Start Assessment",
-      href: "/get-started",
+      href: "/find-your-starting-point",
       stat: { value: "6", label: "Solution modules" },
     },
   },
@@ -91,32 +91,36 @@ export const NAV_CONFIG: NavItemConfig[] = [
     layout: "standard",
     groups: [
       {
-        title: "How RAMS Works",
         links: [
+          {
+            label: "MEPS",
+            href: "/platform/overview",
+            description: "MHE Efficiency and Productivity System",
+          },
+          {
+            label: "ATOS",
+            href: "/platform/ai-operational-intelligence",
+            description: "AI Task Orchestration System",
+          },
+          {
+            label: "RTSS",
+            href: "/platform/execution-engine",
+            description: "Real-Time Safety System",
+          },
+          {
+            label: "IMDS",
+            href: "/platform/integrations",
+            description: "Integrated MHE Diagnostic System — WMS, ERP, CCTV, RFID, MHE",
+          },
+          {
+            label: "AIMS",
+            href: "/platform/security",
+            description: "AI Intelligence and Management System",
+          },
           {
             label: "Digital Twin",
             href: "/platform/digital-twin",
             description: "Live warehouse replica updated in real time",
-          },
-          {
-            label: "AI Operational Intelligence",
-            href: "/platform/ai-intelligence",
-            description: "Machine learning models trained on warehouse data",
-          },
-          {
-            label: "Execution Engine",
-            href: "/platform/execution-engine",
-            description: "Decision-to-action in milliseconds, at scale",
-          },
-          {
-            label: "Integrations",
-            href: "/platform/integrations",
-            description: "Connect WMS, ERP, MHE, and IoT systems seamlessly",
-          },
-          {
-            label: "Security",
-            href: "/platform/security",
-            description: "Enterprise-grade data security and compliance",
           },
         ],
       },
@@ -138,36 +142,47 @@ export const NAV_CONFIG: NavItemConfig[] = [
     layout: "hardware",
     groups: [
       {
-        title: "AI Vision System",
+        title: "AI Vision",
         links: [
-          { label: "AI Cameras", href: "/hardware/ai-cameras", description: "360° warehouse perception" },
-          { label: "Driver Monitoring", href: "/hardware/driver-monitoring", description: "In-cab operator safety" },
-          { label: "PPE Detection", href: "/hardware/ppe-detection", description: "Automated compliance checks" },
+          { label: "AI Vision Pro", href: "/hardware/ai-vision", description: "Wide-area coverage" },
+          { label: "AI Vision Ultra", href: "/hardware/ai-vision", description: "High-fidelity perception" },
+          { label: "AI Vision Max", href: "/hardware/ai-vision", description: "Critical-zone throughput" },
         ],
       },
       {
         title: "OmniBox",
         links: [
-          { label: "OmniBox Edge", href: "/hardware/omnibox-edge", description: "Local AI inference at the rack" },
-          { label: "OmniBox AI", href: "/hardware/omnibox-ai", description: "High-performance neural compute" },
-          { label: "OmniBox Motion", href: "/hardware/omnibox-motion", description: "Kinematic sensing and IMU" },
-          { label: "OmniBox Core", href: "/hardware/omnibox-core", description: "Central orchestration unit" },
+          { label: "OmniBox Edge", href: "/hardware/omnibox", description: "On-rack inference" },
+          { label: "OmniBox AI", href: "/hardware/omnibox", description: "Neural compute" },
+          { label: "OmniBox Motion", href: "/hardware/omnibox", description: "Kinematic sensing" },
+          { label: "OmniBox Core", href: "/hardware/omnibox", description: "Central orchestration" },
         ],
       },
       {
         title: "Location Intelligence",
         links: [
-          { label: "LiDAR", href: "/hardware/lidar", description: "3D spatial mapping at scale" },
-          { label: "RTLS", href: "/hardware/rtls", description: "Real-time location for every asset" },
-          { label: "Indoor Positioning", href: "/hardware/indoor-positioning", description: "Sub-meter accuracy indoors" },
+          { label: "LiDAR", href: "/hardware/rtls", description: "3D spatial mapping" },
+          { label: "Wifi", href: "/hardware/rtls", description: "Indoor positioning" },
+          { label: "Bluetooth", href: "/hardware/rtls", description: "Beacon tracking" },
+          { label: "UWB", href: "/hardware/rtls", description: "Ultra-wideband precision" },
+        ],
+      },
+      {
+        title: "Sensor Stack",
+        links: [
+          { label: "Access Control", href: "/hardware/sensor-stack", description: "MHE and area access" },
+          { label: "Crash Monitoring", href: "/hardware/sensor-stack", description: "Impact detection" },
+          { label: "Speed Monitoring", href: "/hardware/sensor-stack", description: "Zone-based limits" },
+          { label: "Location Monitoring", href: "/hardware/sensor-stack", description: "Real-time asset location" },
+          { label: "Pallet Detection", href: "/hardware/sensor-stack", description: "Automated pallet sensing" },
+          { label: "Battery Management", href: "/hardware/sensor-stack", description: "Health and charge cycles" },
         ],
       },
       {
         title: "Guided Inspection",
         links: [
-          { label: "AirScan", href: "/hardware/airscan", description: "Drone-based autonomous rack scanning" },
-          { label: "FloorScan", href: "/hardware/floorscan", description: "Autonomous floor-level inspection" },
-          { label: "Sensor Stack", href: "/hardware/sensor-stack", description: "Unified integrated sensor architecture" },
+          { label: "AirScan", href: "#", description: "Drone rack scanning" },
+          { label: "Floor Scan", href: "#", description: "Floor-level inspection" },
         ],
       },
     ],
@@ -191,7 +206,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
         title: "What We Deliver",
         links: [
           {
-            label: "Rack Inspection",
+            label: "Rack Inspection Services",
             href: "/services/rack-inspection",
             description: "Certified rack safety assessments on-site or remote",
           },
@@ -201,22 +216,22 @@ export const NAV_CONFIG: NavItemConfig[] = [
             description: "Load capacity analysis and compliance reporting",
           },
           {
-            label: "Inventory Audit",
+            label: "Inventory Reconciliation and Audit",
             href: "/services/inventory-audit",
             description: "Full-warehouse inventory accuracy verification",
           },
           {
             label: "MHE Productivity Assessment",
-            href: "/services/mhe-productivity",
+            href: "/services/mhe-productivity-assessment",
             description: "Identify vehicle utilisation and efficiency gaps",
           },
           {
-            label: "Operational Assessment",
+            label: "Safety and Operational Assessment",
             href: "/services/operational-assessment",
             description: "End-to-end warehouse operational review",
           },
           {
-            label: "Deployment & Support",
+            label: "Deployment and Support",
             href: "/services/deployment-support",
             description: "Implementation, training, and managed support",
           },
@@ -242,14 +257,15 @@ export const NAV_CONFIG: NavItemConfig[] = [
       {
         title: "Industries We Serve",
         links: [
+          { label: "Warehousing and Distribution", href: "/industries/warehousing-distribution", description: "Optimise throughput and accuracy" },
+          { label: "Third-Party Logistics (3PL)", href: "/industries/third-party-logistics", description: "Multi-client warehouse management" },
+          { label: "E-commerce", href: "/industries/ecommerce-fulfilment", description: "High-velocity order operations" },
+          { label: "Cold Storage", href: "/industries/cold-storage", description: "Temperature-controlled operations" },
           { label: "Manufacturing", href: "/industries/manufacturing", description: "End-to-end production floor visibility" },
-          { label: "Warehousing & Distribution", href: "/industries/warehousing", description: "Optimise throughput and accuracy" },
-          { label: "Retail", href: "/industries/retail", description: "Omnichannel fulfilment intelligence" },
-          { label: "E-Commerce", href: "/industries/ecommerce", description: "High-velocity order operations" },
           { label: "Automotive", href: "/industries/automotive", description: "Parts tracking and JIT compliance" },
-          { label: "Food & Beverage", href: "/industries/food-beverage", description: "Cold chain and FIFO compliance" },
-          { label: "Pharmaceutical", href: "/industries/pharmaceutical", description: "Regulated storage and traceability" },
-          { label: "Logistics & 3PL", href: "/industries/logistics-3pl", description: "Multi-client warehouse management" },
+          { label: "FMCG", href: "/industries/fmcg", description: "High-volume fast-moving goods" },
+          { label: "Food and Beverage", href: "/industries/food-beverage", description: "Cold chain and FIFO compliance" },
+          { label: "Pharmaceuticals", href: "/industries/pharmaceuticals", description: "Regulated storage and traceability" },
         ],
       },
     ],
@@ -260,7 +276,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
         "See how RAMS adapts to the compliance, safety, and operational demands of your industry.",
       cta: "View Industries",
       href: "/industries",
-      stat: { value: "8", label: "Industries served" },
+      stat: { value: "9", label: "Industries served" },
     },
   },
 
@@ -273,7 +289,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
         title: "Learn",
         links: [
           { label: "Case Studies", href: "/resources/case-studies", description: "Real-world customer outcomes" },
-          { label: "Insights", href: "/resources/insights", description: "Expert warehouse intelligence articles" },
+          { label: "News Room", href: "/resources/insights", description: "Latest company news and announcements" },
           { label: "Videos", href: "/resources/videos", description: "Product demos and walkthroughs" },
           { label: "White Papers", href: "/resources/white-papers", description: "In-depth research and analysis" },
         ],
@@ -283,8 +299,8 @@ export const NAV_CONFIG: NavItemConfig[] = [
         links: [
           { label: "Technical Notes", href: "/resources/technical-notes", description: "Integration and API documentation" },
           { label: "Downloads", href: "/resources/downloads", description: "Datasheets, brochures, and specs" },
-          { label: "Compliance Guides", href: "/resources/compliance", description: "SEMA, FEM, OSHA reference guides" },
-          { label: "FAQ", href: "/resources/faq", description: "Answers to common questions" },
+          { label: "Glossary (Industry Compliance Guides)", href: "/resources/compliance-guides", description: "SEMA, FEM, OSHA reference guides" },
+          { label: "Frequently Asked Questions (FAQs)", href: "/resources/faqs", description: "Answers to common questions" },
         ],
       },
     ],
@@ -310,11 +326,10 @@ export const NAV_CONFIG: NavItemConfig[] = [
           { label: "About RAMS", href: "/company/about", description: "Our mission and story" },
           { label: "Leadership", href: "/company/leadership", description: "Meet the executive team" },
           { label: "Customers", href: "/company/customers", description: "Who trusts RAMS globally" },
+          { label: "Certifications and Security", href: "/company/certifications", description: "Standards, accreditations, and security posture" },
           { label: "Partners", href: "/company/partners", description: "Technology and channel partners" },
           { label: "Careers", href: "/company/careers", description: "Join the RAMS team" },
-          { label: "Certifications", href: "/company/certifications", description: "Standards and accreditations" },
-          { label: "Security", href: "/company/security", description: "Our security posture and policies" },
-          { label: "Contact", href: "/contact", description: "Get in touch with our team" },
+          { label: "Contact Us", href: "/company/contact", description: "Get in touch with our team" },
         ],
       },
     ],

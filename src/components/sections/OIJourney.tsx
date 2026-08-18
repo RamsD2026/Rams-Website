@@ -87,7 +87,7 @@ export function OIJourney() {
   return (
     <section
       ref={ref}
-      className="bg-[#0E0E0F] py-28 overflow-hidden"
+      className="bg-carbon py-28 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-8">
 
@@ -97,9 +97,9 @@ export function OIJourney() {
             initial={{ opacity: 0, y: 8 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
-            className="mb-5 inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6A00]"
+            className="mb-5 inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.2em] uppercase text-signal-orange"
           >
-            <span className="w-5 h-[2px] rounded-full bg-[#FF6A00]" />
+            <span className="w-5 h-[2px] rounded-full bg-signal-orange" />
             How RAMS Creates Clarity
           </motion.p>
 
@@ -111,7 +111,7 @@ export function OIJourney() {
           >
             From movement to verified
             <br />
-            <span className="text-[#FF6A00]">operational intelligence.</span>
+            <span className="text-signal-orange">operational intelligence.</span>
           </motion.h2>
 
           <motion.p
@@ -133,19 +133,19 @@ export function OIJourney() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, delay: 0.15 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              className="group relative bg-[#0E0E0F] hover:bg-[#161616] transition-colors duration-300 p-7 flex flex-col gap-6"
+              className="group relative bg-carbon hover:bg-[#161616] transition-colors duration-300 p-7 flex flex-col gap-6"
             >
               {/* Orange top accent on hover */}
-              <div className="absolute top-0 left-6 right-6 h-[2px] bg-[#FF6A00] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
+              <div className="absolute top-0 left-6 right-6 h-[2px] bg-signal-orange origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
 
               {/* Number */}
-              <span className="text-[11px] font-bold tracking-[0.15em] text-white/20 group-hover:text-[#FF6A00]/70 transition-colors duration-300">
+              <span className="text-[11px] font-bold tracking-[0.15em] text-white/20 group-hover:text-signal-orange/70 transition-colors duration-300">
                 {stage.number}
               </span>
 
               {/* Verb */}
               <div>
-                <h3 className="text-[22px] font-bold text-white leading-tight group-hover:text-[#FF6A00] transition-colors duration-300">
+                <h3 className="text-[22px] font-bold text-white leading-tight group-hover:text-signal-orange transition-colors duration-300">
                   {stage.verb}
                 </h3>
                 <p className="mt-2 text-[12px] text-white/35 font-normal leading-snug">
@@ -157,7 +157,7 @@ export function OIJourney() {
               <ul className="flex flex-col gap-2 mt-auto">
                 {stage.items.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-[12.5px] text-white/45 font-normal leading-snug">
-                    <span className="mt-[5px] w-1 h-1 rounded-full bg-[#FF6A00]/50 shrink-0" />
+                    <span className="mt-[5px] w-1 h-1 rounded-full bg-signal-orange/50 shrink-0" />
                     {item}
                   </li>
                 ))}

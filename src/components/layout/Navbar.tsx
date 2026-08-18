@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -48,24 +47,24 @@ function NavLabel({
         aria-expanded={isActive}
         aria-haspopup="true"
         className={cn(
-          "relative flex flex-col items-center py-1 px-1 text-[15px] font-medium transition-colors duration-200",
-          "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm",
+          "relative flex flex-col items-center py-1 px-1 text-xs font-normal tracking-[0.14em] uppercase font-mono transition-colors duration-200",
+          "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-none",
           heroMode
             ? isActive
               ? "text-white focus-visible:ring-white"
               : "text-white/80 hover:text-white focus-visible:ring-white"
             : isActive
-              ? "text-[#FF6A00] focus-visible:ring-[#FF6A00]"
+              ? "text-signal-orange focus-visible:ring-signal-orange"
               : menuOpen
-                ? "text-[#0E0E0F] hover:text-[#0E0E0F] focus-visible:ring-[#0E0E0F]"
-                : "text-[#33363A] hover:text-[#0E0E0F] focus-visible:ring-[#0E0E0F]"
+                ? "text-carbon hover:text-carbon focus-visible:ring-carbon"
+                : "text-graphite hover:text-carbon focus-visible:ring-carbon"
         )}
       >
         {item.label}
         <motion.span
           className={cn(
-            "absolute bottom-0 left-0 h-[2px] rounded-full",
-            heroMode ? "bg-white" : "bg-[#FF6A00]"
+            "absolute bottom-0 left-0 h-[2px] rounded-none",
+            heroMode ? "bg-white" : "bg-signal-orange"
           )}
           animate={isActive ? { width: "100%", opacity: 1 } : { width: "0%", opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
@@ -149,11 +148,11 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               ? "bg-transparent"
               : scrolled
                 ? "bg-white shadow-[0_1px_24px_rgba(14,14,15,0.08)]"
-                : "bg-white border-b border-[#D9DBDD]"
+                : "bg-white border-b border-steel"
           )}
           aria-label="Main navigation"
         >
-          <div className="px-8 h-20 flex items-center justify-between gap-8">
+          <div className="max-w-[1280px] mx-auto px-6 sm:px-8 h-16 sm:h-20 flex items-center justify-between gap-6 sm:gap-10">
 
             {/* Logo */}
             <div className="shrink-0 h-9 flex items-center">
@@ -165,7 +164,11 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
             </div>
 
             {/* Desktop nav */}
-            <ul role="list" className="hidden lg:flex items-center gap-3 flex-1 justify-center">
+            <ul
+              role="list"
+              className="hidden lg:flex items-center flex-1 justify-center"
+              style={{ columnGap: 28 }}
+            >
               {NAV_CONFIG.map((item) => (
                 <NavLabel
                   key={item.label}
@@ -180,47 +183,20 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               ))}
             </ul>
 
-            {/* Desktop CTAs */}
+            {/* Desktop — Search only, CTAs live in hero */}
             <div className="hidden lg:flex items-center gap-3 shrink-0">
               <button
                 type="button"
                 aria-label="Search"
                 className={cn(
-                  "p-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  "p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   isTransparent
                     ? "text-white/60 hover:text-white hover:bg-white/10 focus-visible:ring-white"
-                    : "text-[#33363A] hover:text-[#0E0E0F] hover:bg-[#F3F1EC] focus-visible:ring-[#0E0E0F]"
+                    : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
                 )}
               >
                 <Search className="w-[18px] h-[18px]" aria-hidden="true" />
               </button>
-
-              {/* Ghost CTA */}
-              <Link
-                href="/get-started"
-                className={cn(
-                  "px-5 py-2.5 rounded-full text-[14px] font-semibold border-2 transition-all duration-200 whitespace-nowrap",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                  isTransparent
-                    ? "border-white/40 text-white hover:bg-white hover:text-[#0E0E0F] focus-visible:ring-white"
-                    : "border-[#0E0E0F] text-[#0E0E0F] hover:bg-[#0E0E0F] hover:text-white focus-visible:ring-[#0E0E0F]"
-                )}
-              >
-                Find Your Starting Point
-              </Link>
-
-              {/* Primary CTA — Signal Orange */}
-              <Link
-                href="/book-demo"
-                className={cn(
-                  "px-5 py-2.5 rounded-full text-[14px] font-semibold transition-all duration-200 whitespace-nowrap",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                  "bg-[#FF6A00] text-white hover:bg-[#E55F00] shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0",
-                  "focus-visible:ring-[#FF6A00]"
-                )}
-              >
-                Book a Demo
-              </Link>
             </div>
 
             {/* Mobile hamburger */}
@@ -228,10 +204,10 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               ref={menuButtonRef}
               onClick={() => setDrawerOpen(true)}
               className={cn(
-                "lg:hidden p-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                "lg:hidden p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                 isTransparent
                   ? "text-white/75 hover:text-white hover:bg-white/10 focus-visible:ring-white"
-                  : "text-[#33363A] hover:text-[#0E0E0F] hover:bg-[#F3F1EC] focus-visible:ring-[#0E0E0F]"
+                  : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
               )}
               aria-label="Open navigation menu"
               aria-expanded={drawerOpen}
@@ -264,7 +240,7 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-[#0E0E0F]/20 z-40 pointer-events-none"
+              className="fixed inset-0 bg-carbon/20 z-40 pointer-events-none"
               aria-hidden="true"
             />
           )}

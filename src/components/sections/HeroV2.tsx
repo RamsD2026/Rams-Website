@@ -67,12 +67,13 @@ export function HeroV2() {
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-[#0E0E0F]/60 via-transparent to-[#0E0E0F]/70" />
 
       {/* ── Hero content — centered, editorial ── */}
-      <div className="relative z-10 w-full px-8 flex flex-col items-center text-center">
+      <div className="relative z-10 w-full">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 flex flex-col items-center text-center">
 
         {/* 1 — Badge · delay 0.7s */}
         <motion.p
           {...reveal(0.7)}
-          className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[11px] font-semibold tracking-[0.2em] uppercase text-white/55 backdrop-blur-sm"
+          className="mb-5 sm:mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 sm:px-4 py-1.5 text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase text-white/55 backdrop-blur-sm"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF6A00]" aria-hidden="true" />
           Warehouse Operational Intelligence
@@ -81,7 +82,7 @@ export function HeroV2() {
         {/* 2 — Headline · delay 0.95s */}
         <motion.h1
           {...reveal(0.95)}
-          className="text-[58px] md:text-[72px] lg:text-[88px] font-bold text-white leading-[1.02]"
+          className="text-[40px] sm:text-[54px] md:text-[72px] lg:text-[88px] font-bold text-white leading-[1.02]"
         >
           Clarity
           <br />
@@ -91,7 +92,7 @@ export function HeroV2() {
         {/* 3 — Supporting copy · delay 1.25s */}
         <motion.p
           {...reveal(1.25)}
-          className="mt-7 text-[16px] md:text-[18px] text-white/50 leading-relaxed font-normal max-w-[520px] tracking-wide"
+          className="mt-5 sm:mt-7 text-[14px] sm:text-[16px] md:text-[18px] text-white/50 leading-relaxed font-normal max-w-[520px] tracking-wide"
         >
           Real-time visibility across every rack, vehicle, and workflow —
           so your warehouse executes with precision, not guesswork.
@@ -100,7 +101,7 @@ export function HeroV2() {
         {/* 4 + 5 — CTAs · delay 1.5s */}
         <motion.div
           {...reveal(1.5)}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
         >
           <Link
             href="/book-demo"
@@ -133,6 +134,7 @@ export function HeroV2() {
         </motion.div>
 
       </div>
+      </div>
 
       {/* ── Trust bar · delay 1.9s ── */}
       <motion.div
@@ -141,8 +143,8 @@ export function HeroV2() {
         transition={{ duration: 0.8, delay: 1.9, ease: [0.22, 1, 0.36, 1] as const }}
         className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/8 bg-[#0E0E0F]/60 backdrop-blur-md"
       >
-        <div className="flex items-center h-16">
-          <div className="shrink-0 flex items-center gap-4 pl-8 pr-6">
+        <div className="max-w-[1280px] mx-auto flex items-center h-16 w-full">
+          <div className="hidden sm:flex shrink-0 items-center gap-4 pl-6 sm:pl-8 pr-4 sm:pr-6">
             <span className="text-[10.5px] font-bold tracking-[0.18em] uppercase text-white/25 whitespace-nowrap">
               Trusted by
             </span>
@@ -184,7 +186,7 @@ export function HeroV2() {
             </div>
           </div>
 
-          <div className="shrink-0 pl-6 pr-8 border-l border-white/8 flex flex-col items-end">
+          <div className="hidden sm:flex shrink-0 pl-6 pr-6 sm:pr-8 border-l border-white/8 flex-col items-end">
             <span className="text-[16px] font-bold text-white leading-none">50+</span>
             <span className="text-[10px] text-white/25 font-medium mt-0.5 whitespace-nowrap">clients worldwide</span>
           </div>

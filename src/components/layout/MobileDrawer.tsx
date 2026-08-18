@@ -44,7 +44,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-[#0E0E0F]/40 backdrop-blur-sm z-[90]"
+            className="fixed inset-0 bg-carbon/40 backdrop-blur-sm z-[90]"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -61,11 +61,11 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[100] flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#D9DBDD]">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-steel">
               <RAMSLogo className="h-7" />
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg text-[#33363A] hover:text-[#0E0E0F] hover:bg-[#F3F1EC] transition-colors"
+                className="p-2 rounded-none text-graphite hover:text-carbon hover:bg-off-white transition-colors"
                 aria-label="Close navigation menu"
               >
                 <X className="w-5 h-5" aria-hidden="true" />
@@ -85,12 +85,12 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                     <Link
                       href={item.href}
                       onClick={onClose}
-                      className="flex items-center justify-between px-6 py-4 text-[16px] font-semibold text-[#0E0E0F] hover:text-[#FF6A00] hover:bg-[#F3F1EC] transition-colors group"
+                      className="flex items-center justify-between px-6 py-4 text-base font-semibold text-carbon hover:text-signal-orange hover:bg-off-white transition-colors group"
                     >
                       {item.label}
                       <ChevronRight
                         className={cn(
-                          "w-4 h-4 text-[#D9DBDD] group-hover:text-[#FF6A00] transition-colors"
+                          "w-4 h-4 text-steel group-hover:text-signal-orange transition-colors"
                         )}
                         aria-hidden="true"
                       />
@@ -99,14 +99,14 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 ))}
               </ul>
 
-              <div className="mx-6 my-4 border-t border-[#D9DBDD]" />
+              <div className="mx-6 my-4 border-t border-steel" />
 
               {/* Secondary links */}
               <div className="px-6 space-y-1">
                 <Link
                   href="/platform/login"
                   onClick={onClose}
-                  className="flex items-center gap-3 py-3 text-[14px] font-medium text-[#33363A] hover:text-[#0E0E0F] transition-colors"
+                  className="flex items-center gap-3 py-3 text-sm font-medium text-graphite hover:text-carbon transition-colors"
                 >
                   <LogIn className="w-4 h-4" aria-hidden="true" />
                   Platform Login
@@ -114,35 +114,35 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 <Link
                   href="/support"
                   onClick={onClose}
-                  className="flex items-center gap-3 py-3 text-[14px] font-medium text-[#33363A] hover:text-[#0E0E0F] transition-colors"
+                  className="flex items-center gap-3 py-3 text-sm font-medium text-graphite hover:text-carbon transition-colors"
                 >
                   <Headphones className="w-4 h-4" aria-hidden="true" />
                   Support
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/company/contact"
                   onClick={onClose}
-                  className="flex items-center gap-3 py-3 text-[14px] font-medium text-[#33363A] hover:text-[#0E0E0F] transition-colors"
+                  className="flex items-center gap-3 py-3 text-sm font-medium text-graphite hover:text-carbon transition-colors"
                 >
                   <Globe className="w-4 h-4" aria-hidden="true" />
-                  Contact
+                  Contact Us
                 </Link>
               </div>
             </nav>
 
             {/* CTA Buttons */}
-            <div className="p-6 border-t border-[#D9DBDD] space-y-3">
+            <div className="p-6 border-t border-steel space-y-3">
               <Link
-                href="/get-started"
+                href="/find-your-starting-point"
                 onClick={onClose}
-                className="flex items-center justify-center w-full px-5 py-3 rounded-full text-[15px] font-semibold text-[#0E0E0F] border-2 border-[#0E0E0F] hover:bg-[#0E0E0F] hover:text-white transition-all duration-200"
+                className="flex items-center justify-center w-full px-5 py-3 rounded-none text-base font-semibold text-carbon border-2 border-carbon hover:bg-carbon hover:text-white transition-all duration-200"
               >
                 Find Your Starting Point
               </Link>
               <Link
-                href="/book-demo"
+                href="/book-a-demo"
                 onClick={onClose}
-                className="flex items-center justify-center w-full px-5 py-3 rounded-full text-[15px] font-semibold bg-[#FF6A00] text-white hover:bg-[#E55F00] transition-all duration-200"
+                className="flex items-center justify-center w-full px-5 py-3 rounded-none text-base font-semibold bg-signal-orange text-white hover:bg-signal-orange-hover transition-all duration-200"
               >
                 Book a Demo
               </Link>

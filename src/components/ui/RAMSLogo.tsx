@@ -12,15 +12,12 @@ export function RAMSLogo({ className, asLink = false, variant = "dark" }: RAMSLo
   const logo = (
     <div className={cn("relative", className)}>
       <Image
-        src="/RAMS_Logo_Black.svg"
+        src={variant === "white" ? "/RAMS_Logo_White.svg" : "/RAMS_Logo_Black.svg"}
         alt="RAMS"
         width={120}
         height={48}
         priority
-        className={cn(
-          "h-full w-auto object-contain",
-          variant === "white" && "brightness-0 invert"
-        )}
+        className="h-full w-auto object-contain"
       />
     </div>
   );

@@ -30,23 +30,22 @@ function LinkRow({ link, onClose }: { link: NavLink; onClose: () => void }) {
         href={link.href}
         onClick={onClose}
         className={cn(
-          "group flex flex-col py-3 px-4 rounded-lg transition-colors duration-150",
-          "hover:bg-[#F3F1EC]",
-          "outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00] focus-visible:ring-offset-1"
+          "group flex flex-col py-3 px-4 rounded-none transition-colors duration-150",
+          "outline-none focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-1"
         )}
       >
         <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="text-[14px] font-semibold text-[#0E0E0F] group-hover:text-[#FF6A00] transition-colors leading-tight">
+          <span className="text-sm font-semibold text-carbon group-hover:text-signal-orange transition-colors leading-tight">
             {link.label}
           </span>
           {link.meta && (
-            <span className="shrink-0 text-[10px] font-semibold tracking-wide text-[#33363A] border border-[#D9DBDD] rounded-full px-2 py-0.5 leading-none">
+            <span className="shrink-0 text-xs font-semibold tracking-wide text-graphite border border-steel rounded-none px-2 py-0.5 leading-none">
               {link.meta}
             </span>
           )}
         </div>
         {link.description && (
-          <span className="mt-0.5 text-[12.5px] text-[#33363A]/70 leading-snug">
+          <span className="mt-0.5 text-[12.5px] text-graphite/70 leading-snug">
             {link.description}
           </span>
         )}
@@ -56,9 +55,10 @@ function LinkRow({ link, onClose }: { link: NavLink; onClose: () => void }) {
 }
 
 /* ── Group heading ── */
-function GroupHeading({ title }: { title: string }) {
+function GroupHeading({ title }: { title?: string }) {
+  if (!title) return null;
   return (
-    <p className="mb-3 px-4 text-[10.5px] font-bold tracking-[0.18em] uppercase text-[#33363A]/50">
+    <p className="mb-3 px-4 text-[10.5px] font-bold tracking-[0.18em] uppercase text-graphite/50 whitespace-nowrap">
       {title}
     </p>
   );
@@ -68,7 +68,7 @@ function GroupHeading({ title }: { title: string }) {
 function FeaturedCard({ config, onClose }: { config: NavItemConfig; onClose: () => void }) {
   const { featured } = config;
   return (
-    <div className="relative h-full min-h-[220px] rounded-2xl overflow-hidden bg-[#0E0E0F] flex flex-col p-7">
+    <div className="relative h-full min-h-[220px] rounded-none overflow-hidden bg-carbon flex flex-col p-7">
       {/* Topographic texture */}
       <div
         aria-hidden="true"
@@ -82,26 +82,26 @@ function FeaturedCard({ config, onClose }: { config: NavItemConfig; onClose: () 
       {/* Signal Orange glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-8 -right-8 w-40 h-40 rounded-full bg-[#FF6A00]/20 blur-3xl"
+        className="pointer-events-none absolute -bottom-8 -right-8 w-40 h-40 rounded-none bg-signal-orange/20 blur-3xl"
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#FF6A00] mb-3">
+        <p className="text-xs font-bold tracking-[0.2em] uppercase text-signal-orange mb-3">
           {featured.eyebrow}
         </p>
-        <h3 className="text-[17px] font-bold text-white leading-snug mb-2.5">
+        <h3 className="text-lg font-bold text-white leading-snug mb-2.5">
           {featured.title}
         </h3>
-        <p className="text-[12.5px] text-[#D9DBDD]/60 leading-relaxed flex-1">
+        <p className="text-[12.5px] text-steel/60 leading-relaxed flex-1">
           {featured.description}
         </p>
 
         {featured.stat && (
           <div className="mt-5 pt-4 border-t border-white/8 flex items-baseline gap-2">
-            <span className="text-[26px] font-bold text-white leading-none">
+            <span className="text-2xl font-bold text-white leading-none">
               {featured.stat.value}
             </span>
-            <span className="text-[11px] uppercase tracking-wide text-[#D9DBDD]/40">
+            <span className="text-xs uppercase tracking-wide text-steel/40">
               {featured.stat.label}
             </span>
           </div>
@@ -110,7 +110,7 @@ function FeaturedCard({ config, onClose }: { config: NavItemConfig; onClose: () 
         <Link
           href={featured.href}
           onClick={onClose}
-          className="mt-5 inline-flex items-center gap-1.5 self-start rounded-full bg-[#FF6A00] hover:bg-[#E55F00] px-4 py-2 text-[12.5px] font-semibold text-white transition-colors duration-150"
+          className="mt-5 inline-flex items-center gap-1.5 self-start rounded-none bg-signal-orange hover:bg-signal-orange-hover px-4 py-2 text-[12.5px] font-semibold text-white transition-colors duration-150"
         >
           {featured.cta}
           <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -122,7 +122,7 @@ function FeaturedCard({ config, onClose }: { config: NavItemConfig; onClose: () 
 
 /* ── Vertical divider ── */
 function ColDivider() {
-  return <div className="w-px bg-[#D9DBDD] self-stretch mx-2" aria-hidden="true" />;
+  return <div className="w-px bg-steel self-stretch mx-2" aria-hidden="true" />;
 }
 
 /* ════════════════════════
@@ -144,7 +144,7 @@ function StandardPanel({ config, onClose }: { config: NavItemConfig; onClose: ()
           </motion.div>
         </div>
         <div>
-          <div className="mb-3 h-[1.0625rem]" aria-hidden="true" />
+          {group.title && <div className="mb-3 h-[1.0625rem]" aria-hidden="true" />}
           <motion.div variants={listVariants} initial="hidden" animate="visible" className="space-y-0.5">
             {col2.map((l) => <LinkRow key={l.href} link={l} onClose={onClose} />)}
           </motion.div>
@@ -163,28 +163,37 @@ function StandardPanel({ config, onClose }: { config: NavItemConfig; onClose: ()
 ════════════════════════ */
 function HardwarePanel({ config, onClose }: { config: NavItemConfig; onClose: () => void }) {
   return (
-    <div className="flex gap-6 items-start">
-      <div className="flex-1 grid grid-cols-4 gap-x-2">
+    <div className="flex items-start">
+      <div
+        className="w-full grid gap-x-2 min-w-0"
+        style={{ gridTemplateColumns: `repeat(${config.groups.length}, minmax(0, 1fr))` }}
+      >
         {config.groups.map((group) => (
-          <div key={group.title}>
+          <div key={group.title} className="min-w-0">
             <GroupHeading title={group.title} />
             <motion.div variants={listVariants} initial="hidden" animate="visible" className="space-y-0.5">
               {group.links.map((l) => (
-                <motion.div key={l.href} variants={rowVariant}>
+                <motion.div key={l.label} variants={rowVariant}>
                   <Link
                     href={l.href}
                     onClick={onClose}
                     className={cn(
-                      "group flex flex-col py-2.5 px-3 rounded-lg transition-colors duration-150",
-                      "hover:bg-[#F3F1EC]",
-                      "outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A00]"
+                      "group flex flex-col py-2.5 px-3 rounded-none transition-colors duration-150",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-signal-orange"
                     )}
                   >
-                    <span className="text-[13px] font-semibold text-[#0E0E0F] group-hover:text-[#FF6A00] transition-colors leading-tight">
-                      {l.label}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-semibold text-carbon group-hover:text-signal-orange transition-colors leading-tight">
+                        {l.label}
+                      </span>
+                      {l.meta && (
+                        <span className="shrink-0 text-[9.5px] font-semibold tracking-wide text-graphite border border-steel rounded-none px-1.5 py-0.5 leading-none">
+                          {l.meta}
+                        </span>
+                      )}
+                    </div>
                     {l.description && (
-                      <span className="mt-0.5 text-[11.5px] text-[#33363A]/60 leading-snug">
+                      <span className="mt-0.5 text-[11.5px] text-graphite/60 leading-snug">
                         {l.description}
                       </span>
                     )}
@@ -194,10 +203,6 @@ function HardwarePanel({ config, onClose }: { config: NavItemConfig; onClose: ()
             </motion.div>
           </div>
         ))}
-      </div>
-      <ColDivider />
-      <div className="w-[240px] shrink-0">
-        <FeaturedCard config={config} onClose={onClose} />
       </div>
     </div>
   );
@@ -281,20 +286,20 @@ export function MegaMenuPanel({ config, onClose }: MegaMenuPanelProps) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full left-0 right-0 z-50 bg-white border-t border-[#D9DBDD] shadow-[0_16px_48px_-8px_rgba(14,14,15,0.12)]"
+      className="absolute top-full left-0 right-0 z-50 bg-white border-t border-steel shadow-[0_16px_48px_-8px_rgba(14,14,15,0.12)]"
       role="region"
       aria-label={`${config.label} navigation panel`}
     >
-      <div className="px-8 py-8">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-8">
         {/* Panel header */}
         <div className="flex items-center justify-between mb-6">
-          <span className="text-[10.5px] font-bold tracking-[0.2em] uppercase text-[#33363A]/50">
+          <span className="text-[10.5px] font-bold tracking-[0.2em] uppercase text-graphite/50">
             {config.label}
           </span>
           <Link
             href={config.href}
             onClick={onClose}
-            className="group flex items-center gap-1 text-[12px] font-semibold text-[#33363A] hover:text-[#FF6A00] transition-colors"
+            className="group flex items-center gap-1 text-xs font-semibold text-graphite hover:text-signal-orange transition-colors"
           >
             View all {config.label}
             <ArrowRight
@@ -305,19 +310,19 @@ export function MegaMenuPanel({ config, onClose }: MegaMenuPanelProps) {
         </div>
 
         {/* Divider */}
-        <div className="mb-7 h-px bg-[#D9DBDD]" aria-hidden="true" />
+        <div className="mb-7 h-px bg-steel" aria-hidden="true" />
 
         {content}
       </div>
 
       {/* Footer strip */}
-      <div className="border-t border-[#D9DBDD] bg-[#F3F1EC]/60">
+      <div className="border-t border-steel bg-off-white/60">
         <div className="px-8 py-3 flex items-center gap-6">
-          <span className="text-[11px] text-[#33363A]/50 font-medium">Quick access</span>
+          <span className="text-xs text-graphite/50 font-medium">Quick access</span>
           <Link
             href="/get-started"
             onClick={onClose}
-            className="text-[11.5px] font-semibold text-[#0E0E0F] hover:text-[#FF6A00] transition-colors flex items-center gap-1"
+            className="text-[11.5px] font-semibold text-carbon hover:text-signal-orange transition-colors flex items-center gap-1"
           >
             Find Your Starting Point
             <ArrowRight className="w-3 h-3" aria-hidden="true" />
@@ -325,7 +330,7 @@ export function MegaMenuPanel({ config, onClose }: MegaMenuPanelProps) {
           <Link
             href="/book-demo"
             onClick={onClose}
-            className="text-[11.5px] font-semibold text-[#33363A]/60 hover:text-[#0E0E0F] transition-colors flex items-center gap-1"
+            className="text-[11.5px] font-semibold text-graphite/60 hover:text-carbon transition-colors flex items-center gap-1"
           >
             Book a Demo
             <ArrowRight className="w-3 h-3" aria-hidden="true" />
