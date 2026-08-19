@@ -43,10 +43,15 @@ export function Header() {
 
   const show = visible || mouseNearTop;
 
+  // `none` rather than translateY(0) while visible: a transformed ancestor
+  // becomes the containing block for position:fixed descendants, which would
+  // collapse the mobile drawer and the mega-menu scrim into the header box.
+  const hideTransform = show ? "none" : "translateY(-100%)";
+
   return (
     <header
       className="fixed top-0 left-0 right-0 z-40 w-full transition-transform duration-300 ease-in-out"
-      style={{ transform: show ? "translateY(0)" : "translateY(-100%)" }}
+      style={{ transform: hideTransform }}
     >
       <AnnouncementBar />
       <Navbar scrolled={scrolled} heroMode={!scrolled} />
