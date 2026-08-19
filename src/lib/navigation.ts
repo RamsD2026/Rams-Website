@@ -93,14 +93,24 @@ export const NAV_CONFIG: NavItemConfig[] = [
       {
         links: [
           {
+            label: "Digital Twin",
+            href: "/platform/digital-twin",
+            description: "Live warehouse replica updated in real time",
+          },
+          {
             label: "MEPS",
             href: "/platform/overview",
             description: "MHE Efficiency and Productivity System",
           },
           {
+            label: "IRDS",
+            href: "/platform/irds",
+            description: "Intelligent Rack Diagnostic System",
+          },
+          {
             label: "ATOS",
             href: "/platform/ai-operational-intelligence",
-            description: "AI Task Orchestration System",
+            description: "Automated Task Orchestration System",
           },
           {
             label: "RTSS",
@@ -116,11 +126,6 @@ export const NAV_CONFIG: NavItemConfig[] = [
             label: "AIMS",
             href: "/platform/security",
             description: "AI Intelligence and Management System",
-          },
-          {
-            label: "Digital Twin",
-            href: "/platform/digital-twin",
-            description: "Live warehouse replica updated in real time",
           },
         ],
       },

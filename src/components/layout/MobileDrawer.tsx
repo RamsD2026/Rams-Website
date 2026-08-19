@@ -125,8 +125,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                           >
                             <div className="pb-3">
                               {item.groups.map((group) => (
-                                <div key={group.title} className="pt-3">
-                                  {item.groups.length > 1 && (
+                                <div key={group.title ?? "ungrouped"} className="pt-3">
+                                  {group.title && (
                                     <div className="px-6 pb-1 text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/45">
                                       {group.title}
                                     </div>

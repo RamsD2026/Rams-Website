@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ArrowRight, ArrowLeft } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, ChevronDown } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -25,11 +25,14 @@ const CHOICES = [
 ];
 
 const TABS = [
-  { n: 1, label: "1. Utilisation" },
-  { n: 2, label: "2. Productivity" },
-  { n: 3, label: "3. Safety" },
-  { n: 4, label: "4. Right-sizing" },
+  { n: 1, label: "1. Utilisation", short: "Util" },
+  { n: 2, label: "2. Productivity", short: "Prod" },
+  { n: 3, label: "3. Safety", short: "Safety" },
+  { n: 4, label: "4. Right-sizing", short: "Sizing" },
+  { n: 5, label: "5. Your Score", short: "Score" },
 ];
+
+const TOTAL_STEPS = TABS.length;
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(max, Math.max(min, v));
@@ -50,9 +53,7 @@ export function MheFleetAssessmentModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
-  const [showResults, setShowResults] = useState(false);
 
   // Utilisation
   const [fleet, setFleet] = useState(25);
@@ -79,10 +80,6 @@ export function MheFleetAssessmentModal({
   // Right-sizing
   const [targetUtil, setTargetUtil] = useState(".75");
   const [peakAllowance, setPeakAllowance] = useState(".10");
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -166,7 +163,7 @@ export function MheFleetAssessmentModal({
     peakAllowance,
   ]);
 
-  if (!mounted) return null;
+  if (typeof document === "undefined") return null;
 
   const overlay = (
     <motion.div
@@ -186,7 +183,7 @@ export function MheFleetAssessmentModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.97, y: 24 }}
           transition={{ duration: 0.35, ease: EASE }}
-          className="relative bg-[#F7F9FA] w-full my-auto"
+          className="relative bg-white w-full my-auto"
           style={{ borderRadius: 20, maxWidth: 1200 }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -200,7 +197,7 @@ export function MheFleetAssessmentModal({
           </button>
 
           {/* Header */}
-          <div className="px-6 sm:px-8 lg:px-10 pt-6 sm:pt-7 pb-1">
+          <div className="px-6 sm:px-8 lg:px-10 pt-6 sm:pt-7 pb-5 border-b border-[#EDF1F2]">
             <div className="inline-flex items-center gap-2 mb-2">
               <span className="w-[7px] h-[7px] rounded-full bg-signal-orange" />
               <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-signal-orange">
@@ -214,41 +211,38 @@ export function MheFleetAssessmentModal({
             </h2>
           </div>
 
-          <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
-            {/* Assessment column */}
+          <div className="px-6 sm:px-8 lg:px-10 pt-5 pb-2">
             <div>
-              <div className="bg-white border border-[#E1E7E9] rounded-[18px] p-5 sm:p-6 shadow-[0_14px_40px_rgba(20,39,46,0.05)]">
+              <div>
                 {/* Progress */}
                 <div className="mb-4">
                   <div className="flex justify-between text-xs text-[#768287] mb-2">
-                    <span>Step {step} of 4</span>
-                    <span>{step * 25}%</span>
+                    <span>Step {step} of {TOTAL_STEPS}</span>
+                    <span>{Math.round((step / TOTAL_STEPS) * 100)}%</span>
                   </div>
                   <div className="h-1.5 bg-[#EDF1F2] rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-signal-orange rounded-full"
-                      animate={{ width: `${step * 25}%` }}
+                      animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
                       transition={{ duration: 0.35, ease: EASE }}
                     />
                   </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2 mb-5">
                   {TABS.map((t) => (
                     <button
                       key={t.n}
-                      onClick={() => {
-                        setStep(t.n);
-                        setShowResults(false);
-                      }}
-                      className={`text-[12px] font-extrabold rounded-lg px-2.5 py-2.5 transition-colors ${
+                      onClick={() => setStep(t.n)}
+                      className={`text-[11px] sm:text-[12px] font-extrabold rounded-lg px-1.5 sm:px-2.5 py-2.5 whitespace-nowrap transition-colors ${
                         step === t.n
                           ? "border border-[#FFB27B] bg-[#FFF5EE] text-[#D75B00]"
                           : "border border-[#DFE5E7] bg-[#F9FBFB] text-[#718086] hover:bg-white"
                       }`}
                     >
-                      {t.label}
+                      <span className="sm:hidden">{t.short}</span>
+                      <span className="hidden sm:inline">{t.label}</span>
                     </button>
                   ))}
                 </div>
@@ -256,7 +250,7 @@ export function MheFleetAssessmentModal({
                 {/* Sections — fixed height, internal scroll */}
                 <div
                   className="mhe-step-scroll overflow-y-auto pr-2 -mr-2"
-                  style={{ height: 340 }}
+                  style={{ height: 420 }}
                 >
                 <AnimatePresence mode="wait">
                   {step === 1 && (
@@ -374,18 +368,18 @@ export function MheFleetAssessmentModal({
                         {SAFETY_QUESTIONS.map((q, i) => (
                           <div
                             key={q.key}
-                            className={`py-3 ${
-                              i === 0 ? "pt-0" : ""
+                            className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2.5 ${
+                              i === 0 ? "sm:pt-0" : ""
                             } ${
                               i < SAFETY_QUESTIONS.length - 1
                                 ? "border-b border-[#EDF1F2]"
                                 : ""
                             }`}
                           >
-                            <div className="font-bold text-[13px] text-carbon mb-2">
+                            <div className="flex-1 min-w-0 font-semibold text-[13px] text-carbon leading-[1.4]">
                               {q.q}
                             </div>
-                            <div className="flex gap-2 flex-wrap">
+                            <div className="flex gap-1.5 shrink-0">
                               {CHOICES.map((c) => {
                                 const selected = safety[q.key] === c.value;
                                 return (
@@ -397,7 +391,7 @@ export function MheFleetAssessmentModal({
                                         [q.key]: c.value,
                                       }))
                                     }
-                                    className={`text-[12px] font-bold rounded-[8px] px-3 py-2 transition-colors ${
+                                    className={`text-[11.5px] font-bold rounded-[7px] px-2.5 py-1.5 whitespace-nowrap transition-colors ${
                                       selected
                                         ? "border border-[#FF9B55] bg-[#FFF3EA] text-[#D85A00]"
                                         : "border border-[#D9E1E4] bg-white text-[#59676D] hover:bg-[#FAFBFC]"
@@ -453,6 +447,17 @@ export function MheFleetAssessmentModal({
                       </div>
                     </StepPanel>
                   )}
+                  {step === 5 && (
+                    <StepPanel key="s5">
+                      <SectionHead
+                        eyebrow="Your Result"
+                        title="Your fleet efficiency score."
+                        body="Based on the utilisation, productivity, safety and right-sizing inputs you provided. Use approximate values if your fleet is not digitally monitored."
+                      />
+                      <ResultsBlock calc={calc} fleet={fleet} />
+                    </StepPanel>
+                  )}
+
                 </AnimatePresence>
                 </div>
                 <style>{`
@@ -476,62 +481,27 @@ export function MheFleetAssessmentModal({
                   ) : (
                     <div />
                   )}
-                  <button
-                    onClick={() => {
-                      if (step < 4) setStep(step + 1);
-                      else setShowResults(true);
-                    }}
-                    className="ml-auto inline-flex items-center gap-2 bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-[13px] rounded-lg px-5 py-2.5 transition-all hover:-translate-y-px"
-                  >
-                    {step === 4 ? "Calculate My Score" : "Next"}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  {step < TOTAL_STEPS ? (
+                    <button
+                      onClick={() => setStep(step + 1)}
+                      className="ml-auto inline-flex items-center gap-2 bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-[13px] rounded-lg px-5 py-2.5 transition-all hover:-translate-y-px"
+                    >
+                      {step === TOTAL_STEPS - 1 ? "Calculate My Score" : "Next"}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setStep(1)}
+                      className="ml-auto inline-flex items-center gap-2 border border-[#CDD6DA] bg-white text-carbon font-bold text-[13px] rounded-lg px-5 py-2.5 hover:bg-[#FAFBFC] transition-colors"
+                    >
+                      Start over
+                    </button>
+                  )}
                 </div>
               </div>
 
-              {/* Results */}
-              <AnimatePresence>
-                {showResults && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.5, ease: EASE }}
-                    className="mt-7"
-                  >
-                    <ResultsBlock calc={calc} fleet={fleet} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
-            {/* Sidebar */}
-            <aside className="bg-[#07181C] text-white rounded-[18px] p-5 lg:sticky lg:top-6 shadow-[0_18px_50px_rgba(0,0,0,0.16)]">
-              <div className="text-[11px] tracking-[0.12em] uppercase text-[#96A3A8] font-bold">
-                Live assessment preview
-              </div>
-              <div className="text-[42px] font-black leading-none tracking-[-0.06em] mt-1.5 mb-2 tabular-nums">
-                {calc.overall}
-                <span className="text-[14px] text-[#98A4A9] font-normal">
-                  /100
-                </span>
-              </div>
-              <div className="inline-flex px-2.5 py-1 rounded-full bg-signal-orange/15 text-[#FF9B57] text-[11px] font-bold">
-                {maturity(calc.overall)}
-              </div>
-
-              <div className="grid gap-2.5 mt-4">
-                <MeterRow label="Utilisation" value={calc.util} />
-                <MeterRow label="Productivity" value={calc.productivity} />
-                <MeterRow label="Safety visibility" value={calc.safety} />
-                <MeterRow label="Fleet availability" value={calc.availability} />
-              </div>
-
-              <p className="mt-4 text-[11px] text-[#87959A] leading-[1.5]">
-                Scores update as you complete the assessment. Use approximate
-                values if your current fleet is not digitally monitored.
-              </p>
-            </aside>
           </div>
 
           <div className="pb-5" />
@@ -643,34 +613,22 @@ function Select({
   options: { value: string; label: string }[];
 }) {
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full h-10 border border-[#D7DFE2] rounded-[8px] px-3 bg-white text-carbon text-sm outline-none focus:border-[#FF9C58] focus:ring-[3px] focus:ring-signal-orange/10 transition"
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-function MeterRow({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="p-2.5 border border-white/[0.09] rounded-lg bg-white/[0.025]">
-      <div className="flex justify-between gap-2.5 text-[11px] text-[#AEB8BC]">
-        <span>{label}</span>
-        <b className="text-white tabular-nums">{Math.round(value)}%</b>
-      </div>
-      <div className="h-1 bg-[#153137] rounded-full overflow-hidden mt-2">
-        <motion.div
-          className="h-full bg-signal-orange rounded-full"
-          animate={{ width: `${Math.round(value)}%` }}
-          transition={{ duration: 0.4, ease: EASE }}
-        />
-      </div>
+    <div className="relative">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="peer w-full h-10 appearance-none border border-[#D7DFE2] rounded-[8px] pl-3 pr-9 bg-white text-carbon text-sm leading-none outline-none focus:border-[#FF9C58] focus:ring-[3px] focus:ring-signal-orange/10 transition cursor-pointer"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        aria-hidden
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7C8A90] peer-focus:text-signal-orange transition-colors"
+      />
     </div>
   );
 }
@@ -695,168 +653,138 @@ function ResultsBlock({
 
   const rightSizingText =
     diff >= 2
-      ? `Your current inputs suggest the operation may warrant a fleet right-sizing study. A simplified estimate indicates demand equivalent to about ${calc.indicative} MHEs versus the current ${fleet}. This is not a recommendation to remove equipment; peak demand, MHE type, task criticality and redundancy must be validated first.`
+      ? `Demand looks equivalent to ~${calc.indicative} MHEs against your current ${fleet}. Validate peaks, MHE type and redundancy before acting.`
       : diff <= -2
-      ? `Your current inputs suggest fleet demand may be relatively high versus the selected target utilisation. A simplified estimate indicates an equivalent requirement of about ${calc.indicative} MHEs. Validate task peaks, travel distance and congestion before considering fleet expansion.`
-      : `Your current fleet size appears broadly aligned with the selected utilisation target under this simplified model. The stronger opportunity may be in utilisation balancing, operator productivity and safety visibility rather than fleet count alone.`;
+      ? `Demand looks equivalent to ~${calc.indicative} MHEs, above your current ${fleet}. Check task peaks, travel distance and congestion first.`
+      : `Fleet size looks broadly aligned with your utilisation target. The bigger gain is likely in utilisation balancing and safety visibility.`;
 
   const safetyText =
     calc.safety < 40
-      ? "Safety visibility is limited. Operator identity, speed, impact, location or access-control data may currently be difficult to monitor consistently."
+      ? "Operator, speed and impact data not captured"
       : calc.safety < 70
-      ? "You have partial safety visibility, but there are still important gaps that may prevent consistent operator- and event-level analysis."
-      : "Your operation already has relatively strong safety visibility. The next opportunity is to connect events, operators, zones and trends into one intelligence layer.";
+      ? "Partial operator and event coverage, gaps remain"
+      : "Strong operator and event coverage in place";
 
   return (
-    <div>
-      <div className="bg-[#06171B] text-white rounded-[24px] p-7 sm:p-8 grid grid-cols-1 lg:grid-cols-[.8fr_1.2fr] gap-6 items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 mb-2">
-            <span className="w-[7px] h-[7px] rounded-full bg-signal-orange" />
-            <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-signal-orange">
-              Your Result
-            </span>
-          </div>
-          <div className="text-[72px] font-black leading-none tracking-[-0.07em] tabular-nums">
-            {calc.overall}
-            <span className="text-[18px] text-[#8FA0A5] font-normal">/100</span>
-          </div>
-          <div className="inline-flex mt-3 px-2.5 py-1.5 rounded-full bg-signal-orange/15 text-[#FF9B57] text-[11px] font-bold">
+    <div className="flex flex-col gap-3">
+      {/* Score */}
+      <div className="bg-[#06171B] text-white rounded-[18px] px-6 py-5">
+        <div className="flex items-center justify-between gap-4 mb-3.5">
+          <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#7E8F95]">
+            Your score
+          </span>
+          <span className="inline-flex px-2.5 py-1 rounded-full bg-signal-orange/15 text-[#FF9B57] text-[11px] font-bold">
             {maturity(calc.overall)}
-          </div>
+          </span>
         </div>
-        <div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-white leading-[1.05] tracking-[-0.02em] mb-2">
-            Your RAMS MHE Intelligence Score
-          </h3>
-          <p className="text-[#AEB8BC] text-[15px] leading-[1.55] mb-4">
-            Your indicative score is {calc.overall}/100 (
-            {maturity(calc.overall)}). The assessment combines utilisation,
-            productivity, safety visibility and fleet availability to highlight
-            where deeper MHE data may create operational value.
-          </p>
-          <a
-            href="#leadBox"
-            className="inline-flex items-center gap-2 bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-[13px] rounded-lg px-5 py-3 transition-all hover:-translate-y-px"
-          >
-            Get Detailed Assessment
-            <ArrowRight className="w-4 h-4" />
-          </a>
+
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[52px] font-black leading-none tracking-[-0.06em] tabular-nums">
+            {calc.overall}
+          </span>
+          <span className="text-[14px] text-[#8FA0A5]">/100</span>
+        </div>
+
+        <div className="mt-4 h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full bg-signal-orange"
+            initial={{ width: 0 }}
+            animate={{ width: `${calc.overall}%` }}
+            transition={{ duration: 0.8, ease: EASE }}
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-        <ResultKpi label="Fleet utilisation" value={`${Math.round(calc.util)}%`} />
-        <ResultKpi
-          label="Productivity score"
+      {/* Four results — number, name, one line of context */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <ResultCard
+          value={`${Math.round(calc.util)}%`}
+          label="Utilisation"
+          sub={`${Math.round(100 - calc.util)}% of scheduled capacity not active`}
+        />
+        <ResultCard
           value={`${Math.round(calc.productivity)}%`}
+          label="Productivity"
+          sub={`~${Math.round(calc.idlePenalty)}% of time idle or waiting`}
         />
-        <ResultKpi label="Safety visibility" value={`${calc.safety}/100`} />
-        <ResultKpi
-          label="Fleet availability"
+        <ResultCard
+          value={`${calc.safety}%`}
+          label="Safety visibility"
+          sub={safetyText}
+        />
+        <ResultCard
           value={`${Math.round(calc.availability)}%`}
+          label="Availability"
+          sub={`${Math.round(100 - calc.availability)}% lost to maintenance downtime`}
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-        <Insight
-          title="Potential unutilised capacity"
-          body={`Based on the inputs, approximately ${Math.round(
-            100 - calc.util
-          )}% of scheduled fleet capacity is not currently reflected as active operating time.`}
-        />
-        <Insight
-          title="Productivity loss exposure"
-          body={`Your current task performance is approximately ${Math.round(
-            calc.tripPerf
-          )}% of target, with an estimated ${Math.round(
-            calc.idlePenalty
-          )}% of daily scheduled time exposed to idle and waiting activity.`}
-        />
-        <Insight title="Safety visibility gap" body={safetyText} />
-        <Insight
-          title="Operational visibility"
-          body={
-            calc.overall < 60
-              ? "The assessment suggests a meaningful opportunity to improve data visibility before making fleet productivity or safety decisions."
-              : "Your operation shows a useful level of visibility, with scope to improve decision quality using continuous MHE telemetry and trend analysis."
-          }
-        />
+      <div className="flex gap-3 items-start rounded-[14px] px-4 py-3.5 bg-[#FFF7F1] border border-[#FFE0C7]">
+        <span className="w-1.5 h-1.5 rounded-full bg-signal-orange shrink-0 mt-[7px]" />
+        <div>
+          <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[#B4661F]">
+            Fleet sizing
+          </span>
+          <p className="mt-1 text-[12.5px] text-[#6B5443] leading-[1.5] m-0">
+            {rightSizingText}
+          </p>
+        </div>
       </div>
 
-      <div className="mt-4 p-6 rounded-[18px] bg-[#FFF5ED] border border-[#FFD5B5]">
-        <h3 className="text-[18px] font-bold text-carbon leading-[1.2] mb-2">
-          Indicative fleet optimisation opportunity
-        </h3>
-        <p className="text-[14px] text-[#6C7477] leading-[1.55] m-0">
-          {rightSizingText}
-        </p>
-      </div>
-
+      {/* Lead capture */}
       <div
         id="leadBox"
-        className="mt-6 rounded-[22px] bg-[#111C20] text-white p-7 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
+        className="rounded-[18px] bg-[#FAFBFB] border border-[#E0E6E8] p-5 sm:p-6"
       >
-        <div>
-          <div className="inline-flex items-center gap-2 mb-2">
-            <span className="w-[7px] h-[7px] rounded-full bg-signal-orange" />
-            <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#FF9F61]">
-              Next Step
-            </span>
-          </div>
-          <h3 className="text-2xl sm:text-3xl font-bold leading-[1.05] tracking-[-0.02em] mb-2">
-            Turn assumptions into actual MHE data.
-          </h3>
-          <p className="text-[#B3BDC1] text-[15px] leading-[1.55] m-0">
-            RAMS MEPS can help validate your assessment using actual location,
-            operator, safety event, utilisation and equipment data from your
-            fleet.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <h3 className="text-[17px] font-bold text-carbon leading-[1.25] tracking-[-0.015em]">
+          Turn assumptions into actual MHE data.
+        </h3>
+        <p className="mt-1.5 mb-4 text-[12.5px] text-[#69767B] leading-[1.5]">
+          We will validate this assessment against real utilisation, operator
+          and safety data from your fleet.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <LeadInput placeholder="Name" />
           <LeadInput placeholder="Company" />
           <LeadInput placeholder="Work email" />
           <LeadInput placeholder="Phone" />
-          <LeadInput placeholder="Warehouse location" full />
           <button className="col-span-full inline-flex items-center justify-center gap-2 bg-signal-orange hover:bg-signal-orange-hover text-white font-bold text-[13px] rounded-lg px-5 py-3 transition-all hover:-translate-y-px">
-            Request My Detailed MHE Assessment
+            Request My Detailed Assessment
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      <p className="mt-4 text-[11px] text-[#8C989D] leading-[1.55]">
-        This calculator provides an indicative assessment only. Results are
-        based on user-provided inputs and simplified assumptions. Actual fleet
-        requirements depend on MHE type, task profile, peak demand, travel
-        distance, warehouse layout, redundancy requirements, maintenance
-        practices and operational constraints.
+      <p className="text-[10.5px] text-[#8A969B] leading-[1.5]">
+        Indicative assessment only, based on your inputs and simplified
+        assumptions. Actual fleet requirements depend on MHE type, task profile,
+        peak demand, layout, redundancy and maintenance practice.
       </p>
     </div>
   );
 }
 
-function ResultKpi({ label, value }: { label: string; value: string }) {
+/** One result: the number, what it is, and a single line of context. */
+function ResultCard({
+  value,
+  label,
+  sub,
+}: {
+  value: string;
+  label: string;
+  sub: string;
+}) {
   return (
-    <div className="border border-[#DFE6E8] rounded-2xl p-4 bg-white">
-      <span className="text-[11px] font-bold tracking-[0.08em] uppercase text-[#879399]">
+    <div className="border border-[#E0E6E8] rounded-[14px] px-4 py-4 bg-white flex flex-col">
+      <span className="text-[28px] font-bold text-carbon leading-none tabular-nums tracking-[-0.035em]">
+        {value}
+      </span>
+      <span className="mt-2 text-[10px] font-bold tracking-[0.14em] uppercase text-[#879399]">
         {label}
       </span>
-      <b className="block text-[24px] font-bold text-carbon tabular-nums tracking-[-0.02em] mt-1">
-        {value}
-      </b>
-    </div>
-  );
-}
-
-function Insight({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="border border-[#E0E6E8] rounded-2xl p-5 bg-[#FAFBFB]">
-      <h3 className="text-[16px] font-bold text-carbon leading-[1.2] mb-2">
-        {title}
-      </h3>
-      <p className="text-[13px] text-[#69767B] leading-[1.55] m-0">{body}</p>
+      <span className="mt-1.5 text-[12px] text-[#5C686D] leading-[1.45]">
+        {sub}
+      </span>
     </div>
   );
 }
@@ -871,7 +799,7 @@ function LeadInput({
   return (
     <input
       placeholder={placeholder}
-      className={`h-11 rounded-[9px] border border-white/[0.14] bg-[#1A292D] text-white placeholder:text-white/40 px-3 outline-none focus:border-signal-orange/60 transition ${
+      className={`h-10 rounded-[8px] border border-[#D7DFE2] bg-white text-carbon text-sm placeholder:text-[#93A0A5] px-3 outline-none focus:border-[#FF9C58] focus:ring-[3px] focus:ring-signal-orange/10 transition ${
         full ? "col-span-full" : ""
       }`}
     />
