@@ -7,6 +7,7 @@ import { WexWorkflow } from "@/components/sections/wex/WexWorkflow";
 import { WexReprioritisation } from "@/components/sections/wex/WexReprioritisation";
 import { WexAnalytics } from "@/components/sections/wex/WexAnalytics";
 import { WexWhy } from "@/components/sections/wex/WexWhy";
+import { WexProofResults } from "@/components/sections/wex/WexProofResults";
 import { WexCTA } from "@/components/sections/wex/WexCTA";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function WarehouseExecutionPage() {
       <WexReprioritisation />
       <WexAnalytics />
       <WexWhy />
+      <WexProofResults />
       <WexCTA />
     </>
   );

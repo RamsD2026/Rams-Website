@@ -918,36 +918,6 @@ function ExecutionMap({
           />
         </svg>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.6, duration: 0.5, ease: EASE }}
-        className="mt-2 flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex-wrap"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255,176,32,0.10), rgba(255,176,32,0.04))",
-          border: "1px solid rgba(255,176,32,0.28)",
-          boxShadow: "0 0 20px -8px rgba(255,176,32,0.35)",
-        }}
-      >
-        <span
-          className="inline-flex items-center gap-1.5 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.16em] sm:tracking-[0.18em] uppercase shrink-0"
-          style={{ color: "#FFBE47" }}
-        >
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: "#FFB020" }}
-          />
-          Reprioritised
-        </span>
-        <span className="text-[10.5px] sm:text-[11px] font-semibold text-white leading-tight truncate min-w-0 flex-1">
-          Inbound TRK-118 delayed — 6 tasks re-sequenced
-        </span>
-        <span className="text-[9.5px] sm:text-[10px] font-mono text-white/55 tabular-nums shrink-0">
-          ETA +42m
-        </span>
-      </motion.div>
     </div>
   );
 }
