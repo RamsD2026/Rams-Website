@@ -38,7 +38,7 @@ export function IrdsCTA() {
       />
 
       <div className="relative rams-container pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
-        <div className="max-w-[980px] mx-auto text-center">
+        <div className="max-w-[1180px] mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -57,11 +57,13 @@ export function IrdsCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, delay: 0.05, ease: EASE }}
-            className="mt-8 text-[44px] sm:text-[72px] lg:text-[96px] font-bold leading-[0.98] tracking-[-0.045em]"
+            className="mt-8 text-[36px] sm:text-[58px] lg:text-[76px] font-bold leading-[1.02] tracking-[-0.04em]"
           >
-            <span className="block text-white">Make rack safety visible,</span>
+            <span className="block whitespace-nowrap text-white">
+              Make rack safety visible,
+            </span>
             <span
-              className="block"
+              className="block whitespace-nowrap"
               style={{
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 100%)",

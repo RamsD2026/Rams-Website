@@ -47,7 +47,7 @@ export function MheWhy() {
             transition={{ duration: 0.45 }}
             className="text-[10.5px] font-mono font-bold tracking-[0.22em] uppercase text-signal-orange mb-4"
           >
-            Why RAMS
+            Built For
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }}

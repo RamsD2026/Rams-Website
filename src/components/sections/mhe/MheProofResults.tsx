@@ -45,7 +45,10 @@ const RESULTS = [
 
 export function MheProofResults() {
   return (
-    <section className="bg-white py-24 sm:py-28 lg:py-32">
+    <section
+      className="py-24 sm:py-28 lg:py-32"
+      style={{ background: "rgba(247, 242, 232, 0.3)" }}
+    >
       <style>{`
         @property --proof-shine-angle {
           syntax: '<angle>';

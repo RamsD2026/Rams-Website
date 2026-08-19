@@ -77,12 +77,11 @@ export function IrdsHero() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
-            className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
+            className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[1120px] mx-auto"
           >
-            Move beyond periodic inspection. RAMS combines expert rack
-            inspection, digital twin intelligence, RAG risk classification,
-            issue closure and continuous visibility into one connected
-            rack-safety system aligned to RACS and AS4084 standards.
+            Move beyond periodic inspection. RAMS unifies expert rack inspection,
+            digital twin intelligence, RAG risk classification and issue closure into
+            one connected rack-safety system aligned to RACS and AS4084 standards.
           </motion.p>
 
           <motion.div
@@ -274,20 +273,37 @@ function RackElevation() {
   const BAY_W = (VB_W - PAD_X * 2) / (UPRIGHTS - 1);
   const LEVEL_H = (FLOOR_Y - PAD_TOP) / LEVELS;
 
-  const STATE: Record<string, 0 | 1 | 2 | 3> = {
-    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 2, "0-2-0": 1, "0-2-1": 0,
-    "1-0-0": 1, "1-0-1": 3, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
-    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 2, "2-2-1": 1,
+  // Pallet presence per bay/level/slot — 0 empty, 1 present (ambient neutral)
+  const PALLETS: Record<string, 0 | 1> = {
+    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 1, "0-2-0": 1, "0-2-1": 0,
+    "1-0-0": 1, "1-0-1": 1, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
+    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 1, "2-2-1": 1,
     "3-0-0": 0, "3-0-1": 1, "3-1-0": 1, "3-1-1": 0, "3-2-0": 1, "3-2-1": 1,
   };
 
-  const excBay = 1, excLevel = 0, excSlot = 1;
-  const excBayX = PAD_X + excBay * BAY_W;
-  const excSlotW = BAY_W / PALLETS_PER_BAY;
-  const excX = excBayX + excSlot * excSlotW + excSlotW / 2;
-  const excY = FLOOR_Y - excLevel * LEVEL_H - LEVEL_H * 0.42;
+  // Upright condition: 0 ok, 2 amber, 3 red
+  const UPRIGHT_STATE: (0 | 2 | 3)[] = [0, 3, 0, 2, 0];
+  // Beam condition per level (bottom→top), per bay index
+  const BEAM_STATE: Record<string, 0 | 2 | 3> = {
+    "0-0": 0, "1-0": 0, "2-0": 0, "3-0": 0,
+    "0-1": 0, "1-1": 0, "2-1": 0, "3-1": 0,
+    "0-2": 0, "1-2": 0, "2-2": 3, "3-2": 0,
+  };
+  // Baseplate condition per upright
+  const BASEPLATE_STATE: (0 | 2 | 3)[] = [0, 3, 0, 0, 2];
 
-  const upBayX = PAD_X + 1 * BAY_W;
+  // Critical damage focal point (bay 2, level 2 — beam lock failure)
+  const excX = PAD_X + 2 * BAY_W + BAY_W * 0.5;
+  const excY = FLOOR_Y - 2 * LEVEL_H;
+
+  const damageColor = (s: 0 | 2 | 3) =>
+    s === 3 ? "#FF4D4D" : s === 2 ? "#FFB020" : "rgba(255,255,255,0.32)";
+  const damageGlow = (s: 0 | 2 | 3) =>
+    s === 3
+      ? "drop-shadow(0 0 4px rgba(255,77,77,0.65))"
+      : s === 2
+        ? "drop-shadow(0 0 4px rgba(255,176,32,0.55))"
+        : undefined;
 
   return (
     <div className="absolute inset-0 flex flex-col p-3.5 sm:p-5">
@@ -318,74 +334,29 @@ function RackElevation() {
           className="absolute inset-0 w-full h-full"
           aria-hidden
         >
+          {/* Floor */}
           <line
-            x1={PAD_X - 6}
+            x1={PAD_X - 10}
             y1={FLOOR_Y + 4}
-            x2={VB_W - PAD_X + 6}
+            x2={VB_W - PAD_X + 10}
             y2={FLOOR_Y + 4}
             stroke="rgba(255,255,255,0.22)"
             strokeWidth={0.75}
           />
 
-          {Array.from({ length: LEVELS }).map((_, l) => {
-            const y = FLOOR_Y - l * LEVEL_H;
-            return (
-              <line
-                key={`beam-${l}`}
-                x1={PAD_X - 3}
-                y1={y}
-                x2={VB_W - PAD_X + 3}
-                y2={y}
-                stroke="rgba(255,255,255,0.28)"
-                strokeWidth={0.75}
-              />
-            );
-          })}
-
-          {Array.from({ length: UPRIGHTS }).map((_, u) => {
-            const x = PAD_X + u * BAY_W;
-            const isCriticalUpright = x === upBayX;
-            return (
-              <line
-                key={`upright-${u}`}
-                x1={x}
-                y1={PAD_TOP - 6}
-                x2={x}
-                y2={FLOOR_Y + 4}
-                stroke={isCriticalUpright ? "rgba(255,106,0,0.9)" : "rgba(255,255,255,0.28)"}
-                strokeWidth={isCriticalUpright ? 1.4 : 0.75}
-                style={isCriticalUpright ? { filter: "drop-shadow(0 0 4px rgba(255,106,0,0.6))" } : undefined}
-              />
-            );
-          })}
-
+          {/* Pallets — ambient neutral, drawn first so rack structure sits on top */}
           {Array.from({ length: UPRIGHTS - 1 }).map((_, bay) =>
             Array.from({ length: LEVELS }).map((_, level) => {
               const beamY = FLOOR_Y - level * LEVEL_H;
               const slotW = BAY_W / PALLETS_PER_BAY;
               return Array.from({ length: PALLETS_PER_BAY }).map((_, slot) => {
                 const key = `${bay}-${level}-${slot}`;
-                const state = STATE[key] ?? 0;
-                if (state === 0) return null;
+                if (PALLETS[key] !== 1) return null;
                 const cx = PAD_X + bay * BAY_W + slot * slotW + slotW / 2;
                 const boxW = slotW * 0.62;
-                const boxH = LEVEL_H * 0.48;
+                const boxH = LEVEL_H * 0.46;
                 const boxX = cx - boxW / 2;
                 const boxY = beamY - boxH - 1.5;
-
-                let fill = "rgba(255,255,255,0.14)";
-                let stroke = "rgba(255,255,255,0.22)";
-                let filter: string | undefined;
-                if (state === 2) {
-                  fill = "rgba(255,176,32,0.85)";
-                  stroke = "rgba(255,176,32,1)";
-                  filter = "drop-shadow(0 0 5px rgba(255,176,32,0.55))";
-                } else if (state === 3) {
-                  fill = "rgba(255,77,77,0.95)";
-                  stroke = "rgba(255,77,77,1)";
-                  filter = "drop-shadow(0 0 6px rgba(255,77,77,0.65))";
-                }
-
                 return (
                   <rect
                     key={key}
@@ -394,16 +365,94 @@ function RackElevation() {
                     width={boxW}
                     height={boxH}
                     rx={1}
-                    fill={fill}
-                    stroke={stroke}
-                    strokeWidth={0.6}
-                    style={filter ? { filter } : undefined}
+                    fill="rgba(255,255,255,0.055)"
+                    stroke="rgba(255,255,255,0.10)"
+                    strokeWidth={0.5}
                   />
                 );
               });
             }),
           )}
 
+          {/* Beams (bay segments, colored per condition) */}
+          {Array.from({ length: LEVELS }).map((_, level) => {
+            const y = FLOOR_Y - level * LEVEL_H;
+            return Array.from({ length: UPRIGHTS - 1 }).map((_, bay) => {
+              const x1 = PAD_X + bay * BAY_W;
+              const x2 = PAD_X + (bay + 1) * BAY_W;
+              const state = BEAM_STATE[`${bay}-${level}`] ?? 0;
+              const stroke = damageColor(state);
+              const w = state === 0 ? 0.85 : 1.6;
+              return (
+                <line
+                  key={`beam-${bay}-${level}`}
+                  x1={x1}
+                  y1={y}
+                  x2={x2}
+                  y2={y}
+                  stroke={stroke}
+                  strokeWidth={w}
+                  style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+                />
+              );
+            });
+          })}
+
+          {/* Uprights */}
+          {Array.from({ length: UPRIGHTS }).map((_, u) => {
+            const x = PAD_X + u * BAY_W;
+            const state = UPRIGHT_STATE[u] ?? 0;
+            const stroke = damageColor(state);
+            const w = state === 0 ? 0.85 : 1.6;
+            return (
+              <line
+                key={`upright-${u}`}
+                x1={x}
+                y1={PAD_TOP - 6}
+                x2={x}
+                y2={FLOOR_Y + 4}
+                stroke={stroke}
+                strokeWidth={w}
+                style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+              />
+            );
+          })}
+
+          {/* Baseplates */}
+          {Array.from({ length: UPRIGHTS }).map((_, u) => {
+            const x = PAD_X + u * BAY_W;
+            const state = BASEPLATE_STATE[u] ?? 0;
+            const color = state === 0 ? "rgba(255,255,255,0.28)" : damageColor(state);
+            return (
+              <rect
+                key={`base-${u}`}
+                x={x - 5}
+                y={FLOOR_Y + 1}
+                width={10}
+                height={3}
+                rx={0.5}
+                fill={color}
+                style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+              />
+            );
+          })}
+
+          {/* Damage markers — small "X" style ticks on failed junctions */}
+          {Object.entries(BEAM_STATE).map(([key, state]) => {
+            if (state === 0) return null;
+            const [bay, level] = key.split("-").map(Number);
+            const cx = PAD_X + bay * BAY_W + BAY_W * 0.5;
+            const cy = FLOOR_Y - level * LEVEL_H;
+            const color = damageColor(state);
+            return (
+              <g key={`mark-${key}`}>
+                <circle cx={cx} cy={cy} r={2.6} fill={color} />
+                <circle cx={cx} cy={cy} r={4.5} fill="none" stroke={color} strokeOpacity={0.35} strokeWidth={0.8} />
+              </g>
+            );
+          })}
+
+          {/* Focal pulse ring on the critical damage */}
           <motion.circle
             cx={excX}
             cy={excY}
@@ -415,6 +464,7 @@ function RackElevation() {
             transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
           />
 
+          {/* Inspection scan sweep */}
           <motion.rect
             aria-hidden
             y={PAD_TOP - 8}

@@ -45,7 +45,10 @@ const RESULTS = [
 
 export function IrdsProofResults() {
   return (
-    <section className="bg-white pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
+    <section
+      className="pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44"
+      style={{ background: "rgba(247, 242, 232, 0.3)" }}
+    >
       <style>{`
         @property --irdsproof-shine-angle {
           syntax: '<angle>';

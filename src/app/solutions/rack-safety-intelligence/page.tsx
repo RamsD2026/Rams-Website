@@ -4,6 +4,7 @@ import { IrdsStatsBand } from "@/components/sections/irds/IrdsStatsBand";
 import { IrdsCapabilities } from "@/components/sections/irds/IrdsCapabilities";
 import { IrdsFeaturePanels } from "@/components/sections/irds/IrdsFeaturePanels";
 import { IrdsWorkflow } from "@/components/sections/irds/IrdsWorkflow";
+import { IrdsRackHealth } from "@/components/sections/irds/IrdsRackHealth";
 import { IrdsRiskAnalytics } from "@/components/sections/irds/IrdsRiskAnalytics";
 import { IrdsWhy } from "@/components/sections/irds/IrdsWhy";
 import { IrdsProofResults } from "@/components/sections/irds/IrdsProofResults";
@@ -23,6 +24,7 @@ export default function RackSafetyIntelligencePage() {
       <IrdsCapabilities />
       <IrdsFeaturePanels />
       <IrdsWorkflow />
+      <IrdsRackHealth />
       <IrdsRiskAnalytics />
       <IrdsWhy />
       <IrdsProofResults />

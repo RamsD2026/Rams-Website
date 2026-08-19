@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertOctagon, AlertTriangle, CheckCircle2, type LucideIcon } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -11,42 +10,6 @@ const KPIS = [
   { label: "Critical Risks", value: "2" },
   { label: "Closure Rate", value: "79%" },
 ];
-
-const RISKS: {
-  tone: "red" | "amber" | "green";
-  label: string;
-  title: string;
-  body: string;
-  icon: LucideIcon;
-}[] = [
-  {
-    tone: "red",
-    label: "RED",
-    title: "Immediate high-priority action",
-    body: "Critical damage or unsafe condition requiring immediate control, isolation or replacement as applicable.",
-    icon: AlertOctagon,
-  },
-  {
-    tone: "amber",
-    label: "AMBER",
-    title: "Planned corrective action",
-    body: "Damage requiring timely corrective action and controlled monitoring until rectification is completed.",
-    icon: AlertTriangle,
-  },
-  {
-    tone: "green",
-    label: "GREEN",
-    title: "Observe and monitor",
-    body: "Minor condition recorded for continued observation, trending and future inspection comparison.",
-    icon: CheckCircle2,
-  },
-];
-
-const RAG_TONES: Record<"red" | "amber" | "green", { bg: string; color: string; dot: string }> = {
-  red: { bg: "rgba(255,77,77,0.13)", color: "#FF8A8A", dot: "#FF4D4D" },
-  amber: { bg: "rgba(255,176,32,0.14)", color: "#FFC773", dot: "#FFB020" },
-  green: { bg: "rgba(43,203,116,0.13)", color: "#54DE91", dot: "#2BCB74" },
-};
 
 export function IrdsRiskAnalytics() {
   return (
@@ -88,7 +51,7 @@ export function IrdsRiskAnalytics() {
             transition={{ duration: 0.5 }}
             className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
           >
-            Rack Health Analytics
+            Intelligence Layer
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -98,7 +61,7 @@ export function IrdsRiskAnalytics() {
             className="text-[36px] sm:text-[54px] lg:text-[68px] font-bold leading-[1.05] tracking-[-0.04em]"
           >
             <span className="block text-white">
-              See rack risk before it
+              Turn inspection history
             </span>
             <span
               className="block"
@@ -110,7 +73,7 @@ export function IrdsRiskAnalytics() {
                 color: "transparent",
               }}
             >
-              becomes downtime.
+              into operational insight.
             </span>
           </motion.h2>
           <motion.p
@@ -209,49 +172,6 @@ export function IrdsRiskAnalytics() {
                   </b>
                 </motion.div>
               ))}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 px-6 sm:px-8 mt-4">
-              {RISKS.map((r, i) => {
-                const s = RAG_TONES[r.tone];
-                const Icon = r.icon;
-                return (
-                  <motion.article
-                    key={r.label}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.25 }}
-                    transition={{ duration: 0.55, delay: 0.1 + i * 0.06, ease: EASE }}
-                    className="p-4 rounded-xl"
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
-                    }}
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <span
-                        className="inline-flex items-center justify-center w-6 h-6 rounded-md"
-                        style={{ background: s.bg, color: s.color }}
-                      >
-                        <Icon className="w-3.5 h-3.5" strokeWidth={2.25} aria-hidden />
-                      </span>
-                      <span
-                        className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase"
-                        style={{ color: s.color }}
-                      >
-                        {r.label}
-                      </span>
-                    </div>
-                    <h4 className="text-[14px] font-bold text-white leading-[1.3] tracking-[-0.01em]">
-                      {r.title}
-                    </h4>
-                    <p className="mt-1.5 text-[12.5px] text-white/55 leading-[1.55]">
-                      {r.body}
-                    </p>
-                  </motion.article>
-                );
-              })}
             </div>
 
             <div

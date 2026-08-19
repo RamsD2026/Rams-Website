@@ -8,6 +8,7 @@ import { InvFeaturePanels } from "@/components/sections/inv/InvFeaturePanels";
 import { InvWorkflow } from "@/components/sections/inv/InvWorkflow";
 import { InvAnalytics } from "@/components/sections/inv/InvAnalytics";
 import { InvWhy } from "@/components/sections/inv/InvWhy";
+import { InvProofResults } from "@/components/sections/inv/InvProofResults";
 import { InvCTA } from "@/components/sections/inv/InvCTA";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function InventoryIntelligencePage() {
       <InvWorkflow />
       <InvAnalytics />
       <InvWhy />
+      <InvProofResults />
       <InvCTA />
     </>
   );

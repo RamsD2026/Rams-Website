@@ -78,7 +78,7 @@ export function IrdsWhy() {
             transition={{ duration: 0.5 }}
             className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
           >
-            Why RAMS
+            Built For
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -113,7 +113,6 @@ export function IrdsWhy() {
               transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
               className="irdswhy-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
               style={{
-                minHeight: 360,
                 borderRadius: 12,
                 border: "1px solid #E8E8ED",
                 boxShadow:
@@ -121,7 +120,7 @@ export function IrdsWhy() {
               }}
             >
               <div
-                className="w-12 h-12 flex items-center justify-center mb-8"
+                className="w-12 h-12 flex items-center justify-center mb-6"
                 style={{
                   borderRadius: 8,
                   background: "rgba(255,106,0,0.08)",
