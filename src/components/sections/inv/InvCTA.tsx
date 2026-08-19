@@ -50,7 +50,7 @@ export function InvCTA() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
             <span className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-white/70">
-              One inventory truth. Everywhere.
+              Better visibility. Better inventory decisions.
             </span>
           </motion.div>
 
@@ -61,7 +61,7 @@ export function InvCTA() {
             transition={{ duration: 0.9, delay: 0.05, ease: EASE }}
             className="mt-8 text-[44px] sm:text-[72px] lg:text-[96px] font-bold leading-[0.98] tracking-[-0.045em]"
           >
-            <span className="block text-white">Stop reconciling.</span>
+            <span className="block text-white">Make inventory visible,</span>
             <span
               className="block"
               style={{
@@ -72,7 +72,7 @@ export function InvCTA() {
                 color: "transparent",
               }}
             >
-              Start acting.
+              accurate and actionable.
             </span>
           </motion.h2>
 
@@ -81,10 +81,11 @@ export function InvCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
-            className="mt-8 text-[17px] sm:text-[19px] text-white/60 leading-[1.6] max-w-[620px] mx-auto"
+            className="mt-6 text-[14px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
-            Talk to RAMS about live location tracking, AI-vision counting and
-            continuous WMS reconciliation for your warehouse network.
+            Talk to RAMS Digital about inventory mapping, reconciliation,
+            aging intelligence and automated inventory visibility for your
+            warehouse network.
           </motion.p>
 
           <motion.div
@@ -98,7 +99,7 @@ export function InvCTA() {
               href="/book-a-demo"
               className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
             >
-              Book a Discussion
+              Assess My Inventory
               <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
             <Link

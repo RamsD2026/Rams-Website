@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const KPIS = [
-  { label: "Inventory accuracy", value: "99.6%" },
-  { label: "Reconciled locations", value: "12,480" },
-  { label: "Open anomalies", value: "7" },
-  { label: "Shrink prevented (30d)", value: "$186K" },
+  { label: "Inventory Accuracy", value: "98.2%" },
+  { label: "Locations Verified", value: "1,842" },
+  { label: "Open Exceptions", value: "12" },
+  { label: "Aging Exposure", value: "7.4%" },
 ];
 
 export function InvAnalytics() {
@@ -46,7 +46,7 @@ export function InvAnalytics() {
 
       <div className="relative rams-container pt-28 sm:pt-36 lg:pt-44 pb-0">
         {/* Header */}
-        <div className="max-w-[900px] mx-auto text-center mb-16 sm:mb-20">
+        <div className="max-w-[1180px] mx-auto text-center mb-16 sm:mb-20">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -54,17 +54,20 @@ export function InvAnalytics() {
             transition={{ duration: 0.5 }}
             className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
           >
-            Intelligence Layer
+            Analytics Layer
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.85, ease: EASE }}
-            className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold leading-[1.0] tracking-[-0.04em]"
+            className="text-[36px] sm:text-[54px] lg:text-[68px] font-bold leading-[1.05] tracking-[-0.04em]"
           >
-            <span className="text-white">Every read.</span> <br />
+            <span className="block whitespace-nowrap text-white">
+              See inventory accuracy, aging
+            </span>
             <span
+              className="block whitespace-nowrap"
               style={{
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 100%)",
@@ -73,7 +76,7 @@ export function InvAnalytics() {
                 color: "transparent",
               }}
             >
-              Instantly explainable.
+              and exceptions in one view.
             </span>
           </motion.h2>
           <motion.p
@@ -81,10 +84,11 @@ export function InvAnalytics() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
-            className="mt-8 text-[17px] sm:text-[19px] text-white/60 leading-[1.6] max-w-[620px] mx-auto"
+            className="mt-6 text-[14px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
-            Track accuracy, coverage, drift and shrink across your entire
-            network — with the audit trail baked in from day one.
+            Go beyond static stock counts. Analyse discrepancy trends, aging
+            exposure, location utilisation and reconciliation performance
+            across warehouse zones and sites.
           </motion.p>
         </div>
 
@@ -125,10 +129,10 @@ export function InvAnalytics() {
             <div className="flex items-center justify-between gap-4 flex-wrap p-6 sm:p-8 pb-4">
               <div>
                 <div className="text-[10.5px] font-mono font-bold tracking-[0.22em] uppercase text-white/45 mb-1.5">
-                  Network Inventory Console
+                  Inventory Intelligence Overview
                 </div>
                 <h3 className="text-[20px] sm:text-[24px] font-bold text-white leading-[1.15] tracking-[-0.02em]">
-                  All sites · last 24 hours
+                  Warehouse Inventory Dashboard
                 </h3>
               </div>
               <span
@@ -142,7 +146,7 @@ export function InvAnalytics() {
                   className="w-1.5 h-1.5 rounded-full"
                   style={{ background: "#2BCB74" }}
                 />
-                RECONCILING
+                RECONCILIATION ACTIVE
               </span>
             </div>
 

@@ -60,7 +60,7 @@ export function InvHero() {
             className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
             style={{ letterSpacing: "-0.045em" }}
           >
-            <span className="block text-white">Real-time inventory</span>
+            <span className="block text-white">Know what you have.</span>
             <span
               className="block"
               style={{
@@ -71,7 +71,7 @@ export function InvHero() {
                 color: "transparent",
               }}
             >
-              across every location.
+              Know where it is.
             </span>
           </motion.h1>
 
@@ -79,12 +79,37 @@ export function InvHero() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
-            className="mt-8 text-[17px] sm:text-[20px] text-white/60 leading-[1.55] max-w-[680px] mx-auto"
+            className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
-            Reconcile physical reality with your WMS in real time. One live
-            surface for AI vision, IoT and spatial data — with zero manual
-            audits.
+            RAMS turns inventory movement, location and reconciliation data
+            into a connected intelligence layer — helping warehouse teams
+            improve stock visibility, accuracy, aging control and inventory
+            productivity.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
+            className="mt-8 flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap"
+          >
+            {[
+              "Inventory visibility",
+              "Reconciliation intelligence",
+              "Exception-led control",
+            ].map((label) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-white/70"
+              >
+                <span
+                  className="w-1 h-1 rounded-full bg-signal-orange"
+                  aria-hidden
+                />
+                {label}
+              </span>
+            ))}
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -96,14 +121,14 @@ export function InvHero() {
               href="/book-a-demo"
               className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
             >
-              Book a demo
+              Assess My Inventory
               <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
             <Link
-              href="#product"
+              href="#features"
               className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 transition-all duration-200 hover:bg-white/[0.06]"
             >
-              See the product
+              Explore Capabilities
             </Link>
           </motion.div>
         </div>
@@ -126,14 +151,16 @@ export function InvHero() {
           }}
         >
           <div
-            className="relative rounded-[18px] overflow-hidden"
+            className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
             style={{
-              aspectRatio: "16 / 9",
               background:
-                "linear-gradient(180deg, #FAFAFA 0%, #F3F3F5 100%)",
+                "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+              borderLeft: "1px solid rgba(255,255,255,0.06)",
+              borderRight: "1px solid rgba(255,255,255,0.06)",
             }}
           >
-            <WarehouseTopView />
+            <InventoryTwinView />
           </div>
         </motion.div>
       </div>
@@ -142,516 +169,404 @@ export function InvHero() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Top-view warehouse — animated pallets, MHE, live scans
+   Inventory Twin — visibility (rack grid) + reconciliation feed
+   + exception-led control (highlighted anomalies)
    ───────────────────────────────────────────────────────────── */
 
-type Pt = { x: number; y: number };
+const RECON_EVENTS = [
+  { id: "P-102384", loc: "B-04-12", status: "match" },
+  { id: "P-102385", loc: "B-04-13", status: "match" },
+  { id: "P-102386", loc: "C-05-07", status: "exception", note: "phantom" },
+  { id: "P-102387", loc: "B-05-01", status: "match" },
+  { id: "P-102388", loc: "B-05-02", status: "match" },
+  { id: "P-102389", loc: "C-07-03", status: "exception", note: "misplaced" },
+  { id: "P-102390", loc: "B-06-08", status: "match" },
+  { id: "P-102391", loc: "B-07-04", status: "match" },
+] as const;
 
-function MheAgent({
-  color,
-  path,
-  duration,
-  delay,
-}: {
-  color: string;
-  path: Pt[];
-  duration: number;
-  delay: number;
-}) {
-  // build a closed loop by appending the reverse (return trip)
-  const loop = [...path, ...path.slice(0, -1).reverse()];
-  const xs = loop.map((p) => p.x);
-  const ys = loop.map((p) => p.y);
-
-  return (
-    <g>
-      <motion.circle
-        r={11}
-        fill={color}
-        opacity={0.14}
-        animate={{ cx: xs, cy: ys }}
-        transition={{
-          duration,
-          delay,
-          ease: "linear",
-          repeat: Infinity,
-        }}
-      />
-      <motion.g
-        animate={{ x: xs, y: ys }}
-        transition={{
-          duration,
-          delay,
-          ease: "linear",
-          repeat: Infinity,
-        }}
-      >
-        <rect
-          x={-7}
-          y={-5}
-          width={14}
-          height={10}
-          rx={2}
-          fill={color}
-          stroke="white"
-          strokeWidth={1}
-        />
-        <rect
-          x={-3}
-          y={-1.5}
-          width={4}
-          height={3}
-          rx={0.6}
-          fill="white"
-          opacity={0.85}
-        />
-      </motion.g>
-    </g>
-  );
-}
-
-function WarehouseTopView() {
-  /* ── Layout math ────────────────────────────────────────────
-     Left zone (bulk): 12 horizontal rack rows, each with 10 bays.
-     Right zone (pick): 10 vertical rack columns, each with 8 bays.
-     One cross-aisle separates the zones.
-     ────────────────────────────────────────────────────────── */
-
-  const H_ROWS = 12;
-  const H_BAYS = 10;
-  const H_ROW_H = 10;      // rack strip thickness
-  const H_AISLE = 12;      // aisle between rack rows
-  const H_STEP = H_ROW_H + H_AISLE;
-  const H_X0 = 40;
-  const H_X1 = 400;
-  const H_Y0 = 40;
-
-  const V_COLS = 10;
-  const V_BAYS = 8;
-  const V_COL_W = 10;
-  const V_AISLE = 20;
-  const V_STEP = V_COL_W + V_AISLE;
-  const V_X0 = 430;
-  const V_Y0 = 40;
-  const V_Y1 = 320;
-
-  // "Hot" (occupied) and "diff" bay coordinates for pop of colour
-  const hotH = new Set([
-    "1-2", "1-3", "1-4",
-    "3-7", "3-8",
-    "5-1", "5-2",
-    "6-6",
-    "8-4", "8-9",
-    "10-2", "10-3",
-    "11-7",
-  ]);
-  const diffH = new Set(["4-5"]);
-  const hotV = new Set([
-    "0-2", "0-3",
-    "2-5",
-    "3-1", "3-2",
-    "5-4", "5-6",
-    "7-3",
-    "8-0", "8-1",
-  ]);
-  const diffV = new Set(["6-5"]);
+function InventoryTwinView() {
+  const KPIS = [
+    { label: "Accuracy", value: "98.2%", tone: "orange" as const },
+    { label: "Exceptions", value: "12", tone: "white" as const },
+    { label: "Aging", value: "7.4%", tone: "white" as const },
+  ];
 
   return (
     <div className="absolute inset-0 flex flex-col">
-      {/* Header bar */}
-      <div className="flex items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-7 pb-4">
-        <div>
-          <div className="text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-graphite/45">
-            Digital Twin
+      {/* Header bar — title + LIVE + inline KPI chips */}
+      <div className="flex items-center justify-between gap-4 flex-wrap px-5 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6">
+        <div className="min-w-0">
+          <div className="text-[9px] sm:text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+            Inventory Twin · Sydney DC
           </div>
-          <div className="mt-0.5 text-[15px] sm:text-[17px] font-semibold text-carbon tracking-[-0.01em]">
-            Sydney DC · Zone B — top view
+          <div className="mt-1.5 text-[15px] sm:text-[18px] font-semibold text-white tracking-[-0.01em] truncate">
+            Zone B — reconciliation live
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.14em] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            LIVE
-          </span>
-          <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.14em] px-2.5 py-1 rounded-full bg-white text-carbon border border-black/[0.06]">
-            4 MHE · 800 bays
-          </span>
-        </div>
+        <span
+          className="inline-flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-[0.14em] px-2.5 py-1 rounded-full shrink-0"
+          style={{
+            background: "rgba(43,203,116,0.13)",
+            color: "#54DE91",
+          }}
+        >
+          <span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: "#2BCB74" }}
+          />
+          LIVE
+        </span>
       </div>
 
-      {/* Floor plan */}
-      <div className="relative flex-1 mx-4 sm:mx-6 mb-4 sm:mb-6 rounded-xl overflow-hidden">
-        <svg
-          className="absolute inset-0 w-full h-full"
-          viewBox="0 0 800 380"
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden
-        >
-          <defs>
-            <linearGradient id="wh-floor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#F6F7F9" />
-              <stop offset="1" stopColor="#EEF0F3" />
-            </linearGradient>
-            <linearGradient id="bay-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#0E0E0F" stopOpacity="0.16" />
-              <stop offset="1" stopColor="#0E0E0F" stopOpacity="0.06" />
-            </linearGradient>
-          </defs>
-
-          {/* Floor */}
-          <rect x="0" y="0" width="800" height="380" fill="url(#wh-floor)" />
-
-          {/* faint background grid */}
-          <g opacity="0.5">
-            {Array.from({ length: 21 }).map((_, i) => (
-              <line
-                key={`v-${i}`}
-                x1={i * 40}
-                y1={0}
-                x2={i * 40}
-                y2={380}
-                stroke="#0E0E0F"
-                strokeOpacity={0.03}
-                strokeWidth={1}
-              />
-            ))}
-            {Array.from({ length: 10 }).map((_, i) => (
-              <line
-                key={`h-${i}`}
-                x1={0}
-                y1={i * 40}
-                x2={800}
-                y2={i * 40}
-                stroke="#0E0E0F"
-                strokeOpacity={0.03}
-                strokeWidth={1}
-              />
-            ))}
-          </g>
-
-          {/* Zone labels */}
-          <text
-            x={H_X0}
-            y={26}
-            fontSize={8.5}
-            fontFamily="ui-monospace, monospace"
-            fontWeight="700"
-            fill="#0E0E0F"
-            opacity={0.5}
-            letterSpacing="0.22em"
-          >
-            BULK · Zone B
-          </text>
-          <text
-            x={V_X0}
-            y={26}
-            fontSize={8.5}
-            fontFamily="ui-monospace, monospace"
-            fontWeight="700"
-            fill="#0E0E0F"
-            opacity={0.5}
-            letterSpacing="0.22em"
-          >
-            PICK · Zone C
-          </text>
-
-          {/* ── LEFT ZONE: 12 horizontal rack rows ─────────────── */}
-          {Array.from({ length: H_ROWS }).map((_, r) => {
-            const y = H_Y0 + r * H_STEP;
-            const bayW = (H_X1 - H_X0) / H_BAYS;
-            return (
-              <g key={`hrow-${r}`}>
-                {/* Rack strip made of bays */}
-                {Array.from({ length: H_BAYS }).map((_, b) => {
-                  const key = `${r}-${b}`;
-                  const isDiff = diffH.has(key);
-                  const isHot = hotH.has(key);
-                  return (
-                    <rect
-                      key={`hbay-${key}`}
-                      x={H_X0 + b * bayW + 0.6}
-                      y={y}
-                      width={bayW - 1.2}
-                      height={H_ROW_H}
-                      rx={1.5}
-                      fill={
-                        isDiff
-                          ? "rgba(255,106,0,0.9)"
-                          : isHot
-                            ? "rgba(255,106,0,0.35)"
-                            : "url(#bay-fill)"
-                      }
-                      stroke="rgba(0,0,0,0.05)"
-                      strokeWidth={0.4}
-                    />
-                  );
-                })}
-                {/* dashed aisle line under this rack (skip last) */}
-                {r < H_ROWS - 1 && (
-                  <line
-                    x1={H_X0 + 2}
-                    y1={y + H_ROW_H + H_AISLE / 2}
-                    x2={H_X1 - 2}
-                    y2={y + H_ROW_H + H_AISLE / 2}
-                    stroke="#0E0E0F"
-                    strokeOpacity={0.06}
-                    strokeWidth={0.75}
-                    strokeDasharray="2 4"
-                  />
-                )}
-              </g>
-            );
-          })}
-
-          {/* ── RIGHT ZONE: 10 vertical rack columns ───────────── */}
-          {Array.from({ length: V_COLS }).map((_, c) => {
-            const x = V_X0 + c * V_STEP;
-            const bayH = (V_Y1 - V_Y0) / V_BAYS;
-            return (
-              <g key={`vcol-${c}`}>
-                {Array.from({ length: V_BAYS }).map((_, b) => {
-                  const key = `${c}-${b}`;
-                  const isDiff = diffV.has(key);
-                  const isHot = hotV.has(key);
-                  return (
-                    <rect
-                      key={`vbay-${key}`}
-                      x={x}
-                      y={V_Y0 + b * bayH + 0.6}
-                      width={V_COL_W}
-                      height={bayH - 1.2}
-                      rx={1.5}
-                      fill={
-                        isDiff
-                          ? "rgba(255,106,0,0.9)"
-                          : isHot
-                            ? "rgba(255,106,0,0.35)"
-                            : "url(#bay-fill)"
-                      }
-                      stroke="rgba(0,0,0,0.05)"
-                      strokeWidth={0.4}
-                    />
-                  );
-                })}
-                {/* dashed aisle line right of this column (skip last) */}
-                {c < V_COLS - 1 && (
-                  <line
-                    x1={x + V_COL_W + V_AISLE / 2}
-                    y1={V_Y0 + 2}
-                    x2={x + V_COL_W + V_AISLE / 2}
-                    y2={V_Y1 - 2}
-                    stroke="#0E0E0F"
-                    strokeOpacity={0.06}
-                    strokeWidth={0.75}
-                    strokeDasharray="2 4"
-                  />
-                )}
-              </g>
-            );
-          })}
-
-          {/* Cross-aisle divider */}
-          <line
-            x1={415}
-            y1={40}
-            x2={415}
-            y2={320}
-            stroke="#0E0E0F"
-            strokeOpacity={0.08}
-            strokeWidth={1}
-          />
-
-          {/* Bottom perimeter aisle line */}
-          <line
-            x1={30}
-            y1={340}
-            x2={770}
-            y2={340}
-            stroke="#0E0E0F"
-            strokeOpacity={0.1}
-            strokeWidth={1}
-          />
-          <text
-            x={30}
-            y={358}
-            fontSize={8.5}
-            fontFamily="ui-monospace, monospace"
-            fontWeight="700"
-            fill="#0E0E0F"
-            opacity={0.45}
-            letterSpacing="0.22em"
-          >
-            DOCK · IN
-          </text>
-          <text
-            x={720}
-            y={358}
-            fontSize={8.5}
-            fontFamily="ui-monospace, monospace"
-            fontWeight="700"
-            fill="#0E0E0F"
-            opacity={0.45}
-            letterSpacing="0.22em"
-          >
-            DOCK · OUT
-          </text>
-
-          {/* ── MHE — 4 forklifts moving through aisles ────────── */}
-          {/* MHE-04: horizontal aisle 3 in bulk zone */}
-          <MheAgent
-            color="#FF6A00"
-            path={[
-              { x: H_X0 + 4, y: H_Y0 + 3 * H_STEP - H_AISLE / 2 },
-              { x: H_X1 - 4, y: H_Y0 + 3 * H_STEP - H_AISLE / 2 },
-            ]}
-            duration={38}
-            delay={0}
-          />
-          {/* MHE-11: horizontal aisle 7 in bulk zone */}
-          <MheAgent
-            color="#0E0E0F"
-            path={[
-              { x: H_X1 - 4, y: H_Y0 + 7 * H_STEP - H_AISLE / 2 },
-              { x: H_X0 + 4, y: H_Y0 + 7 * H_STEP - H_AISLE / 2 },
-            ]}
-            duration={34}
-            delay={3}
-          />
-          {/* MHE-07: down aisle A, across perimeter, up aisle B */}
-          <MheAgent
-            color="#FF6A00"
-            path={[
-              { x: V_X0 + 3 * V_STEP + V_COL_W + V_AISLE / 2, y: V_Y0 + 4 },
-              { x: V_X0 + 3 * V_STEP + V_COL_W + V_AISLE / 2, y: 335 },
-              { x: V_X0 + 6 * V_STEP + V_COL_W + V_AISLE / 2, y: 335 },
-              { x: V_X0 + 6 * V_STEP + V_COL_W + V_AISLE / 2, y: V_Y0 + 4 },
-            ]}
-            duration={42}
-            delay={2}
-          />
-          {/* MHE-13: cross-aisle then wraps */}
-          <MheAgent
-            color="#0E0E0F"
-            path={[
-              { x: 415, y: 50 },
-              { x: 415, y: 315 },
-            ]}
-            duration={28}
-            delay={5}
-          />
-
-          {/* Scan pulse over the bulk-zone diff bay */}
-          <motion.circle
-            cx={H_X0 + 5 * ((H_X1 - H_X0) / H_BAYS) + (H_X1 - H_X0) / H_BAYS / 2}
-            cy={H_Y0 + 4 * H_STEP + H_ROW_H / 2}
-            r={5}
-            fill="rgba(255,106,0,0.6)"
-            animate={{
-              r: [5, 20, 5],
-              opacity: [0.75, 0, 0.75],
+      {/* KPI chip row — compact inline */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap px-5 sm:px-8 pb-5 sm:pb-6">
+        {KPIS.map((k) => (
+          <span
+            key={k.label}
+            className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
             }}
-            transition={{
-              duration: 2.4,
-              repeat: Infinity,
-              ease: "easeOut",
-            }}
-          />
+          >
+            <span className="text-[9px] font-mono font-bold tracking-[0.16em] uppercase text-white/45">
+              {k.label}
+            </span>
+            <span
+              className={`text-[13px] sm:text-[14px] font-bold tabular-nums tracking-[-0.01em] ${
+                k.tone === "orange" ? "text-signal-orange" : "text-white"
+              }`}
+            >
+              {k.value}
+            </span>
+          </span>
+        ))}
+      </div>
 
-          {/* Scan pulse over the pick-zone diff bay */}
-          <motion.circle
-            cx={V_X0 + 6 * V_STEP + V_COL_W / 2}
-            cy={V_Y0 + 5 * ((V_Y1 - V_Y0) / V_BAYS) + ((V_Y1 - V_Y0) / V_BAYS) / 2}
-            r={4}
-            fill="rgba(255,106,0,0.6)"
-            animate={{
-              r: [4, 18, 4],
-              opacity: [0.75, 0, 0.75],
-            }}
-            transition={{
-              duration: 2.4,
-              delay: 1.2,
-              repeat: Infinity,
-              ease: "easeOut",
-            }}
-          />
-
-          {/* Camera scan cones from ceiling */}
-          {[120, 300, 500, 680].map((cx, i) => (
-            <g key={`cam-${cx}`}>
-              <circle cx={cx} cy={10} r={2.5} fill="#0E0E0F" opacity={0.45} />
-              <motion.path
-                d={`M${cx} 10 L${cx - 34} 335 L${cx + 34} 335 Z`}
-                fill="rgba(255,106,0,0.05)"
-                stroke="rgba(255,106,0,0.22)"
-                strokeWidth={0.5}
-                animate={{ opacity: [0, 0.9, 0] }}
-                transition={{
-                  duration: 3,
-                  delay: i * 0.75,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            </g>
-          ))}
-        </svg>
-
-        {/* Floating callout — anomaly */}
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6, ease: EASE }}
-          className="absolute"
+      {/* Main split — rack (visibility) + feed (reconciliation + exceptions) */}
+      <div className="relative flex-1 grid grid-cols-1 sm:grid-cols-[1.55fr_1fr] gap-4 sm:gap-6 mx-4 sm:mx-8 mb-6 sm:mb-8 min-h-0">
+        {/* LEFT: rack grid */}
+        <div
+          className="relative rounded-xl overflow-hidden min-h-[260px] sm:min-h-0"
           style={{
-            right: "6%",
-            top: "34%",
-            background: "white",
-            borderRadius: 12,
-            border: "1px solid rgba(0,0,0,0.08)",
-            padding: "10px 12px",
-            boxShadow: "0 12px 32px -8px rgba(0,0,0,0.14)",
-            minWidth: 180,
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          <div className="text-[9.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange">
-            Anomaly
-          </div>
-          <div className="mt-1 text-[12px] font-semibold text-carbon leading-tight">
-            Bay C-05 · phantom stock
-          </div>
-          <div className="mt-0.5 text-[10.5px] text-graphite/60">
-            Expected 48 · Counted 0
-          </div>
-        </motion.div>
+          <RackGrid />
+        </div>
 
-        {/* Floating callout — MHE */}
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.6, duration: 0.6, ease: EASE }}
-          className="absolute"
+        {/* RIGHT: reconciliation feed */}
+        <div
+          className="relative rounded-xl overflow-hidden flex flex-col min-h-[200px] sm:min-h-0"
           style={{
-            left: "5%",
-            bottom: "8%",
-            background: "white",
-            borderRadius: 12,
-            border: "1px solid rgba(0,0,0,0.08)",
-            padding: "10px 12px",
-            boxShadow: "0 12px 32px -8px rgba(0,0,0,0.14)",
-            minWidth: 170,
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          <div className="text-[9.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/55">
-            MHE · 04
-          </div>
-          <div className="mt-1 text-[12px] font-semibold text-carbon leading-tight">
-            Picking · Aisle A
-          </div>
-          <div className="mt-0.5 text-[10.5px] text-graphite/60">
-            Route optimised · 6 stops
-          </div>
-        </motion.div>
+          <ReconciliationFeed />
+        </div>
       </div>
     </div>
   );
 }
+
+/* Rack elevation — uprights, beams and pallets (side view) */
+function RackGrid() {
+  // Elevation geometry (SVG viewBox 400 × 240)
+  const VB_W = 400;
+  const VB_H = 240;
+  const PAD_X = 32;
+  const PAD_TOP = 34;
+  const FLOOR_Y = 210;
+
+  const UPRIGHTS = 5;              // → 4 bays across (more air)
+  const LEVELS = 3;                // ground + 2 upper beam levels
+  const PALLETS_PER_BAY = 2;
+
+  const BAY_W = (VB_W - PAD_X * 2) / (UPRIGHTS - 1);
+  const LEVEL_H = (FLOOR_Y - PAD_TOP) / LEVELS;
+
+  // pallet state per (bay, level, slot)  — 0=empty, 1=filled, 2=exception
+  const STATE: Record<string, 0 | 1 | 2> = {
+    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 0, "0-2-0": 1, "0-2-1": 0,
+    "1-0-0": 1, "1-0-1": 2, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
+    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 0, "2-2-1": 1,
+    "3-0-0": 0, "3-0-1": 1, "3-1-0": 1, "3-1-1": 0, "3-2-0": 1, "3-2-1": 1,
+  };
+
+  // exception coord (bay=1, level=0, slot=1) → screen pos for pulse & callout
+  const excBay = 1, excLevel = 0, excSlot = 1;
+  const excBayX = PAD_X + excBay * BAY_W;
+  const excSlotW = BAY_W / PALLETS_PER_BAY;
+  const excX = excBayX + excSlot * excSlotW + excSlotW / 2;
+  const excY = FLOOR_Y - excLevel * LEVEL_H - LEVEL_H * 0.42;
+
+  return (
+    <div className="absolute inset-0 flex flex-col p-3.5 sm:p-5">
+      {/* header */}
+      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+        <div className="text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.18em] sm:tracking-[0.22em] uppercase text-white/45">
+          Rack Visibility · Aisle B-04
+        </div>
+        <div className="flex items-center gap-2 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
+          <span className="inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-sm bg-signal-orange" />
+            Exception
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+            Pallet
+          </span>
+        </div>
+      </div>
+
+      {/* rack elevation SVG */}
+      <div className="relative flex-1 min-h-0">
+        <svg
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="absolute inset-0 w-full h-full"
+          aria-hidden
+        >
+
+          {/* floor line */}
+          <line
+            x1={PAD_X - 6}
+            y1={FLOOR_Y + 4}
+            x2={VB_W - PAD_X + 6}
+            y2={FLOOR_Y + 4}
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth={0.75}
+          />
+
+          {/* horizontal beams — thin smooth lines */}
+          {Array.from({ length: LEVELS }).map((_, l) => {
+            const y = FLOOR_Y - l * LEVEL_H;
+            return (
+              <line
+                key={`beam-${l}`}
+                x1={PAD_X - 3}
+                y1={y}
+                x2={VB_W - PAD_X + 3}
+                y2={y}
+                stroke="rgba(255,255,255,0.28)"
+                strokeWidth={0.75}
+              />
+            );
+          })}
+
+          {/* vertical uprights — thin smooth lines */}
+          {Array.from({ length: UPRIGHTS }).map((_, u) => {
+            const x = PAD_X + u * BAY_W;
+            return (
+              <line
+                key={`upright-${u}`}
+                x1={x}
+                y1={PAD_TOP - 6}
+                x2={x}
+                y2={FLOOR_Y + 4}
+                stroke="rgba(255,255,255,0.28)"
+                strokeWidth={0.75}
+              />
+            );
+          })}
+
+          {/* pallets sitting on beams — simple squares */}
+          {Array.from({ length: UPRIGHTS - 1 }).map((_, bay) =>
+            Array.from({ length: LEVELS }).map((_, level) => {
+              const beamY = FLOOR_Y - level * LEVEL_H;
+              const slotW = BAY_W / PALLETS_PER_BAY;
+              return Array.from({ length: PALLETS_PER_BAY }).map((_, slot) => {
+                const key = `${bay}-${level}-${slot}`;
+                const state = STATE[key] ?? 0;
+                if (state === 0) return null;
+                const isExc = state === 2;
+                const cx = PAD_X + bay * BAY_W + slot * slotW + slotW / 2;
+                const boxW = slotW * 0.62;
+                const boxH = LEVEL_H * 0.48;
+                const boxX = cx - boxW / 2;
+                const boxY = beamY - boxH - 1.5;
+
+                return (
+                  <rect
+                    key={key}
+                    x={boxX}
+                    y={boxY}
+                    width={boxW}
+                    height={boxH}
+                    rx={1}
+                    fill={
+                      isExc ? "rgba(255,106,0,0.95)" : "rgba(255,255,255,0.14)"
+                    }
+                    stroke={
+                      isExc ? "rgba(255,106,0,1)" : "rgba(255,255,255,0.22)"
+                    }
+                    strokeWidth={0.6}
+                    style={
+                      isExc
+                        ? {
+                            filter:
+                              "drop-shadow(0 0 6px rgba(255,106,0,0.6))",
+                          }
+                        : undefined
+                    }
+                  />
+                );
+              });
+            }),
+          )}
+
+          {/* exception pulse ring */}
+          <motion.circle
+            cx={excX}
+            cy={excY}
+            r={12}
+            fill="none"
+            stroke="rgba(255,106,0,0.7)"
+            strokeWidth={1.5}
+            animate={{ r: [10, 22, 10], opacity: [0.9, 0, 0.9] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+          />
+
+          {/* animated scan sweep */}
+          <motion.rect
+            aria-hidden
+            y={PAD_TOP - 8}
+            width={40}
+            height={FLOOR_Y - PAD_TOP + 12}
+            fill="url(#scan-grad)"
+            initial={{ x: -60 }}
+            animate={{ x: VB_W + 20 }}
+            transition={{
+              duration: 4.5,
+              ease: "linear",
+              repeat: Infinity,
+              repeatDelay: 0.6,
+            }}
+          />
+          <defs>
+            <linearGradient id="scan-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="rgba(255,106,0,0)" />
+              <stop offset="0.5" stopColor="rgba(255,106,0,0.28)" />
+              <stop offset="1" stopColor="rgba(255,106,0,0)" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+      </div>
+
+      {/* Exception footer bar — inline, no overlap */}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5, ease: EASE }}
+        className="mt-2 flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex-wrap"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,106,0,0.10), rgba(255,106,0,0.04))",
+          border: "1px solid rgba(255,106,0,0.28)",
+          boxShadow: "0 0 20px -8px rgba(255,106,0,0.35)",
+        }}
+      >
+        <span className="inline-flex items-center gap-1.5 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.16em] sm:tracking-[0.18em] uppercase text-signal-orange shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-signal-orange animate-pulse" />
+          Exception
+        </span>
+        <span className="text-[10.5px] sm:text-[11px] font-semibold text-white leading-tight truncate min-w-0 flex-1">
+          B-04 · L1 · Slot 4 — phantom stock
+        </span>
+        <span className="text-[9.5px] sm:text-[10px] font-mono text-white/55 tabular-nums shrink-0">
+          Exp 48 · Cnt 0
+        </span>
+      </motion.div>
+    </div>
+  );
+}
+
+/* Reconciliation feed — pallets streaming with match/exception rows */
+function ReconciliationFeed() {
+  return (
+    <>
+      <div className="flex items-center justify-between px-4 sm:px-5 pt-4 pb-3 border-b border-white/[0.06]">
+        <div className="text-[9px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+          Reconciliation Feed
+        </div>
+        <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
+          <span className="w-1.5 h-1.5 rounded-full bg-signal-orange animate-pulse" />
+          Streaming
+        </span>
+      </div>
+
+      <div className="relative flex-1 overflow-hidden">
+        <motion.div
+          className="flex flex-col"
+          initial={{ y: 0 }}
+          animate={{ y: [0, -(RECON_EVENTS.length * 42)] }}
+          transition={{
+            duration: RECON_EVENTS.length * 1.8,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {[...RECON_EVENTS, ...RECON_EVENTS].map((ev, i) => {
+            const isEx = ev.status === "exception";
+            return (
+              <div
+                key={`${ev.id}-${i}`}
+                className="flex items-center gap-2.5 px-4 sm:px-5 py-2.5 border-b border-white/[0.04]"
+                style={{ height: 42 }}
+              >
+                <span
+                  className="flex items-center justify-center w-4 h-4 rounded-full text-[9px] font-bold"
+                  style={{
+                    background: isEx
+                      ? "rgba(255,106,0,0.18)"
+                      : "rgba(43,203,116,0.16)",
+                    color: isEx ? "#FF8A3C" : "#54DE91",
+                  }}
+                >
+                  {isEx ? "!" : "✓"}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10.5px] font-mono font-semibold text-white tabular-nums truncate">
+                    {ev.id}
+                  </div>
+                </div>
+                <div className="text-[9.5px] font-mono text-white/50 tabular-nums">
+                  {ev.loc}
+                </div>
+                {isEx && "note" in ev && ev.note && (
+                  <span className="text-[8.5px] font-mono font-bold tracking-[0.14em] uppercase text-signal-orange">
+                    {ev.note}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </motion.div>
+
+        {/* top/bottom fade */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-4 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,15,20,1), transparent)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-6 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(10,15,20,1), transparent)",
+          }}
+        />
+      </div>
+    </>
+  );
+}
+

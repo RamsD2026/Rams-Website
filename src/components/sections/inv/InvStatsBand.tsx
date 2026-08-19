@@ -3,11 +3,22 @@
 import { motion } from "framer-motion";
 
 const METRICS = [
-  { value: "1", label: "Live location record across every site" },
-  { value: "24/7", label: "Continuous AI-vision counting and reconciliation" },
-  { value: "99%+", label: "Inventory accuracy sustained network-wide" },
-  { value: "0", label: "Scheduled cycle counts required" },
-  { value: "10+", label: "WMS and ERP systems supported out of the box" },
+  {
+    value: "Visibility",
+    label: "Know where inventory is stored across racks, bays and zones.",
+  },
+  {
+    value: "Accuracy",
+    label: "Compare physical inventory with expected system records.",
+  },
+  {
+    value: "Aging",
+    label: "Identify slow-moving and aging inventory before it becomes a problem.",
+  },
+  {
+    value: "Control",
+    label: "Prioritise discrepancies, exceptions and reconciliation actions.",
+  },
 ];
 
 export function InvStatsBand() {
@@ -18,7 +29,7 @@ export function InvStatsBand() {
       aria-label="RAMS Inventory Intelligence proof metrics"
     >
       <div className="rams-container">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 overflow-hidden">
           {METRICS.map((m, i) => (
             <motion.div
               key={m.label}
@@ -30,14 +41,14 @@ export function InvStatsBand() {
                 delay: i * 0.06,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="relative -mt-px -ml-px flex flex-col justify-center border-t border-l border-white/10 px-5 py-6 lg:px-8 min-h-[125px] lg:min-h-[140px]"
+              className="relative -mt-px -ml-px flex flex-col justify-center border-t border-l border-white/10 px-6 sm:px-8 py-6 lg:py-7 min-h-[125px] lg:min-h-[140px]"
             >
-              <div className="text-white text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-none tracking-tighter tabular-nums">
+              <h3 className="text-white text-[30px] sm:text-[32px] lg:text-[36px] font-semibold leading-[1.15] tracking-[-0.02em]">
                 {m.value}
-              </div>
-              <div className="mt-2.5 text-xs sm:text-[13px] font-medium text-white/55">
+              </h3>
+              <p className="mt-3.5 text-[14px] sm:text-[15px] font-medium text-white/55 leading-[1.55] max-w-[240px]">
                 {m.label}
-              </div>
+              </p>
             </motion.div>
           ))}
         </div>

@@ -7,18 +7,28 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const STEPS = [
   {
     n: "01",
-    title: "Capture",
-    body: "AI vision, RFID and IoT sensors capture every movement across the facility — no operator input needed.",
+    title: "Map",
+    body: "Create the digital hierarchy for warehouse, zone, rack, bay and pallet position.",
   },
   {
     n: "02",
-    title: "Reconcile",
-    body: "Every read is matched against the WMS in real time. Drift, phantom stock and misplacements surface immediately.",
+    title: "Capture",
+    body: "Record inventory presence, pallet identity and location data through manual or automated workflows.",
   },
   {
     n: "03",
-    title: "Act",
-    body: "Exceptions route to the right team with location, cause and suggested action — closed and audited automatically.",
+    title: "Compare",
+    body: "Compare physical observations with expected inventory records and storage locations.",
+  },
+  {
+    n: "04",
+    title: "Reconcile",
+    body: "Prioritise mismatches, misplaced inventory and missing stock for corrective action.",
+  },
+  {
+    n: "05",
+    title: "Improve",
+    body: "Use trend, aging and exception data to improve inventory control and warehouse productivity.",
   },
 ];
 
@@ -43,12 +53,23 @@ export function InvWorkflow() {
             transition={{ duration: 0.85, ease: EASE }}
             className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold text-carbon leading-[1.0] tracking-[-0.04em]"
           >
-            Signal to closure. <br />
-            <span className="text-graphite/50">Without the spreadsheet.</span>
+            A closed-loop <br />
+            <span className="text-graphite/50">inventory workflow.</span>
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+            className="mt-6 text-[14px] sm:text-[15px] text-graphite/65 leading-[1.55] max-w-[880px] mx-auto"
+          >
+            RAMS connects warehouse layout, inventory capture and exception
+            handling into a repeatable process that improves stock visibility
+            and reconciliation over time.
+          </motion.p>
         </div>
 
-        <div className="relative max-w-[1180px] mx-auto">
+        <div className="relative max-w-[1240px] mx-auto">
           {/* Continuous flow line — desktop */}
           <div
             aria-hidden
@@ -59,7 +80,7 @@ export function InvWorkflow() {
             }}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 sm:gap-8">
             {STEPS.map((s, i) => (
               <motion.div
                 key={s.n}

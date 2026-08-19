@@ -6,34 +6,24 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 const RESULTS = [
   {
-    value: "99.6%",
-    label: "Inventory accuracy",
-    body: "Continuous reconciliation lifted stock accuracy from 94% to 99.6% within the first six months of deployment.",
+    n: "01",
+    label: "Visibility",
+    body: "Know where inventory is stored across racks, bays and zones.",
   },
   {
-    value: "$1.4M",
-    label: "Shrink prevented",
-    body: "Drift and phantom-stock events surface immediately — recovering value that previously disappeared quietly.",
+    n: "02",
+    label: "Accuracy",
+    body: "Compare physical inventory with expected system records.",
   },
   {
-    value: "0",
-    label: "Manual cycle counts",
-    body: "Continuous AI-vision counting eliminated scheduled cycle counts across all reconciled zones.",
+    n: "03",
+    label: "Aging",
+    body: "Identify slow-moving and aging inventory before it becomes a problem.",
   },
   {
-    value: "6×",
-    label: "Faster stock queries",
-    body: "Operators find any pallet, tote or bay in under two seconds — no walking, no radio, no spreadsheet.",
-  },
-  {
-    value: "48h",
-    label: "Time to first insight",
-    body: "From install to first anomaly report — deployments go live in days, not quarters.",
-  },
-  {
-    value: "100%",
-    label: "Audit provenance",
-    body: "Every count, movement and correction preserved with a full timeline for compliance and finance teams.",
+    n: "04",
+    label: "Control",
+    body: "Prioritise discrepancies, exceptions and reconciliation actions.",
   },
 ];
 
@@ -89,7 +79,7 @@ export function InvProofResults() {
             transition={{ duration: 0.45 }}
             className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
           >
-            Proven Results
+            The Framework
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }}
@@ -98,22 +88,23 @@ export function InvProofResults() {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold text-carbon leading-[1.0] tracking-[-0.04em]"
           >
-            Real outcomes. <br />
-            <span className="text-graphite/50">Real deployments.</span>
+            Four pillars of <br />
+            <span className="text-graphite/50">inventory intelligence.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-8 text-[17px] sm:text-[19px] text-graphite/65 leading-[1.6] max-w-[620px] mx-auto"
+            className="mt-8 text-[17px] sm:text-[19px] text-graphite/65 leading-[1.6] max-w-[640px] mx-auto"
           >
-            Global operations teams trust RAMS Inventory Intelligence to
-            protect margin, accuracy and audit posture across every location.
+            Every module in RAMS Inventory Intelligence maps back to one of
+            four operating pillars — the framework warehouse teams use to
+            elevate stock control.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {RESULTS.map((r, i) => (
             <motion.div
               key={r.label}
@@ -122,25 +113,25 @@ export function InvProofResults() {
               viewport={{ once: true, amount: 0.25 }}
               transition={{
                 duration: 0.55,
-                delay: (i % 3) * 0.06,
+                delay: i * 0.06,
                 ease: EASE,
               }}
-              className="inv-card relative flex flex-col p-7 sm:p-8 bg-white"
-              style={{ borderRadius: 14, border: "1px solid #E8E8ED" }}
+              className="inv-card relative flex flex-col p-8 sm:p-10 bg-white"
+              style={{ borderRadius: 18, border: "1px solid #E8E8ED" }}
             >
               <span
                 aria-hidden
-                className="absolute top-0 left-6 right-6 h-[3px] bg-signal-orange"
+                className="absolute top-0 left-8 right-8 h-[3px] bg-signal-orange"
                 style={{ borderRadius: "0 0 3px 3px" }}
               />
-              <div className="pt-2">
-                <div className="text-[44px] sm:text-[52px] font-bold text-signal-orange leading-none tabular-nums tracking-[-0.03em]">
-                  {r.value}
+              <div className="pt-3">
+                <div className="text-[11px] font-mono font-bold tracking-[0.22em] uppercase text-signal-orange">
+                  {r.n} · Pillar
                 </div>
-                <div className="mt-3 text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-carbon">
+                <div className="mt-4 text-[36px] sm:text-[42px] font-bold text-carbon leading-[1.05] tracking-[-0.03em]">
                   {r.label}
                 </div>
-                <p className="mt-4 text-[14.5px] text-graphite/75 leading-[1.6]">
+                <p className="mt-5 text-[15px] text-graphite/70 leading-[1.6]">
                   {r.body}
                 </p>
               </div>
