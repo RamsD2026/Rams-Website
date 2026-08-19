@@ -10,76 +10,114 @@ import {
   LayoutGrid,
 } from "lucide-react";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const CAPS = [
   {
     icon: Boxes,
     title: "Digital Rack Twin",
     body: "Give every rack, row, bay, upright and inspection point a persistent digital identity for traceability across its lifecycle.",
-    meta: "Persistent identity",
   },
   {
     icon: ClipboardCheck,
     title: "Inspection Intelligence",
     body: "Capture observed damage, photographs, measurements, element type, severity and recommended action in a structured workflow.",
-    meta: "Structured workflow",
   },
   {
     icon: TriangleAlert,
-    title: "Risk Classification",
+    title: "RAG Risk Classification",
     body: "Visualise rack condition using Red, Amber and Green severity so teams can focus on the right corrective action first.",
-    meta: "RAG severity",
   },
   {
     icon: CheckCircle2,
     title: "Corrective Action Closure",
     body: "Assign, track, verify and close findings with evidence instead of losing actions in spreadsheets, emails and chat threads.",
-    meta: "Evidence-based closure",
   },
   {
     icon: TrendingUp,
     title: "Trend & Recurrence Analysis",
     body: "See which rack elements, aisles, zones and operating patterns repeatedly generate damage and safety risk.",
-    meta: "Pattern insight",
   },
   {
     icon: LayoutGrid,
     title: "Multi-site Visibility",
     body: "Compare rack health, open risks, closure performance and inspection status across warehouses from one management view.",
-    meta: "Cross-site view",
   },
 ];
 
 export function IrdsCapabilities() {
   return (
-    <section className="bg-white py-24 sm:py-32 lg:py-40 overflow-hidden">
+    <section
+      id="capabilities"
+      className="bg-white pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44"
+    >
+      <style>{`
+        @property --irdscap-shine-angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+        .irdscap-card { position: relative; isolation: isolate; }
+        .irdscap-card::before {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          border-radius: inherit;
+          padding: 1px;
+          background: conic-gradient(
+            from var(--irdscap-shine-angle),
+            transparent 0deg,
+            transparent 300deg,
+            rgba(255,106,0,0.9) 340deg,
+            transparent 360deg
+          );
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+                  mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+          z-index: 1;
+        }
+        .irdscap-card:hover::before {
+          opacity: 1;
+          animation: irdscap-shine 2.4s linear infinite;
+        }
+        @keyframes irdscap-shine {
+          to { --irdscap-shine-angle: 360deg; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .irdscap-card:hover::before { animation: none; }
+        }
+      `}</style>
       <div className="rams-container">
-        <div className="mb-14 sm:mb-20 text-center max-w-3xl mx-auto">
+        <div className="max-w-[900px] mx-auto text-center mb-20 sm:mb-24">
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.45 }}
-            className="text-[10.5px] font-mono font-bold tracking-[0.22em] uppercase text-signal-orange mb-4"
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.5 }}
+            className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
           >
-            One connected system
+            Capabilities
           </motion.p>
           <motion.h2
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-bold text-carbon leading-tight tracking-tight"
+            transition={{ duration: 0.85, ease: EASE }}
+            className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold text-carbon leading-[1.0] tracking-[-0.04em]"
           >
-            From rack inspection to
-            <br />
-            <span className="text-signal-orange">rack intelligence.</span>
+            From rack inspection <br />
+            <span className="text-graphite/50">to rack intelligence.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-5 text-sm sm:text-base lg:text-lg text-graphite/60 leading-relaxed mx-auto max-w-2xl"
+            transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+            className="mt-6 text-[14px] sm:text-[15px] text-graphite/65 leading-[1.55] max-w-[880px] mx-auto"
           >
             RAMS turns scattered inspection records, photographs, rack drawings
             and corrective actions into a structured intelligence layer for
@@ -87,71 +125,46 @@ export function IrdsCapabilities() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-x-6 gap-y-6">
-          {CAPS.map((cap, i) => {
-            const Icon = cap.icon;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CAPS.map((f, i) => {
+            const Icon = f.icon;
             return (
-              <motion.article
-                key={cap.title}
+              <motion.div
+                key={f.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{
                   duration: 0.6,
-                  delay: (i % 3) * 0.06,
-                  ease: [0.22, 1, 0.36, 1],
+                  delay: (i % 3) * 0.08,
+                  ease: EASE,
                 }}
-                onMouseMove={(e) => {
-                  const target = e.currentTarget as HTMLElement;
-                  const rect = target.getBoundingClientRect();
-                  target.style.setProperty(
-                    "--mouse-x",
-                    `${e.clientX - rect.left}px`
-                  );
-                  target.style.setProperty(
-                    "--mouse-y",
-                    `${e.clientY - rect.top}px`
-                  );
+                className="irdscap-card group relative flex flex-col p-8 sm:p-9 bg-white transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  borderRadius: 12,
+                  border: "1px solid #E8E8ED",
+                  boxShadow:
+                    "0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06)",
                 }}
-                className="group relative lg:col-span-4 rounded-lg overflow-hidden bg-white border border-steel-soft transition-colors duration-300 hover:border-signal-orange/30"
               >
                 <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="w-12 h-12 flex items-center justify-center mb-8 transition-transform duration-300 group-hover:scale-105"
                   style={{
-                    background:
-                      "radial-gradient(320px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,106,0,0.7), transparent 45%)",
-                    WebkitMask:
-                      "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-                    WebkitMaskComposite: "xor",
-                    mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-                    maskComposite: "exclude",
-                    padding: 1,
+                    borderRadius: 8,
+                    background: "rgba(255,106,0,0.08)",
+                    border: "1px solid rgba(255,106,0,0.18)",
+                    color: "#FF6A00",
                   }}
-                />
-
-                <div className="relative p-8 lg:p-10">
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-11 h-11 border border-steel-soft bg-off-white-warm rounded-lg flex items-center justify-center group-hover:border-signal-orange group-hover:bg-white transition-colors duration-200">
-                      <Icon
-                        className="w-5 h-5 text-graphite group-hover:text-signal-orange transition-colors duration-200"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <span className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/40">
-                      0{i + 1}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg sm:text-xl font-bold text-carbon leading-snug mb-3">
-                    {cap.title}
-                  </h3>
-                  <p className="text-sm text-graphite/65 leading-relaxed">
-                    {cap.body}
-                  </p>
+                >
+                  <Icon className="w-[22px] h-[22px]" strokeWidth={1.75} aria-hidden />
                 </div>
-              </motion.article>
+                <h3 className="text-[20px] sm:text-[22px] font-semibold text-carbon tracking-[-0.02em] leading-[1.2]">
+                  {f.title}
+                </h3>
+                <p className="mt-3 text-[14.5px] text-graphite/65 leading-[1.6]">
+                  {f.body}
+                </p>
+              </motion.div>
             );
           })}
         </div>

@@ -1,213 +1,556 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function IrdsHero() {
   return (
     <section
-      className="irds-hero-section relative overflow-hidden pt-44 pb-24 sm:pt-48 sm:pb-32 lg:pt-[220px] lg:pb-[140px]"
+      className="relative overflow-hidden text-white"
+      style={{
+        background:
+          "radial-gradient(80% 100% at 50% 0%, #1D1D1F 0%, #0E0E0F 55%, #08080A 100%)",
+      }}
     >
-      <style>{`
-        .irds-hero-section{
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
+        style={{
           background:
-            radial-gradient(circle at 74% 40%,rgba(255,106,0,.18),transparent 28%),
-            linear-gradient(180deg,#001216 0%,#000E11 75%);
-        }
-        .irds-hero-section:before{
-          content:"";position:absolute;inset:0;opacity:.2;pointer-events:none;
-          background-image:
-            linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-            linear-gradient(90deg,rgba(255,255,255,.05) 1px, transparent 1px);
-          background-size:54px 54px;
-          mask-image:linear-gradient(to bottom,black,transparent 85%);
-          -webkit-mask-image:linear-gradient(to bottom,black,transparent 85%);
-        }
-      `}</style>
+            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.22), transparent 70%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+        }}
+      />
 
-      <div className="relative rams-container">
-        {/* 12-col: content (6) + visual (6) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.04fr_.96fr] gap-x-6 lg:gap-x-[44px] gap-y-10 items-center">
-          {/* Copy */}
-          <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.12, ease: EASE }}
-              className="text-white font-bold leading-[1.02] tracking-[-0.025em] text-4xl sm:text-5xl lg:text-6xl xl:text-7xl"
-            >
-              Know the health
-              <br />
-              of <span className="text-signal-orange">every rack.</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.28 }}
-              className="mt-8 text-lg text-white/60 max-w-[560px] leading-[1.7]"
-            >
-              Move beyond periodic inspection. RAMS combines expert rack
-              inspection, digital twin intelligence, risk classification,
-              issue closure and continuous visibility into one connected
-              rack-safety system.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.38 }}
-              className="mt-10 flex flex-col sm:flex-row gap-3"
-            >
-              <Link
-                href="/book-a-demo"
-                className="group inline-flex items-center gap-2 bg-signal-orange hover:bg-signal-orange-hover px-7 py-3.5 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-px"
-              >
-                Book a Rack Safety Review
-                <ArrowRight
-                  className="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
-                  aria-hidden="true"
-                />
-              </Link>
-              <Link
-                href="/platform"
-                className="inline-flex items-center gap-2 border border-white/20 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/40 px-7 py-3.5 text-base font-semibold text-white transition-all duration-200"
-              >
-                <Play className="w-3.5 h-3.5" aria-hidden="true" />
-                See the Platform
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="mt-8 flex flex-wrap items-center gap-2"
-            >
-              {[
-                "Digital rack identity",
-                "Risk-led inspection",
-                "Actionable intelligence",
-              ].map((label) => (
-                <span
-                  key={label}
-                  className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
-                >
-                  {label}
-                </span>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Visual — pallet-rack scene copied verbatim from preview-3.html */}
+      <div className="relative rams-container pt-40 sm:pt-48 lg:pt-56 pb-24 sm:pb-32 lg:pb-40">
+        <div className="max-w-[1080px] mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.1, delay: 0.35, ease: EASE }}
-            className="w-full"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur"
           >
-            <RackVisual />
+            <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
+            <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/70">
+              Rack Safety Intelligence
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
+            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
+            style={{ letterSpacing: "-0.045em" }}
+          >
+            <span className="block text-white">Know the health</span>
+            <span
+              className="block"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              of every rack.
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
+            className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
+          >
+            Move beyond periodic inspection. RAMS combines expert rack
+            inspection, digital twin intelligence, RAG risk classification,
+            issue closure and continuous visibility into one connected
+            rack-safety system aligned to RACS and AS4084 standards.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
+            className="mt-8 flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap"
+          >
+            {[
+              "Digital rack identity",
+              "Risk-led inspection",
+              "Actionable intelligence",
+            ].map((label) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-white/70"
+              >
+                <span
+                  className="w-1 h-1 rounded-full bg-signal-orange"
+                  aria-hidden
+                />
+                {label}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.32, ease: EASE }}
+            className="mt-10 flex items-center justify-center gap-3 flex-wrap"
+          >
+            <Link
+              href="/book-a-demo"
+              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+            >
+              Book a Rack Safety Review
+              <ArrowRight className="w-4 h-4" aria-hidden />
+            </Link>
+            <Link
+              href="#capabilities"
+              className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 transition-all duration-200 hover:bg-white/[0.06]"
+            >
+              Explore Capabilities
+            </Link>
           </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 60, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.1, delay: 0.5, ease: EASE }}
+          className="relative mt-20 sm:mt-24 mx-auto"
+          style={{
+            maxWidth: 1240,
+            borderRadius: 28,
+            border: "1px solid rgba(255,255,255,0.08)",
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+            padding: 14,
+            boxShadow:
+              "0 60px 140px -40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(255,106,0,0.15)",
+          }}
+        >
+          <div
+            className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
+            style={{
+              background:
+                "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+              borderLeft: "1px solid rgba(255,255,255,0.06)",
+              borderRight: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <RackSafetyTwinView />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────
-   Rack visual — verbatim port of preview-3.html
-   ───────────────────────────────────────────── */
-function RackVisual() {
+const FINDING_EVENTS = [
+  { id: "F-40218", loc: "B-04 · U-B18", status: "critical", note: "beam lock" },
+  { id: "F-40219", loc: "B-05 · U-B21", status: "warning", note: "upright" },
+  { id: "F-40220", loc: "C-07 · B-C09", status: "ok" },
+  { id: "F-40221", loc: "B-06 · U-B24", status: "warning", note: "deflection" },
+  { id: "F-40222", loc: "C-08 · B-C12", status: "ok" },
+  { id: "F-40223", loc: "D-02 · U-D04", status: "critical", note: "baseplate" },
+  { id: "F-40224", loc: "B-07 · B-B31", status: "ok" },
+  { id: "F-40225", loc: "C-09 · U-C17", status: "warning", note: "bracing" },
+] as const;
+
+function RackSafetyTwinView() {
+  const KPIS = [
+    { label: "Rack Health", value: "91%", tone: "orange" as const },
+    { label: "Open Findings", value: "14", tone: "white" as const },
+    { label: "Critical", value: "2", tone: "white" as const },
+  ];
+
+  return (
+    <div className="absolute inset-0 flex flex-col">
+      <div className="flex items-center justify-between gap-4 flex-wrap px-5 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6">
+        <div className="min-w-0">
+          <div className="text-[9px] sm:text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+            Rack Twin · Pune DC
+          </div>
+          <div className="mt-1.5 text-[15px] sm:text-[18px] font-semibold text-white tracking-[-0.01em] truncate">
+            Aisle B — inspection live
+          </div>
+        </div>
+        <span
+          className="inline-flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-[0.14em] px-2.5 py-1 rounded-full shrink-0"
+          style={{
+            background: "rgba(43,203,116,0.13)",
+            color: "#54DE91",
+          }}
+        >
+          <span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: "#2BCB74" }}
+          />
+          LIVE
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap px-5 sm:px-8 pb-5 sm:pb-6">
+        {KPIS.map((k) => (
+          <span
+            key={k.label}
+            className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <span className="text-[9px] font-mono font-bold tracking-[0.16em] uppercase text-white/45">
+              {k.label}
+            </span>
+            <span
+              className={`text-[13px] sm:text-[14px] font-bold tabular-nums tracking-[-0.01em] ${
+                k.tone === "orange" ? "text-signal-orange" : "text-white"
+              }`}
+            >
+              {k.value}
+            </span>
+          </span>
+        ))}
+      </div>
+
+      <div className="relative flex-1 grid grid-cols-1 sm:grid-cols-[1.55fr_1fr] gap-4 sm:gap-6 mx-4 sm:mx-8 mb-6 sm:mb-8 min-h-0">
+        <div
+          className="relative rounded-xl overflow-hidden min-h-[260px] sm:min-h-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <RackElevation />
+        </div>
+
+        <div
+          className="relative rounded-xl overflow-hidden flex flex-col min-h-[200px] sm:min-h-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <FindingsFeed />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RackElevation() {
+  const VB_W = 400;
+  const VB_H = 240;
+  const PAD_X = 32;
+  const PAD_TOP = 34;
+  const FLOOR_Y = 210;
+
+  const UPRIGHTS = 5;
+  const LEVELS = 3;
+  const PALLETS_PER_BAY = 2;
+
+  const BAY_W = (VB_W - PAD_X * 2) / (UPRIGHTS - 1);
+  const LEVEL_H = (FLOOR_Y - PAD_TOP) / LEVELS;
+
+  const STATE: Record<string, 0 | 1 | 2 | 3> = {
+    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 2, "0-2-0": 1, "0-2-1": 0,
+    "1-0-0": 1, "1-0-1": 3, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
+    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 2, "2-2-1": 1,
+    "3-0-0": 0, "3-0-1": 1, "3-1-0": 1, "3-1-1": 0, "3-2-0": 1, "3-2-1": 1,
+  };
+
+  const excBay = 1, excLevel = 0, excSlot = 1;
+  const excBayX = PAD_X + excBay * BAY_W;
+  const excSlotW = BAY_W / PALLETS_PER_BAY;
+  const excX = excBayX + excSlot * excSlotW + excSlotW / 2;
+  const excY = FLOOR_Y - excLevel * LEVEL_H - LEVEL_H * 0.42;
+
+  const upBayX = PAD_X + 1 * BAY_W;
+
+  return (
+    <div className="absolute inset-0 flex flex-col p-3.5 sm:p-5">
+      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+        <div className="text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.18em] sm:tracking-[0.22em] uppercase text-white/45">
+          Rack Elevation · Aisle B-04
+        </div>
+        <div className="flex items-center gap-2 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
+          <span className="inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#FF4D4D" }} />
+            Red
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#FFB020" }} />
+            Amber
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#2BCB74" }} />
+            Green
+          </span>
+        </div>
+      </div>
+
+      <div className="relative flex-1 min-h-0">
+        <svg
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="absolute inset-0 w-full h-full"
+          aria-hidden
+        >
+          <line
+            x1={PAD_X - 6}
+            y1={FLOOR_Y + 4}
+            x2={VB_W - PAD_X + 6}
+            y2={FLOOR_Y + 4}
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth={0.75}
+          />
+
+          {Array.from({ length: LEVELS }).map((_, l) => {
+            const y = FLOOR_Y - l * LEVEL_H;
+            return (
+              <line
+                key={`beam-${l}`}
+                x1={PAD_X - 3}
+                y1={y}
+                x2={VB_W - PAD_X + 3}
+                y2={y}
+                stroke="rgba(255,255,255,0.28)"
+                strokeWidth={0.75}
+              />
+            );
+          })}
+
+          {Array.from({ length: UPRIGHTS }).map((_, u) => {
+            const x = PAD_X + u * BAY_W;
+            const isCriticalUpright = x === upBayX;
+            return (
+              <line
+                key={`upright-${u}`}
+                x1={x}
+                y1={PAD_TOP - 6}
+                x2={x}
+                y2={FLOOR_Y + 4}
+                stroke={isCriticalUpright ? "rgba(255,106,0,0.9)" : "rgba(255,255,255,0.28)"}
+                strokeWidth={isCriticalUpright ? 1.4 : 0.75}
+                style={isCriticalUpright ? { filter: "drop-shadow(0 0 4px rgba(255,106,0,0.6))" } : undefined}
+              />
+            );
+          })}
+
+          {Array.from({ length: UPRIGHTS - 1 }).map((_, bay) =>
+            Array.from({ length: LEVELS }).map((_, level) => {
+              const beamY = FLOOR_Y - level * LEVEL_H;
+              const slotW = BAY_W / PALLETS_PER_BAY;
+              return Array.from({ length: PALLETS_PER_BAY }).map((_, slot) => {
+                const key = `${bay}-${level}-${slot}`;
+                const state = STATE[key] ?? 0;
+                if (state === 0) return null;
+                const cx = PAD_X + bay * BAY_W + slot * slotW + slotW / 2;
+                const boxW = slotW * 0.62;
+                const boxH = LEVEL_H * 0.48;
+                const boxX = cx - boxW / 2;
+                const boxY = beamY - boxH - 1.5;
+
+                let fill = "rgba(255,255,255,0.14)";
+                let stroke = "rgba(255,255,255,0.22)";
+                let filter: string | undefined;
+                if (state === 2) {
+                  fill = "rgba(255,176,32,0.85)";
+                  stroke = "rgba(255,176,32,1)";
+                  filter = "drop-shadow(0 0 5px rgba(255,176,32,0.55))";
+                } else if (state === 3) {
+                  fill = "rgba(255,77,77,0.95)";
+                  stroke = "rgba(255,77,77,1)";
+                  filter = "drop-shadow(0 0 6px rgba(255,77,77,0.65))";
+                }
+
+                return (
+                  <rect
+                    key={key}
+                    x={boxX}
+                    y={boxY}
+                    width={boxW}
+                    height={boxH}
+                    rx={1}
+                    fill={fill}
+                    stroke={stroke}
+                    strokeWidth={0.6}
+                    style={filter ? { filter } : undefined}
+                  />
+                );
+              });
+            }),
+          )}
+
+          <motion.circle
+            cx={excX}
+            cy={excY}
+            r={12}
+            fill="none"
+            stroke="rgba(255,77,77,0.75)"
+            strokeWidth={1.5}
+            animate={{ r: [10, 22, 10], opacity: [0.9, 0, 0.9] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+          />
+
+          <motion.rect
+            aria-hidden
+            y={PAD_TOP - 8}
+            width={40}
+            height={FLOOR_Y - PAD_TOP + 12}
+            fill="url(#irds-scan-grad)"
+            initial={{ x: -60 }}
+            animate={{ x: VB_W + 20 }}
+            transition={{
+              duration: 4.5,
+              ease: "linear",
+              repeat: Infinity,
+              repeatDelay: 0.6,
+            }}
+          />
+          <defs>
+            <linearGradient id="irds-scan-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="rgba(255,106,0,0)" />
+              <stop offset="0.5" stopColor="rgba(255,106,0,0.28)" />
+              <stop offset="1" stopColor="rgba(255,106,0,0)" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5, ease: EASE }}
+        className="mt-2 flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex-wrap"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,77,77,0.10), rgba(255,77,77,0.04))",
+          border: "1px solid rgba(255,77,77,0.28)",
+          boxShadow: "0 0 20px -8px rgba(255,77,77,0.35)",
+        }}
+      >
+        <span className="inline-flex items-center gap-1.5 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.16em] sm:tracking-[0.18em] uppercase shrink-0" style={{ color: "#FF6C6C" }}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FF4D4D" }} />
+          Critical
+        </span>
+        <span className="text-[10.5px] sm:text-[11px] font-semibold text-white leading-tight truncate min-w-0 flex-1">
+          B-04 · U-B18 — beam lock failure
+        </span>
+        <span className="text-[9.5px] sm:text-[10px] font-mono text-white/55 tabular-nums shrink-0">
+          RAG · Red · Action
+        </span>
+      </motion.div>
+    </div>
+  );
+}
+
+function FindingsFeed() {
   return (
     <>
-      <style>{`
-        .irds-hero-visual{
-          min-height:540px;position:relative;border:1px solid rgba(255,255,255,.13);
-          border-radius:26px;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.015));
-          overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.38)
-        }
-        .irds-rack-scene{position:absolute;inset:60px 30px 80px;perspective:900px}
-        .irds-rack-row{height:84%;display:flex;gap:16px;align-items:flex-end;transform:rotateY(-7deg) rotateX(2deg)}
-        .irds-bay{
-          flex:1;height:100%;position:relative;border-left:5px solid #5D686E;border-right:5px solid #5D686E;
-          background:linear-gradient(to bottom,transparent 0 12%,rgba(255,255,255,.018) 12% 13%,transparent 13% 34%,
-            rgba(255,255,255,.018) 34% 35%,transparent 35% 56%,rgba(255,255,255,.018) 56% 57%,transparent 57% 78%,
-            rgba(255,255,255,.018) 78% 79%,transparent 79%)
-        }
-        .irds-bay:before{
-          content:"";position:absolute;inset:11% -7px auto;height:5px;background:#657077;
-          box-shadow:0 95px 0 #657077,0 190px 0 #657077,0 285px 0 #657077
-        }
-        .irds-pallet{
-          position:absolute;height:48px;left:12%;right:12%;background:#15272C;border:1px solid #34464C;
-          box-shadow:inset 0 -7px 0 #0D1B1F;border-radius:3px
-        }
-        .irds-p1{top:18%}.irds-p2{top:40%}.irds-p3{top:62%}
-        .irds-bay.irds-risk{border-left-color:#FF6A00}
-        .irds-scan{
-          position:absolute;left:10%;right:8%;top:38%;height:2px;background:linear-gradient(90deg,transparent,#FF6A00,transparent);
-          box-shadow:0 0 18px #FF6A00;animation:irds-scan 3.4s linear infinite
-        }
-        @keyframes irds-scan{0%{top:18%;opacity:.15}50%{opacity:1}100%{top:78%;opacity:.15}}
-        .irds-hud{
-          position:absolute;background:rgba(2,19,23,.92);border:1px solid rgba(255,255,255,.13);border-radius:14px;
-          backdrop-filter:blur(12px);box-shadow:0 16px 50px rgba(0,0,0,.32)
-        }
-        .irds-hud-health{right:18px;top:24px;width:194px;padding:16px}
-        .irds-hud-status{left:20px;bottom:22px;width:250px;padding:16px}
-        .irds-hud-title{font-size:11px;color:#8E9A9F;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
-        .irds-score{font-size:42px;font-weight:850;letter-spacing:-.06em;color:#FFFFFF}
-        .irds-score small{font-size:14px;color:#98A3A8;letter-spacing:0}
-        .irds-status-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:13px;color:#B7C0C4}
-        .irds-pill{font-size:10px;font-weight:800;padding:4px 8px;border-radius:999px}
-        .irds-pill.irds-green{background:rgba(43,203,116,.13);color:#54DE91}
-        .irds-pill.irds-amber{background:rgba(255,176,32,.13);color:#FFBE47}
-        .irds-pill.irds-red{background:rgba(255,77,77,.13);color:#FF6C6C}
-      `}</style>
-
-      <div className="irds-hero-visual">
-        <div className="irds-rack-scene">
-          <div className="irds-rack-row">
-            <div className="irds-bay">
-              <div className="irds-pallet irds-p1"></div>
-              <div className="irds-pallet irds-p2"></div>
-              <div className="irds-pallet irds-p3"></div>
-            </div>
-            <div className="irds-bay irds-risk">
-              <div className="irds-pallet irds-p1"></div>
-              <div className="irds-pallet irds-p2"></div>
-              <div className="irds-pallet irds-p3"></div>
-            </div>
-            <div className="irds-bay">
-              <div className="irds-pallet irds-p1"></div>
-              <div className="irds-pallet irds-p2"></div>
-              <div className="irds-pallet irds-p3"></div>
-            </div>
-            <div className="irds-bay">
-              <div className="irds-pallet irds-p1"></div>
-              <div className="irds-pallet irds-p2"></div>
-              <div className="irds-pallet irds-p3"></div>
-            </div>
-          </div>
-          <div className="irds-scan"></div>
+      <div className="flex items-center justify-between px-4 sm:px-5 pt-4 pb-3 border-b border-white/[0.06]">
+        <div className="text-[9px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+          Findings Feed
         </div>
+        <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
+          <span className="w-1.5 h-1.5 rounded-full bg-signal-orange animate-pulse" />
+          Streaming
+        </span>
+      </div>
 
-        <div className="irds-hud irds-hud-health">
-          <div className="irds-hud-title">Rack Health Index</div>
-          <div className="irds-score">91<small>/100</small></div>
-          <div className="irds-status-row"><span>Open findings</span><b>14</b></div>
-          <div className="irds-status-row"><span>Critical</span><b style={{ color: "#FF6C6C" }}>2</b></div>
-        </div>
+      <div className="relative flex-1 overflow-hidden">
+        <motion.div
+          className="flex flex-col"
+          initial={{ y: 0 }}
+          animate={{ y: [0, -(FINDING_EVENTS.length * 42)] }}
+          transition={{
+            duration: FINDING_EVENTS.length * 1.8,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {[...FINDING_EVENTS, ...FINDING_EVENTS].map((ev, i) => {
+            const isCritical = ev.status === "critical";
+            const isWarning = ev.status === "warning";
+            const bg = isCritical
+              ? "rgba(255,77,77,0.18)"
+              : isWarning
+                ? "rgba(255,176,32,0.16)"
+                : "rgba(43,203,116,0.16)";
+            const color = isCritical ? "#FF6C6C" : isWarning ? "#FFBE47" : "#54DE91";
+            const glyph = isCritical ? "!" : isWarning ? "•" : "✓";
+            return (
+              <div
+                key={`${ev.id}-${i}`}
+                className="flex items-center gap-2.5 px-4 sm:px-5 py-2.5 border-b border-white/[0.04]"
+                style={{ height: 42 }}
+              >
+                <span
+                  className="flex items-center justify-center w-4 h-4 rounded-full text-[9px] font-bold"
+                  style={{ background: bg, color }}
+                >
+                  {glyph}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10.5px] font-mono font-semibold text-white tabular-nums truncate">
+                    {ev.id}
+                  </div>
+                </div>
+                <div className="text-[9.5px] font-mono text-white/50 tabular-nums">
+                  {ev.loc}
+                </div>
+                {(isCritical || isWarning) && "note" in ev && ev.note && (
+                  <span
+                    className="text-[8.5px] font-mono font-bold tracking-[0.14em] uppercase"
+                    style={{ color: isCritical ? "#FF6C6C" : "#FFBE47" }}
+                  >
+                    {ev.note}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </motion.div>
 
-        <div className="irds-hud irds-hud-status">
-          <div className="irds-hud-title">Row B / Upright B-18</div>
-          <div className="irds-status-row"><span>Upright deformation</span><span className="irds-pill irds-amber">AMBER</span></div>
-          <div className="irds-status-row"><span>Baseplate</span><span className="irds-pill irds-green">GREEN</span></div>
-          <div className="irds-status-row"><span>Beam lock</span><span className="irds-pill irds-red">ACTION</span></div>
-        </div>
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-4 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,15,20,1), transparent)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-6 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(10,15,20,1), transparent)",
+          }}
+        />
       </div>
     </>
   );
