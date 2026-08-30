@@ -159,21 +159,11 @@ export function MepsHero() {
             Mobile Equipment Performance Suite
           </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-            className="mt-6 text-[12.5px] font-mono text-white/35 leading-[1.6]"
-          >
-            A forklift can run a full shift, cover kilometres, and move very
-            little.
-          </motion.p>
-
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.14, ease: EASE }}
-            className="mt-6 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
+            className="mt-8 sm:mt-10 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
           >
             <span className="block lg:whitespace-nowrap text-white">
               See how your MHE fleet
