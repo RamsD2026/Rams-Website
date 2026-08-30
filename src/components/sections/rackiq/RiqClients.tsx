@@ -7,21 +7,12 @@
  * leave rather than snapping. Swap a name for an <Image> here when the real
  * logo files land — the row height is fixed so the layout won't move.
  *
- * NOTE: the list below is taken from the warehouses shown in the IRDS
- * dashboard screenshots. Confirm it before this goes public — a client strip
- * is a claim about who the customers are.
+ * NOTE: the list below is only the warehouses actually named in the IRDS
+ * dashboard screenshots. It is a claim about who the customers are, so
+ * nothing goes in it that has not been confirmed.
  */
 
-const CLIENTS = [
-  "Welspun",
-  "Mahindra Logistics",
-  "Indospace",
-  "ESR",
-  "Flipkart",
-  "DHL Supply Chain",
-  "Reliance Retail",
-  "Delhivery",
-];
+const CLIENTS = ["Welspun", "Mahindra Logistics", "Indospace", "ESR"];
 
 export function RiqClients() {
   return (
