@@ -99,13 +99,13 @@ export const NAV_CONFIG: NavItemConfig[] = [
           },
           {
             label: "MEPS",
-            href: "/platform/overview",
+            href: "/platform/meps",
             description: "MHE Efficiency and Productivity System",
           },
           {
             label: "IRDS",
             href: "/platform/irds",
-            description: "Intelligent Rack Diagnostic System",
+            description: "Integrated Rack Diagnostic Suite",
           },
           {
             label: "ATOS",
