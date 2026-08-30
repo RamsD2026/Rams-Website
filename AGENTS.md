@@ -12,3 +12,10 @@ eyebrow → two-line heading → subline, centred.
 
 Read `docs/section-header.md` and use `<SectionHeader>` from
 `@/components/sections/SectionHeader` rather than re-typing the classes.
+
+# Typography
+
+`docs/typography.md` is the font system: the three families (IBM Plex Sans /
+Roboto / Roboto Mono), the font tokens, and the full type scale — every size,
+weight, tracking and line-height used on the site. Check it before choosing a
+font size; the site uses arbitrary px values, not Tailwind's named scale.
