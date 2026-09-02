@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { DtwHero } from "@/components/sections/dtw/DtwHero";
-import { DtwPillars } from "@/components/sections/dtw/DtwPillars";
-import { DtwWatch } from "@/components/sections/dtw/DtwWatch";
-import { DtwHighlights } from "@/components/sections/dtw/DtwHighlights";
-import { DtwCompare } from "@/components/sections/dtw/DtwCompare";
-import { DtwSecurity } from "@/components/sections/dtw/DtwSecurity";
-import { DtwFAQ } from "@/components/sections/dtw/DtwFAQ";
-import { DtwCTA } from "@/components/sections/dtw/DtwCTA";
+import { TwinHero } from "@/components/sections/twin/TwinHero";
+import { TwinGap } from "@/components/sections/twin/TwinGap";
+import { TwinCreate } from "@/components/sections/twin/TwinCreate";
+import { TwinPlanning } from "@/components/sections/twin/TwinPlanning";
+import { TwinTransition } from "@/components/sections/twin/TwinTransition";
+import { TwinAttach } from "@/components/sections/twin/TwinAttach";
+import { TwinStack } from "@/components/sections/twin/TwinStack";
+import { TwinSignal } from "@/components/sections/twin/TwinSignal";
+import { TwinAI } from "@/components/sections/twin/TwinAI";
 
 export const metadata: Metadata = {
   title: "Digital Twin | RAMS Platform",
@@ -17,14 +18,15 @@ export const metadata: Metadata = {
 export default function DigitalTwinPage() {
   return (
     <>
-      <DtwHero />
-      <DtwPillars />
-      <DtwWatch />
-      <DtwHighlights />
-      <DtwCompare />
-      <DtwSecurity />
-      <DtwFAQ />
-      <DtwCTA />
+      <TwinHero />
+      <TwinGap />
+      <TwinCreate />
+      <TwinPlanning />
+      <TwinTransition />
+      <TwinAttach />
+      <TwinStack />
+      <TwinSignal />
+      <TwinAI />
     </>
   );
 }

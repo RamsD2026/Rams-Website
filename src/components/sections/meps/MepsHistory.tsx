@@ -24,6 +24,10 @@ import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
  */
 
 const HAIR = "rgba(255,255,255,0.10)";
+
+/** Transparent at both ends so it works on any surface. */
+const EDGE_FADE =
+  "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)";
 const TWIN_SRC = "/Product/irds/hero.mp4";
 
 const CHAIN = [
@@ -79,48 +83,44 @@ export function MepsHistory() {
           }
         `}</style>
 
+        {/* Masks the moving track rather than covering it with a painted
+            block — the section sits on a radial gradient, so no solid colour
+            matches what is behind the edges. The rules stay full width. */}
         <div
-          className={
-            reduce ? "flex flex-wrap justify-center" : "meps-chain-track"
+          style={
+            reduce
+              ? undefined
+              : { WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }
           }
         >
-          {(reduce ? [0] : [0, 1]).map((copy) => (
-            <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
-              {CHAIN.map((l) => (
-                <span key={copy + l} className="flex items-center shrink-0">
-                  <span className="font-rams-heading text-[16px] sm:text-[20px] font-bold tracking-[-0.02em] text-white/85 whitespace-nowrap">
-                    {l}
+          <div
+            className={
+              reduce ? "flex flex-wrap justify-center" : "meps-chain-track"
+            }
+          >
+            {(reduce ? [0] : [0, 1]).map((copy) => (
+              <div
+                key={copy}
+                className="flex shrink-0"
+                aria-hidden={copy === 1}
+              >
+                {CHAIN.map((l) => (
+                  <span key={copy + l} className="flex items-center shrink-0">
+                    <span className="font-rams-heading text-[16px] sm:text-[20px] font-bold tracking-[-0.02em] text-white/85 whitespace-nowrap">
+                      {l}
+                    </span>
+                    <span
+                      className="text-signal-orange text-[14px] mx-4 sm:mx-6"
+                      aria-hidden
+                    >
+                      →
+                    </span>
                   </span>
-                  <span
-                    className="text-signal-orange text-[14px] mx-4 sm:mx-6"
-                    aria-hidden
-                  >
-                    →
-                  </span>
-                </span>
-              ))}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-
-        {!reduce && (
-          <>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28"
-              style={{
-                background: "linear-gradient(to right, #0E0E0F, transparent)",
-              }}
-            />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28"
-              style={{
-                background: "linear-gradient(to left, #0E0E0F, transparent)",
-              }}
-            />
-          </>
-        )}
       </div>
 
       <SectionHeader

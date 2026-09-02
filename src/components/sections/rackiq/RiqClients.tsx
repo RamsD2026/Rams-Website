@@ -14,6 +14,11 @@
 
 const CLIENTS = ["Welspun", "Mahindra Logistics", "Indospace", "ESR"];
 
+/** Names enter and leave rather than snapping. Transparent at both ends so it
+    works on any surface — see the note where it is applied. */
+const EDGE_FADE =
+  "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)";
+
 export function RiqClients() {
   return (
     <div className="relative mt-14 sm:mt-16">
@@ -39,7 +44,17 @@ export function RiqClients() {
         Trusted on the warehouse floor
       </p>
 
-      <div className="riq-clients-wrap relative overflow-hidden">
+      {/* The edges fade the track itself rather than covering it with a
+          painted block — the strip sits on a radial gradient with the beams
+          and the orange glow over it, so no solid colour can match what is
+          actually behind it at this height. */}
+      <div
+        className="riq-clients-wrap relative overflow-hidden"
+        style={{
+          WebkitMaskImage: EDGE_FADE,
+          maskImage: EDGE_FADE,
+        }}
+      >
         <div className="riq-clients-track">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
@@ -67,22 +82,6 @@ export function RiqClients() {
             </div>
           ))}
         </div>
-
-        {/* edge fades */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40"
-          style={{
-            background: "linear-gradient(to right, #0E0E0F, transparent)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40"
-          style={{
-            background: "linear-gradient(to left, #0E0E0F, transparent)",
-          }}
-        />
       </div>
     </div>
   );

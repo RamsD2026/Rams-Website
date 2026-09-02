@@ -28,10 +28,18 @@ export type SectionHeaderProps = {
    * `default` for standard sections.
    * `compact` for sections whose visual is a wide dashboard, so the heading
    * does not overpower it.
+   * `long` for a heading whose lines are long enough that `compact` would
+   * wrap them — it keeps a two-line heading two lines.
    */
-  size?: "default" | "compact";
+  size?: "default" | "compact" | "long";
   /** `wide` pairs with full-bleed visuals below the header. */
   width?: "default" | "wide";
+  /**
+   * Measure of the supporting sentence. `default` is 880px — two comfortable
+   * lines. `wide` is 1140px, for the occasional subline that has to sit on
+   * one. Opt-in, so existing headers are unaffected.
+   */
+  bodyWidth?: "default" | "wide";
   className?: string;
 };
 
@@ -43,6 +51,7 @@ export function SectionHeader({
   tone = "light",
   size = "default",
   width = "default",
+  bodyWidth = "default",
   className,
 }: SectionHeaderProps) {
   const dark = tone === "dark";
@@ -53,9 +62,11 @@ export function SectionHeader({
       : "max-w-[900px] mx-auto text-center mb-20 sm:mb-24";
 
   const headingSize =
-    size === "compact"
-      ? "text-[36px] sm:text-[54px] lg:text-[68px] leading-[1.05]"
-      : "text-[40px] sm:text-[60px] lg:text-[78px] leading-[1.0]";
+    size === "long"
+      ? "text-[30px] sm:text-[44px] lg:text-[56px] leading-[1.1]"
+      : size === "compact"
+        ? "text-[36px] sm:text-[54px] lg:text-[68px] leading-[1.05]"
+        : "text-[40px] sm:text-[60px] lg:text-[78px] leading-[1.0]";
 
   return (
     <div className={wrapper + (className ? " " + className : "")}>
@@ -110,7 +121,8 @@ export function SectionHeader({
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
           className={
-            "mt-6 text-[14px] sm:text-[15px] leading-[1.55] max-w-[880px] mx-auto " +
+            "mt-6 text-[14px] sm:text-[15px] leading-[1.55] mx-auto " +
+            (bodyWidth === "wide" ? "max-w-[1140px] " : "max-w-[880px] ") +
             (dark ? "text-white/60" : "text-graphite/65")
           }
         >
@@ -147,7 +159,12 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={"max-w-[1080px] mx-auto text-center" + (className ? " " + className : "")}>
+    <div
+      className={
+        "max-w-[1080px] mx-auto text-center" +
+        (className ? " " + className : "")
+      }
+    >
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

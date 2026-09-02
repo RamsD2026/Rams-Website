@@ -19,7 +19,9 @@ export const EASE = [0.22, 1, 0.36, 1] as const;
 export const SURFACE = {
   white: "#FFFFFF",
   offWhite: "#F5F5F7",
-  warm: "rgba(247, 242, 232, 0.3)",
+  /* Was a warm beige. Now the same neutral as offWhite, carried at less
+     than full strength so the two light surfaces still read apart. */
+  warm: "rgba(245, 245, 247, 0.6)",
   ink: "#08080A",
   darkTop:
     "radial-gradient(80% 100% at 50% 0%, #1D1D1F 0%, #0E0E0F 55%, #08080A 100%)",
@@ -110,10 +112,26 @@ export const RAG: Record<
 
 /** The four lifecycle stages a finding is classified against. */
 export const LIFECYCLE = [
-  { key: "design", label: "Design", note: "Engineering intent, capacity, configuration" },
-  { key: "installation", label: "Installation", note: "Erection, anchoring, geometry, plumbness" },
-  { key: "operation", label: "Operation", note: "Impact, loading, MHE interaction" },
-  { key: "maintenance", label: "Maintenance", note: "Repair, replacement, unresolved action" },
+  {
+    key: "design",
+    label: "Design",
+    note: "Engineering intent, capacity, configuration",
+  },
+  {
+    key: "installation",
+    label: "Installation",
+    note: "Erection, anchoring, geometry, plumbness",
+  },
+  {
+    key: "operation",
+    label: "Operation",
+    note: "Impact, loading, MHE interaction",
+  },
+  {
+    key: "maintenance",
+    label: "Maintenance",
+    note: "Repair, replacement, unresolved action",
+  },
 ] as const;
 
 export type LifecycleKey = (typeof LIFECYCLE)[number]["key"];
@@ -375,18 +393,24 @@ export function ProductVideo({
   path,
   poster,
   tone = "dark",
+  /** Off where the frame sits flat on the surface rather than above it. */
+  shadow = true,
   className,
 }: {
   src: string;
   path: string;
   poster?: string;
   tone?: Tone;
+  shadow?: boolean;
   className?: string;
 }) {
   return (
     <div
       className={"relative overflow-hidden " + (className ?? "")}
-      style={frameStyle(tone)}
+      style={{
+        ...frameStyle(tone),
+        ...(shadow ? null : { boxShadow: "none" }),
+      }}
     >
       <Chrome path={path} tone={tone} />
       <video
@@ -806,14 +830,15 @@ export function Flow({
               (size === "sm"
                 ? "text-[11px] px-3.5 py-2 "
                 : "text-[12px] px-4 py-2.5 ") +
-              (i === 0
-                ? "text-white"
-                : dark
-                  ? "text-white/80"
-                  : "text-white")
+              (i === 0 ? "text-white" : dark ? "text-white/80" : "text-white")
             }
             style={{
-              background: i === 0 ? "#FF6A00" : dark ? "rgba(255,255,255,0.08)" : "#0E0E0F",
+              background:
+                i === 0
+                  ? "#FF6A00"
+                  : dark
+                    ? "rgba(255,255,255,0.08)"
+                    : "#0E0E0F",
             }}
           >
             {s}
@@ -902,16 +927,60 @@ export function Pill({
   );
 }
 
-/** Section wrapper — same rhythm as every other page. */
+/**
+ * Section wrapper — same rhythm as every other page.
+ *
+ * `padding="tight"` is the source documents' own `.sec-tight`: for sections
+ * carrying one short block, where the standard rhythm leaves more air than
+ * content.
+ *
+ * `padding="strip"` is tighter still — for a band that belongs to the section
+ * above it rather than standing on its own. The standard rhythm assumes the
+ * surface changes at every boundary; where two sections share a surface, the
+ * two paddings meet with nothing between them and read as one void.
+ *
+ * `paddingTop` / `paddingBottom` override one edge only — for a section that
+ * shares its surface with the section on one side and changes surface on the
+ * other, so only the shared boundary needs shortening.
+ *
+ * `clip={false}` drops the overflow clip. Sections clip by default so a glow
+ * or a full-bleed visual cannot widen the page — but an ancestor with
+ * `overflow: hidden` also disables `position: sticky` inside it, so a section
+ * with a pinned column has to opt out.
+ *
+ * All are opt-in, so every existing section is unaffected.
+ */
+
+const PAD_T = {
+  strip: "pt-10 sm:pt-12 lg:pt-14",
+  tight: "pt-20 sm:pt-24 lg:pt-28",
+  default: "pt-28 sm:pt-36 lg:pt-44",
+};
+
+const PAD_B = {
+  strip: "pb-10 sm:pb-12 lg:pb-14",
+  tight: "pb-20 sm:pb-24 lg:pb-28",
+  default: "pb-28 sm:pb-36 lg:pb-44",
+};
+
+type Padding = keyof typeof PAD_T;
 export function Section({
   children,
   id,
   surface = "white",
+  padding = "default",
+  paddingTop,
+  paddingBottom,
+  clip = true,
   className,
 }: {
   children: React.ReactNode;
   id?: string;
   surface?: SurfaceKey;
+  padding?: Padding;
+  paddingTop?: Padding;
+  paddingBottom?: Padding;
+  clip?: boolean;
   className?: string;
 }) {
   const dark = toneOf(surface) === "dark";
@@ -919,13 +988,21 @@ export function Section({
     <section
       id={id}
       className={
-        "relative overflow-hidden " +
+        "relative " +
+        (clip ? "overflow-hidden " : "") +
         (dark ? "text-white " : "") +
         (className ?? "")
       }
       style={{ background: SURFACE[surface] }}
     >
-      <div className="relative rams-container pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
+      <div
+        className={
+          "relative rams-container " +
+          PAD_T[paddingTop ?? padding] +
+          " " +
+          PAD_B[paddingBottom ?? padding]
+        }
+      >
         {children}
       </div>
     </section>

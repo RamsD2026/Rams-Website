@@ -114,12 +114,12 @@ export const NAV_CONFIG: NavItemConfig[] = [
           },
           {
             label: "RTSS",
-            href: "/platform/execution-engine",
+            href: "/platform/rtss",
             description: "Real-Time Safety System",
           },
           {
             label: "IMDS",
-            href: "/platform/integrations",
+            href: "/platform/imds",
             description: "Integrated MHE Diagnostic System — WMS, ERP, CCTV, RFID, MHE",
           },
           {

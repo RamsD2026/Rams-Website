@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Boxes, LifeBuoy, LineChart, ListChecks, Radar } from "lucide-react";
+import { LifeBuoy, LineChart, ListChecks, Radar } from "lucide-react";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { EASE, Section } from "./rackiq-shared";
 
@@ -17,11 +17,6 @@ import { EASE, Section } from "./rackiq-shared";
  */
 
 const LINKS = [
-  {
-    Icon: Boxes,
-    name: "Digital Twin",
-    body: "Core rack identity, location and historical context.",
-  },
   {
     Icon: ListChecks,
     name: "ATOS",
@@ -97,7 +92,7 @@ export function RiqEcosystem() {
         width="wide"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {LINKS.map((link, i) => (
           <motion.article
             key={link.name}

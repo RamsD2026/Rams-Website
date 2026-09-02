@@ -28,6 +28,11 @@ const KEYWORDS = [
   "Compliance records",
 ];
 
+/** Terms enter and leave rather than snapping. Transparent at both ends so it
+    works on any surface. */
+const EDGE_FADE =
+  "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)";
+
 export function IrdspKeywords() {
   return (
     <div
@@ -50,15 +55,18 @@ export function IrdspKeywords() {
         }
       `}</style>
 
-      <div className="irdsp-kw-wrap">
+      {/* Masks the track rather than covering it with a painted block — the
+          hero sits on a radial gradient, so no solid colour matches what is
+          behind the edges. The rule above stays full width. */}
+      <div
+        className="irdsp-kw-wrap"
+        style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
+      >
         <div className="irdsp-kw-track">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
               {KEYWORDS.map((k) => (
-                <span
-                  key={copy + k}
-                  className="flex items-center shrink-0"
-                >
+                <span key={copy + k} className="flex items-center shrink-0">
                   <span className="text-[11.5px] font-mono font-semibold tracking-[0.16em] uppercase text-white/35 whitespace-nowrap">
                     {k}
                   </span>
@@ -73,18 +81,6 @@ export function IrdspKeywords() {
           ))}
         </div>
       </div>
-
-      {/* edge fades so terms enter and leave rather than snapping */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-28"
-        style={{ background: "linear-gradient(to right, #0B0B0C, transparent)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-28"
-        style={{ background: "linear-gradient(to left, #0B0B0C, transparent)" }}
-      />
     </div>
   );
 }
