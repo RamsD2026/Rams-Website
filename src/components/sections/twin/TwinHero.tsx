@@ -77,7 +77,7 @@ export function TwinHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.14, ease: EASE }}
-            className="mt-8 sm:mt-10 text-[34px] sm:text-[64px] lg:text-[96px] font-bold leading-[1.0] tracking-[-0.045em]"
+            className="mt-8 sm:mt-10 text-[34px] sm:text-[64px] lg:text-[96px] font-bold leading-[1.06] tracking-[-0.045em]"
           >
             <span className="block text-white">The next operating</span>
             <span className="block text-white">system will understand</span>

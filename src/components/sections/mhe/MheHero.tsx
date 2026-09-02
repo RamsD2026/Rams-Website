@@ -56,8 +56,7 @@ export function MheHero() {
               transition={{ duration: 0.85, delay: 0.12, ease: EASE }}
               className="text-white font-bold leading-[1.02] tracking-[-0.025em] text-4xl sm:text-5xl lg:text-6xl xl:text-7xl"
             >
-              Make every{" "}
-              <span className="text-signal-orange">movement</span>
+              Make every movement
               <br />
               safer and more productive.
             </motion.h1>

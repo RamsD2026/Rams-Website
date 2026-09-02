@@ -57,7 +57,7 @@ export function InvHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
+            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
             style={{ letterSpacing: "-0.045em" }}
           >
             <span className="block text-white">Know what you have.</span>
@@ -81,9 +81,9 @@ export function InvHero() {
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
             className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
-            RAMS turns inventory movement, location and reconciliation data
-            into a connected intelligence layer — helping warehouse teams
-            improve stock visibility, accuracy, aging control and inventory
+            RAMS turns inventory movement, location and reconciliation data into
+            a connected intelligence layer — helping warehouse teams improve
+            stock visibility, accuracy, aging control and inventory
             productivity.
           </motion.p>
 
@@ -119,7 +119,7 @@ export function InvHero() {
           >
             <Link
               href="/book-a-demo"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
             >
               Assess My Inventory
               <ArrowRight className="w-4 h-4" aria-hidden />
@@ -153,8 +153,7 @@ export function InvHero() {
           <div
             className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
             style={{
-              background:
-                "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
+              background: "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
               borderTop: "1px solid rgba(255,255,255,0.06)",
               borderLeft: "1px solid rgba(255,255,255,0.06)",
               borderRight: "1px solid rgba(255,255,255,0.06)",
@@ -282,8 +281,8 @@ function RackGrid() {
   const PAD_TOP = 34;
   const FLOOR_Y = 210;
 
-  const UPRIGHTS = 5;              // → 4 bays across (more air)
-  const LEVELS = 3;                // ground + 2 upper beam levels
+  const UPRIGHTS = 5; // → 4 bays across (more air)
+  const LEVELS = 3; // ground + 2 upper beam levels
   const PALLETS_PER_BAY = 2;
 
   const BAY_W = (VB_W - PAD_X * 2) / (UPRIGHTS - 1);
@@ -291,14 +290,36 @@ function RackGrid() {
 
   // pallet state per (bay, level, slot)  — 0=empty, 1=filled, 2=exception
   const STATE: Record<string, 0 | 1 | 2> = {
-    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 0, "0-2-0": 1, "0-2-1": 0,
-    "1-0-0": 1, "1-0-1": 2, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
-    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 0, "2-2-1": 1,
-    "3-0-0": 0, "3-0-1": 1, "3-1-0": 1, "3-1-1": 0, "3-2-0": 1, "3-2-1": 1,
+    "0-0-0": 1,
+    "0-0-1": 1,
+    "0-1-0": 1,
+    "0-1-1": 0,
+    "0-2-0": 1,
+    "0-2-1": 0,
+    "1-0-0": 1,
+    "1-0-1": 2,
+    "1-1-0": 0,
+    "1-1-1": 1,
+    "1-2-0": 1,
+    "1-2-1": 1,
+    "2-0-0": 1,
+    "2-0-1": 0,
+    "2-1-0": 1,
+    "2-1-1": 1,
+    "2-2-0": 0,
+    "2-2-1": 1,
+    "3-0-0": 0,
+    "3-0-1": 1,
+    "3-1-0": 1,
+    "3-1-1": 0,
+    "3-2-0": 1,
+    "3-2-1": 1,
   };
 
   // exception coord (bay=1, level=0, slot=1) → screen pos for pulse & callout
-  const excBay = 1, excLevel = 0, excSlot = 1;
+  const excBay = 1,
+    excLevel = 0,
+    excSlot = 1;
   const excBayX = PAD_X + excBay * BAY_W;
   const excSlotW = BAY_W / PALLETS_PER_BAY;
   const excX = excBayX + excSlot * excSlotW + excSlotW / 2;
@@ -331,7 +352,6 @@ function RackGrid() {
           className="absolute inset-0 w-full h-full"
           aria-hidden
         >
-
           {/* floor line */}
           <line
             x1={PAD_X - 6}
@@ -408,8 +428,7 @@ function RackGrid() {
                     style={
                       isExc
                         ? {
-                            filter:
-                              "drop-shadow(0 0 6px rgba(255,106,0,0.6))",
+                            filter: "drop-shadow(0 0 6px rgba(255,106,0,0.6))",
                           }
                         : undefined
                     }
@@ -455,7 +474,6 @@ function RackGrid() {
             </linearGradient>
           </defs>
         </svg>
-
       </div>
 
       {/* Exception footer bar — inline, no overlap */}
@@ -569,4 +587,3 @@ function ReconciliationFeed() {
     </>
   );
 }
-

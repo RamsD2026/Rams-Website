@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import {
-  AppleGlyph,
-  AndroidGlyph,
-  WindowsGlyph,
-} from "./PlatformGlyphs";
+import { AppleGlyph, AndroidGlyph, WindowsGlyph } from "./PlatformGlyphs";
 import { EASE, SURFACE, ProductVideo } from "./irdsp-shared";
 import { IrdspKeywords } from "./IrdspKeywords";
 import { BackgroundBeams } from "@/components/ui/background-beams";
@@ -21,10 +17,10 @@ export function IrdspHero() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[680px]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
         style={{
           background:
-            "radial-gradient(58% 58% at 50% 0%, rgba(255,106,0,0.18), transparent 70%)",
+            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.22), transparent 70%)",
         }}
       />
       <BackgroundBeams className="opacity-[0.55]" />

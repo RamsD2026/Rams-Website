@@ -55,7 +55,7 @@ export function IrdsHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
+            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
             style={{ letterSpacing: "-0.045em" }}
           >
             <span className="block text-white">Know the health</span>
@@ -79,9 +79,10 @@ export function IrdsHero() {
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
             className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[1120px] mx-auto"
           >
-            Move beyond periodic inspection. RAMS unifies expert rack inspection,
-            digital twin intelligence, RAG risk classification and issue closure into
-            one connected rack-safety system aligned to RACS and AS4084 standards.
+            Move beyond periodic inspection. RAMS unifies expert rack
+            inspection, digital twin intelligence, RAG risk classification and
+            issue closure into one connected rack-safety system aligned to RACS
+            and AS4084 standards.
           </motion.p>
 
           <motion.div
@@ -116,7 +117,7 @@ export function IrdsHero() {
           >
             <Link
               href="/book-a-demo"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
             >
               Book a Rack Safety Review
               <ArrowRight className="w-4 h-4" aria-hidden />
@@ -149,8 +150,7 @@ export function IrdsHero() {
           <div
             className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
             style={{
-              background:
-                "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
+              background: "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
               borderTop: "1px solid rgba(255,255,255,0.06)",
               borderLeft: "1px solid rgba(255,255,255,0.06)",
               borderRight: "1px solid rgba(255,255,255,0.06)",
@@ -275,19 +275,48 @@ function RackElevation() {
 
   // Pallet presence per bay/level/slot — 0 empty, 1 present (ambient neutral)
   const PALLETS: Record<string, 0 | 1> = {
-    "0-0-0": 1, "0-0-1": 1, "0-1-0": 1, "0-1-1": 1, "0-2-0": 1, "0-2-1": 0,
-    "1-0-0": 1, "1-0-1": 1, "1-1-0": 0, "1-1-1": 1, "1-2-0": 1, "1-2-1": 1,
-    "2-0-0": 1, "2-0-1": 0, "2-1-0": 1, "2-1-1": 1, "2-2-0": 1, "2-2-1": 1,
-    "3-0-0": 0, "3-0-1": 1, "3-1-0": 1, "3-1-1": 0, "3-2-0": 1, "3-2-1": 1,
+    "0-0-0": 1,
+    "0-0-1": 1,
+    "0-1-0": 1,
+    "0-1-1": 1,
+    "0-2-0": 1,
+    "0-2-1": 0,
+    "1-0-0": 1,
+    "1-0-1": 1,
+    "1-1-0": 0,
+    "1-1-1": 1,
+    "1-2-0": 1,
+    "1-2-1": 1,
+    "2-0-0": 1,
+    "2-0-1": 0,
+    "2-1-0": 1,
+    "2-1-1": 1,
+    "2-2-0": 1,
+    "2-2-1": 1,
+    "3-0-0": 0,
+    "3-0-1": 1,
+    "3-1-0": 1,
+    "3-1-1": 0,
+    "3-2-0": 1,
+    "3-2-1": 1,
   };
 
   // Upright condition: 0 ok, 2 amber, 3 red
   const UPRIGHT_STATE: (0 | 2 | 3)[] = [0, 3, 0, 2, 0];
   // Beam condition per level (bottom→top), per bay index
   const BEAM_STATE: Record<string, 0 | 2 | 3> = {
-    "0-0": 0, "1-0": 0, "2-0": 0, "3-0": 0,
-    "0-1": 0, "1-1": 0, "2-1": 0, "3-1": 0,
-    "0-2": 0, "1-2": 0, "2-2": 3, "3-2": 0,
+    "0-0": 0,
+    "1-0": 0,
+    "2-0": 0,
+    "3-0": 0,
+    "0-1": 0,
+    "1-1": 0,
+    "2-1": 0,
+    "3-1": 0,
+    "0-2": 0,
+    "1-2": 0,
+    "2-2": 3,
+    "3-2": 0,
   };
   // Baseplate condition per upright
   const BASEPLATE_STATE: (0 | 2 | 3)[] = [0, 3, 0, 0, 2];
@@ -313,15 +342,24 @@ function RackElevation() {
         </div>
         <div className="flex items-center gap-2 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
           <span className="inline-flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#FF4D4D" }} />
+            <span
+              className="w-1.5 h-1.5 rounded-sm"
+              style={{ background: "#FF4D4D" }}
+            />
             Red
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#FFB020" }} />
+            <span
+              className="w-1.5 h-1.5 rounded-sm"
+              style={{ background: "#FFB020" }}
+            />
             Amber
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-sm" style={{ background: "#2BCB74" }} />
+            <span
+              className="w-1.5 h-1.5 rounded-sm"
+              style={{ background: "#2BCB74" }}
+            />
             Green
           </span>
         </div>
@@ -392,7 +430,11 @@ function RackElevation() {
                   y2={y}
                   stroke={stroke}
                   strokeWidth={w}
-                  style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+                  style={
+                    damageGlow(state)
+                      ? { filter: damageGlow(state) }
+                      : undefined
+                  }
                 />
               );
             });
@@ -413,7 +455,9 @@ function RackElevation() {
                 y2={FLOOR_Y + 4}
                 stroke={stroke}
                 strokeWidth={w}
-                style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+                style={
+                  damageGlow(state) ? { filter: damageGlow(state) } : undefined
+                }
               />
             );
           })}
@@ -422,7 +466,8 @@ function RackElevation() {
           {Array.from({ length: UPRIGHTS }).map((_, u) => {
             const x = PAD_X + u * BAY_W;
             const state = BASEPLATE_STATE[u] ?? 0;
-            const color = state === 0 ? "rgba(255,255,255,0.28)" : damageColor(state);
+            const color =
+              state === 0 ? "rgba(255,255,255,0.28)" : damageColor(state);
             return (
               <rect
                 key={`base-${u}`}
@@ -432,7 +477,9 @@ function RackElevation() {
                 height={3}
                 rx={0.5}
                 fill={color}
-                style={damageGlow(state) ? { filter: damageGlow(state) } : undefined}
+                style={
+                  damageGlow(state) ? { filter: damageGlow(state) } : undefined
+                }
               />
             );
           })}
@@ -447,7 +494,15 @@ function RackElevation() {
             return (
               <g key={`mark-${key}`}>
                 <circle cx={cx} cy={cy} r={2.6} fill={color} />
-                <circle cx={cx} cy={cy} r={4.5} fill="none" stroke={color} strokeOpacity={0.35} strokeWidth={0.8} />
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={4.5}
+                  fill="none"
+                  stroke={color}
+                  strokeOpacity={0.35}
+                  strokeWidth={0.8}
+                />
               </g>
             );
           })}
@@ -488,7 +543,6 @@ function RackElevation() {
             </linearGradient>
           </defs>
         </svg>
-
       </div>
 
       <motion.div
@@ -503,8 +557,14 @@ function RackElevation() {
           boxShadow: "0 0 20px -8px rgba(255,77,77,0.35)",
         }}
       >
-        <span className="inline-flex items-center gap-1.5 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.16em] sm:tracking-[0.18em] uppercase shrink-0" style={{ color: "#FF6C6C" }}>
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FF4D4D" }} />
+        <span
+          className="inline-flex items-center gap-1.5 text-[8.5px] sm:text-[9px] font-mono font-bold tracking-[0.16em] sm:tracking-[0.18em] uppercase shrink-0"
+          style={{ color: "#FF6C6C" }}
+        >
+          <span
+            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            style={{ background: "#FF4D4D" }}
+          />
           Critical
         </span>
         <span className="text-[10.5px] sm:text-[11px] font-semibold text-white leading-tight truncate min-w-0 flex-1">
@@ -550,7 +610,11 @@ function FindingsFeed() {
               : isWarning
                 ? "rgba(255,176,32,0.16)"
                 : "rgba(43,203,116,0.16)";
-            const color = isCritical ? "#FF6C6C" : isWarning ? "#FFBE47" : "#54DE91";
+            const color = isCritical
+              ? "#FF6C6C"
+              : isWarning
+                ? "#FFBE47"
+                : "#54DE91";
             const glyph = isCritical ? "!" : isWarning ? "•" : "✓";
             return (
               <div

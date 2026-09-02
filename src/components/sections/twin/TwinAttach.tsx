@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, Plus } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
+import { Check } from "lucide-react";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import {
@@ -31,6 +37,10 @@ import {
  *
  * Nothing here resets. What you add stays added, so the end state is the
  * whole operation on one plan.
+ *
+ * The reader does not press anything: the layers attach as the section is
+ * scrolled, one per step of a runway underneath a pinned panel. By the time
+ * the runway is spent the building is complete, and the page moves on.
  */
 
 /* The section runs on the dark ground, so the plan is light geometry on a
@@ -412,25 +422,36 @@ function Plan({ on }: { on: Record<Key, boolean> }) {
 
 /* ── the section ─────────────────────────────────────────── */
 
+/** Where in the runway each layer lands. */
+const STEPS = [0.1, 0.32, 0.54, 0.76];
+
 export function TwinAttach() {
-  const [on, setOn] = useState<Record<Key, boolean>>({
-    assets: false,
-    zones: false,
-    sensors: false,
-    data: false,
+  const still = useReducedMotion() ?? false;
+  const runway = useRef<HTMLDivElement>(null);
+  const [count, setCount] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: runway,
+    offset: ["start start", "end end"],
   });
-  const [last, setLast] = useState<Key | null>(null);
 
-  const toggle = (k: Key) => {
-    setOn((s) => ({ ...s, [k]: !s[k] }));
-    setLast(k);
-  };
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    setCount(STEPS.filter((t) => p >= t).length);
+  });
 
-  const count = LAYERS.filter((l) => on[l.key]).length;
-  const shown = last && on[last] ? LAYERS.find((l) => l.key === last) : null;
+  /* Motion off means the building is simply already built. */
+  const shown = still ? LAYERS.length : count;
+  const on = {
+    assets: shown > 0,
+    zones: shown > 1,
+    sensors: shown > 2,
+    data: shown > 3,
+  } as Record<Key, boolean>;
+
+  const latest = shown > 0 ? LAYERS[shown - 1] : null;
 
   return (
-    <Section surface="darkMid" id="attach">
+    <Section surface="darkMid" id="attach" clip={false}>
       <style>{`
         @keyframes twinatt-ping {
           0%   { transform: scale(0.7); opacity: 0.75; }
@@ -465,122 +486,117 @@ export function TwinAttach() {
         bodyWidth="wide"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start max-w-[1180px] mx-auto">
-        {/* attach them one at a time */}
-        <div className="lg:col-span-5">
-          {LAYERS.map((l, i) => {
-            const added = on[l.key];
-            return (
-              <button
-                key={l.key}
-                type="button"
-                aria-pressed={added}
-                onClick={() => toggle(l.key)}
-                className="flex w-full items-center gap-5 py-5 text-left"
-                style={{ borderTop: i ? `1px solid ${LINE}` : undefined }}
+      {/* a runway to scroll, with the panel pinned inside it */}
+      <div ref={runway} className="relative" style={{ height: "300vh" }}>
+        <div className="sticky top-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-[1180px] mx-auto">
+            {/* what has attached so far */}
+            <div className="lg:col-span-5">
+              {LAYERS.map((l, i) => {
+                const added = on[l.key];
+                return (
+                  <div
+                    key={l.key}
+                    className="flex w-full items-center gap-5 py-5"
+                    style={{ borderTop: i ? `1px solid ${LINE}` : undefined }}
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className="block font-rams-heading text-[17px] font-bold tracking-[-0.02em] transition-colors duration-500"
+                        style={{
+                          color: added ? "#FFFFFF" : "rgba(255,255,255,0.35)",
+                        }}
+                      >
+                        {l.label}
+                      </span>
+                      <span
+                        className="block mt-2 text-[13px] leading-[1.6] transition-colors duration-500"
+                        style={{
+                          color: added
+                            ? "rgba(255,255,255,0.6)"
+                            : "rgba(255,255,255,0.22)",
+                        }}
+                      >
+                        {l.items}
+                      </span>
+                    </span>
+
+                    <span className="flex items-center gap-3 shrink-0">
+                      <span
+                        className="text-[9.5px] font-mono font-bold tracking-[0.14em] uppercase transition-colors duration-500"
+                        style={{
+                          color: added ? "#FF6A00" : "rgba(255,255,255,0.22)",
+                        }}
+                      >
+                        {added ? "Attached" : "Waiting"}
+                      </span>
+                      <span
+                        className="flex items-center justify-center w-[26px] h-[26px] rounded-full transition-colors duration-500"
+                        style={{
+                          background: added ? "#FF6A00" : "transparent",
+                          border: `1px solid ${added ? "#FF6A00" : "rgba(255,255,255,0.18)"}`,
+                        }}
+                      >
+                        {added && (
+                          <Check
+                            className="w-3.5 h-3.5 text-white"
+                            strokeWidth={3}
+                            aria-hidden
+                          />
+                        )}
+                      </span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="lg:col-span-7">
+              <div
+                className="overflow-hidden"
+                style={{
+                  borderRadius: 16,
+                  background: CARD,
+                  border: `1px solid ${LINE}`,
+                }}
               >
-                <span className="min-w-0 flex-1">
-                  <span
-                    className="block font-rams-heading text-[17px] font-bold tracking-[-0.02em] transition-colors duration-300"
-                    style={{
-                      color: added ? "#FFFFFF" : "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    {l.label}
-                  </span>
-                  <span
-                    className="block mt-2 text-[13px] leading-[1.6] transition-colors duration-300"
-                    style={{
-                      color: added
-                        ? "rgba(255,255,255,0.6)"
-                        : "rgba(255,255,255,0.32)",
-                    }}
-                  >
-                    {l.items}
-                  </span>
-                </span>
-
-                {/* the control sits against the content it attaches */}
-                <span className="flex items-center gap-3 shrink-0">
-                  <span
-                    className="text-[9.5px] font-mono font-bold tracking-[0.14em] uppercase transition-colors duration-300"
-                    style={{
-                      color: added ? "#FF6A00" : "rgba(255,255,255,0.3)",
-                    }}
-                  >
-                    {added ? "Attached" : "Attach"}
-                  </span>
-                  <span
-                    className="flex items-center justify-center w-[26px] h-[26px] rounded-full transition-colors duration-300"
-                    style={{
-                      background: added ? "#FF6A00" : "transparent",
-                      border: `1px solid ${added ? "#FF6A00" : "rgba(255,255,255,0.25)"}`,
-                    }}
-                  >
-                    {added ? (
-                      <Check
-                        className="w-3.5 h-3.5 text-white"
-                        strokeWidth={3}
-                        aria-hidden
-                      />
-                    ) : (
-                      <Plus
-                        className="w-3.5 h-3.5 text-white/50"
-                        strokeWidth={2.6}
-                        aria-hidden
-                      />
-                    )}
-                  </span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="lg:col-span-7">
-          <div
-            className="overflow-hidden"
-            style={{
-              borderRadius: 16,
-              background: CARD,
-              border: `1px solid ${LINE}`,
-            }}
-          >
-            <div
-              className="flex items-center justify-between gap-3 px-5 py-3.5"
-              style={{
-                borderBottom: `1px solid ${LINE}`,
-                background: CHROME,
-              }}
-            >
-              <span className="text-[11.5px] font-semibold text-white/85">
-                Warehouse 01 — Digital Twin
-              </span>
-              <span className="text-[9.5px] font-mono font-bold tracking-[0.14em] uppercase tabular-nums text-white/40">
-                {count} / {LAYERS.length} attached
-              </span>
-            </div>
-
-            <div className="p-4 sm:p-6">
-              <Plan on={on} />
-            </div>
-
-            <div
-              className="relative px-5 py-4 min-h-[62px] flex items-center"
-              style={{ borderTop: `1px solid ${LINE}`, background: CHROME }}
-            >
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={shown?.key ?? "empty"}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.32, ease: EASE }}
-                  className="text-[12.5px] leading-[1.6] text-white/50"
+                <div
+                  className="flex items-center justify-between gap-3 px-5 py-3.5"
+                  style={{
+                    borderBottom: `1px solid ${LINE}`,
+                    background: CHROME,
+                  }}
                 >
-                  {shown?.caption ?? "An empty building. Attach a layer to it."}
-                </motion.p>
-              </AnimatePresence>
+                  <span className="text-[11.5px] font-semibold text-white/85">
+                    Warehouse 01 — Digital Twin
+                  </span>
+                  <span className="text-[9.5px] font-mono font-bold tracking-[0.14em] uppercase tabular-nums text-white/40">
+                    {shown} / {LAYERS.length} attached
+                  </span>
+                </div>
+
+                <div className="p-4 sm:p-6">
+                  <Plan on={on} />
+                </div>
+
+                <div
+                  className="relative px-5 py-4 min-h-[62px] flex items-center"
+                  style={{ borderTop: `1px solid ${LINE}`, background: CHROME }}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={latest?.key ?? "empty"}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.32, ease: EASE }}
+                      className="text-[12.5px] leading-[1.6] text-white/50"
+                    >
+                      {latest?.caption ?? "An empty building. Keep scrolling."}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
           </div>
         </div>

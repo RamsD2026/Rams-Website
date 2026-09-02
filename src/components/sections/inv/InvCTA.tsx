@@ -83,9 +83,9 @@ export function InvCTA() {
             transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
             className="mt-6 text-[14px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
-            Talk to RAMS Digital about inventory mapping, reconciliation,
-            aging intelligence and automated inventory visibility for your
-            warehouse network.
+            Talk to RAMS Digital about inventory mapping, reconciliation, aging
+            intelligence and automated inventory visibility for your warehouse
+            network.
           </motion.p>
 
           <motion.div
@@ -97,7 +97,7 @@ export function InvCTA() {
           >
             <Link
               href="/book-a-demo"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
             >
               Assess My Inventory
               <ArrowRight className="w-4 h-4" aria-hidden />

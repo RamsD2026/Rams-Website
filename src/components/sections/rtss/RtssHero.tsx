@@ -75,10 +75,10 @@ export function RtssHero() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[680px]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
         style={{
           background:
-            "radial-gradient(58% 58% at 50% 0%, rgba(255,106,0,0.18), transparent 70%)",
+            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.22), transparent 70%)",
         }}
       />
       <BackgroundBeams className="opacity-[0.5]" />
@@ -118,10 +118,7 @@ export function RtssHero() {
             transition={{ duration: 0.95, delay: 0.14, ease: EASE }}
             className="mt-8 sm:mt-10 text-[40px] sm:text-[60px] lg:text-[80px] font-bold leading-[1.05] tracking-[-0.044em]"
           >
-            <span className="block text-white">
-              Every event has a{" "}
-              <span className="text-signal-orange">context</span>.
-            </span>
+            <span className="block text-white">Every event has a context.</span>
             <span
               className="block"
               style={{

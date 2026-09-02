@@ -56,7 +56,7 @@ export function WexHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[0.98] tracking-[-0.045em]"
+            className="mt-8 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
             style={{ letterSpacing: "-0.045em" }}
           >
             <span className="block text-white">Turn plans into</span>
@@ -80,9 +80,10 @@ export function WexHero() {
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
             className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[1120px] mx-auto"
           >
-            RAMS connects tasks, MHEs, operators, pallets and warehouse zones into
-            one execution layer — helping teams assign work faster, reduce
-            unnecessary movement, manage exceptions and improve shift productivity.
+            RAMS connects tasks, MHEs, operators, pallets and warehouse zones
+            into one execution layer — helping teams assign work faster, reduce
+            unnecessary movement, manage exceptions and improve shift
+            productivity.
           </motion.p>
 
           <motion.div
@@ -117,7 +118,7 @@ export function WexHero() {
           >
             <Link
               href="/book-a-demo"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
             >
               Optimise My Operations
               <ArrowRight className="w-4 h-4" aria-hidden />
@@ -404,7 +405,11 @@ function TaskQueue({
           const pill = showDone
             ? { label: "Done", ...greenTone }
             : isActive
-              ? { label: "Running", bg: "rgba(255,106,0,0.14)", color: "#FF9B4D" }
+              ? {
+                  label: "Running",
+                  bg: "rgba(255,106,0,0.14)",
+                  color: "#FF9B4D",
+                }
               : { label: t.state, ...tone };
 
           return (
@@ -434,7 +439,10 @@ function TaskQueue({
                   {showDone && (
                     <span
                       className="flex items-center justify-center w-3.5 h-3.5 rounded-full text-[8px] font-bold shrink-0"
-                      style={{ background: greenTone.bg, color: greenTone.color }}
+                      style={{
+                        background: greenTone.bg,
+                        color: greenTone.color,
+                      }}
                     >
                       ✓
                     </span>
@@ -862,8 +870,16 @@ function ExecutionMap({
               initial={{ x: route.x[0], y: route.y[0], opacity: 0 }}
               animate={{ x: route.x, y: route.y, opacity: 1 }}
               transition={{
-                x: { duration: RUN_MS / 1000, ease: "linear", times: route.times },
-                y: { duration: RUN_MS / 1000, ease: "linear", times: route.times },
+                x: {
+                  duration: RUN_MS / 1000,
+                  ease: "linear",
+                  times: route.times,
+                },
+                y: {
+                  duration: RUN_MS / 1000,
+                  ease: "linear",
+                  times: route.times,
+                },
                 opacity: { duration: 0.35, ease: EASE },
               }}
             >
@@ -876,7 +892,9 @@ function ExecutionMap({
               <circle
                 r={3.2}
                 fill="#FFFFFF"
-                style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,0.85))" }}
+                style={{
+                  filter: "drop-shadow(0 0 6px rgba(255,255,255,0.85))",
+                }}
               />
               <TaskCard task={active} status="In progress" tone="amber" />
             </motion.g>
@@ -894,7 +912,11 @@ function ExecutionMap({
                 stroke="rgba(43,203,116,0.6)"
                 strokeWidth={0.8}
                 animate={{ r: [7, 13, 7], opacity: [1, 0.2, 1] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
               />
               <circle
                 r={3.2}

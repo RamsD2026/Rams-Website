@@ -96,7 +96,7 @@ export function WexCTA() {
           >
             <Link
               href="/book-a-demo"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-white/90"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
             >
               Optimise My Operations
               <ArrowRight className="w-4 h-4" aria-hidden />

@@ -33,7 +33,7 @@ export function DtwHero() {
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.08, ease: EASE }}
-            className="mt-8 text-[46px] sm:text-[70px] lg:text-[88px] font-bold leading-[1.0] tracking-[-0.045em]"
+            className="mt-8 text-[46px] sm:text-[70px] lg:text-[88px] font-bold leading-[1.06] tracking-[-0.045em]"
           >
             The best model of your <br className="hidden sm:block" />
             warehouse is{" "}
