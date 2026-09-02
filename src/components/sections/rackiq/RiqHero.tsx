@@ -53,8 +53,7 @@ export function RiqHero() {
             transition={{ duration: 0.55, delay: 0.06, ease: EASE }}
             className="mt-6 text-[12.5px] sm:text-[14px] text-white/50"
           >
-            Powered by{" "}
-            <span className="font-semibold text-white/80">IRDS</span>
+            Powered by <span className="font-semibold text-white/80">IRDS</span>
             <span className="mx-2 text-white/25">—</span>
             Integrated Rack Diagnostic Suite
           </motion.p>
@@ -90,7 +89,6 @@ export function RiqHero() {
             Build the evidence — in one connected system.
           </motion.p>
 
-
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -112,15 +110,6 @@ export function RiqHero() {
               View Sample Report
             </Link>
           </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.44 }}
-            className="mt-7 text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-white/35"
-          >
-            Rack safety all year — not compliance only on inspection day
-          </motion.p>
         </div>
 
         {/* ── the product ───────────────────────────────── */}

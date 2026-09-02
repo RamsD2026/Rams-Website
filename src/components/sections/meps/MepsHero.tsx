@@ -214,15 +214,6 @@ export function MepsHero() {
               Explore the Live Command Centre
             </Link>
           </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.44 }}
-            className="mt-7 text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-white/35"
-          >
-            See the movement. Understand the work. Improve the operation.
-          </motion.p>
         </div>
 
         {/* ── the product ───────────────────────────────── */}

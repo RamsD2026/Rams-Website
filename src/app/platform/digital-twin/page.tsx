@@ -8,6 +8,13 @@ import { TwinAttach } from "@/components/sections/twin/TwinAttach";
 import { TwinStack } from "@/components/sections/twin/TwinStack";
 import { TwinSignal } from "@/components/sections/twin/TwinSignal";
 import { TwinAI } from "@/components/sections/twin/TwinAI";
+import { TwinEdge } from "@/components/sections/twin/TwinEdge";
+import { TwinLifecycle } from "@/components/sections/twin/TwinLifecycle";
+import { TwinAsset } from "@/components/sections/twin/TwinAsset";
+import { TwinProof } from "@/components/sections/twin/TwinProof";
+import { TwinApps } from "@/components/sections/twin/TwinApps";
+import { TwinSensors } from "@/components/sections/twin/TwinSensors";
+import { TwinCTA } from "@/components/sections/twin/TwinCTA";
 
 export const metadata: Metadata = {
   title: "Digital Twin | RAMS Platform",
@@ -27,6 +34,13 @@ export default function DigitalTwinPage() {
       <TwinStack />
       <TwinSignal />
       <TwinAI />
+      <TwinEdge />
+      <TwinLifecycle />
+      <TwinAsset />
+      <TwinProof />
+      <TwinApps />
+      <TwinSensors />
+      <TwinCTA />
     </>
   );
 }
