@@ -1,47 +1,75 @@
 import type { Metadata } from "next";
-import { ImdsHero } from "@/components/sections/imds/ImdsHero";
-import { ImdsArchitecture } from "@/components/sections/imds/ImdsArchitecture";
-import { ImdsTriggers } from "@/components/sections/imds/ImdsTriggers";
-import { ImdsSignals } from "@/components/sections/imds/ImdsSignals";
-import { ImdsSensors } from "@/components/sections/imds/ImdsSensors";
-import { ImdsPreshift } from "@/components/sections/imds/ImdsPreshift";
-import { ImdsFaults } from "@/components/sections/imds/ImdsFaults";
-import { ImdsWorkOrders } from "@/components/sections/imds/ImdsWorkOrders";
-import { ImdsDamage } from "@/components/sections/imds/ImdsDamage";
-import { ImdsHealth } from "@/components/sections/imds/ImdsHealth";
-import { ImdsValue } from "@/components/sections/imds/ImdsValue";
-import { ImdsEcosystem } from "@/components/sections/imds/ImdsEcosystem";
-import { ImdsCTA } from "@/components/sections/imds/ImdsCTA";
+import { ImdHero } from "@/components/sections/imd/ImdHero";
+import { ImdProblem } from "@/components/sections/imd/ImdProblem";
+import { ImdCapture } from "@/components/sections/imd/ImdCapture";
+import { ImdHow } from "@/components/sections/imd/ImdHow";
+import { ImdCapabilities } from "@/components/sections/imd/ImdCapabilities";
+import { ImdExperience } from "@/components/sections/imd/ImdExperience";
+import { ImdOutcomes } from "@/components/sections/imd/ImdOutcomes";
+import { ImdIntegrations } from "@/components/sections/imd/ImdIntegrations";
+import { ImdUseCases } from "@/components/sections/imd/ImdUseCases";
+import { ImdFAQ } from "@/components/sections/imd/ImdFAQ";
+import { ImdCTA } from "@/components/sections/imd/ImdCTA";
 
 export const metadata: Metadata = {
-  title: "RAMS MHE Maintenance Intelligence — Powered by IMDS | RAMS",
+  title: "RAMS IMDS — Integrated MHE Diagnostic System | RAMS",
   description:
-    "IMDS turns real MHE usage — operating hours, lift cycles, fault codes and impacts — into planned maintenance, digital pre-shift inspections and tracked work orders. From reactive breakdowns to planned maintenance.",
+    "IMDS connects equipment condition, faults, battery health, usage, impacts, inspections and maintenance history to create a living diagnostic record for every MHE.",
 };
 
 /**
- * RAMS MHE Maintenance Intelligence — the IMDS platform page.
+ * RAMS IMDS — the MHE diagnostics platform page.
  *
- * Built section by section on the system established by /platform/irds,
- * /platform/meps and /platform/rtss: <Section> surfaces, <SectionHeader>, the
- * shared card and frame treatments. Content follows the IMDS source document.
+ * Rebuilt on the eleven-section shape shared with /platform/digital-twin,
+ * /platform/meps, /platform/irds, /platform/ai-operational-intelligence and
+ * /platform/rtss, using only the section patterns those established.
+ *
+ *   01 Hero      darkTop   the diagnostics command centre, on the first screen
+ *   02 Problem   white     the four ways maintenance starts too late
+ *   03 What it is offWhite  five sources into one record, on one canvas
+ *   04 How       white     five steps, equipment signal to verified maintenance
+ *   05 Capab.    offWhite  the six capability groups, sticky-scrolled
+ *   06 Exper.    ink       one parameter crossing its threshold
+ *   07 Outcomes  white     where reliability becomes measurable
+ *   08 Integr.   offWhite  the fleet, the site systems and the RAMS modules
+ *   09 Use cases white     the six fleet-health programmes, in the carousel
+ *   10 FAQ       offWhite  six questions, two of them saying no
+ *   11 CTA       darkBtm   the close
+ *
+ * Surfaces alternate — no two adjacent sections share one.
+ *
+ * Nothing here is a grey placeholder and nothing is borrowed. There is no IMDS
+ * capture in /public and the only registered screens in `SHOTS` are IRDS's, so
+ * every product view is drawn from written-down data.
+ *
+ * Section six is the argument, and it runs the source document's own "simulate
+ * diagnostic fault": on one side MHE 04 is healthy at 87 with no open codes;
+ * on the other, one battery temperature has crossed 45 °C and the score, the
+ * fleet counts, the trend's last point, the six asset rows and the attention
+ * list all re-read together. The layout is identical on both sides.
+ *
+ * Two of the FAQ answers are a flat no, and both are load-bearing: IMDS does
+ * not replace the OEM diagnostic tool, and it cannot predict every breakdown.
+ * A diagnostics product that implies either invites a workshop to skip
+ * manufacturer procedure or a fleet manager to stop inspecting.
+ *
+ * The previous build composed this page from the `imds` components (ImdsHero
+ * through ImdsCTA). Those are all still on disk and now unimported.
  */
 export default function ImdsPlatformPage() {
   return (
     <>
-      <ImdsHero />
-      <ImdsArchitecture />
-      <ImdsTriggers />
-      <ImdsSignals />
-      <ImdsSensors />
-      <ImdsPreshift />
-      <ImdsFaults />
-      <ImdsWorkOrders />
-      <ImdsDamage />
-      <ImdsHealth />
-      <ImdsValue />
-      <ImdsEcosystem />
-      <ImdsCTA />
+      <ImdHero />
+      <ImdProblem />
+      <ImdCapture />
+      <ImdHow />
+      <ImdCapabilities />
+      <ImdExperience />
+      <ImdOutcomes />
+      <ImdIntegrations />
+      <ImdUseCases />
+      <ImdFAQ />
+      <ImdCTA />
     </>
   );
 }

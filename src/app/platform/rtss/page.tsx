@@ -1,52 +1,78 @@
 import type { Metadata } from "next";
-import { RtssHero } from "@/components/sections/rtss/RtssHero";
-import { RtssDriving } from "@/components/sections/rtss/RtssDriving";
-import { RtssOperator } from "@/components/sections/rtss/RtssOperator";
-import { RtssImpact } from "@/components/sections/rtss/RtssImpact";
-import { RtssActive } from "@/components/sections/rtss/RtssActive";
-import { RtssResponse } from "@/components/sections/rtss/RtssResponse";
-import { RtssHistory } from "@/components/sections/rtss/RtssHistory";
-import { RtssAction } from "@/components/sections/rtss/RtssAction";
-import { RtssOwners } from "@/components/sections/rtss/RtssOwners";
-import { RtssVerify } from "@/components/sections/rtss/RtssVerify";
-import { RtssValue } from "@/components/sections/rtss/RtssValue";
-import { RtssEcosystem } from "@/components/sections/rtss/RtssEcosystem";
-import { RtssCTA } from "@/components/sections/rtss/RtssCTA";
-// import { RtssHardware } from "@/components/sections/rtss/RtssHardware";
+import { RtsHero } from "@/components/sections/rts/RtsHero";
+import { RtsProblem } from "@/components/sections/rts/RtsProblem";
+import { RtsOverview } from "@/components/sections/rts/RtsOverview";
+import { RtsHow } from "@/components/sections/rts/RtsHow";
+import { RtsCapabilities } from "@/components/sections/rts/RtsCapabilities";
+import { RtsExperience } from "@/components/sections/rts/RtsExperience";
+import { RtsOutcomes } from "@/components/sections/rts/RtsOutcomes";
+import { RtsIntegrations } from "@/components/sections/rts/RtsIntegrations";
+import { RtsUseCases } from "@/components/sections/rts/RtsUseCases";
+import { RtsFAQ } from "@/components/sections/rts/RtsFAQ";
+import { RtsCTA } from "@/components/sections/rts/RtsCTA";
 
 export const metadata: Metadata = {
-  title: "RAMS MHE Safety Intelligence — Powered by RTSS | RAMS",
+  title: "RAMS RTSS — Real-Time Safety System | RAMS",
   description:
-    "RTSS turns MHE driving behaviour and safety events into connected intelligence — behaviour, event, context, evidence, pattern, action. Detect. Understand. Verify. Act. Learn.",
+    "RTSS connects MHE movement, impacts, driver behaviour, safety zones and live operational context so teams can detect risk, respond faster and prevent recurrence.",
 };
 
 /**
- * RAMS MHE Safety Intelligence — the RTSS platform page.
+ * RAMS RTSS — the real-time safety platform page.
  *
- * Built section by section on the system established by /platform/irds and
- * /platform/meps: <Section> surfaces, <SectionHeader>, the shared card and
- * frame treatments. Content follows the RTSS source document without change.
+ * Rebuilt on the eleven-section shape settled by /platform/digital-twin,
+ * /platform/meps, /platform/irds and /platform/ai-operational-intelligence,
+ * using only the section patterns those established.
+ *
+ *   01 Hero      darkTop   the safety command centre, on the first screen
+ *   02 Problem   white     the four ways a safety system arrives too late
+ *   03 Overview  offWhite  the six things the safety layer holds
+ *   04 How       white     five steps, physical signal to preventive action
+ *   05 Capab.    offWhite  the six capability groups, sticky-scrolled
+ *   06 Exper.    ink       one proximity event, and the record re-reading
+ *   07 Outcomes  white     where safety becomes measurable
+ *   08 Integr.   offWhite  hardware, client systems and the RAMS modules
+ *   09 Use cases white     the six safety programmes, in the carousel
+ *   10 FAQ       offWhite  six questions, one of them the important no
+ *   11 CTA       darkBtm   the close
+ *
+ * Surfaces alternate — no two adjacent sections share one.
+ *
+ * Nothing on this page is a grey placeholder and nothing is borrowed. There is
+ * no RTSS capture in /public and the only registered screens in `SHOTS` are
+ * IRDS's, so every product view is drawn from written-down data.
+ *
+ * Section six is the argument. The switch runs the source document's own
+ * "simulate proximity risk": on one side MHE 04 is inside every limit — 5.2
+ * km/h against a 6.0 limit, 6.4 m of separation — and on the other, one thing
+ * has changed in the physical world and the speed, the separation, the risk
+ * status, the event list and the high-risk count all re-read together. The
+ * layout is identical on both sides, so what the reader sees move is the
+ * information, not the page.
+ *
+ * The most important sentence on the page is in the FAQ: no technology can
+ * guarantee that no accident happens. A safety product that implies otherwise
+ * invites a site to lean on it instead of on risk assessment, engineered
+ * controls, training and supervision, so the answer names all four. Nothing
+ * here is presented as a customer result either.
+ *
+ * The previous build composed this page from the `rtss` components (RtssHero
+ * through RtssCTA). Those are all still on disk and unimported.
  */
 export default function RtssPlatformPage() {
   return (
     <>
-      <RtssHero />
-      <RtssDriving />
-      <RtssOperator />
-      <RtssImpact />
-      <RtssActive />
-      <RtssResponse />
-      <RtssHistory />
-      <RtssAction />
-      <RtssOwners />
-      <RtssVerify />
-      <RtssValue />
-      <RtssEcosystem />
-      <RtssCTA />
-      {/* Hidden for now — the component is intact in
-          src/components/sections/rtss/RtssHardware.tsx; uncomment the import
-          above and this line to bring it back. */}
-      {/* <RtssHardware /> */}
+      <RtsHero />
+      <RtsProblem />
+      <RtsOverview />
+      <RtsHow />
+      <RtsCapabilities />
+      <RtsExperience />
+      <RtsOutcomes />
+      <RtsIntegrations />
+      <RtsUseCases />
+      <RtsFAQ />
+      <RtsCTA />
     </>
   );
 }
