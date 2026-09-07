@@ -23,6 +23,11 @@ export const SURFACE = {
      than full strength so the two light surfaces still read apart. */
   warm: "rgba(245, 245, 247, 0.6)",
   ink: "#08080A",
+  /* Flat, no gradient, with the slight teal cast of `--color-carbon-teal`.
+     For a section that should sit as one uniform plane behind light product
+     panels — a radial there fights the panels for depth. Additive: nothing
+     that shipped before uses it. */
+  inkTeal: "#0B1619",
   darkTop:
     "radial-gradient(80% 100% at 50% 0%, #1D1D1F 0%, #0E0E0F 55%, #08080A 100%)",
   darkMid:
@@ -34,7 +39,13 @@ export const SURFACE = {
 export type SurfaceKey = keyof typeof SURFACE;
 export type Tone = "light" | "dark";
 
-const DARK_SURFACES: SurfaceKey[] = ["ink", "darkTop", "darkMid", "darkBottom"];
+const DARK_SURFACES: SurfaceKey[] = [
+  "ink",
+  "inkTeal",
+  "darkTop",
+  "darkMid",
+  "darkBottom",
+];
 export const toneOf = (s: SurfaceKey): Tone =>
   DARK_SURFACES.includes(s) ? "dark" : "light";
 

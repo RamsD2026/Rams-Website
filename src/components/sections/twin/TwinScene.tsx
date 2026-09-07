@@ -256,6 +256,19 @@ export default function TwinScene() {
         camera={{ position: [17, 15.5, 22], fov: 34 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
+        /* A lost context is not rare — a GPU reset, a driver hiccup or too
+           many live canvases will all do it, and dev hot-reload does it
+           constantly. The browser only *attempts* restoration if the lost
+           event is cancelled, so without this the frame goes black and stays
+           black. On restore we invalidate, because `frameloop="demand"`
+           would otherwise never draw the recovered context. */
+        onCreated={({ gl, invalidate }) => {
+          const canvas = gl.domElement;
+          const onLost = (e: Event) => e.preventDefault();
+          const onRestored = () => invalidate();
+          canvas.addEventListener("webglcontextlost", onLost);
+          canvas.addEventListener("webglcontextrestored", onRestored);
+        }}
       >
         <ambientLight intensity={1.5} />
         <directionalLight position={[12, 22, 8]} intensity={2.2} />

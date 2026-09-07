@@ -2,24 +2,19 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
+import { ArrowUpRight } from "lucide-react";
+import { SURFACE } from "@/components/sections/rackiq/rackiq-shared";
+import { EASE } from "./irdsx-shared";
 
 /**
- * The close.
+ * 17 — The close.
  *
- * Same dark ground, bottom glow and button treatment as the MEPS, RackIQ,
- * RTSS and IMDS closes. The demo link goes to /book-a-demo, which is what
- * every other CTA on this site does.
- *
- * The reference this copy came from was a full-bleed signal-orange panel. It
- * is not built that way: the brand palette puts orange at "5% — CTAs, critical
- * emphasis only", and a whole section of it would be most of a screen. The
- * dark close with one orange button is the same emphasis, spent where the
- * rules allow.
+ * The site's unified dark close, unchanged: same ground, bottom glow and
+ * button shapes as the Digital Twin, MEPS and IRDS closes. A product tour ends
+ * on the same door as everything else on this site.
  */
 
-export function TwinCTA() {
+export function IrxCTA() {
   return (
     <section
       className="relative overflow-hidden text-white"
@@ -43,7 +38,7 @@ export function TwinCTA() {
           transition={{ duration: 0.5 }}
           className="text-[12px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange"
         >
-          Start the conversation
+          See it running
         </motion.p>
 
         <motion.h2
@@ -53,11 +48,10 @@ export function TwinCTA() {
           transition={{ duration: 0.85, ease: EASE }}
           className="mt-5 text-[32px] sm:text-[46px] lg:text-[60px] font-bold tracking-[-0.04em] leading-[1.06] mx-auto"
         >
-          <span className="text-white">Start with the physical world.</span>
+          <span className="text-white">See IRDS run one cycle</span>
           <br />
           <span className="text-white/45">
-            Build <span className="text-signal-orange">intelligence</span>{" "}
-            around it.
+            On <span className="text-signal-orange">your rack estate</span>.
           </span>
         </motion.h2>
 
@@ -68,9 +62,9 @@ export function TwinCTA() {
           transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
           className="mt-7 text-[16px] sm:text-[18px] text-white/55 leading-[1.6] max-w-[880px] mx-auto"
         >
-          Create the Digital Twin. Tag the assets. Simulate change. Connect
-          sensors and systems. Add applications. Build a persistent operating
-          layer for the physical facility.
+          A working session on your own rack systems, inspection method and
+          thresholds — set up, configured, inspected, tested, reviewed and
+          reported, end to end.
         </motion.p>
 
         <motion.div
@@ -84,22 +78,22 @@ export function TwinCTA() {
             href="/book-a-demo"
             className="inline-flex items-center gap-2 bg-signal-orange text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-signal-orange-hover hover:-translate-y-0.5"
           >
-            Request a demo
-            <ArrowRight className="w-4 h-4" aria-hidden />
+            Book a demo
+            <ArrowUpRight className="w-4 h-4" aria-hidden />
           </Link>
           <Link
-            href="#layers"
+            href="#workflow"
             className="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-white hover:text-carbon"
             style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.18)" }}
           >
-            Explore the Digital Twin
+            Walk the workflow again
           </Link>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 text-white/70 text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:text-white hover:bg-white/[0.06]"
             style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.12)" }}
           >
-            Talk to an expert
+            Talk to a rack safety expert
           </Link>
         </motion.div>
       </div>

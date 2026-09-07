@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
 
 /**
  * The close.
  *
- * Built on RiqCTA — same dark ground, same bottom glow, same button pair.
+ * The site's unified dark close — same ground, bottom glow and button shapes
+ * as the Digital Twin, RackIQ, RTSS and IMDS closes. The demo link goes to
+ * /book-a-demo, which is what every other CTA on this site does.
  *
- * The demo link goes to /book-a-demo rather than the document's mailto, which
- * is what every other CTA on this site does.
+ * The reference this copy came from was a full-bleed signal-orange panel, and
+ * this is not built that way — the same call as on the Digital Twin. The brand
+ * palette puts orange at "5% — CTAs, critical emphasis only", and a whole
+ * section of it would be most of a screen. The dark close with one orange
+ * button spends the same emphasis where the rules allow.
  */
 
 export function MepsCTA() {
@@ -37,7 +43,7 @@ export function MepsCTA() {
           transition={{ duration: 0.5 }}
           className="text-[12px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange"
         >
-          Request a demo
+          Start the conversation
         </motion.p>
 
         <motion.h2
@@ -47,10 +53,11 @@ export function MepsCTA() {
           transition={{ duration: 0.85, ease: EASE }}
           className="mt-5 text-[32px] sm:text-[46px] lg:text-[60px] font-bold tracking-[-0.04em] leading-[1.06] mx-auto"
         >
-          <span className="text-white">See what your fleet</span>
+          <span className="text-white">See where MHE time goes.</span>
           <br />
           <span className="text-white/45">
-            is <span className="text-signal-orange">really</span> doing.
+            Improve what it <span className="text-signal-orange">produces</span>
+            .
           </span>
         </motion.h2>
 
@@ -61,9 +68,9 @@ export function MepsCTA() {
           transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
           className="mt-7 text-[16px] sm:text-[18px] text-white/55 leading-[1.6] max-w-[880px] mx-auto"
         >
-          See how MEPS turns live MHE movement, load state, operator context and
-          warehouse location into evidence for better productivity, efficiency
-          and operational decisions.
+          Connect the fleet. Map the movement. Measure productive and
+          non-productive time. Find the loss. Improve utilisation with
+          evidence.
         </motion.p>
 
         <motion.div
@@ -74,32 +81,25 @@ export function MepsCTA() {
           className="mt-10 flex items-center justify-center gap-3.5 flex-wrap"
         >
           <Link
-            href="/book-a-demo"
+            href="#capabilities"
             className="inline-flex items-center gap-2 bg-signal-orange text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-signal-orange-hover hover:-translate-y-0.5"
           >
-            Request a MEPS demo
+            Explore MEPS
+            <ArrowUpRight className="w-4 h-4" aria-hidden />
           </Link>
           <Link
-            href="#command-centre"
+            href="/book-a-demo"
             className="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-white hover:text-carbon"
             style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.18)" }}
           >
-            Explore the Live Command Centre
+            Request a demo
           </Link>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-9"
-        >
           <Link
-            href="#business-case"
-            className="text-[14px] text-signal-orange hover:text-signal-orange-soft transition-colors duration-200"
+            href="/contact"
+            className="inline-flex items-center gap-2 text-white/70 text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:text-white hover:bg-white/[0.06]"
+            style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.12)" }}
           >
-            Build the business case →
+            Talk to an MHE expert
           </Link>
         </motion.div>
       </div>

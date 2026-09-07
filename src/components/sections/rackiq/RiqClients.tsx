@@ -19,7 +19,16 @@ const CLIENTS = ["Welspun", "Mahindra Logistics", "Indospace", "ESR"];
 const EDGE_FADE =
   "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)";
 
-export function RiqClients() {
+export function RiqClients({
+  /**
+   * The line above the marquee. Pass `null` to drop it where the hero above
+   * already carries the claim — opt-in, so the four heroes that shipped with
+   * it are unaffected.
+   */
+  label = "Trusted on the warehouse floor",
+}: {
+  label?: string | null;
+} = {}) {
   return (
     <div className="relative mt-14 sm:mt-16">
       <style>{`
@@ -40,9 +49,11 @@ export function RiqClients() {
         }
       `}</style>
 
-      <p className="text-center text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-white/30 mb-7">
-        Trusted on the warehouse floor
-      </p>
+      {label && (
+        <p className="text-center text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-white/30 mb-7">
+          {label}
+        </p>
+      )}
 
       {/* The edges fade the track itself rather than covering it with a
           painted block — the strip sits on a radial gradient with the beams

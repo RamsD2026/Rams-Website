@@ -1,73 +1,73 @@
 import type { Metadata } from "next";
-import { RiqHero } from "@/components/sections/rackiq/RiqHero";
-import { RiqWhatIs } from "@/components/sections/rackiq/RiqWhatIs";
-import { RiqQuestions } from "@/components/sections/rackiq/RiqQuestions";
-import { RiqCondition } from "@/components/sections/rackiq/RiqCondition";
-import { RiqSeverity } from "@/components/sections/rackiq/RiqSeverity";
-import { RiqLifecycle } from "@/components/sections/rackiq/RiqLifecycle";
-import { RiqLocation } from "@/components/sections/rackiq/RiqLocation";
-import { RiqHistory } from "@/components/sections/rackiq/RiqHistory";
-import { RiqHotspots } from "@/components/sections/rackiq/RiqHotspots";
-import { RiqAction } from "@/components/sections/rackiq/RiqAction";
-import { RiqAllYear } from "@/components/sections/rackiq/RiqAllYear";
-import { RiqClosure } from "@/components/sections/rackiq/RiqClosure";
-import { RiqReport } from "@/components/sections/rackiq/RiqReport";
-import { RiqTech } from "@/components/sections/rackiq/RiqTech";
-import { RiqRoles } from "@/components/sections/rackiq/RiqRoles";
-import { RiqScale } from "@/components/sections/rackiq/RiqScale";
-import { RiqEcosystem } from "@/components/sections/rackiq/RiqEcosystem";
-import { RiqCTA } from "@/components/sections/rackiq/RiqCTA";
+import { RdsHero } from "@/components/sections/rds/RdsHero";
+import { RdsProblem } from "@/components/sections/rds/RdsProblem";
+import { RdsOverview } from "@/components/sections/rds/RdsOverview";
+import { RdsHow } from "@/components/sections/rds/RdsHow";
+import { RdsCapabilities } from "@/components/sections/rds/RdsCapabilities";
+import { RdsExperience } from "@/components/sections/rds/RdsExperience";
+import { RdsOutcomes } from "@/components/sections/rds/RdsOutcomes";
+import { RdsIntegrations } from "@/components/sections/rds/RdsIntegrations";
+import { RdsUseCases } from "@/components/sections/rds/RdsUseCases";
+import { RdsFAQ } from "@/components/sections/rds/RdsFAQ";
+import { RdsCTA } from "@/components/sections/rds/RdsCTA";
 
 export const metadata: Metadata = {
   title: "RAMS Rack Intelligence — Powered by IRDS | RAMS",
   description:
-    "IRDS is a structured rack intelligence and lifecycle management platform. Inspect digitally, record engineering measurements, classify by risk and lifecycle, understand recurring patterns, assign corrective action and verify closure — all year, against one connected rack record.",
+    "IRDS—Integrated Rack Diagnostic Suite—digitises rack inspections, maps findings to exact components, prioritises risk and manages corrective action through verification.",
 };
 
 /**
  * RAMS Rack Intelligence — the IRDS platform page.
  *
- * Composition follows the RAMS IRDS reference layout: chapter-tagged,
- * left-aligned section heads and two-column splits. Type, colour and surfaces
- * are the site's own — see docs/typography.md and docs/section-header.md.
+ * Rebuilt on the eleven-section shape settled by /platform/digital-twin and
+ * /platform/meps, and using only the section patterns those two established.
  *
- * Surfaces alternate light/dark exactly as the reference does:
- * dark → white → offWhite → white → offWhite → white → dark → white →
- * offWhite → white → warm → white → offWhite → dark → white → offWhite →
- * white → dark.
+ *   01 Hero      darkTop   know the health of every rack
+ *   02 Problem   white     the four ways a finding goes cold
+ *   03 Overview  offWhite  the twelve things the rack record holds
+ *   04 How       white     five steps, inspection to verified closure
+ *   05 Capab.    offWhite  six capabilities, sticky-scrolled over real screens
+ *   06 Exper.    ink       rack health, filtered four ways
+ *   07 Outcomes  white     where rack safety becomes measurable
+ *   08 Integr.   offWhite  what IRDS connects, and who shares the rack identity
+ *   09 Use cases white      the six programme areas, in the carousel
+ *   10 FAQ       offWhite  six questions rack safety teams ask
+ *   11 CTA       darkBtm   the close
+ *
+ * Surfaces alternate — no two adjacent sections share one.
+ *
+ * Two joins made against the source document rather than following it
+ * literally:
+ *
+ *   · Its Proof section listed four measures with no outcomes and its Outcomes
+ *     section listed four outcomes with no measures. They are merged into 07:
+ *     an outcome without its measure is an adjective, and a measure with no
+ *     outcome attached is a chart.
+ *   · Its customer logo strip is not repeated in 09. `RiqClients` already runs
+ *     once on this page, in the hero.
+ *
+ * Held back, because neither of the first two pages established a pattern for
+ * them: Security & Compliance, Deployment / Implementation, and Scalability.
+ *
+ * The previous build composed this page entirely from the `rackiq` components
+ * (RiqHero through RiqCTA). Those are all still on disk and still used by
+ * /platform/rackiq.
  */
 export default function IrdsPlatformPage() {
   return (
     <>
-      <RiqHero />
-      <RiqWhatIs />
-      <RiqQuestions />
-
-      {/* 01 — what is the condition? */}
-      <RiqCondition />
-
-      {/* 02 — how serious is it? */}
-      <RiqSeverity />
-      <RiqLifecycle />
-
-      {/* 03 — why and where is it happening? */}
-      <RiqLocation />
-      <RiqHistory />
-      <RiqHotspots />
-
-      {/* 04 — what needs to be done? */}
-      <RiqAction />
-      <RiqAllYear />
-
-      {/* 05 — was it solved? */}
-      <RiqClosure />
-
-      <RiqReport />
-      <RiqTech />
-      <RiqRoles />
-      <RiqScale />
-      <RiqEcosystem />
-      <RiqCTA />
+      <RdsHero />
+      <RdsProblem />
+      <RdsOverview />
+      <RdsHow />
+      <RdsCapabilities />
+      <RdsExperience />
+      <RdsOutcomes />
+      <RdsIntegrations />
+      <RdsUseCases />
+      <RdsFAQ />
+      <RdsCTA />
     </>
   );
 }

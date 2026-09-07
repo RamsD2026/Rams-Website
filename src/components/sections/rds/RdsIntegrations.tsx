@@ -6,45 +6,33 @@ import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 
 /**
- * 07 — Integrations.
+ * 08 — Integrations.
  *
- * Built to `TwinIntegrations`, which is itself built to `AimsDirection`: cards
- * carrying a 196px well with a live widget in it, then a kicker, a title and
- * the chip list. The tokens below — `CARD`, `WELL`, `WidgetHead`, the 110ms
- * tick — are copied rather than re-derived, so the three sections read as one
- * system. Only the subject differs.
+ * `MepsIntegrations`, which is `TwinIntegrations`, which is `AimsDirection`:
+ * cards carrying a 196px well with a live widget in it, then a kicker, a title
+ * and the chip list. `CARD`, `WELL`, `WidgetHead` and the 110ms tick are
+ * copied rather than re-derived so the four sections read as one system.
  *
- * One interval drives all three widgets. Independent timers drift apart within
- * a minute and the row stops reading as one thing. Nothing is generated —
- * every series is a formula or a written-down array, so the server and the
- * client render the same first frame.
+ * One interval drives all three widgets — independent timers drift apart
+ * within a minute and the row stops reading as one thing.
  *
- * Each widget does what its own card says, which is the whole test:
+ * Each widget does what its own card says:
  *
- *   · "Know where and how it moves"      a floor with machines on it, and the
- *                                        zone and speed that go with them
- *   · "Connect activity to work"         two columns, and a line drawn between
- *                                        the pair being matched
- *   · "Build cross-module context"       five modules stacking into one
- *                                        context, a layer at a time
+ *   · "Capture reliable evidence"     a checklist being worked, with the
+ *                                     evidence count rising behind it
+ *   · "Connect action and events"     an event on one side, the work order it
+ *                                     raises on the other, and the link drawn
+ *   · "Build cross-module context"    five modules stacking into one context
  *
- * The first pass had a speed chart, a list of record counts and chips sliding
- * past each other. All three were plausible dashboard furniture and none of
- * them was the sentence above it.
- *
- * The module strip underneath is not a chain. The Digital Twin's version of
- * this section closes on a six-stage rail because a signal moves through those
- * stages in order; these five modules are a set that share one context, and
- * numbering them would state a sequence that does not exist.
+ * The third is deliberately the same widget as on the MEPS page. It is the
+ * same sentence making the same claim, and giving one claim two different
+ * pictures would suggest they are two different things.
  */
 
 const LINE = "#E8E8ED";
 const ORANGE = "#FF6A00";
 const TICK_MS = 110;
 
-/* No drop shadow. The hairline carries the edge on its own — the section
-   already stacks a card, a well and a widget head, and a shadow on the outer
-   one makes that read as three layers deep. */
 const CARD: React.CSSProperties = {
   borderRadius: 12,
   border: `1px solid ${LINE}`,
@@ -88,7 +76,6 @@ function WidgetHead({ label, note }: { label: string; note?: string }) {
   );
 }
 
-/** The pill list each card carries under its title. */
 function Chips({ items }: { items: string[] }) {
   return (
     <div className="mt-5 flex flex-wrap gap-1.5">
@@ -105,127 +92,86 @@ function Chips({ items }: { items: string[] }) {
   );
 }
 
-/* ── 01 · position + telemetry ───────────────────────────
-   The card says "know where and how it moves", so the widget is a floor with
-   machines on it and the reading that goes with them. A bare speed chart
-   answered the second half and none of the first. */
+/* ── 01 · field + inspection ─────────────────────────────
+   The card says "capture reliable evidence", so the widget captures: a
+   checklist worked through, and the evidence count rising as it goes. */
 
-const W1_ZONES: [string, string][] = [
-  ["Dock 3", "5.8"],
-  ["Aisle 05", "6.2"],
-  ["Aisle 07", "7.1"],
-  ["Aisle 12", "4.9"],
-  ["Staging", "6.6"],
+const CAPTURE: [string, string][] = [
+  ["Upright plumb", "measure"],
+  ["Beam deflection", "measure"],
+  ["Baseplate + anchors", "2 photos"],
+  ["Bracing", "1 photo"],
+  ["Impact survey", "3 photos"],
 ];
 
-/** Rack rows, and the two clear aisles between them. */
-const W1_RACK_Y = [16, 60, 104];
-const W1_LANES = [38, 82];
-
-function WPosition({ t }: { t: number }) {
-  const [zone, speed] = W1_ZONES[Math.floor(t / 22) % W1_ZONES.length];
+function WCapture({ t }: { t: number }) {
+  /* Five beats to fill, three to hold, then round again — `t` only
+     grows, so without the modulo the checklist completes once and the
+     widget is a still image for the rest of the visit. */
+  const done = Math.min(CAPTURE.length, (Math.floor(t / 11) % 8) + 1);
+  const shots = [0, 0, 2, 3, 6][done - 1] ?? 0;
 
   return (
     <div className="h-full flex flex-col">
-      <WidgetHead label="MHE-04 · position" note="live" />
+      <WidgetHead label="Rack B-11 · capture" note={`${shots} evidence`} />
 
-      <div className="flex-1 min-h-0 px-3 py-2">
-        <svg viewBox="0 0 300 132" className="w-full h-full block" aria-hidden>
-          {/* the survey grid */}
-          <g stroke="rgba(20,22,26,0.05)" strokeWidth="1">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <line key={i} x1={30 + i * 60} y1={8} x2={30 + i * 60} y2={124} />
-            ))}
-          </g>
-
-          {/* racking, two banks */}
-          {W1_RACK_Y.map((y) =>
-            [24, 156].map((x) => (
-              <rect
-                key={`${x}-${y}`}
-                x={x}
-                y={y}
-                width={120}
-                height={10}
-                rx={2}
-                fill="rgba(20,22,26,0.06)"
-                stroke="rgba(20,22,26,0.10)"
-                strokeWidth="1"
-              />
-            )),
-          )}
-
-          {/* two machines, running the clear aisles */}
-          {[
-            { from: 40, to: 250, lane: 0, tint: ORANGE, dur: 9 },
-            { from: 246, to: 46, lane: 1, tint: "#3E63DD", dur: 11 },
-          ].map((m) => (
-            <motion.g
-              key={m.tint}
-              initial={{ x: m.from }}
-              animate={{ x: [m.from, m.to] }}
-              transition={{
-                duration: m.dur,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
+      <div className="flex-1 min-h-0 flex flex-col justify-center gap-1.5 px-3 py-3">
+        {CAPTURE.map(([k, kind], i) => {
+          const on = i < done;
+          return (
+            <motion.div
+              key={k}
+              className="flex items-center gap-2 px-2.5 rounded-md shrink-0"
+              style={{
+                height: 26,
+                background: "#FAFAFB",
+                border: `1px solid ${on ? "rgba(22,163,74,0.30)" : LINE}`,
               }}
+              initial={false}
+              animate={{ opacity: on ? 1 : 0.3, x: on ? 0 : -8 }}
+              transition={{ duration: 0.4, ease: EASE }}
             >
-              <rect
-                x={-4.5}
-                y={W1_LANES[m.lane] - 4.5}
-                width={9}
-                height={9}
-                rx={2}
-                fill={m.tint}
-              />
-            </motion.g>
-          ))}
-        </svg>
-      </div>
-
-      <div
-        className="flex items-center justify-between px-3 py-2 shrink-0"
-        style={{ borderTop: `1px solid ${LINE}` }}
-      >
-        <span className="text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-graphite/45 tabular-nums">
-          {zone}
-        </span>
-        <span className="text-[12.5px] font-bold tabular-nums leading-none text-carbon">
-          {speed}{" "}
-          <span className="text-[9px] font-semibold text-graphite/45">
-            km/h
-          </span>
-        </span>
+              <span
+                className="flex items-center justify-center w-3.5 h-3.5 rounded-full text-[8px] font-bold shrink-0"
+                style={{
+                  background: on ? "rgba(22,163,74,0.12)" : "#F1F1F4",
+                  color: on ? "#16A34A" : "#A8A8B0",
+                }}
+              >
+                {on ? "✓" : "○"}
+              </span>
+              <span className="text-[9.5px] text-graphite/65 truncate">{k}</span>
+              <span className="ml-auto text-[8.5px] font-mono text-graphite/40 shrink-0">
+                {on ? kind : "—"}
+              </span>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-/* ── 02 · operational systems ────────────────────────────
-   The card says "connect activity to work", so the widget connects one to the
-   other: what a machine is doing on the left, the job it belongs to on the
-   right, and a line drawn between the pair currently being matched. A list of
-   record counts showed neither side of that sentence. */
+/* ── 02 · systems + hardware ─────────────────────────────
+   The card says "connect action and events", so the widget connects one to
+   the other: the event on the left, the work it raises on the right, and the
+   line drawn between the pair being matched. */
 
-const W2_ACTIVITY = ["MHE-04 · moving", "MHE-07 · idle", "MHE-02 · loaded"];
-const W2_WORK = ["TASK-1194", "ORD-882", "PICK-4471"];
-/** Which activity resolves to which job. Deliberately not the identity map —
-    a straight across line reads as a coincidence, not a match. */
-const W2_PAIRS = [1, 2, 0];
+const EVENTS = ["Impact · A3-07", "AI vision · flag", "Red finding · B-11"];
+const WORK = ["CMMS WO-2291", "ERP PR-8842", "Doc · closure pack"];
+const PAIRS = [0, 2, 1];
 
-const W2_ROW_H = 34;
-const W2_ROW_GAP = 8;
-/** Centre of row i, in the connector's own viewBox. */
-const w2Mid = (i: number) => i * (W2_ROW_H + W2_ROW_GAP) + W2_ROW_H / 2;
-const W2_H = 3 * W2_ROW_H + 2 * W2_ROW_GAP;
+const ROW_H = 34;
+const ROW_GAP = 8;
+const mid = (i: number) => i * (ROW_H + ROW_GAP) + ROW_H / 2;
+const COL_H = 3 * ROW_H + 2 * ROW_GAP;
 
-function W2Row({ label, on }: { label: string; on: boolean }) {
+function LinkRow({ label, on }: { label: string; on: boolean }) {
   return (
     <div
       className="flex items-center px-2.5 rounded-md transition-colors duration-300"
       style={{
-        height: W2_ROW_H,
+        height: ROW_H,
         background: on ? "rgba(255,106,0,0.06)" : "#FAFAFB",
         border: `1px solid ${on ? "rgba(255,106,0,0.34)" : LINE}`,
       }}
@@ -241,33 +187,29 @@ function W2Row({ label, on }: { label: string; on: boolean }) {
 }
 
 function WSystems({ t }: { t: number }) {
-  const at = Math.floor(t / 16) % W2_PAIRS.length;
-  const to = W2_PAIRS[at];
-  const d = `M0 ${w2Mid(at)} C 14 ${w2Mid(at)}, 14 ${w2Mid(to)}, 28 ${w2Mid(to)}`;
+  const at = Math.floor(t / 16) % PAIRS.length;
+  const to = PAIRS[at];
+  const d = `M0 ${mid(at)} C 14 ${mid(at)}, 14 ${mid(to)}, 28 ${mid(to)}`;
 
   return (
     <div className="h-full flex flex-col">
-      <WidgetHead label="Matching" note={`${at + 1}/3`} />
+      <WidgetHead label="Raising work" note={`${at + 1}/3`} />
 
       <div className="flex-1 min-h-0 flex items-center px-3 py-2">
         <div
           className="w-full grid grid-cols-[minmax(0,1fr)_28px_minmax(0,1fr)]"
-          style={{ height: W2_H }}
+          style={{ height: COL_H }}
         >
-          <div
-            className="flex flex-col"
-            style={{ gap: W2_ROW_GAP }}
-          >
-            {W2_ACTIVITY.map((x, i) => (
-              <W2Row key={x} label={x} on={i === at} />
+          <div className="flex flex-col" style={{ gap: ROW_GAP }}>
+            {EVENTS.map((x, i) => (
+              <LinkRow key={x} label={x} on={i === at} />
             ))}
           </div>
 
-          {/* One line, redrawn each time the pair changes. `pathLength`
-              manages its own dash array — never combine it with a manual
-              strokeDasharray, which draws the line in two pieces. */}
+          {/* `pathLength` manages its own dash array — never combine it with
+              a manual strokeDasharray, which draws the line in two pieces. */}
           <svg
-            viewBox={`0 0 28 ${W2_H}`}
+            viewBox={`0 0 28 ${COL_H}`}
             preserveAspectRatio="none"
             className="w-full h-full"
             aria-hidden
@@ -285,9 +227,9 @@ function WSystems({ t }: { t: number }) {
             />
           </svg>
 
-          <div className="flex flex-col" style={{ gap: W2_ROW_GAP }}>
-            {W2_WORK.map((x, i) => (
-              <W2Row key={x} label={x} on={i === to} />
+          <div className="flex flex-col" style={{ gap: ROW_GAP }}>
+            {WORK.map((x, i) => (
+              <LinkRow key={x} label={x} on={i === to} />
             ))}
           </div>
         </div>
@@ -297,36 +239,31 @@ function WSystems({ t }: { t: number }) {
 }
 
 /* ── 03 · RAMS platform ──────────────────────────────────
-   The card says "build cross-module context", so the widget builds one: the
-   modules stack up a layer at a time until the context is complete, then it
-   starts again. Chips sliding past each other showed modules existing, not
-   context accumulating. */
+   The modules stack up a layer at a time until the context is complete, then
+   it starts again. Same widget as the MEPS page carries under the same
+   sentence, with the rack in the first layer instead of the floor. */
 
-const W3_LAYERS: [string, string, string][] = [
+const LAYERS: [string, string, string][] = [
   ["Digital Twin", "Place", "#3E63DD"],
-  ["MEPS", "Efficiency", "#F76808"],
-  ["ATOS", "Task", "#299764"],
-  ["IMDS / RTSS", "Health", "#E5484D"],
-  ["AIMS", "Insight", "#6647F0"],
+  ["IRDS", "Rack lifecycle", ORANGE],
+  ["RTSS / MEPS", "Impact", "#E5484D"],
+  ["IMDS", "Diagnostics", "#6647F0"],
+  ["AIMS", "Insight", "#299764"],
 ];
 
 function WModules({ t }: { t: number }) {
-  /* Eight steps: five to lay the stack down, three to hold it complete. */
   const step = Math.floor(t / 9) % 8;
-  const built = Math.min(step + 1, W3_LAYERS.length);
+  const built = Math.min(step + 1, LAYERS.length);
 
   return (
     <div className="h-full flex flex-col">
-      <WidgetHead
-        label="Context"
-        note={`${built}/${W3_LAYERS.length} layers`}
-      />
+      <WidgetHead label="Context" note={`${built}/${LAYERS.length} layers`} />
 
       {/* Five equal rows. A layer that has not landed yet is drawn unfilled
           rather than hidden, so the well is the same shape at every point in
           the cycle and the stack is seen to fill rather than to appear. */}
       <div className="flex-1 min-h-0 flex flex-col justify-center gap-1.5 px-3 py-2">
-        {W3_LAYERS.map(([k, v, tint], i) => {
+        {LAYERS.map(([k, v, tint], i) => {
           const on = i < built;
           return (
             <motion.div
@@ -387,27 +324,27 @@ const CARDS: {
   Widget: (p: { t: number }) => React.ReactNode;
 }[] = [
   {
-    kicker: "Position + telemetry",
-    title: "Know where and how it moves",
+    kicker: "Field + inspection",
+    title: "Capture reliable evidence",
     chips: [
-      "Supported RTLS",
-      "MHE telemetry",
-      "IoT devices",
-      "Operator authentication",
-      "Zone events",
-      "Edge processing",
+      "Inspector mobile workflow",
+      "Configured checklists",
+      "Measurements",
+      "Photo evidence",
+      "QR / asset identity",
+      "Offline-capable collection*",
     ],
-    Widget: ({ t }) => <WPosition t={t} />,
+    Widget: ({ t }) => <WCapture t={t} />,
   },
   {
-    kicker: "Operational systems",
-    title: "Connect activity to work",
+    kicker: "Systems + hardware",
+    title: "Connect action and events",
     chips: [
-      "WMS",
-      "ERP",
-      "MES",
-      "Task systems",
-      "Shift rosters",
+      "CMMS",
+      "ERP / procurement",
+      "Document systems",
+      "Impact sensors",
+      "AI Vision",
       "Approved APIs",
     ],
     Widget: ({ t }) => <WSystems t={t} />,
@@ -417,40 +354,37 @@ const CARDS: {
     title: "Build cross-module context",
     chips: [
       "Digital Twin",
-      "ATOS execution",
       "RTSS safety",
+      "MEPS movement",
       "IMDS diagnostics",
       "AIMS intelligence",
-      "AI Vision",
+      "Customer applications",
     ],
     Widget: ({ t }) => <WModules t={t} />,
   },
 ];
 
-/**
- * The five modules that share the context, in the same tints the stacking
- * widget uses so a module is one colour wherever it appears in the section.
- */
+/** The five that share the rack identity. A set, not a sequence. */
 const MODULES: [string, string, string][] = [
-  ["Digital Twin", "Physical context", "#3E63DD"],
-  ["MEPS", "Efficiency + productivity", ORANGE],
-  ["ATOS", "Task execution", "#299764"],
-  ["IMDS / RTSS", "Health + safety", "#E5484D"],
-  ["AIMS", "Management insight", "#6647F0"],
+  ["Digital Twin", "Exact physical location", "#3E63DD"],
+  ["IRDS", "Inspection + rack lifecycle", ORANGE],
+  ["RTSS / MEPS", "Impact + movement context", "#E5484D"],
+  ["CMMS / ERP", "Work + procurement", "#6647F0"],
+  ["AIMS", "Management insight", "#299764"],
 ];
 
-export function MepsIntegrations() {
+export function RdsIntegrations() {
   const t = useTick();
 
   return (
     <Section surface="offWhite" id="integrations">
       <SectionHeader
         eyebrow="Integrations"
-        top="Productivity in the context"
+        top="Rack safety in the context"
         bottom="Of the whole operation."
         size="compact"
         width="wide"
-        body="MEPS can combine supported positioning and equipment data with tasks, assets and enterprise workflows."
+        body="Connect inspection, physical events, maintenance workflows and management intelligence around the same rack identity."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-[1240px] mx-auto">
@@ -482,21 +416,14 @@ export function MepsIntegrations() {
         ))}
       </div>
 
-      {/* ── the modules that share the context ───────────
-          The Digital Twin's integrations section closes on a rail, and this
-          is that rail. What it is not is that rail's *numbering*: there the
-          six stages are a sequence a signal moves through, and the numeral is
-          carrying real information. These five are a set. The line through
-          them is the context they share, not an order they run in, so each
-          node carries its own module colour instead of a position.
-
-          MEPS is the marked node for the same reason the twin is marked on
-          the other page: it is the one the section is about. */}
+      {/* ── the rail ─────────────────────────────────────
+          The line through these five is the rack identity they share, not an
+          order they run in, so each node carries its own module colour rather
+          than a position. IRDS is the marked node because it is the one the
+          section is about. */}
       <div className="mt-14 sm:mt-16 max-w-[1240px] mx-auto">
         <div className="overflow-x-auto">
           <div className="relative min-w-[680px] lg:min-w-0">
-            {/* Between the first and last node centres, not edge to edge:
-                with five equal columns those sit at 1/10 and 9/10. */}
             <span
               aria-hidden
               className="absolute top-[13px] h-px"
@@ -505,7 +432,7 @@ export function MepsIntegrations() {
 
             <div className="relative grid grid-cols-5 gap-x-3">
               {MODULES.map(([k, v, tint], i) => {
-                const hub = k === "MEPS";
+                const hub = k === "IRDS";
                 return (
                   <motion.div
                     key={k}
@@ -546,6 +473,12 @@ export function MepsIntegrations() {
           </div>
         </div>
       </div>
+
+      <p className="mt-10 text-center text-[11px] leading-[1.6] text-graphite/45 max-w-[820px] mx-auto">
+        *Offline availability depends on the configured mobile workflow and
+        deployment scope.
+      </p>
+
     </Section>
   );
 }

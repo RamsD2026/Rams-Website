@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { RiqClients } from "@/components/sections/rackiq/RiqClients";
@@ -11,9 +11,13 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
 /**
  * MEPS hero.
  *
- * Same skeleton as RiqHero: centred pill eyebrow, the "Powered by X —" line, a
- * two-line h1 at the page-hero scale, centred subline, two CTAs, the mono
- * strapline, and then the product full width beneath.
+ * Same skeleton as RiqHero: centred pill eyebrow, a two-line h1 at the
+ * page-hero scale, centred subline, the strapline, two CTAs, and then the
+ * product full width beneath.
+ *
+ * No metric strip under the frame. Numbers like "18.4 pallets / hour" read as
+ * a customer result and there is no customer behind them, so the frame carries
+ * the product and nothing it cannot back up.
  *
  * The product here is the Live Command Centre, playing a recording inside the
  * frame with the selected asset card over it, then the client strip — the same
@@ -26,12 +30,6 @@ const ASSET = [
   ["Operator", "OP-118"],
   ["Zone", "Aisle 05"],
   ["Speed", "6.2 km/h"],
-];
-
-const KPIS: [string, string, string?][] = [
-  ["Moving now", "7", "/9"],
-  ["Loaded travel", "61", "%"],
-  ["Pallets / hour", "18.4"],
 ];
 
 /**
@@ -144,20 +142,9 @@ export function MepsHero() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
             <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/70">
-              RAMS MHE Intelligence
+              RAMS MEPS Platform
             </span>
           </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.06, ease: EASE }}
-            className="mt-6 text-[12.5px] sm:text-[14px] text-white/50"
-          >
-            Powered by <span className="font-semibold text-white/80">MEPS</span>
-            <span className="mx-2 text-white/25">—</span>
-            Mobile Equipment Performance Suite
-          </motion.p>
 
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -165,20 +152,9 @@ export function MepsHero() {
             transition={{ duration: 0.95, delay: 0.14, ease: EASE }}
             className="mt-8 sm:mt-10 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
           >
-            <span className="block lg:whitespace-nowrap text-white">
-              See how your MHE fleet
-            </span>
-            <span
-              className="block"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              really works.
+            <span className="block text-white">Make Every MHE</span>
+            <span className="block text-white">
+              Movement <span className="text-signal-orange">Count.</span>
             </span>
           </motion.h1>
 
@@ -186,12 +162,20 @@ export function MepsHero() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
-            className="mt-6 text-[14px] sm:text-[16px] text-white/60 leading-[1.55] max-w-[1120px] mx-auto"
+            className="mt-6 text-[15px] sm:text-[16px] text-white/60 leading-[1.6] max-w-[820px] mx-auto"
           >
-            MEPS connects live MHE movement with the warehouse Digital Twin and
-            turns it into productivity, efficiency and operational intelligence
-            — where equipment is, what work it is doing, where performance is
-            being lost and what can be improved.
+            MEPS—MHE Efficiency and Productivity System—turns equipment
+            movement, utilisation, idle time and task activity into operational
+            intelligence for better fleet performance.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.29, ease: EASE }}
+            className="mt-6 text-[15px] sm:text-[16px] font-bold tracking-[-0.01em] text-white"
+          >
+            Know Where It Is. Understand How It Works. Improve What It Produces.
           </motion.p>
 
           <motion.div
@@ -201,17 +185,17 @@ export function MepsHero() {
             className="mt-9 flex items-center justify-center gap-3 flex-wrap"
           >
             <Link
-              href="/book-a-demo"
+              href="#problem"
               className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
             >
-              Request a MEPS demo
-              <ArrowRight className="w-4 h-4" aria-hidden />
+              Explore MEPS
+              <ArrowDown className="w-4 h-4" aria-hidden />
             </Link>
             <Link
-              href="#command-centre"
+              href="/book-a-demo"
               className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3 rounded-lg border border-white/15 transition-colors duration-200 hover:bg-white/[0.06]"
             >
-              Explore the Live Command Centre
+              Request a Demo
             </Link>
           </motion.div>
         </div>
@@ -260,33 +244,6 @@ export function MepsHero() {
             <Twin />
           </div>
 
-          <div
-            className="flex flex-wrap"
-            style={{ borderTop: `1px solid ${LINE}` }}
-          >
-            {KPIS.map(([k, v, unit], i) => (
-              <div
-                key={k}
-                className="flex-1 min-w-[140px] px-5 py-4 text-left"
-                style={{
-                  borderRight:
-                    i < KPIS.length - 1 ? `1px solid ${LINE}` : "none",
-                }}
-              >
-                <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/35">
-                  {k}
-                </p>
-                <p className="mt-2 text-[24px] font-bold tabular-nums tracking-[-0.03em] text-white leading-none">
-                  {v}
-                  {unit && (
-                    <span className="text-[14px] font-semibold text-white/40 ml-0.5">
-                      {unit}
-                    </span>
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
         </motion.div>
 
         <RiqClients />
