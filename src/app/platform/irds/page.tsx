@@ -7,7 +7,6 @@ import { RdsCapabilities } from "@/components/sections/rds/RdsCapabilities";
 import { RdsExperience } from "@/components/sections/rds/RdsExperience";
 import { RdsOutcomes } from "@/components/sections/rds/RdsOutcomes";
 import { RdsIntegrations } from "@/components/sections/rds/RdsIntegrations";
-import { RdsUseCases } from "@/components/sections/rds/RdsUseCases";
 import { RdsFAQ } from "@/components/sections/rds/RdsFAQ";
 import { RdsCTA } from "@/components/sections/rds/RdsCTA";
 
@@ -31,9 +30,8 @@ export const metadata: Metadata = {
  *   06 Exper.    ink       rack health, filtered four ways
  *   07 Outcomes  white     where rack safety becomes measurable
  *   08 Integr.   offWhite  what IRDS connects, and who shares the rack identity
- *   09 Use cases white      the six programme areas, in the carousel
- *   10 FAQ       offWhite  six questions rack safety teams ask
- *   11 CTA       darkBtm   the close
+ *   09 FAQ       white     six questions rack safety teams ask
+ *   10 CTA       darkBtm   the close
  *
  * Surfaces alternate — no two adjacent sections share one.
  *
@@ -65,7 +63,6 @@ export default function IrdsPlatformPage() {
       <RdsExperience />
       <RdsOutcomes />
       <RdsIntegrations />
-      <RdsUseCases />
       <RdsFAQ />
       <RdsCTA />
     </>

@@ -7,7 +7,6 @@ import { ImdCapabilities } from "@/components/sections/imd/ImdCapabilities";
 import { ImdExperience } from "@/components/sections/imd/ImdExperience";
 import { ImdOutcomes } from "@/components/sections/imd/ImdOutcomes";
 import { ImdIntegrations } from "@/components/sections/imd/ImdIntegrations";
-import { ImdUseCases } from "@/components/sections/imd/ImdUseCases";
 import { ImdFAQ } from "@/components/sections/imd/ImdFAQ";
 import { ImdCTA } from "@/components/sections/imd/ImdCTA";
 
@@ -32,9 +31,8 @@ export const metadata: Metadata = {
  *   06 Exper.    ink       one parameter crossing its threshold
  *   07 Outcomes  white     where reliability becomes measurable
  *   08 Integr.   offWhite  the fleet, the site systems and the RAMS modules
- *   09 Use cases white     the six fleet-health programmes, in the carousel
- *   10 FAQ       offWhite  six questions, two of them saying no
- *   11 CTA       darkBtm   the close
+ *   09 FAQ       white     six questions, two of them saying no
+ *   10 CTA       darkBtm   the close
  *
  * Surfaces alternate — no two adjacent sections share one.
  *
@@ -67,7 +65,6 @@ export default function ImdsPlatformPage() {
       <ImdExperience />
       <ImdOutcomes />
       <ImdIntegrations />
-      <ImdUseCases />
       <ImdFAQ />
       <ImdCTA />
     </>

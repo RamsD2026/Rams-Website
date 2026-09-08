@@ -7,7 +7,6 @@ import { AmsCapabilities } from "@/components/sections/ams/AmsCapabilities";
 import { AmsExperience } from "@/components/sections/ams/AmsExperience";
 import { AmsOutcomes } from "@/components/sections/ams/AmsOutcomes";
 import { AmsIntegrations } from "@/components/sections/ams/AmsIntegrations";
-import { AmsUseCases } from "@/components/sections/ams/AmsUseCases";
 import { AmsFAQ } from "@/components/sections/ams/AmsFAQ";
 import { AmsCTA } from "@/components/sections/ams/AmsCTA";
 
@@ -36,9 +35,8 @@ export const metadata: Metadata = {
  *   06 Exper.    ink       one site changes, and the network number moves
  *   07 Outcomes  white     what shortens, and what measures it
  *   08 Integr.   offWhite  the modules, the physical context, the enterprise
- *   09 Use cases white     the six management activities, in the carousel
- *   10 FAQ       offWhite  six questions, two of them saying no
- *   11 CTA       darkBtm   the close
+ *   09 FAQ       white     six questions, two of them saying no
+ *   10 CTA       darkBtm   the close
  *
  * Surfaces alternate — no two adjacent sections share one.
  *
@@ -75,7 +73,6 @@ export default function AimsPlatformPage() {
       <AmsExperience />
       <AmsOutcomes />
       <AmsIntegrations />
-      <AmsUseCases />
       <AmsFAQ />
       <AmsCTA />
     </>

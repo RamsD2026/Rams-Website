@@ -1,0 +1,118 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
+
+/**
+ * 14 — The close.
+ *
+ * The site's unified dark close, value for value: the same `darkBottom`
+ * ground, the same bottom glow, the same eyebrow, the same two-line heading
+ * with the second line held back and one word in orange, and the same button
+ * shapes as the Digital Twin, MEPS, IRDS, RackIQ, ATOS, RTSS, IMDS and AIMS
+ * closes.
+ *
+ * Nothing here is designed. A close that looked different on the company page
+ * to the one on every product page would read as a different site, and this
+ * is the ninth time the pattern has been used rather than the first time it
+ * has been drawn.
+ *
+ * ── The two buttons ─────────────────────────────────────────────────
+ * `Explore RAMS Digital` goes to `/platform/overview`, which exists.
+ * `Request a demo` goes to `/book-a-demo`, which is the href every other
+ * close on this site already uses.
+ *
+ * The source document has a third — "Discuss a custom application" — and it
+ * is not here: it points at the same conversation as the demo, and three
+ * buttons in a row is a menu rather than a call to action. `AboutWork`
+ * directly above already carries the two audiences and their own routes.
+ *
+ * ── Not an orange panel ─────────────────────────────────────────────
+ * The reference this copy came from was a full-bleed signal-orange block. The
+ * brand palette puts orange at "5% — CTAs, critical emphasis only", and a
+ * whole section of it would be most of a screen. Same call as on the eight
+ * platform closes.
+ */
+
+export function AboutCTA() {
+  return (
+    <section
+      className="relative overflow-hidden text-white"
+      style={{ background: SURFACE.darkBottom }}
+      id="start"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[520px]"
+        style={{
+          background:
+            "radial-gradient(58% 60% at 50% 100%, rgba(255,106,0,0.16), transparent 70%)",
+        }}
+      />
+
+      <div className="relative rams-container text-center pt-32 sm:pt-40 lg:pt-44 pb-32 sm:pb-40 lg:pb-44">
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
+          className="text-[12px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange"
+        >
+          Start the conversation
+        </motion.p>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.85, ease: EASE }}
+          className="mt-5 text-[32px] sm:text-[46px] lg:text-[58px] font-bold tracking-[-0.04em] leading-[1.06] mx-auto"
+        >
+          <span className="text-white">Start with the physical world.</span>
+          <br />
+          <span className="text-white/45">
+            Build <span className="text-signal-orange">intelligence</span>{" "}
+            around it.
+          </span>
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+          className="mt-7 text-[16px] sm:text-[18px] text-white/55 leading-[1.6] max-w-[880px] mx-auto"
+        >
+          Digitise the facility. Identify the assets. Connect live data. Add the
+          applications. Learn from the operation. Improve what happens on the
+          ground.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+          className="mt-10 flex items-center justify-center gap-3.5 flex-wrap"
+        >
+          <Link
+            href="/platform/overview"
+            className="inline-flex items-center gap-2 bg-signal-orange text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-signal-orange-hover hover:-translate-y-0.5"
+          >
+            Explore RAMS Digital
+            <ArrowUpRight className="w-4 h-4" aria-hidden />
+          </Link>
+          <Link
+            href="/book-a-demo"
+            className="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-white hover:text-carbon"
+            style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.18)" }}
+          >
+            Request a demo
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

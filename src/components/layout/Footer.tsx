@@ -97,6 +97,36 @@ const COLUMNS: FooterColumn[] = [
 ];
 
 
+/** The registered entity. `RAMS Digital` is the product; this is the company,
+ *  and a footer is where the two get told apart. */
+const LEGAL_NAME = "INODE RAMS BUILT ENV TECH PVT. LTD.";
+
+/**
+ * The office and the ways to reach it, under the brand block.
+ *
+ * The phone numbers are `tel:` links with the spaces stripped and the email is
+ * a `mailto:` — a number a reader has to retype by hand is a number that does
+ * not get called from a phone.
+ */
+const COMPANY: { label: string; lines: { text: string; href?: string }[] }[] = [
+  {
+    label: "Pune office",
+    lines: [
+      { text: "Sadanand Business Centre" },
+      { text: "5th Floor, Baner, Pune – 411045" },
+      { text: "Maharashtra, India" },
+    ],
+  },
+  {
+    label: "Contact",
+    lines: [
+      { text: "connect@rams.digital", href: "mailto:connect@rams.digital" },
+      { text: "+91 9175870099", href: "tel:+919175870099" },
+      { text: "+91 9028638907", href: "tel:+919028638907" },
+    ],
+  },
+];
+
 const SOCIALS = [
   { icon: LinkedInIcon, href: "https://linkedin.com/company/rams", label: "LinkedIn" },
   { icon: XIcon, href: "https://x.com/rams", label: "X" },
@@ -121,9 +151,19 @@ export function Footer() {
           {/* Brand block */}
           <div className="lg:col-span-3">
             <RAMSLogo className="h-8" variant="white" />
-            <p className="mt-6 text-sm leading-[1.65] text-white/55 max-w-[280px]">
-              Operational intelligence for the modern warehouse. Engineering,
-              AI and real-time visibility — unified in one platform.
+
+            <p className="mt-4 text-[12.5px] leading-[1.5] text-white/55">
+              {LEGAL_NAME}
+            </p>
+
+            {/* The brand line, in place of the paragraph of marketing copy
+                that used to sit here. It sits close under the legal name
+                rather than floating between it and the socials — at 19px with
+                20px of air on both sides it read as its own block. Both lines
+                are white/55: they are one block, and two weights of grey made
+                them look like a heading and a caption. */}
+            <p className="mt-2 text-[15px] italic text-white/55 tracking-[-0.01em]">
+              Clarity in Motion.
             </p>
 
             {/* Social icons */}
@@ -139,6 +179,38 @@ export function Footer() {
                 >
                   <Icon width={14} height={14} />
                 </a>
+              ))}
+            </div>
+
+            {/* The column ran empty below the socials while the address sat in
+                a band of its own further down. It belongs with the brand. */}
+            <div className="mt-10 space-y-8">
+              {COMPANY.map((c) => (
+                <div key={c.label}>
+                  <h3 className="text-[10.5px] font-mono font-bold tracking-[0.2em] uppercase text-white/40">
+                    {c.label}
+                  </h3>
+                  <div className="mt-3.5 space-y-1.5">
+                    {c.lines.map((l) =>
+                      l.href ? (
+                        <a
+                          key={l.text}
+                          href={l.href}
+                          className="block text-sm leading-[1.6] text-white/70 hover:text-white transition-colors duration-200 w-fit"
+                        >
+                          {l.text}
+                        </a>
+                      ) : (
+                        <span
+                          key={l.text}
+                          className="block text-sm leading-[1.6] text-white/70"
+                        >
+                          {l.text}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

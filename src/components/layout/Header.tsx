@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Navbar } from "@/components/layout/Navbar";
 
@@ -8,7 +9,29 @@ export function Header() {
   const [scrolled, setScrolled]       = useState(false);
   const [visible, setVisible]         = useState(true);
   const [mouseNearTop, setMouseNearTop] = useState(false);
+  const [lightHero, setLightHero] = useState(false);
   const lastY = useRef(0);
+  const pathname = usePathname();
+
+  /* The navbar goes transparent with white links and a white logo while the
+     page is at the top, which works because every hero on this site is dark.
+     On a light hero the whole bar disappears.
+
+     Rather than keep a list of routes here, a hero declares its own tone with
+     `data-hero-tone="light"` and this looks for one. Any future light hero is
+     handled by adding that attribute and nothing else. Re-checked on
+     navigation, since the App Router keeps this component mounted across
+     routes.
+
+     The read runs in a frame callback rather than in the effect body: the new
+     route's markup is not necessarily committed when the effect fires, and a
+     synchronous setState here would also cascade a second render. */
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setLightHero(Boolean(document.querySelector('[data-hero-tone="light"]')));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -54,7 +77,7 @@ export function Header() {
       style={{ transform: hideTransform }}
     >
       <AnnouncementBar />
-      <Navbar scrolled={scrolled} heroMode={!scrolled} />
+      <Navbar scrolled={scrolled} heroMode={!scrolled && !lightHero} />
     </header>
   );
 }

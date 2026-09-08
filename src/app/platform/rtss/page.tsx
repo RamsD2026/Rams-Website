@@ -7,7 +7,6 @@ import { RtsCapabilities } from "@/components/sections/rts/RtsCapabilities";
 import { RtsExperience } from "@/components/sections/rts/RtsExperience";
 import { RtsOutcomes } from "@/components/sections/rts/RtsOutcomes";
 import { RtsIntegrations } from "@/components/sections/rts/RtsIntegrations";
-import { RtsUseCases } from "@/components/sections/rts/RtsUseCases";
 import { RtsFAQ } from "@/components/sections/rts/RtsFAQ";
 import { RtsCTA } from "@/components/sections/rts/RtsCTA";
 
@@ -32,9 +31,8 @@ export const metadata: Metadata = {
  *   06 Exper.    ink       one proximity event, and the record re-reading
  *   07 Outcomes  white     where safety becomes measurable
  *   08 Integr.   offWhite  hardware, client systems and the RAMS modules
- *   09 Use cases white     the six safety programmes, in the carousel
- *   10 FAQ       offWhite  six questions, one of them the important no
- *   11 CTA       darkBtm   the close
+ *   09 FAQ       white     six questions, one of them the important no
+ *   10 CTA       darkBtm   the close
  *
  * Surfaces alternate — no two adjacent sections share one.
  *
@@ -70,7 +68,6 @@ export default function RtssPlatformPage() {
       <RtsExperience />
       <RtsOutcomes />
       <RtsIntegrations />
-      <RtsUseCases />
       <RtsFAQ />
       <RtsCTA />
     </>

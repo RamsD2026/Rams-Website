@@ -7,7 +7,6 @@ import { AtsCapabilities } from "@/components/sections/atos/AtsCapabilities";
 import { AtsExperience } from "@/components/sections/atos/AtsExperience";
 import { AtsOutcomes } from "@/components/sections/atos/AtsOutcomes";
 import { AtsIntegrations } from "@/components/sections/atos/AtsIntegrations";
-import { AtsUseCases } from "@/components/sections/atos/AtsUseCases";
 import { AtsFAQ } from "@/components/sections/atos/AtsFAQ";
 import { AtsCTA } from "@/components/sections/atos/AtsCTA";
 
@@ -32,9 +31,8 @@ export const metadata: Metadata = {
  *   06 Exper.    ink       one event, one replan — plan v18 against v19
  *   07 Outcomes  white     where execution becomes measurable
  *   08 Integr.   offWhite  what ATOS sits between
- *   09 Use cases white     the six process areas, in the carousel
- *   10 FAQ       offWhite  six questions, two of them saying no
- *   11 CTA       darkBtm   the close
+ *   09 FAQ       white     six questions, two of them saying no
+ *   10 CTA       darkBtm   the close
  *
  * Surfaces alternate — no two adjacent sections share one.
  *
@@ -74,7 +72,6 @@ export default function AtosPlatformPage() {
       <AtsExperience />
       <AtsOutcomes />
       <AtsIntegrations />
-      <AtsUseCases />
       <AtsFAQ />
       <AtsCTA />
     </>

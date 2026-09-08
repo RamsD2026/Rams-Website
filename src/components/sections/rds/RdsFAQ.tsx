@@ -70,7 +70,7 @@ export function RdsFAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section surface="offWhite" id="faq">
+    <Section surface="white" id="faq">
       <SectionHeader
         eyebrow="FAQ"
         top="Questions rack safety"
