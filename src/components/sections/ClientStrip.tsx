@@ -4,12 +4,18 @@ import Image from "next/image";
 import { HERO_CLIENTS } from "@/data/clients";
 
 /**
- * The client strip, under the hero photography.
+ * The client strip — the light one, for a light hero.
  *
- * `RiqClients` is the site's version of this and it is dark-only: it renders
- * the same marks as flat white silhouettes, which on a white page would be
- * invisible. Same list, same 46s loop, same edge fade, same pause-on-hover
- * and reduced-motion handling; only the treatment is light.
+ * It was `about/AboutClients` and lived in that page's namespace until the
+ * case-studies hero needed it too. Two pages importing a component named
+ * after a third is how a shared thing ends up copied instead, so it moved
+ * here and took a `label` prop with it — `RiqClients` already had one for the
+ * same reason.
+ *
+ * `RiqClients` is the dark version and renders the same marks as flat white
+ * silhouettes, which on a white page would be invisible. Same list, same 46s
+ * loop, same edge fade, same pause-on-hover and reduced-motion handling; only
+ * the treatment is light.
  *
  * ── The light treatment ─────────────────────────────────────────────
  * The marks are in their real colours here, so the logo-strip convention
@@ -32,39 +38,46 @@ import { HERO_CLIENTS } from "@/data/clients";
 const EDGE_FADE =
   "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)";
 
-export function AboutClients() {
+export function ClientStrip({
+  label = "Trusted on the warehouse floor",
+}: {
+  /** The line above the marquee. Pass `null` to drop it. */
+  label?: string | null;
+} = {}) {
   return (
     <div className="relative mt-12 sm:mt-14">
       <style>{`
-        @keyframes abtclients {
+        @keyframes clstrip {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
-        .abtclients-track {
+        .clstrip-track {
           display: flex;
           width: max-content;
-          animation: abtclients 46s linear infinite;
+          animation: clstrip 46s linear infinite;
         }
-        .abtclients-wrap:hover .abtclients-track {
+        .clstrip-wrap:hover .clstrip-track {
           animation-play-state: paused;
         }
         @media (prefers-reduced-motion: reduce) {
-          .abtclients-track { animation: none; }
+          .clstrip-track { animation: none; }
         }
       `}</style>
 
-      <p className="text-center text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-graphite/40 mb-8">
-        Trusted on the warehouse floor
-      </p>
+      {label && (
+        <p className="text-center text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-graphite/40 mb-8">
+          {label}
+        </p>
+      )}
 
       {/* The edges fade the track itself rather than covering it with a painted
           block — the strip sits over the hero's radial ground and its grid, so
           no solid colour can match what is actually behind it here. */}
       <div
-        className="abtclients-wrap relative overflow-hidden"
+        className="clstrip-wrap relative overflow-hidden"
         style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
       >
-        <div className="abtclients-track">
+        <div className="clstrip-track">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
               {HERO_CLIENTS.map((c) => (

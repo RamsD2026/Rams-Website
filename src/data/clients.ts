@@ -10,7 +10,8 @@
  *
  * ── Why a shared list ───────────────────────────────────────────────
  * Three strips read this: `RiqClients` on nine dark platform heroes,
- * `AboutClients` under the About hero, and `AboutCustomers` in the section
+ * `ClientStrip` under the About and case-study heroes, and `AboutCustomers`
+ * in the section
  * those names are the subject of. They ran three hand-typed lists before this
  * and had already drifted apart. One list, one folder, and a name is added or
  * removed in one place.

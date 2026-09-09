@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
-import { AboutClients } from "./AboutClients";
+import { ClientStrip } from "@/components/sections/ClientStrip";
 import { AboutFacility } from "./AboutFacility";
 
 /**
@@ -205,7 +205,7 @@ export function AboutHero() {
           transition={{ duration: 0.8, delay: 1, ease: EASE }}
           className="relative z-[1]"
         >
-          <AboutClients />
+          <ClientStrip />
         </motion.div>
       </div>
     </section>
