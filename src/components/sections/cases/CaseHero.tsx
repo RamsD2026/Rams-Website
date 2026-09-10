@@ -4,12 +4,16 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Boxes,
   ClipboardCheck,
+  FileCheck2,
   Forklift,
+  Gauge,
   LineChart,
   PackageSearch,
   Radar,
   ShieldCheck,
+  Wrench,
 } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 import { ClientStrip } from "@/components/sections/ClientStrip";
@@ -87,19 +91,24 @@ import {
  */
 
 /**
- * The six glyphs, in slot order — three down the left, then three down the
- * right. They are the six things a case study on this page is about: safety,
- * inventory, compliance, sensing, MHE, management.
+ * The ten glyphs the orbit carries — the ten things a case study on this page is about.
  *
- * The hues are `PartnersFlow`'s, and adjacent slots never share one.
+ * One hue each from `PartnersFlow`'s ten, so no two tiles on the ring share a
+ * colour. `HeroTiles` decides which ring each lands on and how big it is; the
+ * order here is the order it fills its slots, which alternates between the
+ * inner and outer paths.
  */
 const TILES: HeroTile[] = [
-  { icon: ShieldCheck, tint: "#299764" },
-  { icon: PackageSearch, tint: "#CA8A04" },
-  { icon: ClipboardCheck, tint: "#6647F0" },
-  { icon: Radar, tint: "#3E63DD" },
-  { icon: Forklift, tint: "#F76808" },
-  { icon: LineChart, tint: "#DB2777" },
+  { icon: ShieldCheck, tint: "#3E63DD" },
+  { icon: PackageSearch, tint: "#F76808" },
+  { icon: ClipboardCheck, tint: "#0891B2" },
+  { icon: Radar, tint: "#DB2777" },
+  { icon: Forklift, tint: "#6647F0" },
+  { icon: LineChart, tint: "#299764" },
+  { icon: Boxes, tint: "#CA8A04" },
+  { icon: Wrench, tint: "#E5484D" },
+  { icon: Gauge, tint: "#65A30D" },
+  { icon: FileCheck2, tint: "#0F766E" },
 ];
 
 export function CaseHero() {

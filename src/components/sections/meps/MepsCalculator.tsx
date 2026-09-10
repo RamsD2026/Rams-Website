@@ -24,7 +24,58 @@ import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
  * which would hydrate as a mismatch.
  */
 
-const HAIR = "rgba(255,255,255,0.10)";
+/**
+ * The calculator runs on either ground.
+ *
+ * It was written for the MEPS page, which is dark, and it is now also the
+ * whole of `/roi-calculator`, which is not. Rather than a second copy that
+ * has to keep agreeing with this one, the colours are a table and the tone is
+ * a prop — dark by default, so the MEPS page is unaffected if it ever picks
+ * the section back up.
+ *
+ * Only the surface changes. The arithmetic, the fields, the wording and the
+ * "indicative only" line are the same on both.
+ */
+type Tone = "dark" | "light";
+
+const PALETTE = {
+  dark: {
+    surface: "darkMid" as const,
+    hair: "rgba(255,255,255,0.10)",
+    panel: "rgba(255,255,255,0.03)",
+    label: "text-white/40",
+    field: "text-white/60",
+    value: "text-white",
+    note: "text-white/50",
+    unit: "text-white/45",
+    fine: "text-white/35",
+    input: "rgba(255,255,255,0.04)",
+    inputText: "text-white placeholder:text-white/25",
+    resultPanel: "#0E0E11",
+    resultBorder: "1px solid rgba(255,106,0,0.22)",
+    resultShadow: "0 40px 90px -50px rgba(0,0,0,0.7)",
+    track: "rgba(255,255,255,0.12)",
+    thumbShadow: "0 2px 8px rgba(0,0,0,0.45)",
+  },
+  light: {
+    surface: "white" as const,
+    hair: "#E0E0E6",
+    panel: "#FFFFFF",
+    label: "text-graphite/40",
+    field: "text-graphite/65",
+    value: "text-carbon",
+    note: "text-graphite/60",
+    unit: "text-graphite/50",
+    fine: "text-graphite/45",
+    input: "#FFFFFF",
+    inputText: "text-carbon placeholder:text-graphite/35",
+    resultPanel: "linear-gradient(180deg, #FFF6EF 0%, #FFFFFF 100%)",
+    resultBorder: "1px solid #FFD9BC",
+    resultShadow: "0 30px 70px -46px rgba(8,8,10,0.35)",
+    track: "rgba(14,14,15,0.12)",
+    thumbShadow: "0 2px 8px rgba(8,8,10,0.20)",
+  },
+};
 
 function fmtIN(n: number) {
   const s = Math.round(n).toString();
@@ -68,31 +119,43 @@ function Result({
   value,
   unit,
   note,
+  c,
 }: {
   label: string;
   value: string;
   unit?: string;
   note: string;
+  c: (typeof PALETTE)[Tone];
 }) {
   return (
-    <div className="pt-5" style={{ borderTop: `1px solid ${HAIR}` }}>
-      <p className="text-[10.5px] font-mono tracking-[0.12em] uppercase text-white/40">
+    <div className="pt-5" style={{ borderTop: `1px solid ${c.hair}` }}>
+      <p
+        className={
+          "text-[10.5px] font-mono tracking-[0.12em] uppercase " + c.label
+        }
+      >
         {label}
       </p>
       <p className="mt-2 flex items-baseline gap-2 flex-wrap">
-        <span className="font-rams-heading text-[26px] sm:text-[32px] font-bold tracking-[-0.035em] tabular-nums text-white leading-none">
+        <span
+          className={
+            "font-rams-heading text-[26px] sm:text-[32px] font-bold tracking-[-0.035em] tabular-nums leading-none " +
+            c.value
+          }
+        >
           {value}
         </span>
         {unit && (
-          <span className="text-[12px] text-white/45 leading-none">{unit}</span>
+          <span className={"text-[12px] leading-none " + c.unit}>{unit}</span>
         )}
       </p>
-      <p className="mt-2.5 text-[12.5px] text-white/50 leading-[1.6]">{note}</p>
+      <p className={"mt-2.5 text-[12.5px] leading-[1.6] " + c.note}>{note}</p>
     </div>
   );
 }
 
-export function MepsCalculator() {
+export function MepsCalculator({ tone = "dark" }: { tone?: Tone } = {}) {
+  const c = PALETTE[tone];
   const [v, setV] = useState<Record<Key, number>>({
     fleet: 25,
     shifts: 2,
@@ -121,7 +184,7 @@ export function MepsCalculator() {
         : String(v[k]);
 
   return (
-    <Section surface="darkMid" id="roi">
+    <Section surface={c.surface} id="roi">
       <style>{`
         .meps-range {
           -webkit-appearance: none;
@@ -134,7 +197,7 @@ export function MepsCalculator() {
           background: linear-gradient(
             90deg,
             #FF6A00 var(--fill),
-            rgba(255,255,255,0.12) var(--fill)
+            var(--track) var(--fill)
           );
         }
         .meps-range::-webkit-slider-thumb {
@@ -145,7 +208,7 @@ export function MepsCalculator() {
           border-radius: 50%;
           background: #FFFFFF;
           border: 2px solid #FF6A00;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+          box-shadow: var(--thumb-shadow);
           cursor: pointer;
         }
         .meps-range::-moz-range-thumb {
@@ -154,7 +217,7 @@ export function MepsCalculator() {
           border-radius: 50%;
           background: #FFFFFF;
           border: 2px solid #FF6A00;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+          box-shadow: var(--thumb-shadow);
           cursor: pointer;
         }
         .meps-range:focus-visible {
@@ -167,7 +230,7 @@ export function MepsCalculator() {
         top="Test the opportunity"
         bottom="against your own assumptions."
         body="Every value below is yours to set. MEPS does not supply the improvement figures — it supplies the measurement that tells you whether your assumption was right."
-        tone="dark"
+        tone={tone}
         size="compact"
         width="wide"
       />
@@ -182,11 +245,16 @@ export function MepsCalculator() {
           className="px-5 py-6 sm:px-7 sm:py-7"
           style={{
             borderRadius: 14,
-            background: "rgba(255,255,255,0.03)",
-            border: `1px solid ${HAIR}`,
+            background: c.panel,
+            border: `1px solid ${c.hair}`,
           }}
         >
-          <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 mb-6">
+          <p
+            className={
+              "text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-6 " +
+              c.label
+            }
+          >
             Your operation
           </p>
 
@@ -199,7 +267,7 @@ export function MepsCalculator() {
                     htmlFor={`calc-${f.k}`}
                     className="flex items-baseline justify-between gap-4 mb-2.5"
                   >
-                    <span className="text-[13px] text-white/60 leading-[1.4]">
+                    <span className={"text-[13px] leading-[1.4] " + c.field}>
                       {f.label}
                     </span>
                     <span className="text-[14px] font-mono font-bold tabular-nums text-signal-orange shrink-0">
@@ -215,16 +283,22 @@ export function MepsCalculator() {
                     step={f.step}
                     value={v[f.k]}
                     onChange={(e) => set(f.k, Number(e.target.value))}
-                    style={{ "--fill": `${pct}%` } as React.CSSProperties}
+                    style={
+                      {
+                        "--fill": `${pct}%`,
+                        "--track": c.track,
+                        "--thumb-shadow": c.thumbShadow,
+                      } as React.CSSProperties
+                    }
                   />
                 </div>
               );
             })}
 
-            <div className="pt-5" style={{ borderTop: `1px solid ${HAIR}` }}>
+            <div className="pt-5" style={{ borderTop: `1px solid ${c.hair}` }}>
               <label
                 htmlFor="calc-cost"
-                className="block text-[13px] text-white/60 leading-[1.4] mb-2.5"
+                className={"block text-[13px] leading-[1.4] mb-2.5 " + c.field}
               >
                 Your cost per MHE per month (optional, ₹)
               </label>
@@ -237,11 +311,14 @@ export function MepsCalculator() {
                 placeholder="e.g. 45000"
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-[13.5px] font-mono tabular-nums text-white placeholder:text-white/25 outline-none focus:border-signal-orange/50 transition-colors"
+                className={
+                  "w-full px-3.5 py-2.5 text-[13.5px] font-mono tabular-nums outline-none focus:border-signal-orange/50 transition-colors " +
+                  c.inputText
+                }
                 style={{
                   borderRadius: 9,
-                  background: "rgba(255,255,255,0.04)",
-                  border: `1px solid ${HAIR}`,
+                  background: c.input,
+                  border: `1px solid ${c.hair}`,
                 }}
               />
             </div>
@@ -257,9 +334,9 @@ export function MepsCalculator() {
           className="relative overflow-hidden px-5 py-6 sm:px-7 sm:py-7"
           style={{
             borderRadius: 14,
-            background: "#0E0E11",
-            border: "1px solid rgba(255,106,0,0.22)",
-            boxShadow: "0 40px 90px -50px rgba(0,0,0,0.7)",
+            background: c.resultPanel,
+            border: c.resultBorder,
+            boxShadow: c.resultShadow,
           }}
         >
           <span
@@ -277,18 +354,21 @@ export function MepsCalculator() {
 
           <div className="flex flex-col gap-5">
             <Result
+              c={c}
               label="Machine-hours recovered per year"
               value={fmtIN(hours)}
               unit="hours"
               note="Across the whole fleet, at the recovery you entered."
             />
             <Result
+              c={c}
               label="Equivalent annual capacity"
               value={machines.toFixed(1)}
               unit="machines’ worth"
               note="Capacity you may already own, expressed as machines — before adding any."
             />
             <Result
+              c={c}
               label="Travel currently carrying nothing"
               value={String(v.empty)}
               unit="% of fleet travel"
@@ -296,6 +376,7 @@ export function MepsCalculator() {
             />
             {showCost && (
               <Result
+                c={c}
                 label="At the rate you entered"
                 value={
                   annual >= 1e7
@@ -309,8 +390,8 @@ export function MepsCalculator() {
           </div>
 
           <p
-            className="mt-7 pt-5 text-[11.5px] text-white/35 leading-[1.65]"
-            style={{ borderTop: `1px solid ${HAIR}` }}
+            className={"mt-7 pt-5 text-[11.5px] leading-[1.65] " + c.fine}
+            style={{ borderTop: `1px solid ${c.hair}` }}
           >
             Assumptions: {v.fleet} MHEs · {v.shifts} shift
             {v.shifts > 1 ? "s" : ""} · {v.days} days · {v.prod.toFixed(1)}{" "}

@@ -94,7 +94,7 @@ const INDUSTRIES: Industry[] = [
     gradient:
       "linear-gradient(135deg, #1B1B1F 0%, #262632 45%, #3A3A4A 100%)",
     accent: "#C4B5FD",
-    image: UNSPLASH("photo-1582719508461-905c673771fd"),
+    image: UNSPLASH("photo-1642055514517-7b52288890ec"),
   },
   {
     id: "automotive",
@@ -105,7 +105,7 @@ const INDUSTRIES: Industry[] = [
     gradient:
       "linear-gradient(135deg, #0B0B0F 0%, #1B1B22 45%, #33333F 100%)",
     accent: "#FCD34D",
-    image: UNSPLASH("photo-1580982327559-c1202864eb05"),
+    image: UNSPLASH("photo-1567789884554-0b844b597180"),
   },
 ];
 

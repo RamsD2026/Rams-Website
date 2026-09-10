@@ -7,9 +7,13 @@ import {
   Boxes,
   Camera,
   Cpu,
+  Forklift,
+  Gauge,
   Layers,
   MonitorPlay,
   Radar,
+  ShieldCheck,
+  Wrench,
 } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 import { ClientStrip } from "@/components/sections/ClientStrip";
@@ -50,20 +54,24 @@ import {
  */
 
 /**
- * The six glyphs, in slot order — three down the left, then three down the
- * right. They are the six subjects the films cover: the product on screen,
- * the camera, the edge unit, the sensing, the twin, the stock it all sits on.
+ * The ten glyphs the orbit carries — the ten subjects the films cover.
  *
- * The hues are `PartnersFlow`'s, and adjacent slots never share one. The
- * case-studies hero uses the same slots with its own six.
+ * One hue each from `PartnersFlow`'s ten, so no two tiles on the ring share a
+ * colour. `HeroTiles` decides which ring each lands on and how big it is; the
+ * order here is the order it fills its slots, which alternates between the
+ * inner and outer paths.
  */
 const TILES: HeroTile[] = [
   { icon: MonitorPlay, tint: "#3E63DD" },
-  { icon: Camera, tint: "#DB2777" },
+  { icon: Camera, tint: "#F76808" },
   { icon: Cpu, tint: "#0891B2" },
-  { icon: Radar, tint: "#6647F0" },
-  { icon: Layers, tint: "#F76808" },
-  { icon: Boxes, tint: "#CA8A04" },
+  { icon: Radar, tint: "#DB2777" },
+  { icon: Layers, tint: "#6647F0" },
+  { icon: Boxes, tint: "#299764" },
+  { icon: Forklift, tint: "#CA8A04" },
+  { icon: ShieldCheck, tint: "#E5484D" },
+  { icon: Gauge, tint: "#65A30D" },
+  { icon: Wrench, tint: "#0F766E" },
 ];
 
 export function VideoHero() {

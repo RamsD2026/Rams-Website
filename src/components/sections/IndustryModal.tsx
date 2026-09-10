@@ -508,7 +508,7 @@ const DETAILS: Record<string, Details> = {
   },
   pharma: {
     hero: {
-      image: UNSPLASH("photo-1582719508461-905c673771fd", 2000),
+      image: UNSPLASH("photo-1642055514517-7b52288890ec", 2000),
       tagline: "Compliance-first warehouse intelligence with complete traceability.",
       kpis: ["GDP Compliant", "Serialisation", "21 CFR Part 11", "Audit-ready"],
     },
@@ -564,7 +564,7 @@ const DETAILS: Record<string, Details> = {
   },
   automotive: {
     hero: {
-      image: UNSPLASH("photo-1580982327559-c1202864eb05", 2000),
+      image: UNSPLASH("photo-1567789884554-0b844b597180", 2000),
       tagline: "Track heavy assets, forklifts and high-value inventory in real time.",
       kpis: ["Asset Tracking", "Yard Ops", "JIT Delivery", "Quality"],
     },

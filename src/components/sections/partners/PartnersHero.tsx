@@ -45,6 +45,14 @@ import { PartnersFlow } from "./PartnersFlow";
  * pulse is normalised with `pathLength="1"` so ten wires of ten different
  * lengths run at one speed.
  *
+ *
+ * ── The top padding clears the navbar ───────────────────────────────
+ * pt-36/44/52 — 144, 176 and 208. The header is fixed at h-16 sm:h-20, so
+ * that leaves 80 at the smallest and 128 at `lg`.
+ *
+ * It was pt-28/32/36, which left 64 under an 80px header at `lg`: the pill
+ * arrived almost against the nav and the hero read as though it started above
+ * the fold rather than below it.
  */
 
 export function PartnersHero() {
@@ -86,7 +94,7 @@ export function PartnersHero() {
         }}
       />
 
-      <div className="relative rams-container pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-20 lg:pb-24">
+      <div className="relative rams-container pt-36 sm:pt-44 lg:pt-52 pb-16 sm:pb-20 lg:pb-24">
         <div className="relative z-[1] max-w-[1180px] mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 8 }}

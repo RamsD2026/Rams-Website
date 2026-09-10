@@ -43,8 +43,8 @@ function Cover({ study, big }: { study: CaseStudy; big: boolean }) {
       fill
       sizes={
         big
-          ? "(max-width: 1024px) 92vw, 642px"
-          : "(max-width: 1024px) 92vw, 246px"
+          ? "(max-width: 1024px) 92vw, 731px"
+          : "(max-width: 640px) 132px, 168px"
       }
       className="object-cover"
     />

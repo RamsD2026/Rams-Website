@@ -52,7 +52,7 @@ function Cover({
     <div
       className="absolute inset-0 flex flex-col justify-center items-start"
       style={{
-        padding: big ? 32 : 18,
+        padding: big ? 30 : 16,
         background:
           "linear-gradient(135deg, #FFF4EC 0%, #FFE7D6 48%, #FFD9BE 100%)",
       }}
@@ -65,7 +65,7 @@ function Cover({
 
       <div
         className="font-bold leading-[0.98] tracking-[-0.05em]"
-        style={{ fontSize: big ? 58 : 24 }}
+        style={{ fontSize: big ? 54 : 21 }}
       >
         <span className="block text-carbon">{words[0]}</span>
         <span className="block text-signal-orange">{words[1]}.</span>

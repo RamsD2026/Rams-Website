@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Search } from "lucide-react";
+import { Calculator, Menu, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RAMSLogo } from "@/components/ui/RAMSLogo";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
@@ -183,8 +184,25 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               ))}
             </ul>
 
-            {/* Desktop — Search only, CTAs live in hero */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0">
+            {/* Desktop — search, and the one standing CTA.
+                The rest of the page CTAs live in the hero; this one is in the
+                bar because the calculator is a tool a reader may want at any
+                point in a visit, not only at the top of a page. */}
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
+              <Link
+                href="/roi-calculator"
+                className={cn(
+                  "inline-flex items-center gap-2 h-9 px-4 rounded-full text-[13px] font-semibold whitespace-nowrap",
+                  "bg-signal-orange text-white transition-all duration-200",
+                  "hover:-translate-y-px hover:bg-signal-orange-hover",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  isTransparent ? "focus-visible:ring-white" : "focus-visible:ring-carbon"
+                )}
+              >
+                <Calculator className="w-[15px] h-[15px]" aria-hidden="true" />
+                ROI calculator
+              </Link>
+
               <button
                 type="button"
                 aria-label="Search"

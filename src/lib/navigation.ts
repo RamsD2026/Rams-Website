@@ -92,15 +92,15 @@ export const NAV_CONFIG: NavItemConfig[] = [
     groups: [
       {
         links: [
+          // The stack in the order it is built, not the order it was written:
+          // the twin first, then the diagnostic and productivity systems on top
+          // of it, then safety, diagnostics and orchestration, then AIMS over
+          // all of them. The menu flows down the first column and then down the
+          // second, so this reads in sequence as laid out.
           {
             label: "Digital Twin",
             href: "/platform/digital-twin",
             description: "Live warehouse replica updated in real time",
-          },
-          {
-            label: "MEPS",
-            href: "/platform/meps",
-            description: "MHE Efficiency and Productivity System",
           },
           {
             label: "IRDS",
@@ -108,9 +108,9 @@ export const NAV_CONFIG: NavItemConfig[] = [
             description: "Integrated Rack Diagnostic Suite",
           },
           {
-            label: "ATOS",
-            href: "/platform/ai-operational-intelligence",
-            description: "Automated Task Orchestration System",
+            label: "MEPS",
+            href: "/platform/meps",
+            description: "MHE Efficiency and Productivity System",
           },
           {
             label: "RTSS",
@@ -123,9 +123,19 @@ export const NAV_CONFIG: NavItemConfig[] = [
             description: "Integrated MHE Diagnostic System — WMS, ERP, CCTV, RFID, MHE",
           },
           {
+            label: "ATOS",
+            href: "/platform/ai-operational-intelligence",
+            description: "Automated Task Orchestration System",
+          },
+          {
             label: "AIMS",
             href: "/platform/security",
             description: "AI Intelligence and Management System",
+          },
+          {
+            label: "Inventory Intelligence",
+            href: "/platform/iros",
+            description: "IROS — location, movement, dwell, accuracy and storage optimisation",
           },
         ],
       },
@@ -262,15 +272,15 @@ export const NAV_CONFIG: NavItemConfig[] = [
       {
         title: "Industries We Serve",
         links: [
-          { label: "Warehousing and Distribution", href: "/industries/warehousing-distribution", description: "Optimise throughput and accuracy" },
-          { label: "Third-Party Logistics (3PL)", href: "/industries/third-party-logistics", description: "Multi-client warehouse management" },
-          { label: "E-commerce", href: "/industries/ecommerce-fulfilment", description: "High-velocity order operations" },
-          { label: "Cold Storage", href: "/industries/cold-storage", description: "Temperature-controlled operations" },
-          { label: "Manufacturing", href: "/industries/manufacturing", description: "End-to-end production floor visibility" },
-          { label: "Automotive", href: "/industries/automotive", description: "Parts tracking and JIT compliance" },
-          { label: "FMCG", href: "/industries/fmcg", description: "High-volume fast-moving goods" },
-          { label: "Food and Beverage", href: "/industries/food-beverage", description: "Cold chain and FIFO compliance" },
-          { label: "Pharmaceuticals", href: "/industries/pharmaceuticals", description: "Regulated storage and traceability" },
+          { label: "Warehousing and Distribution", href: "/industries#warehousing", description: "Optimise throughput and accuracy" },
+          { label: "Third-Party Logistics (3PL)", href: "/industries#3pl", description: "Multi-client warehouse management" },
+          { label: "E-commerce", href: "/industries#ecommerce", description: "High-velocity order operations" },
+          { label: "Cold Storage", href: "/industries#cold-storage", description: "Temperature-controlled operations" },
+          { label: "Manufacturing", href: "/industries#manufacturing", description: "End-to-end production floor visibility" },
+          { label: "Automotive", href: "/industries#automotive", description: "Parts tracking and JIT compliance" },
+          { label: "FMCG", href: "/industries#fmcg", description: "High-volume fast-moving goods" },
+          { label: "Food and Beverage", href: "/industries#food-beverage", description: "Cold chain and FIFO compliance" },
+          { label: "Pharmaceuticals", href: "/industries#pharmaceuticals", description: "Regulated storage and traceability" },
         ],
       },
     ],
@@ -296,14 +306,14 @@ export const NAV_CONFIG: NavItemConfig[] = [
           { label: "Case Studies", href: "/resources/case-studies", description: "Real-world customer outcomes" },
           { label: "News Room", href: "/resources/insights", description: "Latest company news and announcements" },
           { label: "Videos", href: "/resources/videos", description: "Product demos and walkthroughs" },
-          { label: "White Papers", href: "/resources/white-papers", description: "In-depth research and analysis" },
+          { label: "Webinars", href: "/resources/webinars", description: "Live sessions and recordings" },
         ],
       },
       {
         title: "Reference",
         links: [
           { label: "Technical Notes", href: "/resources/technical-notes", description: "Integration and API documentation" },
-          { label: "Downloads", href: "/resources/downloads", description: "Datasheets, brochures, and specs" },
+          { label: "Downloads", href: "/resources/downloads", description: "White papers, datasheets, brochures and specs" },
           { label: "Glossary (Industry Compliance Guides)", href: "/resources/compliance-guides", description: "SEMA, FEM, OSHA reference guides" },
           { label: "Frequently Asked Questions (FAQs)", href: "/resources/faqs", description: "Answers to common questions" },
         ],

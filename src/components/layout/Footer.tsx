@@ -67,11 +67,11 @@ const COLUMNS: FooterColumn[] = [
   {
     title: "Industries",
     links: [
-      { label: "3PL & Logistics", href: "/industries/3pl-logistics" },
-      { label: "Retail & E-commerce", href: "/industries/retail" },
-      { label: "Manufacturing", href: "/industries/manufacturing" },
-      { label: "Cold Chain", href: "/industries/cold-chain" },
-      { label: "Automotive", href: "/industries/automotive" },
+      { label: "3PL & Logistics", href: "/industries#3pl" },
+      { label: "Retail & E-commerce", href: "/industries#ecommerce" },
+      { label: "Manufacturing", href: "/industries#manufacturing" },
+      { label: "Cold Chain", href: "/industries#cold-storage" },
+      { label: "Automotive", href: "/industries#automotive" },
     ],
   },
   {

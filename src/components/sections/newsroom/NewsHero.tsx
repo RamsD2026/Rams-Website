@@ -5,11 +5,15 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Building2,
+  CalendarDays,
   Camera,
   FileText,
   Globe,
+  Layers,
   Megaphone,
   Newspaper,
+  Quote,
+  ShieldCheck,
 } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 import { ClientStrip } from "@/components/sections/ClientStrip";
@@ -28,8 +32,10 @@ import {
  * same pt-40/52/60. Three `/resources`-and-`/company` index pages that a
  * reader moves between should not feel like three sites.
  *
- * The tile slots in `LightHero` are fixed against exactly that top padding
- * and a 96px two-line heading. Move either and a tile lands on a word.
+ * `HeroTiles` is the orbit: two concentric rings cut off by the top of the
+ * section, ten tiles riding them anticlockwise at three sizes. It measures
+ * nothing against the words — the radii clear the widest thing in the middle
+ * column and the layer fades out above the client strip.
  *
  * ── The copy is the source's ────────────────────────────────────────
  * The heading, the subline and both buttons come from
@@ -45,12 +51,12 @@ import {
  */
 
 /**
- * The six glyphs, in slot order — three down the left, then three down the
- * right: the record, the announcement, the coverage, the picture, the
- * document, the company.
+ * The ten glyphs the orbit carries — the ten things the record is made of.
  *
- * The hues are `PartnersFlow`'s, and adjacent slots never share one. The
- * case-studies and videos heroes use the same slots with their own six.
+ * One hue each from `PartnersFlow`'s ten, so no two tiles on the ring share a
+ * colour. `HeroTiles` decides which ring each lands on and how big it is; the
+ * order here is the order it fills its slots, which alternates between the
+ * inner and outer paths.
  */
 const TILES: HeroTile[] = [
   { icon: Newspaper, tint: "#3E63DD" },
@@ -59,6 +65,10 @@ const TILES: HeroTile[] = [
   { icon: Camera, tint: "#DB2777" },
   { icon: FileText, tint: "#6647F0" },
   { icon: Building2, tint: "#299764" },
+  { icon: ShieldCheck, tint: "#CA8A04" },
+  { icon: Layers, tint: "#E5484D" },
+  { icon: Quote, tint: "#65A30D" },
+  { icon: CalendarDays, tint: "#0F766E" },
 ];
 
 export function NewsHero() {
