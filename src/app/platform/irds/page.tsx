@@ -26,7 +26,7 @@ export const metadata: Metadata = {
  *   02 Problem   white     the four ways a finding goes cold
  *   03 Overview  offWhite  the twelve things the rack record holds
  *   04 How       white     five steps, inspection to verified closure
- *   05 Capab.    offWhite  six capabilities, sticky-scrolled over real screens
+ *   05 Capab.    offWhite  seven capabilities, sticky-scrolled over real screens
  *   06 Exper.    ink       rack health, filtered four ways
  *   07 Outcomes  white     where rack safety becomes measurable
  *   08 Integr.   offWhite  what IRDS connects, and who shares the rack identity

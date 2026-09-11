@@ -146,15 +146,39 @@ type Lane = { d: string; label: string; dur: number };
 /* Every path below rides `lane(...)`, so each one is the centre of an aisle
    the blocks above actually leave. */
 const LANES: Lane[] = [
-  { d: `M140 ${lane(120, 0)} H744 V${MAIN_Y} H${W - 150}`, label: "MHE 04", dur: 23 },
-  { d: `M${W - 150} ${lane(120, 1)} H840 V${MAIN_Y} H140`, label: "MHE 07", dur: 29 },
+  {
+    d: `M140 ${lane(120, 0)} H744 V${MAIN_Y} H${W - 150}`,
+    label: "MHE 04",
+    dur: 23,
+  },
+  {
+    d: `M${W - 150} ${lane(120, 1)} H840 V${MAIN_Y} H140`,
+    label: "MHE 07",
+    dur: 29,
+  },
   { d: `M140 ${lane(120, 3)} H744`, label: "MHE 12", dur: 27 },
   { d: `M744 ${lane(120, 4)} H140`, label: "MHE 15", dur: 33 },
-  { d: `M${lane(880, 0)} 110 V400 H${lane(880, 4)} V110`, label: "MHE 11", dur: 19 },
-  { d: `M${lane(880, 7)} 110 V400 H${lane(880, 10)} V110`, label: "MHE 18", dur: 17 },
-  { d: `M140 ${lane(500, 0)} H720 V${MAIN_Y} H${MAIN_X}`, label: "MHE 02", dur: 31 },
+  {
+    d: `M${lane(880, 0)} 110 V400 H${lane(880, 4)} V110`,
+    label: "MHE 11",
+    dur: 19,
+  },
+  {
+    d: `M${lane(880, 7)} 110 V400 H${lane(880, 10)} V110`,
+    label: "MHE 18",
+    dur: 17,
+  },
+  {
+    d: `M140 ${lane(500, 0)} H720 V${MAIN_Y} H${MAIN_X}`,
+    label: "MHE 02",
+    dur: 31,
+  },
   { d: `M140 ${lane(500, 3)} H500`, label: "MHE 06", dur: 35 },
-  { d: `M${W - 150} ${lane(500, 2)} H880 V${lane(500, 0)} H${W - 150}`, label: "MHE 09", dur: 25 },
+  {
+    d: `M${W - 150} ${lane(500, 2)} H880 V${lane(500, 0)} H${W - 150}`,
+    label: "MHE 09",
+    dur: 25,
+  },
   { d: `M${MAIN_X} 110 V${H - 110}`, label: "MHE 05", dur: 21 },
 ];
 
@@ -193,12 +217,31 @@ const ORANGE = "#FF6A00";
 const FADE =
   "radial-gradient(58% 52% at 50% 34%, transparent 0%, rgba(0,0,0,0.55) 44%, #000 74%)";
 
+/**
+ * The plan also dissolves toward the hero’s foot.
+ *
+ * `xMidYMid slice` scales the plan to cover the hero, and at most widths that
+ * puts the shell’s bottom wall almost exactly on the hero’s bottom edge —
+ * where `FADE` is at full strength — so it drew a grey hairline across the
+ * page right where the next section begins. Intersecting a bottom fade with
+ * `FADE` takes the whole plan out before that edge rather than deleting the
+ * wall, which would leave the side walls stopping in mid-air. The logo strip
+ * sits on clean ground as a result, the way the resources heroes dissolve
+ * their tiles above theirs.
+ */
+const FOOT = "linear-gradient(to bottom, #000 0%, #000 74%, transparent 92%)";
+
 export function AboutFacility() {
   return (
     <div
       aria-hidden
       className="pointer-events-none absolute inset-0 overflow-hidden"
-      style={{ WebkitMaskImage: FADE, maskImage: FADE }}
+      style={{
+        WebkitMaskImage: `${FADE}, ${FOOT}`,
+        maskImage: `${FADE}, ${FOOT}`,
+        WebkitMaskComposite: "source-in",
+        maskComposite: "intersect",
+      }}
     >
       <svg
         viewBox={`0 0 ${W} ${H}`}
@@ -336,7 +379,13 @@ export function AboutFacility() {
               fillOpacity="0.561"
               stroke="rgba(20,22,26,0.0595)"
             />
-            <circle cx="9" cy="8.5" r="2.4" fill={TONE[r.tone]} fillOpacity="0.85" />
+            <circle
+              cx="9"
+              cy="8.5"
+              r="2.4"
+              fill={TONE[r.tone]}
+              fillOpacity="0.85"
+            />
             <text
               x="17"
               y="11.8"

@@ -38,6 +38,13 @@ export type Item = {
    * and never a render.
    */
   icon?: string;
+  /**
+   * A heroicons-solid name, for the coloured-tile treatment the scope
+   * sections use. Kept apart from `icon`, which is a lucide name: the two
+   * sets are resolved by different tables, and a saturated tile needs the
+   * solid set — lucide's hairlines disappear on one at 21px.
+   */
+  hero?: string;
   /** Short mono chips under the body. Used by the lens and mode blocks. */
   tags?: string[];
   /** Traffic-light coding. Only the lens block reads it. */
@@ -65,7 +72,13 @@ export type ServiceSection =
   /** The problem, as numbered statements. Opens the page's argument. */
   | ({ kind: "problem"; items: Item[] } & Head)
   /** A plain grid of labelled items — scope, loads, tests, standards. */
-  | ({ kind: "grid"; items: Item[]; cols?: 2 | 3 | 4 } & Head)
+  | ({
+      kind: "grid";
+      items: Item[];
+      cols?: 2 | 3 | 4;
+      /** Render as the platform pages' coloured icon tiles, not cards. */
+      tiles?: boolean;
+    } & Head)
   /** Two or three wide cards: delivery routes, approaches, plans. */
   | ({ kind: "modes"; items: Item[] } & Head)
   /** The numbered sequence. Always the dark band. */
@@ -88,7 +101,10 @@ export type Service = {
   /** Two heading lines. The second is dimmed. */
   h1: [string, string];
   intro: string;
-  /** Three mono chips under the intro. */
+  /**
+   * Three short mono chips. Shown on the /services index cards; the page hero
+   * no longer carries them — removed on request.
+   */
   chips: string[];
   /** The four assurances the source's hero panel carries. */
   assurances: Item[];

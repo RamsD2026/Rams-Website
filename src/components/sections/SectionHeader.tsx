@@ -40,6 +40,12 @@ export type SectionHeaderProps = {
    * one. Opt-in, so existing headers are unaffected.
    */
   bodyWidth?: "default" | "wide";
+  /**
+   * `left` sets the header flush left, for the rare header that shares its
+   * row with a visual rather than sitting above one. Opt-in, so existing
+   * headers stay centred.
+   */
+  align?: "center" | "left";
   className?: string;
 };
 
@@ -52,14 +58,16 @@ export function SectionHeader({
   size = "default",
   width = "default",
   bodyWidth = "default",
+  align = "center",
   className,
 }: SectionHeaderProps) {
   const dark = tone === "dark";
 
+  const centre = align === "left" ? "" : "mx-auto text-center ";
   const wrapper =
     width === "wide"
-      ? "max-w-[1180px] mx-auto text-center mb-16 sm:mb-20"
-      : "max-w-[900px] mx-auto text-center mb-20 sm:mb-24";
+      ? `max-w-[1180px] ${centre}mb-16 sm:mb-20`
+      : `max-w-[900px] ${centre}mb-20 sm:mb-24`;
 
   const headingSize =
     size === "long"
@@ -121,7 +129,8 @@ export function SectionHeader({
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
           className={
-            "mt-6 text-[14px] sm:text-[15px] leading-[1.55] mx-auto " +
+            "mt-6 text-[14px] sm:text-[15px] leading-[1.55] " +
+            (align === "left" ? "" : "mx-auto ") +
             (bodyWidth === "wide" ? "max-w-[1140px] " : "max-w-[880px] ") +
             (dark ? "text-white/60" : "text-graphite/65")
           }

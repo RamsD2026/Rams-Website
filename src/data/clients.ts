@@ -26,9 +26,14 @@
  * ── On dark ─────────────────────────────────────────────────────────
  * Every file is a transparent PNG carrying the mark's real colours, which is
  * right on a light ground and useless on a dark one, where Caterpillar's
- * black and Ferrero's brown disappear. The dark strip therefore renders them
- * as flat white silhouettes, `brightness(0) invert(1)` — a treatment rather
- * than a second set of files.
+ * black and Ferrero's brown disappear.
+ *
+ * The dark strip reads a second set, `public/clients-dark/`, generated from
+ * this folder by `scripts/gen-dark-clients.mjs`. It is not a CSS filter:
+ * the flat-white silhouette the strip used to apply turned every mark with
+ * white letters on a coloured fill into a solid block. Add or replace a file
+ * here and re-run the script, or the dark strip will show a stale or
+ * missing mark.
  */
 
 export type Client = {

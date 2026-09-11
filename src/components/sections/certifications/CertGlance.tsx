@@ -140,9 +140,8 @@ export function CertGlance() {
             className="mt-6 pt-5 text-[12.5px] leading-[1.7] text-graphite/55 flex-1"
             style={{ borderTop: `1px solid ${HAIR}` }}
           >
-            Not Type II, not ISO 27001, and not automatic regulatory
-            compliance. Ask for the report period, the system boundary and the
-            exceptions.
+            Not Type II, not ISO 27001, and not automatic regulatory compliance.
+            Ask for the report period, the system boundary and the exceptions.
           </p>
 
           <a

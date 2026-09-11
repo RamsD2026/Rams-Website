@@ -9,10 +9,12 @@ import { EMAIL } from "@/components/sections/contact/contact-data";
  * carried through unchanged. RAMS Digital publicly states **SOC 2 Type I**.
  * The source then says, in its own words, what that is not:
  *
- *   "This page does not imply SOC 2 Type II, ISO 27001 certification or
- *    automatic regulatory compliance."
  *   "Alignment is not accreditation."
  *   "No platform guarantees compliance on its own."
+ *
+ * A third line — "This page does not imply SOC 2 Type II, ISO 27001
+ * certification or automatic regulatory compliance" — sat framed under the
+ * SOC 2 statement and was removed on request.
  *
  * A security page is where an overstated claim does the most damage: it is
  * read by a procurement team deciding whether to skip a diligence step. So
@@ -58,9 +60,6 @@ export const SOC2 = {
       "Understand what RAMS controls and what remains with the customer.",
     ],
   ] as [string, string][],
-  /** The source's own non-claim. It is not a caveat; it is the point. */
-  notClaimed:
-    "This page does not imply SOC 2 Type II, ISO 27001 certification or automatic regulatory compliance. Current evidence and scope should be confirmed directly with RAMS Digital.",
 };
 
 /* ── four questions trust actually turns on ───────────────────────── */
@@ -181,12 +180,7 @@ export const DOMAINS: {
  * configurable control read as a certification.
  */
 export type Status =
-  | "stated"
-  | "configurable"
-  | "workflow"
-  | "scope"
-  | "contract"
-  | "verify";
+  "stated" | "configurable" | "workflow" | "scope" | "contract" | "verify";
 
 export const STATUS_LABEL: Record<Status, string> = {
   stated: "Publicly stated",
@@ -331,4 +325,134 @@ export const FAQS: [string, string][] = [
     "Does using RAMS make our operation compliant?",
     "No platform guarantees compliance on its own. RAMS can structure processes and evidence, while the customer remains responsible for applicable laws, competent people, operating controls and site-specific obligations.",
   ],
+];
+
+/* ── the sections the page did not carry, from the source ────────── */
+
+/** EN 15635 as a workflow: step and what it does. */
+export const WORKFLOW: [string, string][] = [
+  ["Inspect", "Capture evidence"],
+  ["Classify", "Apply risk logic"],
+  ["Assign", "Create action"],
+  ["Rectify", "Record repair"],
+  ["Verify", "Close with evidence"],
+];
+
+/** Who carries what — the source's "alignment is not accreditation". */
+export const ROLES: [string, string][] = [
+  ["Standard", "Defines recognised practice"],
+  ["Competence", "Applies to people and roles"],
+  ["Platform", "Structures records and workflow"],
+  ["Customer", "Owns site compliance duties"],
+];
+
+export const DATAFLOW: { n: string; title: string; body: string }[] = [
+  {
+    n: "01",
+    title: "Discover",
+    body: "Inventory operational, device, user and personal data.",
+  },
+  {
+    n: "02",
+    title: "Classify",
+    body: "Separate sensitive and business-critical information.",
+  },
+  {
+    n: "03",
+    title: "Control",
+    body: "Set access, retention, sharing and export rules.",
+  },
+  {
+    n: "04",
+    title: "Verify",
+    body: "Review the implemented configuration and evidence.",
+  },
+];
+
+/**
+ * The source's own example feed. It is illustrative — the section says
+ * so on the page — and is not a record of any customer's activity.
+ */
+export const FEED: {
+  code: string;
+  title: string;
+  meta: string;
+  when: string;
+}[] = [
+  {
+    code: "AS",
+    title: "Access scope updated",
+    meta: "Regional safety lead · Sites 03–05",
+    when: "09:42",
+  },
+  {
+    code: "IR",
+    title: "Inspection evidence verified",
+    meta: "Rack B-14 · Action AC-2208",
+    when: "08:17",
+  },
+  {
+    code: "API",
+    title: "Integration credential rotated",
+    meta: "WMS production connector",
+    when: "Yesterday",
+  },
+  {
+    code: "GV",
+    title: "Quarterly permission review closed",
+    meta: "2 access changes approved",
+    when: "04 Sep",
+  },
+];
+
+export const INTERFACE_SOURCES = [
+  "WMS / ERP / MES",
+  "CMMS / TMS / HRMS",
+  "Sensors / cameras / edge",
+  "Customer APIs",
+];
+
+export const INTERFACE_PRINCIPLES: [string, string][] = [
+  ["Purpose-bound access", "Only the data required for the use case"],
+  ["Credential control", "Issue, store, rotate and revoke"],
+  ["Change visibility", "Know when an interface changes"],
+  ["Failure handling", "Detect, retry, alert and investigate"],
+];
+
+export const SHARED: [string, string][] = [
+  [
+    "Customer decisions",
+    "Purpose, lawful basis, workforce notices, internal access and acceptable use.",
+  ],
+  [
+    "Platform commitments",
+    "Agreed processing, security measures, subprocessors and support for data requests.",
+  ],
+  [
+    "Joint verification",
+    "Data-flow review, contractual roles, retention schedule and go-live approval.",
+  ],
+];
+
+export const RECOVERY: [string, string][] = [
+  [
+    "Availability",
+    "Agree service hours, exclusions, dependencies and measurement method in the applicable service terms.",
+  ],
+  [
+    "Recovery",
+    "Confirm back-up coverage, recovery point and recovery time objectives for the chosen scope.",
+  ],
+  [
+    "Incident response",
+    "Document triage, severity, escalation, notification, investigation and post-incident review.",
+  ],
+];
+
+export const PATH: [string, string][] = [
+  ["Discover", "Define use case, data, users and risk."],
+  ["Map", "Document systems, flows and responsibilities."],
+  ["Configure", "Set roles, sites, workflows and retention."],
+  ["Validate", "Test controls, integration and recovery expectations."],
+  ["Review", "Approve go-live and schedule assurance reviews."],
 ];

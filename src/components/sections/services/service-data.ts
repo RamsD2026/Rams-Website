@@ -109,44 +109,54 @@ const RACK_INSPECTION: Service = {
     {
       kind: "grid",
       eyebrow: "Inspection scope",
+      tiles: true,
       top: "Every element. Every interface.",
       bottom: "Every location.",
       body: "The final checklist is confirmed for the rack type, layout, loading, access and service level.",
       items: [
         {
           title: "Uprights & frames",
+          hero: "ViewColumnsIcon",
           body: "Impact damage, dents, bends, twists, verticality, splice condition, corrosion and unsupported height.",
         },
         {
           title: "Beams & connectors",
+          hero: "LinkIcon",
           body: "Deflection, dislodgement, locking devices, connector damage, corrosion and load-level configuration.",
         },
         {
           title: "Bracing & ties",
+          hero: "ArrowsRightLeftIcon",
           body: "Missing, bent or misaligned bracing; connection condition; row spacers and tie-beam arrangement.",
         },
         {
           title: "Baseplates & anchors",
+          hero: "ArrowDownOnSquareIcon",
           body: "Anchor presence, tightness, damaged floors, shims, grout, baseplate deformation and corrosion.",
         },
         {
           title: "Protection systems",
+          hero: "ShieldCheckIcon",
           body: "Upright protectors, end barriers, toe guards and their position, condition and attachment.",
         },
         {
           title: "Loading & unit loads",
+          hero: "CubeIcon",
           body: "Load notices, pallet placement, clearances, damaged pallets, overloading indicators and missing stoppers.",
         },
         {
           title: "Layout & interfaces",
+          hero: "MapIcon",
           body: "Aisles, MHE interaction, expansion joints, pedestrian zones, obstructions and unsafe storage around racks.",
         },
         {
           title: "Documents & configuration",
+          hero: "DocumentTextIcon",
           body: "Available drawings, OEM details, safe working loads, modification history and prior inspection records.",
         },
         {
           title: "Traceability & closure",
+          hero: "QrCodeIcon",
           body: "Photos, measurements, responsible owner, required action, replacement quantity and completion evidence.",
         },
       ],
@@ -222,34 +232,42 @@ const RACK_INSPECTION: Service = {
       items: [
         {
           title: "Executive safety summary",
+          icon: "FileText",
           body: "Condition profile, critical risks and priorities.",
         },
         {
           title: "Element-wise findings",
+          icon: "ListChecks",
           body: "Observation, severity, evidence and action.",
         },
         {
           title: "Digital rack health map",
+          icon: "Map",
           body: "Issues placed at rack, bay and element level.",
         },
         {
           title: "Damage BOQ / BOM",
+          icon: "ClipboardList",
           body: "Replacement quantities for procurement planning.",
         },
         {
           title: "Measurement records",
+          icon: "Ruler",
           body: "Applicable alignment, deflection and test data.",
         },
         {
           title: "Corrective-action register",
+          icon: "Wrench",
           body: "Owner, status, evidence and target closure.",
         },
         {
           title: "QR-linked asset history",
+          icon: "QrCode",
           body: "Persistent inspection and lifecycle traceability.",
         },
         {
           title: "Verification record",
+          icon: "BadgeCheck",
           body: "Evidence review or reinspection outcome.",
         },
       ],
@@ -454,33 +472,39 @@ const STRUCTURAL_VERIFICATION: Service = {
     {
       kind: "grid",
       eyebrow: "What can be verified",
+      tiles: true,
       top: "From storage systems",
       bottom: "To warehouse structures.",
       body: "The exact scope is selected around the asset, decision, available information and required level of confidence.",
-      note: "Structural verification is asset- and purpose-specific. One report should not be extended to a different configuration, load or location without review.",
       items: [
         {
           title: "Pallet racking systems",
+          hero: "ViewColumnsIcon",
           body: "Uprights, beams, bracing, connections, anchors, baseplates, load levels and frame configuration.",
         },
         {
           title: "Mezzanines & platforms",
+          hero: "Square3Stack3DIcon",
           body: "Primary and secondary framing, decking, columns, bracing, stairs, connections and supports.",
         },
         {
           title: "Steel warehouse structures",
+          hero: "BuildingOffice2Icon",
           body: "Frames, columns, beams, trusses, canopies, access structures and selected secondary systems.",
         },
         {
           title: "Foundations & interfaces",
+          hero: "Squares2X2Icon",
           body: "Base reactions, anchor layout, baseplates, pedestal or slab interface and available foundation data.",
         },
         {
           title: "Load or use changes",
+          hero: "ScaleIcon",
           body: "Reconfigured racks, revised pallet loads, added equipment, altered levels or new operating actions.",
         },
         {
           title: "Existing structure assessment",
+          hero: "MagnifyingGlassIcon",
           body: "Condition-informed verification where age, damage, corrosion or missing documentation affects confidence.",
         },
       ],
@@ -690,34 +714,42 @@ const STRUCTURAL_VERIFICATION: Service = {
       items: [
         {
           title: "Asset and purpose",
+          icon: "Target",
           body: "What was verified and for which decision.",
         },
         {
           title: "Documents and survey",
+          icon: "FolderOpen",
           body: "Inputs, field evidence and configuration.",
         },
         {
           title: "Analysis basis",
+          icon: "Calculator",
           body: "Model, materials, restraints and assumptions.",
         },
         {
           title: "Loads and combinations",
+          icon: "Weight",
           body: "Actions and governing design cases.",
         },
         {
           title: "Member utilisation",
+          icon: "Gauge",
           body: "Strength, stability and serviceability results.",
         },
         {
           title: "Connection and base checks",
+          icon: "Link2",
           body: "Joint, anchor and support demand where included.",
         },
         {
           title: "Compliance matrix",
+          icon: "Table",
           body: "Criteria, status and supporting reference.",
         },
         {
           title: "Actions and restrictions",
+          icon: "ShieldAlert",
           body: "Required work, load limits and verification route.",
         },
       ],
@@ -895,42 +927,50 @@ const INVENTORY_AUDIT: Service = {
     {
       kind: "grid",
       eyebrow: "Audit scope",
+      tiles: true,
       top: "No blind zone.",
       bottom: "No assumed location.",
       body: "The audit boundary, cut-off and stock states are agreed before counting begins.",
-      note: "The customer confirms the authoritative system extract, valuation basis, ownership rules and final stock-adjustment approval.",
       cols: 4,
       items: [
         {
           title: "Racked inventory",
+          hero: "ArchiveBoxIcon",
           body: "Row, rack, bay and level verification for palletised or case stock.",
         },
         {
           title: "Floor-stack areas",
+          hero: "Squares2X2Icon",
           body: "Defined floor locations, blocks, lanes and bulk-storage quantities.",
         },
         {
           title: "Inbound & receiving",
+          hero: "ArrowDownTrayIcon",
           body: "Received, pending inspection, unposted and in-process receipts at cut-off.",
         },
         {
           title: "Outbound & staging",
+          hero: "ArrowUpTrayIcon",
           body: "Picked, packed, staged, dispatched and system-posting status.",
         },
         {
           title: "Quality & quarantine",
+          hero: "ShieldExclamationIcon",
           body: "Blocked, held, rejected or condition-controlled stock.",
         },
         {
           title: "Returns & damaged stock",
+          hero: "ArrowUturnLeftIcon",
           body: "Customer returns, salvage, scrap and pending-disposition inventory.",
         },
         {
           title: "WIP & line-side stock",
+          hero: "Cog6ToothIcon",
           body: "Material between warehouse and production where included in scope.",
         },
         {
           title: "Unidentified inventory",
+          hero: "QuestionMarkCircleIcon",
           body: "Physical stock without a valid label, record, owner or mapped location.",
         },
       ],
@@ -1099,34 +1139,42 @@ const INVENTORY_AUDIT: Service = {
       items: [
         {
           title: "Audit scope & cut-off record",
+          icon: "CalendarClock",
           body: "Sites, zones, stock states and controls.",
         },
         {
           title: "Physical count register",
+          icon: "ListChecks",
           body: "Verified identity, quantity and location.",
         },
         {
           title: "System comparison file",
+          icon: "GitCompareArrows",
           body: "Baseline and captured fields side by side.",
         },
         {
           title: "Variance classification",
+          icon: "Tags",
           body: "Shortage, overage, location and identity issues.",
         },
         {
           title: "Recount & evidence trail",
+          icon: "History",
           body: "Time, location, operator and supporting proof.",
         },
         {
           title: "Accuracy analysis",
+          icon: "LineChart",
           body: "Site, zone, class and stock-state views.",
         },
         {
           title: "Adjustment recommendation",
+          icon: "FileCheck",
           body: "Controlled file for authorised customer review.",
         },
         {
           title: "Root-cause action register",
+          icon: "Search",
           body: "Process, data and location improvements.",
         },
       ],
@@ -1271,42 +1319,50 @@ const MHE_PRODUCTIVITY: Service = {
     {
       kind: "grid",
       eyebrow: "Assessment scope",
+      tiles: true,
       top: "Measure the operation",
       bottom: "Around the vehicle.",
       body: "The scope is agreed around site layout, shifts, MHE classes, operating rules and the decisions the customer needs to make.",
-      note: "Measures are defined before capture. Results apply to the agreed observation window, equipment and operating conditions.",
       cols: 4,
       items: [
         {
           title: "Fleet utilisation",
+          hero: "ChartPieIcon",
           body: "Active, available, idle, charging, under maintenance and not-in-use time by asset and class.",
         },
         {
           title: "Movement & travel",
+          hero: "ArrowsRightLeftIcon",
           body: "Loaded and empty travel, distance, route repetition, backtracking and unnecessary movement.",
         },
         {
           title: "Task performance",
+          hero: "ClipboardDocumentCheckIcon",
           body: "Task receipt, response, travel, pickup, drop, completion and inter-task delay where data allows.",
         },
         {
           title: "Waiting & queues",
+          hero: "ClockIcon",
           body: "Delay at docks, staging, aisles, production interfaces, charging points and approval steps.",
         },
         {
           title: "Fleet balance",
+          hero: "ScaleIcon",
           body: "High-use, low-use and unused vehicles; class fit; peak concurrency and spare strategy.",
         },
         {
           title: "Layout interaction",
+          hero: "MapIcon",
           body: "Congestion, restricted turns, crossing points, route conflicts and difficult operating zones.",
         },
         {
           title: "Shift & operator context",
+          hero: "UserGroupIcon",
           body: "Pattern comparison by shift, role, equipment type and authorised operator session where included.",
         },
         {
           title: "Improvement potential",
+          hero: "ArrowTrendingUpIcon",
           body: "Ranked operational changes, measurement basis, dependencies, owner and validation method.",
         },
       ],
@@ -1469,34 +1525,42 @@ const MHE_PRODUCTIVITY: Service = {
       items: [
         {
           title: "Scope & KPI definitions",
+          icon: "Target",
           body: "Assets, shifts, window, formulas and exclusions.",
         },
         {
           title: "Fleet utilisation baseline",
+          icon: "Gauge",
           body: "Site, class, shift and asset-level views.",
         },
         {
           title: "Time-category analysis",
+          icon: "Timer",
           body: "Productive, travel, waiting and support time.",
         },
         {
           title: "Movement analysis",
+          icon: "Route",
           body: "Distance, empty travel and repeated patterns.",
         },
         {
           title: "Congestion & delay map",
+          icon: "Map",
           body: "Zones, times, queues and operational context.",
         },
         {
           title: "Fleet balance review",
+          icon: "Scale",
           body: "Peak need, underuse and class suitability.",
         },
         {
           title: "Prioritised opportunity register",
+          icon: "ListOrdered",
           body: "Impact, confidence, dependency and owner.",
         },
         {
           title: "Validation plan",
+          icon: "BadgeCheck",
           body: "Before-and-after measures for agreed actions.",
         },
       ],
@@ -1634,58 +1698,70 @@ const OPERATIONAL_ASSESSMENT: Service = {
     {
       kind: "grid",
       eyebrow: "Assessment scope",
+      tiles: true,
       top: "One assessment across",
       bottom: "The operating system.",
       body: "RAMS defines the review boundary around the facility, shifts, processes, equipment, people interfaces and decisions the customer needs to make.",
-      note: "The final scope, legal basis, standards and sampling window are agreed for the site, jurisdiction and operation.",
       cols: 4,
       items: [
         {
           title: "Governance & ownership",
+          hero: "BuildingLibraryIcon",
           body: "Roles, inspection programmes, permits, escalation, training, records and corrective-action control.",
         },
         {
           title: "People & MHE interface",
+          hero: "UsersIcon",
           body: "Segregation, crossings, visibility, reversing, speed control, blind spots and behavioural conditions.",
         },
         {
           title: "Traffic & material flow",
+          hero: "ArrowsRightLeftIcon",
           body: "Routes, turns, queues, staging, loading, unloading, congestion and conflicting movements.",
         },
         {
           title: "Racks & storage",
+          hero: "ArchiveBoxIcon",
           body: "Damage, configuration, loading, clearances, protection, housekeeping and inspection management.",
         },
         {
           title: "Docks & yards",
+          hero: "TruckIcon",
           body: "Vehicle interface, edge protection, restraint, reversing, pedestrian control and communication.",
         },
         {
           title: "MHE condition & use",
+          hero: "WrenchScrewdriverIcon",
           body: "Pre-use checks, access control, defects, maintenance, charging, parking and task suitability.",
         },
         {
           title: "Manual tasks & access",
+          hero: "HandRaisedIcon",
           body: "Manual handling, work at height, ladders, platforms, reach, lifting aids and task ergonomics.",
         },
         {
           title: "Fire & emergency readiness",
+          hero: "FireIcon",
           body: "Access, exits, equipment visibility, emergency routes, isolation and response arrangements.",
         },
         {
           title: "Inventory & location control",
+          hero: "MapPinIcon",
           body: "Identification, quarantine, staging, obstruction, mislocation and process exceptions affecting flow.",
         },
         {
           title: "Housekeeping & condition",
+          hero: "SparklesIcon",
           body: "Spillage, floor condition, obstructions, waste, lighting, signage and environmental constraints.",
         },
         {
           title: "Process performance",
+          hero: "ChartBarIcon",
           body: "Handoffs, task delay, rework, searching, duplicated movement and avoidable operational variation.",
         },
         {
           title: "Management visibility",
+          hero: "EyeIcon",
           body: "KPIs, evidence quality, site comparison, action ageing, escalation and access to physical context.",
         },
       ],
@@ -1843,34 +1919,42 @@ const OPERATIONAL_ASSESSMENT: Service = {
       items: [
         {
           title: "Scope & assessment basis",
+          icon: "Target",
           body: "Sites, shifts, domains, standards and exclusions.",
         },
         {
           title: "Warehouse condition map",
+          icon: "Map",
           body: "Findings linked to location and physical context.",
         },
         {
           title: "Risk & control register",
+          icon: "ShieldAlert",
           body: "Status, exposure, interim controls and evidence.",
         },
         {
           title: "Operational loss map",
+          icon: "TrendingDown",
           body: "Queues, conflict, rework, delay and movement gaps.",
         },
         {
           title: "Root-cause analysis",
+          icon: "Search",
           body: "Asset, process, layout, people and governance causes.",
         },
         {
           title: "Prioritised action plan",
+          icon: "ListOrdered",
           body: "Owner, due date, dependency and required measure.",
         },
         {
           title: "Management dashboard",
+          icon: "LayoutDashboard",
           body: "Domain, site, severity, ageing and closure views.",
         },
         {
           title: "Closure & validation plan",
+          icon: "BadgeCheck",
           body: "Evidence and field checks required to confirm change.",
         },
       ],
@@ -2024,6 +2108,62 @@ const DEPLOYMENT_SUPPORT: Service = {
             "Health checks & updates",
             "Re-inspection scheduling",
           ],
+        },
+      ],
+    },
+    /* The source document has no scope section; the other five services
+       each carry one, so this was added on request. Every item is the
+       document’s own words, regrouped: the implementation checklist, the
+       rollout’s Scope step, the training roles, the handover line and the
+       multi-site and timeline FAQ answers. Nothing here is a new claim. */
+    {
+      kind: "grid",
+      eyebrow: "Deployment scope",
+      tiles: true,
+      top: "Everything a rollout",
+      bottom: "Has to cover.",
+      body: "The scope is agreed around your sites, systems and team before kickoff — from the first scan of the facility to handover.",
+      cols: 4,
+      items: [
+        {
+          title: "Sites & success criteria",
+          hero: "FlagIcon",
+          body: "Agree the sites, the systems and what success looks like before the rollout starts.",
+        },
+        {
+          title: "Facility capture",
+          hero: "CameraIcon",
+          body: "Scan or model the facility and stand up the base digital twin.",
+        },
+        {
+          title: "Asset registry",
+          hero: "RectangleStackIcon",
+          body: "Tag assets and build the registry the platform runs on.",
+        },
+        {
+          title: "Sensors & systems",
+          hero: "SignalIcon",
+          body: "Wire in sensors and connect the systems the site already runs.",
+        },
+        {
+          title: "Dashboards & applications",
+          hero: "PresentationChartBarIcon",
+          body: "Configure dashboards, applications and alerts, then switch them on.",
+        },
+        {
+          title: "Roles & training",
+          hero: "AcademicCapIcon",
+          body: "Administrators, safety leads, floor teams and inspectors, on-site and remote, with certification.",
+        },
+        {
+          title: "Handover",
+          hero: "CheckBadgeIcon",
+          body: "A working digital twin, handed over — and the move into managed support.",
+        },
+        {
+          title: "Multi-site rollout",
+          hero: "GlobeAltIcon",
+          body: "A repeatable playbook for further sites, with condition and support managed from one place through AIMS.",
         },
       ],
     },

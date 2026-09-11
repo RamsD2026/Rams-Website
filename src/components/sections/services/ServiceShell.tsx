@@ -32,8 +32,73 @@ import {
   Timer,
   TrendingUp,
   Wrench,
+  BadgeCheck,
+  Calculator,
+  CalendarClock,
+  FileCheck,
+  FolderOpen,
+  GitCompareArrows,
+  History,
+  LayoutDashboard,
+  LineChart,
+  Link2,
+  ListChecks,
+  ListOrdered,
+  QrCode,
+  Search,
+  Table,
+  Target,
+  TrendingDown,
+  Weight,
+  Map as LucideMap,
   type LucideIcon,
 } from "lucide-react";
+import {
+  AcademicCapIcon,
+  ArchiveBoxIcon,
+  ArrowDownOnSquareIcon,
+  ArrowDownTrayIcon,
+  ArrowTrendingUpIcon,
+  ArrowUpTrayIcon,
+  ArrowUturnLeftIcon,
+  ArrowsRightLeftIcon,
+  BuildingLibraryIcon,
+  BuildingOffice2Icon,
+  CameraIcon,
+  ChartBarIcon,
+  ChartPieIcon,
+  CheckBadgeIcon,
+  ClipboardDocumentCheckIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  CubeIcon,
+  DocumentTextIcon,
+  EyeIcon,
+  FireIcon,
+  FlagIcon,
+  GlobeAltIcon,
+  HandRaisedIcon,
+  LinkIcon,
+  MagnifyingGlassIcon,
+  MapIcon,
+  MapPinIcon,
+  PresentationChartBarIcon,
+  QrCodeIcon,
+  QuestionMarkCircleIcon,
+  RectangleStackIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
+  ShieldExclamationIcon,
+  SignalIcon,
+  SparklesIcon,
+  Square3Stack3DIcon,
+  Squares2X2Icon,
+  TruckIcon,
+  UserGroupIcon,
+  UsersIcon,
+  ViewColumnsIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/solid";
 
 import {
   Section,
@@ -94,6 +159,26 @@ const ICONS: Record<string, LucideIcon> = {
   Timer,
   TrendingUp,
   Wrench,
+  BadgeCheck,
+  Calculator,
+  CalendarClock,
+  FileCheck,
+  FolderOpen,
+  GitCompareArrows,
+  History,
+  LayoutDashboard,
+  LineChart,
+  Link2,
+  ListChecks,
+  ListOrdered,
+  QrCode,
+  Search,
+  Table,
+  Target,
+  TrendingDown,
+  Weight,
+  /* imported as LucideMap so it does not shadow the global Map */
+  Map: LucideMap,
 };
 
 const glyph = (name?: string): LucideIcon => (name && ICONS[name]) || CircleDot;
@@ -208,6 +293,28 @@ function cardStyle(dark: boolean): React.CSSProperties {
     background: dark ? "rgba(255,255,255,0.03)" : "#FFFFFF",
     boxShadow: `inset 0 0 0 1px ${dark ? HAIR_DARK : "#E8E8ED"}`,
   };
+}
+
+/**
+ * The platform pages’ own card — `RdsProblem`, `WexWhy` — for the cards that
+ * open a service page, so its second section reads like a platform’s: 12px
+ * radius, the #E8E8ED hairline and the two-part shadow. Paired with
+ * `svc-shine` for the hover. `cardStyle` above stays as it is for the deeper
+ * blocks.
+ */
+function platformCard(dark: boolean): React.CSSProperties {
+  return dark
+    ? {
+        borderRadius: 12,
+        border: `1px solid ${HAIR_DARK}`,
+        background: "rgba(255,255,255,0.03)",
+      }
+    : {
+        borderRadius: 12,
+        border: "1px solid #E8E8ED",
+        boxShadow:
+          "0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06)",
+      };
 }
 
 /** The mono caps caveat the sources set under a block. */
@@ -327,26 +434,6 @@ export function ServiceHero({ service }: { service: Service }) {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
-            className="mt-8 flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap"
-          >
-            {service.chips.map((c) => (
-              <span
-                key={c}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur text-[10.5px] font-mono font-semibold tracking-[0.22em] uppercase text-white/70"
-              >
-                <span
-                  className="w-1 h-1 rounded-full bg-signal-orange"
-                  aria-hidden
-                />
-                {c}
-              </span>
-            ))}
-          </motion.div>
-
-          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.32, ease: EASE }}
@@ -449,64 +536,73 @@ function Problem({
         className="!mb-10 sm:!mb-12"
       />
 
-      {/* One row, one column per statement — and no card.
+      {/* One row of cards, in the platform pages' own card.
 
-          These are five short statements of a single problem, not five
-          separate objects, and a border round each one says the opposite:
-          it makes them look like things you could pick up and reorder.
-          Left the type on the ground and the row reads as one paragraph in
-          five parts, which is what it is.
+          The same values `RdsProblem` and `WexWhy` use — 12px radius, the
+          #E8E8ED hairline, the two-part shadow, a 48px tile tinted orange
+          holding a 22px icon at stroke 2 — and the same hover: a 1px lift
+          and the conic shine travelling the border, which is `svc-shine`,
+          the platform shine under this file's own namespace.
 
-          The glyph takes over the work the border was doing. It sits on the
-          left, flush with the text under it, so the column has a single
-          left edge running icon → title → body, and the row aligns across
-          on that edge rather than on a box.
+          This row was borderless for a revision, type on the ground with a
+          hairline above each column. It went back into cards on request, so
+          the second section of every service page now reads like the second
+          section of every platform page.
 
-          The hairline above each column is the only rule left. It separates
-          without enclosing, which is the distinction that matters here.
-
-          No card means no card hover: the shine belongs to the mode cards
-          further down the page, which really are separate objects. */}
+          Four or five across keeps it one row. At five that is about 230px
+          a card, so the title steps down from the platform's 20px to 16px;
+          the card itself does not change. */}
+      <ShineStyle />
       <div
         className={
-          "grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 " +
+          "grid grid-cols-1 sm:grid-cols-2 gap-5 " +
           (block.items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5")
         }
       >
         {block.items.map((it, i) => {
           const Icon = glyph(it.icon);
           return (
-            <Reveal key={it.title} i={i}>
-              <div
-                className="flex flex-col h-full pt-6"
-                style={{
-                  borderTop: `1px solid ${dark ? HAIR_DARK : HAIR}`,
-                }}
+            <Reveal key={it.title} i={i} className="h-full">
+              <article
+                className={
+                  "svc-shine group relative flex flex-col h-full p-6 transition-all duration-300 hover:-translate-y-1 " +
+                  (dark ? "svc-on-dark" : "bg-white")
+                }
+                style={platformCard(dark)}
               >
-                <Icon
-                  className="w-[22px] h-[22px] text-signal-orange shrink-0"
-                  strokeWidth={1.75}
-                  aria-hidden
-                />
+                <div
+                  className="w-12 h-12 flex items-center justify-center shrink-0"
+                  style={{
+                    borderRadius: 8,
+                    background: "rgba(255,106,0,0.08)",
+                    border: "1px solid rgba(255,106,0,0.18)",
+                  }}
+                >
+                  <Icon
+                    className="w-[22px] h-[22px] text-signal-orange"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                </div>
 
-                <p
+                <h3
                   className={
-                    "mt-5 text-[14.5px] font-semibold tracking-[-0.02em] leading-[1.4] " +
+                    "mt-6 text-[16px] font-bold tracking-[-0.02em] leading-[1.3] " +
                     (dark ? "text-white" : "text-carbon")
                   }
                 >
                   {it.title}
-                </p>
+                </h3>
 
                 <p
                   className={
-                    "mt-2.5 text-[13px] leading-[1.7] " +
-                    (dark ? "text-white/55" : "text-graphite/60")
+                    "mt-3 text-[13.5px] leading-[1.65] " +
+                    (dark ? "text-white/55" : "text-graphite/65")
                   }
                 >
                   {it.body}
                 </p>
-              </div>
+              </article>
             </Reveal>
           );
         })}
@@ -519,12 +615,192 @@ function Problem({
 
 /* ── 03 grid ──────────────────────────────────────────────────────── */
 
-function Grid({
+/* ── the coloured-tile treatment ────────────────────────────────── */
+
+/** Heroicons-solid name → glyph. Missing or misspelled resolves to a cube. */
+const HERO: Record<string, typeof CubeIcon> = {
+  AcademicCapIcon,
+  ArchiveBoxIcon,
+  ArrowDownOnSquareIcon,
+  ArrowDownTrayIcon,
+  ArrowTrendingUpIcon,
+  ArrowUpTrayIcon,
+  ArrowUturnLeftIcon,
+  ArrowsRightLeftIcon,
+  BuildingLibraryIcon,
+  BuildingOffice2Icon,
+  CameraIcon,
+  ChartBarIcon,
+  ChartPieIcon,
+  CheckBadgeIcon,
+  ClipboardDocumentCheckIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  CubeIcon,
+  DocumentTextIcon,
+  EyeIcon,
+  FireIcon,
+  FlagIcon,
+  GlobeAltIcon,
+  HandRaisedIcon,
+  LinkIcon,
+  MagnifyingGlassIcon,
+  MapIcon,
+  MapPinIcon,
+  PresentationChartBarIcon,
+  QrCodeIcon,
+  QuestionMarkCircleIcon,
+  RectangleStackIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
+  ShieldExclamationIcon,
+  SignalIcon,
+  SparklesIcon,
+  Square3Stack3DIcon,
+  Squares2X2Icon,
+  TruckIcon,
+  UserGroupIcon,
+  UsersIcon,
+  ViewColumnsIcon,
+  WrenchScrewdriverIcon,
+};
+
+/**
+ * The sixteen tints `TwinOverview` sampled from its reference, in its own
+ * row-major order, so every coloured-tile grid on the site reads as the same
+ * object. They carry no meaning — a tile is never coloured by its subject —
+ * which matters on pages that use red, amber and green as a real status
+ * scale further down.
+ */
+const TINTS = [
+  "#299764",
+  "#3E63DD",
+  "#E5484D",
+  "#6647F0",
+  "#12A594",
+  "#F76808",
+  "#E5484D",
+  "#0091FF",
+  "#FFC53D",
+  "#AB4ABA",
+  "#5A3CD7",
+  "#E93D82",
+  "#F76808",
+  "#6647F0",
+  "#00B499",
+  "#299764",
+];
+
+/**
+ * Stacked and left-aligned — glyph, then title, then line, one under the
+ * other — rather than the platform grid's glyph-beside-text, on request: the
+ * scope lines run long, and under the glyph they get the full width of the
+ * tile instead of the narrow column beside it.
+ *
+ * A scope section as the platform pages' product-overview grid: a 44px
+ * saturated tile at 10px radius holding a 21px solid glyph in white, a 15px
+ * bold title and a 13px line under it, `gap-3` inside 1120px, and a hover
+ * that is a panel and nothing else — no lift, no icon scale, because a
+ * dozen items moving under the cursor is noise at this density.
+ *
+ * The panel has to contrast with the ground it sits on, and the service
+ * shell computes grounds per page: white on #F5F5F7, #F5F5F7 on white —
+ * which is what `TwinOverview` itself did before its section went grey.
+ *
+ * Four across for eight or twelve items, three across for Rack's nine and
+ * Structural's six, so no scope section ends on a short row.
+ */
+function Tiles({
   block,
   dark,
+  ground,
 }: {
   block: Extract<ServiceSection, { kind: "grid" }>;
   dark: boolean;
+  ground?: SurfaceKey;
+}) {
+  const on = dark
+    ? "svcov-on-dark"
+    : ground === "white"
+      ? "svcov-on-white"
+      : "svcov-on-grey";
+
+  return (
+    <>
+      <style>{`
+        .svcov-card {
+          border-radius: 12px;
+          background: transparent;
+          transition: background .25s ease, box-shadow .25s ease;
+        }
+        .svcov-on-grey:hover {
+          background: #FFFFFF;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06);
+        }
+        .svcov-on-white:hover { background: #F5F5F7; }
+        .svcov-on-dark:hover { background: rgba(255,255,255,0.05); }
+      `}</style>
+
+      <div
+        className={
+          "grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[1120px] mx-auto " +
+          (block.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3")
+        }
+      >
+        {block.items.map((it, i) => {
+          const Icon = (it.hero && HERO[it.hero]) || CubeIcon;
+          return (
+            <Reveal key={it.title} i={i} className="h-full">
+              <div
+                className={
+                  "svcov-card flex flex-col items-start p-5 h-full " + on
+                }
+              >
+                <span
+                  className="w-11 h-11 shrink-0 flex items-center justify-center"
+                  style={{
+                    borderRadius: 10,
+                    background: TINTS[i % TINTS.length],
+                  }}
+                >
+                  <Icon className="w-[21px] h-[21px] text-white" aria-hidden />
+                </span>
+
+                <span className="mt-4 block min-w-0">
+                  <span
+                    className={
+                      "block text-[15px] font-bold tracking-[-0.01em] leading-[1.2] " +
+                      (dark ? "text-white" : "text-carbon")
+                    }
+                  >
+                    {it.title}
+                  </span>
+                  <span
+                    className={
+                      "mt-1.5 block text-[13px] leading-[1.55] " +
+                      (dark ? "text-white/55" : "text-graphite/60")
+                    }
+                  >
+                    {it.body}
+                  </span>
+                </span>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+function Grid({
+  block,
+  dark,
+  ground,
+}: {
+  block: Extract<ServiceSection, { kind: "grid" }>;
+  dark: boolean;
+  ground?: SurfaceKey;
 }) {
   const cols =
     block.cols === 2
@@ -546,51 +822,55 @@ function Grid({
         className="!mb-10 sm:!mb-12"
       />
 
-      <div className={"grid grid-cols-1 gap-4 " + cols}>
-        {block.items.map((it, i) => (
-          <Reveal key={it.title} i={i}>
-            <div
-              className="flex flex-col h-full p-6 transition-all duration-300 hover:-translate-y-0.5"
-              style={cardStyle(dark)}
-            >
-              <p
-                className={
-                  "text-[15.5px] font-semibold tracking-[-0.02em] leading-[1.35] " +
-                  (dark ? "text-white" : "text-carbon")
-                }
+      {block.tiles ? (
+        <Tiles block={block} dark={dark} ground={ground} />
+      ) : (
+        <div className={"grid grid-cols-1 gap-4 " + cols}>
+          {block.items.map((it, i) => (
+            <Reveal key={it.title} i={i}>
+              <div
+                className="flex flex-col h-full p-6 transition-all duration-300 hover:-translate-y-0.5"
+                style={cardStyle(dark)}
               >
-                {it.title}
-              </p>
-              <p
-                className={
-                  "mt-2.5 text-[13.5px] leading-[1.7] " +
-                  (dark ? "text-white/55" : "text-graphite/60")
-                }
-              >
-                {it.body}
-              </p>
+                <p
+                  className={
+                    "text-[15.5px] font-semibold tracking-[-0.02em] leading-[1.35] " +
+                    (dark ? "text-white" : "text-carbon")
+                  }
+                >
+                  {it.title}
+                </p>
+                <p
+                  className={
+                    "mt-2.5 text-[13.5px] leading-[1.7] " +
+                    (dark ? "text-white/55" : "text-graphite/60")
+                  }
+                >
+                  {it.body}
+                </p>
 
-              {it.tags && (
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {it.tags.map((t) => (
-                    <span
-                      key={t}
-                      className={
-                        "text-[10px] font-mono font-semibold tracking-[0.14em] uppercase px-2 py-1 rounded-full " +
-                        (dark
-                          ? "text-white/50 bg-white/[0.06]"
-                          : "text-graphite/50 bg-[rgba(14,14,15,0.05)]")
-                      }
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Reveal>
-        ))}
-      </div>
+                {it.tags && (
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {it.tags.map((t) => (
+                      <span
+                        key={t}
+                        className={
+                          "text-[10px] font-mono font-semibold tracking-[0.14em] uppercase px-2 py-1 rounded-full " +
+                          (dark
+                            ? "text-white/50 bg-white/[0.06]"
+                            : "text-graphite/50 bg-[rgba(14,14,15,0.05)]")
+                        }
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      )}
 
       {block.note && <Note text={block.note} dark={dark} />}
     </>
@@ -632,10 +912,10 @@ function Modes({
             <Reveal key={it.title} i={i}>
               <div
                 className={
-                  "svc-shine group flex flex-col h-full p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1 " +
-                  (dark ? "svc-on-dark" : "")
+                  "svc-shine group flex flex-col h-full p-8 transition-all duration-300 hover:-translate-y-1 " +
+                  (dark ? "svc-on-dark" : "bg-white")
                 }
-                style={cardStyle(dark)}
+                style={platformCard(dark)}
               >
                 <span
                   className="relative z-[2] flex items-center justify-center w-11 h-11 shrink-0"
@@ -903,100 +1183,111 @@ function Deliverables({
         className="!mb-10 sm:!mb-12"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] gap-5 items-start">
-        {/* the register — one issued document per row, numbered, so it reads
-            as a contents page for the pack rather than eight loose cards */}
-        <Reveal>
-          <div className="p-6 sm:p-8" style={cardStyle(dark)}>
-            <div
-              className="flex items-center justify-between gap-4 pb-5"
-              style={{ borderBottom: `1px solid ${dark ? HAIR_DARK : HAIR}` }}
-            >
-              <span
-                className={
-                  "text-[10px] font-mono font-bold tracking-[0.2em] uppercase " +
-                  (dark ? "text-white/40" : "text-graphite/40")
-                }
-              >
-                RAMS / Issued pack
-              </span>
-              <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-signal-orange">
-                {block.items.length} documents
-              </span>
-            </div>
+      {/* The pack as a bento: eight documents, four across and two down, and
+          the "what it means" line as one wide tile closing the grid.
 
-            <ul>
-              {block.items.map((it, i) => (
-                <li
-                  key={it.title}
-                  className="flex items-start gap-5 py-4"
-                  style={
-                    i === 0
-                      ? undefined
-                      : { borderTop: `1px solid ${dark ? HAIR_DARK : HAIR}` }
-                  }
-                >
+          It was a register for a revision — one bordered list, numbered, with
+          the callout beside it — which read as a contents page. Each
+          deliverable is a separate document the customer receives, so each
+          gets its own card: the platform card from the section above, with
+          its own glyph, its number in the pack, and the same border shine on
+          hover.
+
+          All five services issue exactly eight, so the grid is always a full
+          4 × 2 with nothing left over on a short row. */}
+      <ShineStyle />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {block.items.map((it, i) => {
+          const Icon = glyph(it.icon);
+          return (
+            <Reveal key={it.title} i={i} className="h-full">
+              <article
+                className={
+                  "svc-shine group relative flex flex-col h-full p-6 transition-all duration-300 hover:-translate-y-1 " +
+                  (dark ? "svc-on-dark" : "bg-white")
+                }
+                style={platformCard(dark)}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div
+                    className="w-12 h-12 flex items-center justify-center shrink-0"
+                    style={{
+                      borderRadius: 8,
+                      background: "rgba(255,106,0,0.08)",
+                      border: "1px solid rgba(255,106,0,0.18)",
+                    }}
+                  >
+                    <Icon
+                      className="w-[22px] h-[22px] text-signal-orange"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                  </div>
+
                   <span
                     className={
-                      "shrink-0 mt-0.5 text-[11px] font-mono font-bold tabular-nums " +
+                      "text-[10.5px] font-mono font-bold tracking-[0.18em] tabular-nums " +
                       (dark ? "text-white/30" : "text-graphite/35")
                     }
                     aria-hidden
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
+                </div>
 
-                  <div className="min-w-0">
-                    <p
-                      className={
-                        "text-[14.5px] font-semibold tracking-[-0.015em] leading-[1.35] " +
-                        (dark ? "text-white" : "text-carbon")
-                      }
-                    >
-                      {it.title}
-                    </p>
-                    <p
-                      className={
-                        "mt-1 text-[13px] leading-[1.65] " +
-                        (dark ? "text-white/50" : "text-graphite/60")
-                      }
-                    >
-                      {it.body}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
+                <h3
+                  className={
+                    "mt-6 text-[16.5px] font-bold tracking-[-0.02em] leading-[1.3] " +
+                    (dark ? "text-white" : "text-carbon")
+                  }
+                >
+                  {it.title}
+                </h3>
 
-        <Reveal i={1}>
+                <p
+                  className={
+                    "mt-2.5 text-[13.5px] leading-[1.65] " +
+                    (dark ? "text-white/55" : "text-graphite/65")
+                  }
+                >
+                  {it.body}
+                </p>
+              </article>
+            </Reveal>
+          );
+        })}
+
+        {/* the wide tile that closes the bento — the pack's conclusion,
+            spanning all four columns so it reads as the answer to the eight
+            above it rather than as a ninth document */}
+        <Reveal i={2} className="sm:col-span-2 lg:col-span-4">
           <div
-            className="p-7 sm:p-8"
+            className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 lg:gap-12 items-center p-7 sm:p-9"
             style={{
-              borderRadius: 16,
+              borderRadius: 12,
               background: dark
                 ? "rgba(255,106,0,0.08)"
-                : "linear-gradient(180deg, #FFF6EF 0%, #FFFFFF 100%)",
-              boxShadow: `inset 0 0 0 1px ${dark ? "rgba(255,106,0,0.25)" : "#FFD9BC"}`,
+                : "linear-gradient(110deg, #FFF6EF 0%, #FFFFFF 70%)",
+              border: `1px solid ${dark ? "rgba(255,106,0,0.25)" : "#FFD9BC"}`,
             }}
           >
-            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-signal-orange">
-              What it means
-            </span>
+            <div>
+              <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-signal-orange">
+                What it means
+              </span>
+              <p
+                className={
+                  "mt-4 text-[21px] sm:text-[24px] font-bold tracking-[-0.03em] leading-[1.2] " +
+                  (dark ? "text-white" : "text-carbon")
+                }
+              >
+                {block.callout.title}
+              </p>
+            </div>
 
             <p
               className={
-                "mt-5 text-[19px] sm:text-[20px] font-bold tracking-[-0.03em] leading-[1.25] " +
-                (dark ? "text-white" : "text-carbon")
-              }
-            >
-              {block.callout.title}
-            </p>
-
-            <p
-              className={
-                "mt-3.5 text-[13.5px] leading-[1.7] " +
+                "text-[14.5px] leading-[1.7] " +
                 (dark ? "text-white/60" : "text-graphite/65")
               }
             >
@@ -1135,7 +1426,9 @@ export function ServiceSections({ service }: { service: Service }) {
         return (
           <Section key={block.kind + i} surface={surface} id={id}>
             {block.kind === "problem" && <Problem block={block} dark={dark} />}
-            {block.kind === "grid" && <Grid block={block} dark={dark} />}
+            {block.kind === "grid" && (
+              <Grid block={block} dark={dark} ground={surface} />
+            )}
             {block.kind === "modes" && <Modes block={block} dark={dark} />}
             {block.kind === "process" && <Process block={block} />}
             {block.kind === "lens" && <Lens block={block} dark={dark} />}

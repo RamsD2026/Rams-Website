@@ -19,7 +19,7 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
 /**
  * 05 — Core capabilities.
  *
- * Sticky-scroll, on `TwinLayers`: the six groups scroll past on the left and
+ * Sticky-scroll, on `TwinLayers`: the seven groups scroll past on the left and
  * the frame on the right is pinned, swapping to whichever group is in view.
  * `useScroll` over the track drives the index — the same mechanism
  * `PhysicalOperation` uses — because the viewer is the one moving through it.
@@ -29,11 +29,11 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  * subject: a device edge with a hairline and no drop shadow, on a gradient
  * stage, inset from the top left and running off the bottom right.
  *
- * Every one of the six is a **real capture**. This is the only page on the
+ * Every one of the seven is a **real capture**. This is the only page on the
  * site where that is true — `SHOTS` is entirely IRDS screens — so where the
  * Digital Twin needed a dashed pending slot for its simulation layer and MEPS
  * had to pin live panes instead of screenshots, this section can show the
- * product itself, six times, with each capability landing on the screen that
+ * product itself, seven times, with each capability landing on the screen that
  * actually does it.
  *
  * `clip={false}` on the section: an ancestor with `overflow: hidden` disables
@@ -83,7 +83,20 @@ const GROUPS: {
     shot: "taskDetails",
   },
   {
+    /* Testing sits between the evidence and the closure because a failed
+       test is what raises the corrective action. The screen is the real
+       regional analytics capture: its lower third is the Test Performance
+       panel, IRDS structural testing pass rate by class, and the stage crop
+       leaves the header and three full test cards in frame. */
     n: "05",
+    group: "Testing",
+    title: "Structural testing",
+    line: "Measure what the eye cannot judge",
+    body: "Record plumbness, rack run straightness, lateral sway, floor flatness and upright bend by class, see the pass rate for each, and trace every failed test to its asset.",
+    shot: "regionalAnalytics",
+  },
+  {
+    n: "06",
     group: "Closure",
     title: "Corrective action & verification",
     line: "Close the loop",
@@ -91,7 +104,7 @@ const GROUPS: {
     shot: "actionAssign",
   },
   {
-    n: "06",
+    n: "07",
     group: "Intelligence",
     title: "BoQ, history & trends",
     line: "Turn inspections into decisions",
@@ -179,14 +192,14 @@ export function RdsCapabilities() {
         bottom="Diagnostic workflow."
         size="compact"
         width="wide"
-        body="Six connected capabilities move rack safety from periodic audit to continuous management."
+        body="Seven connected capabilities move rack safety from periodic audit to continuous management."
       />
 
       <div
         ref={track}
         className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-10 lg:gap-16"
       >
-        {/* the six, scrolling */}
+        {/* the seven, scrolling */}
         <div className="flex flex-col">
           {GROUPS.map((x, n) => {
             const now = n === at;
@@ -241,7 +254,7 @@ export function RdsCapabilities() {
 
             <div className="mt-6 flex items-center gap-4">
               <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums shrink-0">
-                Capability {g.n} / 06
+                Capability {g.n} / {String(GROUPS.length).padStart(2, "0")}
               </span>
               <span className="flex items-center gap-1.5 flex-1">
                 {GROUPS.map((x, n) => (

@@ -1,37 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
+  Award,
   Check,
   Cpu,
   FileCheck2,
+  Globe,
   KeyRound,
   Lock,
   RefreshCcw,
   ScrollText,
   ShieldCheck,
+  type LucideIcon,
 } from "lucide-react";
-import { EASE, Section, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
+import {
+  EASE,
+  Section,
+  SURFACE,
+} from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { EMAIL } from "@/components/sections/contact/contact-data";
-import { CertGlance } from "./CertGlance";
 import { CertShield } from "./CertShield";
-import {
-  DOMAINS,
-  EVIDENCE,
-  FAQS,
-  QUESTIONS,
-  REGISTER,
-  SOC2,
-  STATUS_LABEL,
-  ask,
-  packHref,
-  type Status,
-} from "./cert-data";
+import { FAQS, SOC2, ask, type Status } from "./cert-data";
 
 /**
  * Certifications and security — a Company page, in the site's own vocabulary.
@@ -81,7 +77,7 @@ const HAIR = "#E0E0E6";
  * Everything else is something a customer configures or agrees, and colouring
  * those alike would be the badge inflation this page exists to avoid.
  */
-const STATUS_TINT: Record<Status, string> = {
+export const STATUS_TINT: Record<Status, string> = {
   stated: "#299764",
   configurable: "#3E63DD",
   workflow: "#6647F0",
@@ -91,7 +87,14 @@ const STATUS_TINT: Record<Status, string> = {
 };
 
 /** One glyph per security domain, in the order `DOMAINS` lists them. */
-const DOMAIN_ICONS = [KeyRound, Lock, ScrollText, Cpu, ShieldCheck, RefreshCcw];
+export const DOMAIN_ICONS = [
+  KeyRound,
+  Lock,
+  ScrollText,
+  Cpu,
+  ShieldCheck,
+  RefreshCcw,
+];
 
 /* ── 01 Hero ──────────────────────────────────────────────────────── */
 
@@ -106,9 +109,9 @@ const DOMAIN_ICONS = [KeyRound, Lock, ScrollText, Cpu, ShieldCheck, RefreshCcw];
  *
  * ── The composition is the reference's ─────────────────────────────
  * A large shield outline centred *behind* the headline, four small badges
- * scattered either side of it, and a row of three cards closing the hero —
- * the middle one lifted and carrying the claim. `CertShield` draws the first
- * two; `CertGlance` is the row.
+ * scattered either side of it — `CertShield` draws both. The hero closes on
+ * the footer's two compliance badges and their names, set as the footer sets
+ * them; it closed on a row of three cards (`CertGlance`) before that.
  *
  * The reference boxes one word of its headline in a soft wash, and this had
  * it on "demonstrable" for a revision. It was removed: their wash sits on a
@@ -145,6 +148,37 @@ const DOMAIN_ICONS = [KeyRound, Lock, ScrollText, Cpu, ShieldCheck, RefreshCcw];
  * `data-hero-tone="light"` is set, which the dark heroes do not need: without
  * it the navbar renders white-on-transparent at the top and disappears.
  */
+
+/**
+ * The hero's badge row. The first two are the footer's badges, image, alt and
+ * name for name — the only certifications the site states.
+ *
+ * The rest are PLACEHOLDERS: a drawn seal and a numbered name, not any real
+ * scheme's mark. A named badge for a certificate RAMS does not hold would be
+ * a claim to the procurement teams this page is written for, so the slots
+ * stay generic until a held certificate replaces one — give it `src`, `alt`
+ * and its real `label`, and drop the `icon`.
+ */
+type Badge = {
+  label: string;
+  src?: string;
+  alt?: string;
+  icon?: LucideIcon;
+};
+
+const BADGES: Badge[] = [
+  { src: "/Product/soc-type-1.jpg", alt: "AICPA SOC 2", label: "SOC 2" },
+  {
+    src: "/Product/soc-type-2.jpg",
+    alt: "AICPA SOC 2 Type I",
+    label: "SOC 2 · Type I",
+  },
+  { icon: ShieldCheck, label: "Certification 03" },
+  { icon: Lock, label: "Certification 04" },
+  { icon: FileCheck2, label: "Certification 05" },
+  { icon: Globe, label: "Certification 06" },
+  { icon: Award, label: "Certification 07" },
+];
 
 const SCOPE = [
   "SOC 2 Type I publicly stated",
@@ -207,8 +241,7 @@ export function CertHero() {
             className="mt-6 text-[14px] sm:text-[16px] text-graphite/65 leading-[1.6] max-w-[820px] mx-auto"
           >
             The standards, assurance evidence and security practices supporting
-            RAMS Digital — before operational data becomes part of the
-            platform.
+            RAMS Digital — before operational data becomes part of the platform.
           </motion.p>
 
           <motion.div
@@ -255,10 +288,53 @@ export function CertHero() {
           </motion.p>
         </div>
 
-        {/* the three cards, in the slot the reference closes its hero on */}
-        <div className="relative z-[1] mt-16 sm:mt-20">
-          <CertGlance />
-        </div>
+        {/* the footer's compliance badges, as the footer sets them — the
+            only two marks the site states, so the hero claims no more */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.54, ease: EASE }}
+          className="relative z-[1] mt-14 sm:mt-16 flex flex-wrap items-start justify-center gap-x-8 gap-y-7"
+        >
+          {BADGES.map(({ label, src, alt, icon: Icon = ShieldCheck }) => (
+            <div key={label} className="flex flex-col items-center gap-2.5">
+              {src ? (
+                <Image
+                  src={src}
+                  alt={alt ?? label}
+                  width={88}
+                  height={88}
+                  className="w-[88px] h-[88px] rounded-full object-cover block"
+                />
+              ) : (
+                // placeholder seal — see BADGES
+                <span
+                  role="img"
+                  aria-label={`${label} (placeholder)`}
+                  className="w-[88px] h-[88px] rounded-full flex items-center justify-center bg-white"
+                  style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}
+                >
+                  <span
+                    className="w-[72px] h-[72px] rounded-full flex flex-col items-center justify-center gap-1"
+                    style={{ border: "1px dashed #D4D4DA" }}
+                  >
+                    <Icon
+                      className="w-[22px] h-[22px] text-graphite/40"
+                      strokeWidth={1.8}
+                      aria-hidden
+                    />
+                    <span className="text-[7.5px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/35">
+                      Badge
+                    </span>
+                  </span>
+                </span>
+              )}
+              <span className="text-graphite/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
+                {label}
+              </span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
@@ -267,333 +343,137 @@ export function CertHero() {
 /* ── 02 The claim, and what it is not ─────────────────────────────── */
 
 /**
- * The certification statement, and the four questions trust turns on.
+ * 02 — Certification & assurance, set as the source sets it.
  *
- * The claim is set as type on the section's own ground — no panel, no
- * gradient, no 56px badge. What carries it is the mono label above and the
- * three checks as hairline rows below, which is `CaseFAQ`'s row and
- * `ContactLocations`' list.
+ * Two columns on the teal ink: the footer's SOC 2 Type I badge on the left,
+ * three rings round it and the orange glow the dark heroes carry —
+ * and on the right the header, flush left, with the three diligence checks
+ * as hairline rows beneath it.
  *
- * The non-claim is the one framed thing on the page, in the technical notes'
- * banner treatment, directly under the claim.
+ * It was a bento of cards on grey for a revision. The source reads as one
+ * statement and three questions to ask of it, and rows keep it that way.
+ *
+ * Two departures from the source, both deliberate:
+ *
+ *   the checks   orange, not the source's green — `signal-orange` is the
+ *                site's one accent, and green is reserved for the register's
+ *                single stated claim
+ *   the note     the framed non-claim under the rows is left out; that line
+ *                was removed from this page at the owner's request
+ *
+ * `inkTeal` sits beside the `ink` Standards band: two dark sections, but not
+ * one surface, so the boundary between them still reads.
  */
+
 export function CertClaim() {
   return (
-    <Section surface="white" id="posture">
-      <SectionHeader
-        eyebrow="Certification & assurance"
-        top="A control claim"
-        bottom="Buyers can examine."
-        size="compact"
-        width="wide"
-        body={SOC2.body}
-        className="!mb-12 sm:!mb-14"
-      />
-
-      <div className="max-w-[900px] mx-auto">
-        <p className="text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-signal-orange">
-          {SOC2.kind}
-        </p>
-
-        <p className="mt-4 text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-graphite/40">
-          What to ask for during diligence
-        </p>
-
-        <div className="mt-5" style={{ borderTop: `1px solid ${HAIR}` }}>
-          {SOC2.checks.map(([t, b]) => (
+    <Section surface="inkTeal" id="posture">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-14 lg:gap-20 items-center">
+        {/* the seal */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: EASE }}
+          className="relative w-full max-w-[440px] lg:max-w-[540px] mx-auto aspect-square"
+        >
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-full"
+            style={{ border: "1px solid rgba(255,255,255,0.10)" }}
+          />
+          <span
+            aria-hidden
+            className="absolute inset-[4.5%] rounded-full"
+            style={{ border: "1px dashed rgba(255,255,255,0.10)" }}
+          />
+          <span
+            aria-hidden
+            className="absolute inset-[10.5%] rounded-full"
+            style={{
+              border: "1px dashed rgba(255,255,255,0.08)",
+              background:
+                "radial-gradient(closest-side, rgba(255,106,0,0.16), rgba(255,106,0,0.05) 60%, transparent 100%)",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            {/* the footer's badge, cropped to its circle and lifted 4% so
+                the JPG's white corners never show on the dark ground */}
             <div
-              key={t}
-              className="flex items-start gap-4 py-5"
-              style={{ borderBottom: `1px solid ${HAIR}` }}
+              className="relative w-[44%] aspect-square rounded-full overflow-hidden"
+              style={{
+                boxShadow:
+                  "0 24px 60px -24px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.10)",
+              }}
             >
-              <span
-                className="flex items-center justify-center w-[18px] h-[18px] mt-[3px] shrink-0"
-                style={{
-                  borderRadius: 999,
-                  background: "rgba(255,106,0,0.10)",
-                }}
-              >
-                <Check
-                  width={11}
-                  height={11}
-                  className="text-signal-orange"
-                  strokeWidth={3}
-                  aria-hidden
-                />
-              </span>
-              <div>
-                <p className="text-[15px] font-semibold tracking-[-0.01em] text-carbon leading-[1.4]">
-                  {t}
-                </p>
-                <p className="mt-1.5 text-[14px] leading-[1.7] text-graphite/60">
-                  {b}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* The source's own non-claim. Framed, and directly under the claim —
-            the second thing read on this page, deliberately. */}
-        <div
-          className="mt-8 p-5"
-          style={{
-            borderRadius: 12,
-            background: "rgba(255,106,0,0.06)",
-            boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.20)",
-          }}
-        >
-          <p className="text-[13.5px] leading-[1.7] text-graphite/70">
-            {SOC2.notClaimed}
-          </p>
-        </div>
-      </div>
-
-      {/* the four questions, as bare columns */}
-      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
-        {QUESTIONS.map((q, i) => (
-          <motion.div
-            key={q.code}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.6, delay: (i % 4) * 0.07, ease: EASE }}
-            className="flex flex-col"
-          >
-            <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange">
-              {q.code}
-            </span>
-
-            <h3 className="mt-4 text-[19px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.25]">
-              {q.question}
-            </h3>
-
-            <p className="mt-2.5 text-[14px] leading-[1.65] text-graphite/60">
-              {q.body}
-            </p>
-          </motion.div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-/* ── 03 Security architecture ─────────────────────────────────────── */
-
-/**
- * Six bare columns — the icon, the heading, the line, then the three points.
- *
- * `CaseOutcomes`, `VideoNext`, `WebinarTracks`, `ContactTrust` and
- * `DownloadGovernance` are all this shape. No card, no border, no shadow.
- */
-export function CertArchitecture() {
-  return (
-    <Section surface="offWhite" id="architecture">
-      <SectionHeader
-        eyebrow="Security architecture"
-        top="Protection across identity,"
-        bottom="Data and operations."
-        size="compact"
-        width="wide"
-        body="The assurance conversation should cover the whole operating chain — from a user opening the platform to a sensor or business system exchanging data."
-        className="!mb-10 sm:!mb-12"
-      />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
-        {DOMAINS.map((d, i) => {
-          const Icon = DOMAIN_ICONS[i];
-          return (
-            <motion.div
-              key={d.code}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.6, delay: (i % 3) * 0.07, ease: EASE }}
-              className="flex flex-col"
-            >
-              <Icon
-                className="w-[24px] h-[24px] shrink-0 text-signal-orange"
-                strokeWidth={1.9}
-                aria-hidden
+              <Image
+                src="/Product/soc-type-2.jpg"
+                alt="AICPA SOC 2 Type I"
+                fill
+                sizes="(min-width: 1024px) 240px, 45vw"
+                className="object-cover scale-[1.04]"
               />
+            </div>
+            <span className="mt-6 text-[11px] sm:text-[12px] font-mono font-semibold tracking-[0.2em] uppercase text-white/55">
+              {SOC2.kind}
+            </span>
+          </div>
+        </motion.div>
 
-              <h3 className="mt-5 text-[19px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.25]">
-                {d.title}
-              </h3>
+        {/* the claim, and what to ask of it */}
+        <div>
+          <SectionHeader
+            eyebrow="Certification & assurance"
+            top="A control claim"
+            bottom="Buyers can examine."
+            tone="dark"
+            size="long"
+            align="left"
+            body={SOC2.body}
+            className="!mb-10"
+          />
 
-              <p className="mt-2.5 text-[14px] leading-[1.65] text-graphite/60">
-                {d.body}
-              </p>
-
-              <ul className="mt-4 space-y-2">
-                {d.points.map((p) => (
-                  <li
-                    key={p}
-                    className="flex items-start gap-2.5 text-[13.5px] leading-[1.6] text-graphite/55"
-                  >
-                    <span
-                      aria-hidden
-                      className="w-1 h-1 rounded-full shrink-0 mt-2"
-                      style={{ background: "#FF6A00" }}
-                    />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          );
-        })}
-      </div>
-    </Section>
-  );
-}
-
-/* ── 04 Control register ──────────────────────────────────────────── */
-
-/**
- * Six hairline rows.
- *
- * "Separate what is published, configurable and contractual. That distinction
- * keeps security statements accurate." Only the SOC 2 row carries a green
- * dot, because it is the only row that is a public claim — the other five are
- * things a customer configures or agrees, and colouring them alike would turn
- * a permission matrix into a certification.
- */
-export function CertRegister() {
-  return (
-    <Section surface="white" id="register">
-      <SectionHeader
-        eyebrow="Control register"
-        top="Published, configurable"
-        bottom="Or contractual."
-        size="compact"
-        width="wide"
-        body="That distinction keeps security statements accurate — and gives procurement teams a faster route to the evidence they need."
-        className="!mb-10 sm:!mb-12"
-      />
-
-      <div
-        className="max-w-[900px] mx-auto"
-        style={{ borderTop: `1px solid ${HAIR}` }}
-      >
-        {REGISTER.map((r, i) => (
-          <motion.div
-            key={r.area}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.45, delay: (i % 3) * 0.05, ease: EASE }}
-            className="py-6"
-            style={{ borderBottom: `1px solid ${HAIR}` }}
-          >
-            <div className="flex items-baseline justify-between gap-6 flex-wrap">
-              <p className="text-[16px] sm:text-[17px] font-bold tracking-[-0.015em] text-carbon leading-[1.4]">
-                {r.area}
-              </p>
-
-              <p className="flex items-center gap-2 text-[12.5px] font-semibold text-graphite/60 shrink-0">
+          <ul>
+            {SOC2.checks.map(([t, b], i) => (
+              <motion.li
+                key={t}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.08 + i * 0.08,
+                  ease: EASE,
+                }}
+                className="flex items-start gap-5 py-6"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+              >
                 <span
-                  aria-hidden
-                  className="w-1.5 h-1.5 rounded-full shrink-0"
-                  style={{ background: STATUS_TINT[r.status] }}
-                />
-                {STATUS_LABEL[r.status]}
-              </p>
-            </div>
-
-            <p className="mt-2.5 text-[14px] leading-[1.7] text-graphite/60 max-w-[620px]">
-              {r.evaluate}
-            </p>
-          </motion.div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-/* ── 05 The trust pack ────────────────────────────────────────────── */
-
-/**
- * Six hairline rows, and one request.
- *
- * It was a selectable grid with a fixed tray at the foot of the viewport —
- * the downloads library's pack builder. That mechanic belongs to a page with
- * thirteen brochures a reader picks between; six pieces of diligence evidence
- * are requested together or not at all, and a floating cart on a security
- * page is theatre.
- *
- * So the list states what each item is and when it is released — "On
- * request", "Diligence", "Contract" — and one button asks for the set, with
- * every title already in the email body. Nothing here links to a file: the
- * source is explicit that availability "may depend on confidentiality,
- * deployment scope and approval", and a security questionnaire response is
- * not a public asset.
- */
-export function CertPack() {
-  return (
-    <Section surface="offWhite" id="pack">
-      <SectionHeader
-        eyebrow="Customer assurance pack"
-        top="A clear route"
-        bottom="To diligence."
-        size="compact"
-        width="wide"
-        body="What procurement and security teams usually ask for, and when each item is released."
-        className="!mb-10 sm:!mb-12"
-      />
-
-      <div
-        className="max-w-[900px] mx-auto"
-        style={{ borderTop: `1px solid ${HAIR}` }}
-      >
-        {EVIDENCE.map((e, i) => (
-          <motion.div
-            key={e.id}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.45, delay: (i % 3) * 0.05, ease: EASE }}
-            className="flex items-start gap-4 py-5"
-            style={{ borderBottom: `1px solid ${HAIR}` }}
-          >
-            <FileCheck2
-              className="w-[18px] h-[18px] mt-[3px] shrink-0 text-signal-orange"
-              strokeWidth={1.9}
-              aria-hidden
-            />
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline justify-between gap-5 flex-wrap">
-                <p className="text-[15px] font-semibold tracking-[-0.01em] text-carbon leading-[1.4]">
-                  {e.title}
-                </p>
-                <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/40 shrink-0">
-                  {e.gate}
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                  style={{
+                    background: "rgba(255,106,0,0.12)",
+                    border: "1px solid rgba(255,106,0,0.28)",
+                  }}
+                >
+                  <Check
+                    className="w-4 h-4 text-signal-orange"
+                    strokeWidth={2.4}
+                    aria-hidden
+                  />
                 </span>
-              </div>
-
-              <p className="mt-1.5 text-[14px] leading-[1.7] text-graphite/60">
-                {e.body}
-              </p>
-            </div>
-          </motion.div>
-        ))}
+                <div className="min-w-0 pt-1">
+                  <h3 className="text-[16px] sm:text-[17px] font-bold tracking-[-0.015em] text-white leading-[1.3]">
+                    {t}
+                  </h3>
+                  <p className="mt-1.5 text-[14px] leading-[1.6] text-white/55">
+                    {b}
+                  </p>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
       </div>
-
-      <div className="mt-10 flex justify-center">
-        <a
-          href={packHref(EVIDENCE.map((e) => e.title))}
-          className="inline-flex items-center gap-2 bg-carbon text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px"
-        >
-          Request the trust pack
-          <ArrowUpRight className="w-4 h-4" aria-hidden />
-        </a>
-      </div>
-
-      <p className="mt-10 text-center text-[12.5px] leading-[1.65] text-graphite/45 max-w-[820px] mx-auto">
-        The exact materials available may depend on confidentiality, deployment
-        scope and approval.
-      </p>
     </Section>
   );
 }
@@ -630,7 +510,7 @@ export function CertFAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section surface="white" id="faq">
+    <Section surface="offWhite" id="faq">
       <SectionHeader
         eyebrow="Frequently asked questions"
         top="Clear answers."

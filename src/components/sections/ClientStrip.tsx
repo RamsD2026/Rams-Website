@@ -12,10 +12,11 @@ import { HERO_CLIENTS } from "@/data/clients";
  * here and took a `label` prop with it — `RiqClients` already had one for the
  * same reason.
  *
- * `RiqClients` is the dark version and renders the same marks as flat white
- * silhouettes, which on a white page would be invisible. Same list, same 46s
- * loop, same edge fade, same pause-on-hover and reduced-motion handling; only
- * the treatment is light.
+ * `RiqClients` is the dark version. It reads the same list from a second
+ * folder, `public/clients-dark/`, where every mark is reversed for a dark
+ * ground with the white letters inside a fill knocked out as cut-outs — see
+ * `scripts/gen-dark-clients.mjs`. Same list, same 46s loop, same edge fade,
+ * same pause-on-hover and reduced-motion handling; only the files differ.
  *
  * ── The light treatment ─────────────────────────────────────────────
  * The marks are in their real colours here, so the logo-strip convention
