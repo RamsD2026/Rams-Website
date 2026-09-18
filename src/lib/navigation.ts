@@ -194,10 +194,13 @@ export const NAV_CONFIG: NavItemConfig[] = [
         ],
       },
       {
+        // Both entries share one href, as the Location Intelligence and Sensor
+        // Stack groups above do: `/hardware/inspection` is the page for both
+        // machines. They were `href: "#"` until that page existed.
         title: "Guided Inspection",
         links: [
-          { label: "AirScan", href: "#", description: "Drone rack scanning" },
-          { label: "Floor Scan", href: "#", description: "Floor-level inspection" },
+          { label: "AirScan", href: "/hardware/inspection", description: "Drone rack scanning" },
+          { label: "Floor Scan", href: "/hardware/inspection", description: "Floor-level inspection" },
         ],
       },
     ],

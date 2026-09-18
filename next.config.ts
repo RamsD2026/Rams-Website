@@ -12,9 +12,32 @@ const nextConfig: NextConfig = {
    * one of those routes was ever built; every one now lands on its section of
    * `/industries`. The nav links point straight at the hash, so these exist
    * only for anything outside the site that already had the old path.
+   *
+   * The Guided Inspection paths are the same case again: `navigation-v2.ts`
+   * names the family `/hardware/inspection` and its two machines
+   * `/hardware/airscan` and `/hardware/floorscan`, while `SolutionsGrid` calls
+   * the whole thing `/solutions/guided-inspection`. One page covers both
+   * machines, so the other three are redirects rather than routes — the same
+   * call `/hardware/rtls` and `/hardware/sensor-stack` make for the several
+   * nav entries that share each of them.
    */
   redirects() {
     return [
+      {
+        source: "/hardware/airscan",
+        destination: "/hardware/inspection",
+        permanent: true,
+      },
+      {
+        source: "/hardware/floorscan",
+        destination: "/hardware/inspection",
+        permanent: true,
+      },
+      {
+        source: "/solutions/guided-inspection",
+        destination: "/hardware/inspection",
+        permanent: true,
+      },
       {
         // The V2 mega menu spells this one without the noun. The V1 menu, the
         // footer and the route itself use the full slug, so the short form is

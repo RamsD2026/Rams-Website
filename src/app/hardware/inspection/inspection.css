@@ -1,0 +1,324 @@
+/* ============================================================================
+   /hardware/inspection — this page's own components.
+
+   Ported from the reference's `inspect.css`, which is the Omnibox stylesheet
+   plus the block below. The shared part comes from `styles/hardware-omni.css`,
+   imported before this file — including the chooser shell (`.builder`,
+   `.b-step`, `.b-opt`, `.b-result`), which moved there from `omnibox.css` when
+   this page turned out to use it.
+
+   ── Scoped under `.gi-page`, not `.hw-page` ─────────────────────────
+   Same reason as `/hardware/rtls` and `/hardware/sensor-stack`: the App Router
+   ships CSS globally, and `.badge`, `.rail`, `.stages`, `.honest`, `.pick` and
+   `.hchip` are generic enough to reach the other hardware pages — `.badge` in
+   particular is already a different object on `/hardware/rtls`. `.gi-page` sits
+   on the same element as `.hw-page` (see `GiPage.tsx`), so it costs one class of
+   specificity; rules that override a shared rule carry both classes.
+
+   ── The type ceilings that moved ────────────────────────────────────
+   The film's `h1` is a two-word product name and the reference gives it its own
+   size; capped at this site's page-h1 maximum of 110px, which is where the
+   reference already had it. `.family.two .fname` ran to 36px and is capped at
+   the documented sub-headline maximum of 28px.
+
+   ── The colours that did not move ───────────────────────────────────
+   The two soft orange tints (`#FFEFE5` behind a light badge, and its dark
+   counterpart) are the reference's own; the brand set has no tinted surface and
+   `signal-orange` at 10% over white is muddier. The dark-panel greys are as on
+   the other hardware pages. Everything else is bound to a token.
+   ========================================================================== */
+
+/* This film is the shortest of the three — two machines, and chapter two is one
+   move each rather than an explode. Per-route, so it is not in the shared file. */
+.hw-page.gi-page .hw-scrollspace {
+  height: 520vh;
+}
+
+/* ---------------------------------------------------------------- film */
+/* "Guided Inspection" needs more room than "OmniBox" or "Sensor Stack". */
+.hw-page.gi-page .film .sec.hero.center .heroblock {
+  max-width: 1120px;
+}
+.hw-page.gi-page .film .sec.hero.center h1 {
+  font-size: clamp(50px, 7.4vw, 110px);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+@media (max-width: 760px) {
+  .hw-page.gi-page .film .sec.hero.center h1 {
+    font-size: clamp(44px, 12.5vw, 64px);
+  }
+}
+/* The Concept pill on the film's own name tags. It goes on a phone, where the
+   tag is already two lines over a moving machine. */
+.gi-page .box-tag em {
+  display: inline-block;
+  margin-top: 6px;
+  font: 600 10px/1 var(--sans);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 8px;
+  border-radius: 980px;
+  background: #ffefe5;
+  color: var(--orange-ink);
+}
+@media (max-width: 760px) {
+  .gi-page .box-tag em {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- the badge */
+/* Every mention of either machine carries one. See `GiShared.tsx`. */
+.gi-page .badge {
+  display: inline-block;
+  vertical-align: middle;
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  border-radius: 980px;
+  background: #ffefe5;
+  color: var(--orange-ink);
+  white-space: nowrap;
+}
+.gi-page .dark .badge,
+.gi-page .b-panel .badge {
+  background: rgba(255, 155, 77, 0.16);
+  color: var(--orange-soft);
+}
+.gi-page .fname .badge {
+  margin-left: 10px;
+  vertical-align: 4px;
+}
+
+/* ---------------------------------------------------------------- two machines */
+.hw-page.gi-page .family.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.gi-page .family.two .fcard .media {
+  aspect-ratio: 16/10;
+}
+.gi-page .family.two .fbody {
+  padding: 28px 30px 32px;
+}
+/* Capped at this site's sub-headline maximum; the reference ran to 36px. */
+.hw-page.gi-page .family.two .fname {
+  font-size: clamp(26px, 2.6vw, 28px);
+}
+@media (max-width: 760px) {
+  .hw-page.gi-page .family.two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- stage rail */
+/* Concept · Prototype · Pilot · Available, with the step reached lit. A picture
+   of the same fact the badge states, for readers who skim. */
+.gi-page .rail {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 18px;
+  padding: 0;
+}
+.gi-page .rail li {
+  position: relative;
+  padding-top: 24px;
+  font: 500 13px/1.25 var(--sans);
+  color: var(--ink3);
+}
+.gi-page .rail li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line);
+}
+/* The line stops at the first and last dots rather than running off the ends. */
+.gi-page .rail li:first-child::before {
+  left: 5px;
+}
+.gi-page .rail li:last-child::before {
+  right: calc(100% - 7px);
+}
+.gi-page .rail li::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--line);
+}
+.gi-page .rail li.on {
+  color: var(--ink);
+  font-weight: 600;
+}
+.gi-page .rail li.on::after {
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.16);
+}
+
+.gi-page .stages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.hw-page.gi-page .stages .tile {
+  background: var(--bg);
+}
+.gi-page .stages h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.gi-page .stages p.sub {
+  margin-top: 8px;
+}
+@media (max-width: 760px) {
+  .gi-page .stages {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gi-page .honest {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 56px);
+  margin-top: 36px;
+}
+.gi-page .honest p {
+  color: var(--ink2);
+  font-size: 17px;
+  line-height: 1.55;
+}
+.gi-page .honest p b {
+  color: var(--ink);
+  font-weight: 600;
+}
+@media (max-width: 860px) {
+  .gi-page .honest {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- inside viewer */
+/* Says plainly that what you are turning is a stand-in, not a photograph of a
+   machine that exists. It never goes away, in either view. */
+.gi-page .concept-note {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  z-index: 3;
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 8px 11px;
+  border-radius: 980px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .gi-page .concept-note {
+    top: auto;
+    bottom: 62px;
+    left: 12px;
+  }
+}
+
+/* ---------------------------------------------------------------- chooser result */
+.gi-page .pick {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.gi-page .pick-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding-top: 14px;
+  border-top: 1px solid var(--d-line);
+}
+.gi-page .pick-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.gi-page .pick-img {
+  background: #eeeff4;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+}
+.gi-page .pick-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.gi-page .pick-row b.pn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 18px/1.2 var(--display);
+}
+.gi-page .pick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+/* One chip per thing the reader said they wanted to know — their own answers
+   read back, which is what makes the panel feel like a reply. */
+.gi-page .hchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: var(--d-tile2);
+  font: 500 13px/1.25 var(--sans);
+  color: var(--d-ink);
+}
+.gi-page .hchip i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange-soft);
+}
+.gi-page .hchip.ghost {
+  background: transparent;
+  color: var(--ink2);
+  box-shadow: inset 0 0 0 1px #3a3a3c;
+}
+.gi-page .hchip.ghost i {
+  background: #48484a;
+}
+.gi-page .b-note {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #8e8e93;
+}
+
+/* ---------------------------------------------------------------- compare */
+/* Two columns instead of four, so the table needs less width before it scrolls. */
+.hw-page.gi-page .cmp.two {
+  min-width: 600px;
+}
+.gi-page .cmp.two thead .media {
+  aspect-ratio: 16/10;
+}
