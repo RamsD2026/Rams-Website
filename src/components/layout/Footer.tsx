@@ -260,7 +260,7 @@ export function Footer() {
           </div>
 
           {/* Right: floating badges — no card, clean */}
-          <div className="flex items-center shrink-0 gap-x-8">
+          <div className="flex flex-wrap items-center shrink-0 gap-x-8 gap-y-6">
             <div className="flex flex-col items-center gap-2.5">
               <img
                 src="/Product/soc-type-1.jpg"
@@ -279,6 +279,22 @@ export function Footer() {
               />
               <span className="text-white/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
                 SOC 2 · Type I
+              </span>
+            </div>
+            {/* The ISO mark is square artwork on white, with its lettering
+                running to the corners — cropped to a circle like the SOC
+                badges it would lose "27001:2022". So the circle is white and
+                the mark sits inside it, contained. */}
+            <div className="flex flex-col items-center gap-2.5">
+              <span className="w-[88px] h-[88px] rounded-full bg-white flex items-center justify-center overflow-hidden">
+                <img
+                  src="/Product/iso-27001.jpg"
+                  alt="ISO/IEC 27001:2022"
+                  className="w-[68px] h-[68px] object-contain block"
+                />
+              </span>
+              <span className="text-white/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
+                ISO 27001
               </span>
             </div>
           </div>
