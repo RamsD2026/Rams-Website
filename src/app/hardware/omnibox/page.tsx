@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { OmniPage } from "@/components/sections/omni/OmniPage";
 import "@/styles/hardware-base.css";
+import "@/styles/hardware-omni.css";
 import "./omnibox.css";
 
 export const metadata: Metadata = {
@@ -33,8 +34,10 @@ export const metadata: Metadata = {
  *   · **Its palette is bound to the brand tokens** in `globals.css`.
  *
  * Its `site.css` is byte-identical to the AI Camera site's, so the shared
- * `styles/hardware-base.css` covers it and `omnibox.css` adds only this page's
- * own components.
+ * `styles/hardware-base.css` covers it. Its own `omnibox.css` has since been
+ * split: everything /hardware/sensor-stack also uses lives in
+ * `styles/hardware-omni.css`, and what is left here is the film's scroll length
+ * and the setup builder. See that file's head.
  *
  * ── What is built ───────────────────────────────────────────────────
  * Everything the reference has, including both WebGL canvases: the hero film
