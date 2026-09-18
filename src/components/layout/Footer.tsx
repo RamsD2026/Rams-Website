@@ -80,7 +80,7 @@ const COLUMNS: FooterColumn[] = [
       { label: "About", href: "/company/about" },
       { label: "Customers", href: "/company/customers" },
       { label: "Careers", href: "/company/careers" },
-      { label: "Newsroom", href: "/resources/insights" },
+      { label: "Blogs", href: "/resources/insights" },
       { label: "Contact", href: "/company/contact" },
     ],
   },

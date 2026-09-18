@@ -173,9 +173,9 @@ export function NewsFeed() {
   return (
     <Section surface="white" id="feed">
       <SectionHeader
-        eyebrow="News & insights"
+        eyebrow="Blogs"
         top="Browse"
-        bottom="The newsroom."
+        bottom="The blog."
         size="compact"
         width="wide"
         body="Published RAMS Digital writing by topic, from rack safety fundamentals to standards and modern warehouse operations."
@@ -189,7 +189,7 @@ export function NewsFeed() {
         label="Filter stories by topic"
         query={q}
         onQuery={setQ}
-        placeholder="Search the newsroom…"
+        placeholder="Search the blog…"
       />
 
       <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-14 lg:gap-y-16 items-start">

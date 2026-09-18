@@ -94,7 +94,7 @@ export function NewsHero() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
             <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/70">
-              Newsroom
+              Blogs
             </span>
           </motion.div>
 

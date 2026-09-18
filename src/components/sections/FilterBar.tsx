@@ -49,6 +49,7 @@ export function FilterBar({
   query,
   onQuery,
   placeholder = "Search…",
+  stacked = false,
 }: {
   /** Includes the "all" option — the caller decides what it is called. */
   tabs: string[];
@@ -60,15 +61,29 @@ export function FilterBar({
   query?: string;
   onQuery?: (q: string) => void;
   placeholder?: string;
+  /**
+   * Tabs centred on their own row with the search centred under them, for a
+   * tab set too long to share a row with the search. Opt-in.
+   */
+  stacked?: boolean;
 }) {
   const searchable = query !== undefined && onQuery !== undefined;
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div
+      className={
+        stacked
+          ? "flex flex-col items-center gap-4"
+          : "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+      }
+    >
       <div
         role="tablist"
         aria-label={label}
-        className="inline-flex flex-wrap justify-center lg:justify-start items-center self-center lg:self-auto bg-[#F2F2F2] rounded-full p-1.5 gap-0.5"
+        className={
+          "inline-flex flex-wrap justify-center items-center self-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 " +
+          (stacked ? "" : "lg:justify-start lg:self-auto")
+        }
       >
         {tabs.map((t) => {
           const now = t === active;
@@ -94,7 +109,10 @@ export function FilterBar({
 
       {searchable && (
         <div
-          className="relative flex items-center w-full max-w-[300px] self-center lg:self-auto lg:w-[280px] bg-white rounded-full"
+          className={
+            "relative flex items-center w-full max-w-[300px] self-center bg-white rounded-full " +
+            (stacked ? "" : "lg:self-auto lg:w-[280px]")
+          }
           style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
         >
           <Search

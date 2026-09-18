@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
@@ -30,22 +29,6 @@ import { AboutFacility } from "./AboutFacility";
  * it; `src/components/ui/SoftAurora.tsx` and `Orb.tsx` are still on disk and
  * now unimported.
  */
-
-/** The three hero tiles. Generated, licence-clean, exported at 2× of 380px. */
-const TEAM = [
-  {
-    src: "/about/team-1.webp",
-    alt: "Three colleagues around a desk in a bright office, one standing and pointing at a tablet the other two are looking at",
-  },
-  {
-    src: "/about/team-2.webp",
-    alt: "Two colleagues in an office raising their hands to meet in a high five, one seated at a laptop and laughing",
-  },
-  {
-    src: "/about/team-3.webp",
-    alt: "Two colleagues at a meeting table beside a window, talking over printed documents",
-  },
-];
 
 export function AboutHero() {
   return (
@@ -110,8 +93,8 @@ export function AboutHero() {
           >
             {/* Two lines, and they stay two. Each is its own block so the
                 break is explicit rather than left to the measure. */}
-            <span className="block">We make the warehouse</span>
-            <span className="block">see itself.</span>
+            <span className="block">We Build Intelligence</span>
+            <span className="block">for the Physical World.</span>
           </motion.h1>
 
           <motion.p
@@ -157,55 +140,16 @@ export function AboutHero() {
           </motion.div>
         </div>
 
-        {/* ── the team ─────────────────────────────────────
-            Three tiles, as in the reference: candid corporate photography of
-            people working together, equal 5:4 crops on a 20px gutter.
-
-            1180px row, two 20px gutters, so each tile is 380px and each file
-            is exported at 760 — twice that and no more. On the light ground
-            they take the site's card hairline and shadow rather than the dark
-            sections' white border. */}
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: EASE }}
-          className="relative z-[1] mt-12 sm:mt-14 max-w-[1180px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5"
-        >
-          {TEAM.map((t, i) => (
-            <motion.div
-              key={t.src}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 + i * 0.1, ease: EASE }}
-              className="relative overflow-hidden bg-white"
-              style={{
-                aspectRatio: "5 / 4",
-                borderRadius: 16,
-                border: "1px solid #E8E8ED",
-                boxShadow:
-                  "0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06)",
-              }}
-            >
-              <Image
-                src={t.src}
-                alt={t.alt}
-                fill
-                priority={i === 0}
-                sizes="(max-width: 640px) 100vw, 380px"
-                className="object-cover"
-              />
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* the client strip, under the photography */}
+        {/* the client strip, under the buttons */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1, ease: EASE }}
           className="relative z-[1]"
         >
-          <ClientStrip />
+          <div className="mt-4 sm:mt-6">
+            <ClientStrip />
+          </div>
         </motion.div>
       </div>
     </section>
