@@ -1,6 +1,6 @@
 "use client";
 
-import { Media } from "./aiv-shared";
+import { Media } from "@/components/sections/hardware/hw-shared";
 import { IMG, PLATE } from "./aiv-data";
 
 /**
@@ -25,7 +25,7 @@ import { IMG, PLATE } from "./aiv-data";
  */
 export function AivHero() {
   return (
-    <section className="aiv-hero" id="top" data-hero-tone="light" aria-label="RAMS AI Camera">
+    <section className="hw-hero" id="top" data-hero-tone="light" aria-label="RAMS AI Camera">
       <div>
         <p className="kicker">RAMS Digital</p>
         <h1>AI Camera</h1>

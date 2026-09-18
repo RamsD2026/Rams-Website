@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Head, Media, Reveal } from "./aiv-shared";
+import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
 import { AivEnvScene } from "./AivEnvScene";
 import { ENVS } from "./aiv-data";
 

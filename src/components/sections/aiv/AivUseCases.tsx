@@ -1,6 +1,6 @@
 "use client";
 
-import { Head, Media, Reveal } from "./aiv-shared";
+import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
 import { USE_CASES } from "./aiv-data";
 
 /**

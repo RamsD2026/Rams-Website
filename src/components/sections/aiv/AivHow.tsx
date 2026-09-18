@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Head, HudClock } from "./aiv-shared";
+import { Head, HudClock } from "@/components/sections/hardware/hw-shared";
 import { SUA_STEPS } from "./aiv-data";
 
 /**

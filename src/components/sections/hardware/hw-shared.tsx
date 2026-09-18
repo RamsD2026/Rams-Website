@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
  *
  * These are the reference build's three page-level behaviours, each of which was
  * an imperative block in its inline `<script>`, rewritten as a hook or a
- * component. The styling all lives in `app/hardware/ai-vision/ai-vision.css`;
+ * component. The styling all lives in `src/styles/hardware-base.css`;
  * nothing here re-states a class.
  *
  * Why this page does not use `rackiq-shared` or `<SectionHeader>`: it is a port

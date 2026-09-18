@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Head, Media, Reveal } from "./aiv-shared";
+import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
 import { DEPLOY, FAQ, IMG, SPECS } from "./aiv-data";
 
 /** The site's FAQ easing, from `rackiq-shared`. */

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Head, Reveal } from "./aiv-shared";
+import { Head, Reveal } from "@/components/sections/hardware/hw-shared";
 import { STATS } from "./aiv-data";
 
 /**
