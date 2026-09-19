@@ -2,11 +2,6 @@ import type { Metadata } from "next";
 import { PartnersHero } from "@/components/sections/partners/PartnersHero";
 import { PartnersWhy } from "@/components/sections/partners/PartnersWhy";
 import { PartnersModels } from "@/components/sections/partners/PartnersModels";
-import { PartnersEcosystem } from "@/components/sections/partners/PartnersEcosystem";
-import {
-  PartnersChannel,
-  PartnersTechnology,
-} from "@/components/sections/partners/PartnersRoles";
 import { PartnersMarket } from "@/components/sections/partners/PartnersMarket";
 import { PartnersHow } from "@/components/sections/partners/PartnersHow";
 import { PartnersFit } from "@/components/sections/partners/PartnersFit";
@@ -25,9 +20,9 @@ export const metadata: Metadata = {
  *   01 Hero        light     the ecosystem, and the four kinds of partner
  *   02 Why         offWhite  four reasons, on the platform icon card
  *   03 Models      white     four profiles on tabs, copy left, picture right
- *   04 Ecosystem   offWhite  four sources, the Twin, six outcomes, on dotted paths
- *   05 Technology  white     HW / SW / AI, as cards with what each does
- *   06 Channel     offWhite  CH / FD / OEM, the same card
+ *   04 Ecosystem   removed at the owner's request (`PartnersEcosystem`, on disk)
+ *   05 Technology  removed at the owner's request (`PartnersRoles`, on disk)
+ *   06 Channel     removed with it
  *   07 Market      white     the Twin and the six modules, on a track
  *   08 How         offWhite  five stages on one timed track
  *   09 Fit         white     eight organisation types, flat
@@ -76,9 +71,6 @@ export default function PartnersPage() {
       <PartnersHero />
       <PartnersWhy />
       <PartnersModels />
-      <PartnersEcosystem />
-      <PartnersTechnology />
-      <PartnersChannel />
       <PartnersMarket />
       <PartnersHow />
       <PartnersFit />

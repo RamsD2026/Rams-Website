@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
-import { PartnersFlow } from "./PartnersFlow";
 
 /**
  * 01 — Hero.
@@ -155,20 +154,8 @@ export function PartnersHero() {
           </motion.div>
         </div>
 
-        {/* ── the flow ────────────────────────────────────
-            What partners connect on the left, the physical context in the
-            middle, what the customer gets on the right — with the wires
-            drawn and a pulse running along each. Geometry, the shared
-            coordinate system and the normalised pulse are in
-            `PartnersFlow`. */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.45, ease: EASE }}
-          className="relative z-[1] mt-8 sm:mt-10"
-        >
-          <PartnersFlow />
-        </motion.div>
+        {/* The flow diagram (`PartnersFlow`) is hidden at the owner's
+            request; render it here again to bring it back. */}
 
       </div>
     </section>

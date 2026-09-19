@@ -215,7 +215,7 @@ export function CaseWork() {
         bottom="Across the estate."
         size="compact"
         width="wide"
-        body="Filter by the kind of engagement. Every one runs on the same digital twin."
+        body="Filter by solution. Every one runs on the same digital twin."
         className="!mb-10 sm:!mb-12"
       />
 
@@ -227,6 +227,7 @@ export function CaseWork() {
         query={q}
         onQuery={search}
         placeholder="Search case studies…"
+        stacked
       />
 
       <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-14 lg:gap-y-16 items-start">
@@ -239,7 +240,9 @@ export function CaseWork() {
 
       {shown.length === 0 && (
         <p className="text-center text-[14.5px] leading-[1.7] text-graphite/55 py-16">
-          No case studies match that search. Try another kind or keyword.
+          {at !== "All" && !q.trim() && !CASES.some((c) => c.kind === at)
+            ? `${at} case studies are coming soon.`
+            : "No case studies match that search. Try another solution or keyword."}
         </p>
       )}
 

@@ -15,7 +15,7 @@ import { AboutReach } from "@/components/sections/about/AboutReach";
 import { AboutCTA } from "@/components/sections/about/AboutCTA";
 
 export const metadata: Metadata = {
-  title: "About RAMS Digital — We make the warehouse see itself | RAMS",
+  title: "About RAMS Digital — We Build Intelligence for the Physical World | RAMS",
   description:
     "RAMS Digital brings engineering, field operations, Digital Twin technology, IoT, AI and workflow software together, so organisations can understand and improve what is actually happening inside warehouses, factories and other built environments.",
 };

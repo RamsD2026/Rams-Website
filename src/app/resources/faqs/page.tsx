@@ -5,6 +5,7 @@ import {
   FaqProductMap,
   FaqStages,
 } from "@/components/sections/faqs/FaqExtras";
+import { FaqKit } from "@/components/sections/faqs/FaqKit";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | RAMS Digital",
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
  *   04 Library   white     all fifty, filtered by topic and by the hero search
  *   05 Products  offWhite  which application to ask about
  *   06 Stages    white     how an answer becomes a project
+ *   07 Kit       offWhite  per solution: what it connects, what it runs on
  *      Close     dark      the site's unified close
  *
  * Surfaces alternate and every section uses `SectionHeader` at `compact`, so
@@ -73,6 +75,7 @@ export default function FaqsPage() {
       <FaqCentre />
       <FaqProductMap />
       <FaqStages />
+      <FaqKit />
       <FaqCTA />
     </>
   );

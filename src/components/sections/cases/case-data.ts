@@ -1,7 +1,11 @@
 /**
  * The case studies, and the categories derived from them.
  *
- * ── The filters are derived, not listed ─────────────────────────────
+ * ── The filters are the offerings (see CATEGORIES) ──────────────────
+ * They were derived from the cards, in the source document's engagement
+ * kinds — Investigation, Operations, Compliance. The note below is the
+ * reasoning for that earlier version.
+ *
  * The source document lists five filter chips — All, Investigations, Rack
  * safety, Digital Twin, MHE safety — and then six cards, two of which
  * (Operations, Compliance) belong to no chip. Under that list those two are
@@ -39,7 +43,7 @@ export type CaseStudy = {
 export const CASES: CaseStudy[] = [
   {
     id: "collapse",
-    kind: "Investigation",
+    kind: "Rack Safety",
     sector: "FMCG · distribution",
     title: "Reconstructing a rack collapse",
     problem:
@@ -54,7 +58,7 @@ export const CASES: CaseStudy[] = [
   },
   {
     id: "estate",
-    kind: "Rack safety",
+    kind: "Rack Safety",
     sector: "3PL · multi-site",
     title: "Estate-wide racking, twinned and graded",
     problem:
@@ -84,7 +88,7 @@ export const CASES: CaseStudy[] = [
   },
   {
     id: "impacts",
-    kind: "MHE safety",
+    kind: "MHE Safety",
     sector: "Manufacturing",
     title: "Impact events, in context",
     problem: "Forklift impacts logged as numbers nobody could act on.",
@@ -98,7 +102,7 @@ export const CASES: CaseStudy[] = [
   },
   {
     id: "operations",
-    kind: "Operations",
+    kind: "Inventory",
     sector: "Logistics",
     title: "Inventory and movement, made visible",
     problem: "Stock and equipment movement invisible between systems.",
@@ -112,7 +116,7 @@ export const CASES: CaseStudy[] = [
   },
   {
     id: "compliance",
-    kind: "Compliance",
+    kind: "Rack Safety",
     sector: "Cold chain",
     title: "From audit to Stability Certificate",
     problem: "Racking safety hard to evidence for audits and insurers.",
@@ -126,8 +130,27 @@ export const CASES: CaseStudy[] = [
   },
 ];
 
-/** Every kind in `CASES`, in first-appearance order. */
-export const CATEGORIES: string[] = CASES.reduce<string[]>(
-  (out, c) => (out.includes(c.kind) ? out : [...out, c.kind]),
-  [],
-);
+/**
+ * The filter chips are RAMS's offerings — the six solutions in the menu's
+ * order, then the Digital Twin — not kinds of engagement. They are listed
+ * rather than derived, so an offering with no published case yet still has
+ * its chip; choosing it says a case is coming rather than showing nothing.
+ *
+ * Every case's `kind` must be one of these. The check below fails the
+ * build if one is not, which is what derivation used to guarantee.
+ */
+export const CATEGORIES: string[] = [
+  "Rack Safety",
+  "MHE Safety",
+  "Inventory",
+  "Warehouse Execution",
+  "MHE Diagnostics",
+  "Management",
+  "Digital Twin",
+];
+
+for (const c of CASES) {
+  if (!CATEGORIES.includes(c.kind)) {
+    throw new Error(`case "${c.id}" has kind "${c.kind}", which is not an offering`);
+  }
+}
