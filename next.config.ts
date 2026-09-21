@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
+   * The working copy lives on a Windows drive (`/mnt/c/...`) and is edited from
+   * WSL, where drvfs raises no inotify events — the dev server sees no file
+   * change and never hot-reloads. Polling is the only watch that works across
+   * that mount. Dev-only, and cheap enough at this interval.
+   */
+  watchOptions: { pollIntervalMs: 1000 },
+  /**
    * The newsroom was built at `/company/newsroom`, which is where the footer
    * linked it, and moved to `/resources/insights`, which is where both mega
    * menus already pointed. 308 rather than 307: the move is permanent, and a
