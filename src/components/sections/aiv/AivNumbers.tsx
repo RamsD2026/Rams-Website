@@ -59,7 +59,7 @@ export function AivNumbers() {
   return (
     <section className="section white" id="numbers">
       <div className="wrap">
-        <Head center label="The numbers" top="Fast enough to matter." />
+        <Head center label="How it runs" top="Built to keep working." />
 
         <div className="stats">
           {STATS.map((s, i) => (
@@ -72,7 +72,7 @@ export function AivNumbers() {
         </div>
 
         <p className="note center">
-          Indicative, based on operational analysis. Validated outcomes on request.
+          Indicative of designed behaviour, based on operational analysis. Validated outcomes and unit specifications on request.
         </p>
       </div>
     </section>

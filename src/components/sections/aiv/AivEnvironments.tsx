@@ -8,15 +8,15 @@ import { ENVS } from "./aiv-data";
 /**
  * 02 — Environments.
  *
- * The reference runs a second WebGL canvas here: four procedural low-poly
- * dioramas (forklift guard, robot cell fence, dock door, ceiling drop) in a
- * clay-grey style, each with a translucent vision cone and a figure that walks
- * into it, cross-fading as you change tab.
+ * The stage is a second WebGL canvas, `AivEnvScene`: four procedural low-poly
+ * dioramas (forklift guard, robot cell fence, dock door, ceiling drop), each
+ * with a translucent vision cone and a figure who walks into it, cross-fading
+ * as you change tab. `ENVS` carries its camera framing and walk paths as well
+ * as the copy, so edit those fields with care.
  *
- * What is ported is the tab shell and its photo fallback — again the
- * reference's own, for browsers without WebGL. The stage keeps the same 16/9
- * frame and light radial ground, so dropping a canvas in later is a swap of the
- * `<Media>` for a renderer and nothing else.
+ * The diorama reports its own failure and only then does the stage fall back to
+ * the reference's context photos — again its own designed state, not a
+ * degraded one.
  *
  * The tab list is a real tablist: arrow keys move between tabs, and only the
  * selected one is in the tab order, which is what `tabIndex={-1}` on the rest

@@ -1,21 +1,20 @@
 "use client";
 
 import { Media } from "./aiv-shared";
-import { IMG, PLATE } from "./aiv-data";
+import { IMG } from "./aiv-data";
 
 /**
  * 01 — Hero.
  *
- * The reference opens on a scroll-driven three.js film: the camera GLB lit in a
- * studio rig, scrubbing through four chapters (hero → Design → Power + I/O →
- * Inside, with the housing exploding apart) across a 520vh scroll track.
+ * This is the static hero, and it is not what most visitors see. `AivFilm`
+ * renders the scroll-driven film over the top of it; CSS reveals this block
+ * only under `.no-film`, which `AivPage` sets when the film reports it cannot
+ * run — no WebGL2, a failed GLB, or a load past ten seconds.
  *
- * This is not that. It is the static hero the reference already ships for
- * browsers without WebGL — `#staticHero`, its own documented fallback — which
- * is why the layout, the copy and the spec plate below are unchanged: that
- * fallback was designed, not improvised. Porting the film is a separate job
- * that brings a 7.7MB GLB and ~500 lines of three.js with it; when it lands it
- * replaces the `<Media>` in this component and nothing else on the page moves.
+ * It is the reference's own documented fallback (`#staticHero`) rather than an
+ * improvisation, which is why the layout and copy are unchanged from it. Its
+ * spec plate is gone, here and in the film: the numbers live on the spec sheet
+ * further down the page.
  *
  * `data-hero-tone="light"` is essential rather than decorative. The site navbar
  * goes transparent with white links while the page is at the top, which works
@@ -40,17 +39,10 @@ export function AivHero() {
             Explore use cases
           </a>
         </div>
-        <dl className="plate">
-          {PLATE.map((p) => (
-            <div key={p.dt}>
-              <dt>{p.dt}</dt>
-              <dd>
-                {p.dd}
-                <small>{p.unit}</small>
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <p className="hero-support">
+          On-device AI <span aria-hidden>·</span> Event-based evidence{" "}
+          <span aria-hidden>·</span> Works with what you already run
+        </p>
       </div>
 
       <Media

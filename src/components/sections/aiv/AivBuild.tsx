@@ -45,10 +45,9 @@ export function AivBuild() {
 
           <Reveal className="tile ink span-4">
             <span className="label">It runs</span>
-            <div className="big">100%</div>
+            <div className="big">On-device</div>
             <p className="sub">
-              on the device. Detects and decides without a network, and syncs events when it has
-              one.
+              inference. Detects and decides without a network, and syncs events when it has one.
             </p>
           </Reveal>
 

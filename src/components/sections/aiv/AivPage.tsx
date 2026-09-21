@@ -8,7 +8,9 @@ import { AivHow } from "./AivHow";
 import { AivBuild } from "./AivBuild";
 import { AivNumbers } from "./AivNumbers";
 import { AivSoftware } from "./AivSoftware";
-import { AivCTA, AivDeploy, AivFAQ, AivSpecs } from "./AivClosing";
+import { AivBoundary, AivCTA, AivDeploy, AivFAQ, AivSpecs } from "./AivClosing";
+import { AivGap } from "./AivGap";
+import { AivEdge } from "./AivEdge";
 import { AivFilm } from "./AivFilm";
 import { AivSheet } from "./AivSheet";
 import { USE_CASES } from "./aiv-data";
@@ -94,14 +96,20 @@ export function AivPage() {
 
       {/* Everything from here scrolls up over the film and hides it. */}
       <div className="aiv-doc">
+        {/* The gap comes first: it is the question every section below answers. */}
+        <AivGap />
         <AivEnvironments onOpen={open} />
         <AivUseCases onOpen={open} />
         <AivHow />
+        {/* Why the How works without asking anything of the network. */}
+        <AivEdge />
         <AivBuild />
         <AivNumbers />
         <AivSoftware />
         <AivDeploy />
         <AivSpecs />
+        {/* Directly after the spec sheet — see the note in AivClosing. */}
+        <AivBoundary />
         <AivFAQ />
         <AivCTA />
       </div>

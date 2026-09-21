@@ -9,10 +9,10 @@ import { DEPLOY, FAQ, IMG, SPECS } from "./aiv-data";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * 08–11 — Deploy, Tech specs, FAQ and the close.
+ * 08–12 — Deploy, Tech specs, Boundary, FAQ and the close.
  *
- * Four short sections kept in one file: none of them carries behaviour beyond
- * the FAQ's one-open-at-a-time accordion, and splitting them four ways would
+ * Five short sections kept in one file: none of them carries behaviour beyond
+ * the FAQ's one-open-at-a-time accordion, and splitting them five ways would
  * cost more in imports than it buys in navigation.
  */
 
@@ -84,7 +84,51 @@ export function AivSpecs() {
 }
 
 /**
- * 10 — FAQ.
+ * 10 — What this is not.
+ *
+ * Copy deck §9, and the most important section on the page to get right.
+ *
+ * The page sells a camera that watches people near machines, so a reader is
+ * entitled to know exactly where its responsibility stops. Everything above
+ * this point describes what the camera adds; this says plainly what it does not
+ * take away, and that guarding, interlocks, scanners, procedures, training and
+ * CCTV all stay where they are.
+ *
+ * It sits immediately after the spec sheet rather than buried in the FAQ,
+ * because a reader who has just read a specification is exactly the reader
+ * forming a view about what the unit is certified to do. The second paragraph
+ * is the copy deck's language on machine integration, unchanged on purpose: it
+ * is a commitment about validation, not a claim about capability.
+ */
+export function AivBoundary() {
+  return (
+    <section className="section dark" id="boundary">
+      <div className="wrap">
+        <Reveal className="boundary">
+          <span className="label">Where it stops</span>
+          <h2 className="h2">
+            It adds a layer.
+            <br />
+            It does not remove one.
+          </h2>
+          <p>
+            The RAMS AI Camera is an additional operational intelligence layer. Existing guarding,
+            interlocks, safety scanners, procedures, operator training and CCTV all remain part of
+            your site&rsquo;s safety system, and nothing here is offered as a replacement for any of
+            them.
+          </p>
+          <p>
+            Where a camera is connected to a machine response, the integration and its failure
+            behaviour are defined and validated for that specific application before it goes live.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * 11 — FAQ.
  *
  * Rebuilt on the site's own FAQ pattern rather than the reference's.
  *
@@ -115,7 +159,7 @@ export function AivFAQ() {
   return (
     <section className="section white" id="faq">
       <div className="wrap">
-        <Head label="FAQ" top="Questions" bottom="worth asking." />
+        <Head label="FAQ" top="Frequently asked" bottom="questions." />
 
         <div className="faq">
           {FAQ.map((f, i) => {

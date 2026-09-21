@@ -1,16 +1,28 @@
 import type { Hud } from "./aiv-shared";
 
 /**
- * The content of /hardware/ai-vision, carried across from the AI Camera
- * showcase build without rewriting.
+ * The content of /hardware/ai-vision.
  *
- * The copy is the reference's own, verbatim, including its caveats — the
- * "indicative", "illustrative" and "to be confirmed" notes are load-bearing.
- * Its content rules say so directly: figures that are not validated keep their
- * note, the page never claims certified safety-rated status, and it never says
- * the camera replaces guarding or light curtains. Do not tighten those lines
- * into cleaner marketing copy; they are the reason the page can make the claims
- * around them.
+ * Two sources feed this file. The page was first ported from the AI Camera
+ * showcase build; its copy is now reconciled against
+ * `RAMS_Digital_Hardware_Website_Rewritten_Copy.md` §2 (the hardware copy deck),
+ * which is the newer and sign-off-ready source.
+ *
+ * ── The claims posture is deliberate ────────────────────────────────
+ * The showcase build stated hard figures — 26 TOPS, < 0.5 s frame to alert,
+ * 100% on-device. Those traced only to the showcase build and its own design
+ * note; no engineering document in `docs/` carries them, and the copy deck
+ * states no performance number anywhere. They have been replaced page-wide with
+ * capability language: what the camera *does* rather than how fast it claims to
+ * do it. Do not reintroduce a figure here without a spec document behind it.
+ *
+ * The same rule governs the safety language. The page never claims certified
+ * safety-rated status and never says the camera replaces guarding, interlocks
+ * or light curtains — it is an additional layer around controls that stay in
+ * place. Where the camera drives a machine response, the copy says the
+ * behaviour is defined and validated for the specific application. The
+ * "indicative", "illustrative" and "to be confirmed" notes are load-bearing;
+ * do not tighten them into cleaner marketing copy.
  *
  * `img: undefined` is not an oversight. Thirteen of the reference's fifteen
  * images were never generated, and its prompts for them are in that folder's
@@ -32,13 +44,6 @@ export const IMG = {
 } as const;
 
 /* ── hero ────────────────────────────────────────────────────────── */
-
-export const PLATE: { dt: string; dd: string; unit: string }[] = [
-  { dt: "Frame to alert", dd: "<0.5", unit: "s" },
-  { dt: "On-device AI", dd: "26", unit: "TOPS" },
-  { dt: "Power in", dd: "12–80", unit: "V DC" },
-  { dt: "Operating", dd: "−20–50", unit: "°C" },
-];
 
 /* ── environments ────────────────────────────────────────────────── */
 
@@ -328,6 +333,13 @@ export const USE_CASES: UseCase[] = [
 
 /* ── see → understand → act ──────────────────────────────────────── */
 
+/** Three steps, and three is structural rather than editorial: `AivHow` pins a
+ *  single SVG scene whose layers are keyed off `data-step` in CSS
+ *  (`.s-l1`/`.s-l2`/`.s-l3`) and whose scroll handler caps at 3. The copy deck
+ *  §4 lists a fourth, "Learn" — that content is `AivSoftware`, which is the
+ *  whole section about events becoming trends. Adding a fourth entry here
+ *  renders a step that never activates; it needs a fourth scene layer and a
+ *  new threshold in `AivHow` first. */
 export const SUA_STEPS = [
   {
     n: "01 · See",
@@ -342,7 +354,7 @@ export const SUA_STEPS = [
   {
     n: "03 · Act",
     h: "Trigger, alert, log.",
-    p: "A stop or slow signal, an alarm, a notification — and a clip of the moment, filed automatically. In under half a second.",
+    p: "A stop or slow signal, an alarm, a notification — and a clip of the moment, filed automatically, while the event is still happening.",
   },
 ];
 
@@ -367,9 +379,9 @@ export const IDEAS: { b: string; s: string; img?: string; alt: string; label: st
 /* ── numbers ─────────────────────────────────────────────────────── */
 
 export const STATS: { to?: number; dec?: number; v: string; unit: string; h: string; p: string }[] = [
-  { to: 0.5, dec: 1, v: "0.5", unit: "s", h: "Frame to alert", p: "Detection and decision, computed on the camera." },
-  { to: 26, dec: 0, v: "26", unit: "TOPS", h: "Edge NPU", p: "Enough compute for every class, every frame." },
-  { to: 100, dec: 0, v: "100", unit: "%", h: "On-device inference", p: "No cloud in the loop. No platform dependency." },
+  { v: "On", unit: "-device", h: "Local inference", p: "The image is read on the camera, not shipped to a server to be understood." },
+  { v: "Events", unit: "", h: "Not footage", p: "The output is the moment that mattered, with its time and zone attached." },
+  { v: "Per", unit: "-site", h: "Tuned rules", p: "A dock, a robot cell and a forklift aisle do not behave alike, so none share a threshold." },
   { v: "24", unit: "/7", h: "Always watching", p: "Every shift, including the ones nobody supervises." },
 ];
 
@@ -400,15 +412,15 @@ export const SPECS: { h: string; rows: [string, string][] }[] = [
     rows: [
       ["Optics", "F/1.6 · low-light · anti-glare"],
       ["Sensor", "Global shutter · HDR"],
-      ["Detection latency", "< 0.5 s, frame to alert"],
+      ["Detection", "On-device, at the edge — no cloud in the decision path"],
       ["Classes", "Person · PPE · MHE & vehicles · pallet · zone events · operator state"],
     ],
   },
   {
     h: "Compute",
     rows: [
-      ["Processor", "Edge NPU · 26 TOPS"],
-      ["Inference", "On-device · no cloud dependency"],
+      ["Processor", "Edge NPU — sized for every class, every frame"],
+      ["Inference", "On-device · no platform dependency to detect"],
       ["Standalone", "Full detection and response without a network"],
       ["Storage", "Rolling event buffer with video evidence"],
     ],
@@ -450,18 +462,75 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Does it replace our guarding or CCTV?",
-    a: "No — it adds a layer on top. Fences, light curtains and interlocks stay exactly as they are, and existing CCTV keeps recording. The AI Camera is the part that understands what it sees and responds in under half a second, with a record of every event.",
+    a: "No — it adds a layer on top. Fences, light curtains and interlocks stay exactly as they are, and existing CCTV keeps recording. The AI Camera is the part that understands what it sees and responds while the event is still happening, with a record of every one.",
   },
   {
     q: "What happens if a unit fails?",
-    a: "It fails passive. If the unit loses power or faults, the equipment around it behaves exactly as it did before install. The status light and the dashboard both flag the fault, so it never sits unnoticed.",
+    a: "The camera is an additional layer, so a fault returns the equipment around it to how it behaved before install — it does not remove a control that was already there. The status light and the dashboard both flag the fault, so it never sits unnoticed. Where a unit is wired to a machine response, that integration and its failure behaviour are defined and validated for the specific application before it goes live.",
   },
   {
     q: "Which environments does it suit?",
     a: "Anywhere people and machines share space and you can draw a line: trucks, robot cells, doors and docks, press lines, loading bays, gates. It runs from −20 °C to 50 °C and is IP-rated for dust and wash-down. If your use case is not on this page, tell us — most of them are a zone and a rule.",
   },
   {
+    q: "Does it identify individual people?",
+    a: "No. The standard safety use case is object and event detection, not facial identification — it classifies “person”, it does not work out who. Privacy, clip retention and who can open an event are agreed as part of the deployment, and we put that in writing before install.",
+  },
+  {
     q: "Where does our data live?",
     a: "Event data and clips sync to your RAMS Digital tenancy. Region, retention window and export are configurable, and raw video never leaves the device unless an event triggers. If your policy requires fully on-premise, tell us at survey and we will scope it.",
+  },
+];
+
+/* ── the gap ─────────────────────────────────────────────────────── */
+
+/** Copy deck §2 — "CCTV records what happened. Operations need to know while
+ *  it is happening." Four situations, each paired with what the camera does
+ *  about it. `r` is the response and is always the second half of the pair;
+ *  the section renders them as a problem/answer couplet, never apart. */
+export const GAPS: { b: string; s: string; r: string }[] = [
+  {
+    b: "Risk appears in a blind spot",
+    s: "A pedestrian can step into the path of a truck before the operator has any clear line of sight.",
+    r: "Detect the person, read the zone that was drawn there, and trigger the configured warning or action.",
+  },
+  {
+    b: "Someone enters a controlled area",
+    s: "A robot cell, press area or restricted zone gets entered for maintenance, clearing or a changeover.",
+    r: "Detect the entry, time-stamp it, and pass the event to the local response and the record.",
+  },
+  {
+    b: "A rule exists only on a signboard",
+    s: "PPE and walkway rules are hard to hold to consistently across every shift, on every aisle.",
+    r: "Monitor the rule continuously and create evidence the moment an exception occurs.",
+  },
+  {
+    b: "The footage has the answer — afterwards",
+    s: "Hours of recording are rarely much use for the improvement you needed to make on the day.",
+    r: "Keep the event that matters, with its time, its zone and its operational context.",
+  },
+];
+
+/* ── the edge ────────────────────────────────────────────────────── */
+
+/** Copy deck §5 — "Intelligence at the edge." The film carries this as a
+ *  chapter, but the film is a fixed layer that stands down on the static
+ *  fallback, so the argument needs a home in `.aiv-doc` as well. */
+export const EDGE: { b: string; s: string }[] = [
+  {
+    b: "Local inference",
+    s: "The image is interpreted on the device, instead of every frame being sent somewhere else for a decision to come back.",
+  },
+  {
+    b: "Event-based evidence",
+    s: "The useful output is the operational event and the context around it — not an endless stream of footage nobody will watch.",
+  },
+  {
+    b: "Site-specific rules",
+    s: "Zones and thresholds are commissioned around your actual floor, because a dock, a robot cell and a forklift aisle do not behave the same way.",
+  },
+  {
+    b: "Connected when available",
+    s: "Events synchronise to RAMS Digital for reporting, trends and cross-system intelligence — when there is a network, and not before.",
   },
 ];

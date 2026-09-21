@@ -5,7 +5,7 @@ import "./ai-vision.css";
 export const metadata: Metadata = {
   title: "RAMS AI Camera — Industrial vision. Human intelligence.",
   description:
-    "The RAMS AI Camera sees people, machines and zones, understands what is happening, and acts in under half a second — on forklifts, robotic cells, dock doors and hazard zones.",
+    "The RAMS AI Camera sees people, machines and zones, understands what is happening, and acts on it while it is still happening — on forklifts, robotic cells, dock doors and hazard zones.",
 };
 
 /**
@@ -36,17 +36,25 @@ export const metadata: Metadata = {
  *     `clamp(40px, 5.6vw, 80px)` section headline and this site's
  *     `40 / 60 / 78px` land within a couple of pixels of each other.
  *
- * ── What is not built ───────────────────────────────────────────────
- * The reference hero is a scroll-driven three.js film of the camera GLB, and
- * its environments section is a second WebGL canvas of four procedural
- * dioramas. Neither is ported. Both fall back to the static treatment the
- * reference itself ships for browsers without WebGL, which is a designed state
- * rather than a degraded one. See the notes in `AivHero.tsx` and
- * `AivEnvironments.tsx` for where a renderer drops in.
+ * ── The 3D ────────────────────────────────────────────────────────
+ * Both WebGL pieces are ported. `AivFilm.tsx` is the scroll-driven film of the
+ * camera GLB — four chapters across a 520vh track, ending with the housing
+ * exploded. `AivEnvScene.tsx` is the second canvas, four procedural dioramas
+ * behind the environments tabs. Both import three dynamically inside an effect,
+ * and both fall back to the reference's own designed static treatment when
+ * WebGL2 is missing or the GLB fails — a designed state rather than a degraded
+ * one. See the notes in each file.
  *
  * Thirteen of the reference's fifteen images were never generated; those frames
  * render as labelled placeholders carrying the file name that belongs there.
  * `aiv-data.ts` is where a real file gets named once it exists.
+ *
+ * ── Content ────────────────────────────────────────────────────────
+ * The copy is reconciled against `RAMS_Digital_Hardware_Website_Rewritten_Copy.md`
+ * §2. That deck states no performance figure anywhere, so the showcase build's
+ * hard claims — 26 TOPS, < 0.5 s frame to alert, 100% on-device — are gone
+ * page-wide in favour of capability language. The reasoning, and the rule for
+ * putting a figure back, is in the `aiv-data.ts` header.
  *
  * ── Still open ──────────────────────────────────────────────────────
  * "AI Vision" is also linked as `/platform/ai-vision` (`EcosystemSection`,

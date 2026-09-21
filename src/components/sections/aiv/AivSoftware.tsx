@@ -63,7 +63,7 @@ export function AivSoftware() {
           label="The software"
           top="Every event,"
           bottom="on one screen."
-          intro="Each camera runs on its own. Connected, they report to RAMS Digital — where the floor stops being anecdote and becomes data you can take to a safety review."
+          intro="Each camera runs on its own. Connected, they report to RAMS Digital, and individual events become trends — where they repeat, when they happen, and which areas have earned attention. The floor stops being anecdote and becomes something you can take to a safety review."
         />
 
         <Reveal className="dash">

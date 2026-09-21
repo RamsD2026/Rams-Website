@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import type * as THREE_NS from "three";
-import { PLATE } from "./aiv-data";
 
 /**
  * The film — the scroll-driven 3D product sequence that opens the page.
@@ -51,22 +50,25 @@ const PH = {
   expl: [0.649, 1],
 } as const;
 
-/** Exploded-view callouts: which part group they hang off, and their offset. */
+/** Exploded-view callouts: which part group they hang off, and their offset.
+ *  Name only — the spec detail belongs on the spec sheet, not floating over
+ *  the model. */
 const PART_LABELS = [
-  { nm: "Optics", ds: "F/1.6 · LOW-LIGHT · ANTI-GLARE", ref: "lens", off: [0.38, 0, 0], flip: false },
-  { nm: "Sensor", ds: "GLOBAL SHUTTER · HDR", ref: "sensor", off: [0.34, 0, 0], flip: false },
-  { nm: "AI processor", ds: "EDGE NPU · 26 TOPS · <0.5 S", ref: "pcb", off: [-0.5, 0.1, 0], flip: true },
-  { nm: "Thermal core", ds: "FIN STACK + FAN · −20 → 50 °C", ref: "cool", off: [-0.5, 0.25, 0], flip: true },
-  { nm: "Faceplate", ds: "POWDER-COATED · IP-RATED", ref: "front", off: [0.55, 0.35, 0], flip: false },
-  { nm: "Thermal pad", ds: "HEAT INTO THE HOUSING", ref: "top", off: [-0.5, 0.15, 0], flip: true },
-  { nm: "I/O board", ds: "USB-C · POWER · EXPANSION", ref: "io", off: [0.42, -0.1, 0], flip: false },
+  { nm: "Optics", ref: "lens", off: [0.38, 0, 0], flip: false },
+  { nm: "Sensor", ref: "sensor", off: [0.34, 0, 0], flip: false },
+  { nm: "AI processor", ref: "pcb", off: [-0.5, 0.1, 0], flip: true },
+  { nm: "Thermal core", ref: "cool", off: [-0.5, 0.25, 0], flip: true },
+  { nm: "Faceplate", ref: "front", off: [0.55, 0.35, 0], flip: false },
+  { nm: "Thermal pad", ref: "top", off: [-0.5, 0.15, 0], flip: true },
+  { nm: "I/O board", ref: "io", off: [0.42, -0.1, 0], flip: false },
 ] as const;
 
-/** Port callouts, anchored to bezels resolved out of the GLB. */
+/** Port callouts, anchored to bezels resolved out of the GLB. Named for what
+ *  each one lets the site do, not for the connector part number. */
 const PORT_LABELS = [
-  { nm: "USB-C", ds: "COMMISSIONING + DIAGNOSTICS", key: "usb", off: [0.24, 0, 0] },
-  { nm: "XT30 power", ds: "12–80 V DC · BATTERY OR PANEL", key: "xt", off: [0.24, 0, 0] },
-  { nm: "Service bay", ds: "SEALED · FIELD-SERVICEABLE", key: "svc", off: [0.24, 0, 0] },
+  { nm: "Set up on site", key: "usb", off: [0.24, 0, 0] },
+  { nm: "Runs on truck or panel power", key: "xt", off: [0.24, 0, 0] },
+  { nm: "Serviced in place", key: "svc", off: [0.24, 0, 0] },
 ] as const;
 
 /** Explode vector per part group, plus any rotation it picks up on the way out. */
@@ -490,7 +492,15 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
       onScroll();
       cleanups.push(() => window.removeEventListener("scroll", onScroll));
 
-      /* free orbit by drag, anywhere on the canvas, kept where you leave it */
+      /* Free orbit by drag, anywhere on the canvas.
+
+         Where the drag goes when you let go depends on the chapter. Through
+         HERO, DESIGN and POWER the camera moves are tuned against a known
+         device pose, so the offset springs back to zero and the next chapter
+         starts from the pose it expects. In INSIDE the pose is the point —
+         turning the exploded unit to see a part is the interaction — so it
+         stays where you leave it, and only resets if you scroll back up out
+         of the chapter. `update()` owns that rule; see the drag block there. */
       const onDown = (e: PointerEvent) => {
         state.drag.on = true;
         state.drag.px = e.clientX;
@@ -506,6 +516,7 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         state.drag.py = e.clientY;
       };
       const endDrag = () => {
+        if (!state.drag.on) return;
         state.drag.on = false;
         canvas.classList.remove("grabbing");
       };
@@ -618,8 +629,17 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         cam.lookAt(camTgt);
 
         /* device */
-        state.drag.x += (state.drag.tx - state.drag.x) * Math.min(1, dt * 7);
-        state.drag.y += (state.drag.ty - state.drag.y) * Math.min(1, dt * 7);
+        // Outside the exploded chapter a released drag returns to zero; inside
+        // it, the pose you left is kept.
+        if (!state.drag.on && p < PH.expl[0]) {
+          state.drag.tx = 0;
+          state.drag.ty = 0;
+        }
+        // Following the pointer is quick; the spring home is slower, so the
+        // return reads as the model settling rather than snapping.
+        const follow = Math.min(1, dt * (state.drag.on ? 7 : 3.2));
+        state.drag.x += (state.drag.tx - state.drag.x) * follow;
+        state.drag.y += (state.drag.ty - state.drag.y) * follow;
         const selfMove = EASE_ST(seg(p, PH.hero[1], PH.hero[1] + 0.065));
         state.idleAng += dt * 0.1 * selfMove;
         // The idle spin eases out approaching POWER rather than snapping to
@@ -798,17 +818,10 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
                 Explore use cases
               </a>
             </div>
-            <dl className="plate">
-              {PLATE.map((p) => (
-                <div key={p.dt}>
-                  <dt>{p.dt}</dt>
-                  <dd>
-                    {p.dd}
-                    <small>{p.unit}</small>
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <p className="hero-support">
+              On-device AI <span aria-hidden>·</span> Event-based evidence{" "}
+              <span aria-hidden>·</span> Works with what you already run
+            </p>
           </div>
           <div className="scrollcue" aria-hidden>
             Scroll<i />
@@ -816,40 +829,43 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         </section>
 
         <section className="sec right" data-a="0.215" data-b="0.40">
-          <span className="label">Design</span>
+          <span className="label">Where it goes</span>
           <h2>
-            Purpose-built
+            Mounted at the
             <br />
-            for the floor.
+            point of risk.
           </h2>
           <p className="lead">
-            A machined aluminium housing with an integrated fin stack, a powder-coated faceplate and
-            a single status light. All of the thinking happens inside the box.
+            On the truck, on the cell, above the doorway or over a hazard zone. The mounting
+            position, the field of view and the rules are agreed during the site survey, so the
+            camera watches the place where something actually goes wrong.
           </p>
           <div className="chips">
-            <span>On-device AI</span>
-            <span>IP-rated</span>
-            <span>−20 °C to 50 °C</span>
-            <span>No cloud dependency</span>
+            <span>On the truck</span>
+            <span>On the cell</span>
+            <span>Above the doorway</span>
+            <span>Over the hazard zone</span>
           </div>
         </section>
 
         <section className="sec left" data-a="0.48" data-b="0.64">
-          <span className="label">Power + I/O</span>
+          <span className="label">What it decides</span>
           <h2>
-            Wired for
+            Intelligence
             <br />
-            anywhere.
+            at the edge.
           </h2>
           <p className="lead">
-            12 to 80 V DC through a locking XT30 — off a truck battery or a panel supply, drawing a
-            few watts. USB-C for commissioning. A sealed bay for everything else.
+            The picture is read on the device, so detection keeps working when the network
+            doesn&rsquo;t. What you get back is the event that matters, with its time and zone, not
+            hours of footage to review. It runs off the truck battery or a panel supply, and is set
+            up on site.
           </p>
           <div className="chips">
-            <span>12–80 V DC</span>
-            <span>Locking XT30</span>
-            <span>USB-C service</span>
-            <span>Sealed service bay</span>
+            <span>Decides on the device</span>
+            <span>Keeps working offline</span>
+            <span>Events, not footage</span>
+            <span>Rules set for your site</span>
           </div>
         </section>
 
@@ -874,7 +890,6 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
           >
             <div className="in">
               <div className="nm">{l.nm}</div>
-              <div className="ds">{l.ds}</div>
             </div>
           </div>
         ))}
