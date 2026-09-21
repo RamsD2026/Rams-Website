@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AivPage } from "@/components/sections/aiv/AivPage";
-import "./ai-vision.css";
+import "@/styles/hardware-base.css";
 
 export const metadata: Metadata = {
   title: "RAMS AI Camera — Industrial vision. Human intelligence.",

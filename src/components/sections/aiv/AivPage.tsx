@@ -88,14 +88,14 @@ export function AivPage() {
     // `data-hero-tone="light"` belongs on the page root rather than on a hero
     // element: this page's ground is #F5F5F7 either way, and the film's hero is
     // a fixed overlay that the site `<Header>` must never go transparent over.
-    <div className={"aiv-page" + (noFilm ? " no-film" : "")} data-hero-tone="light">
+    <div className={"hw-page aiv-page" + (noFilm ? " no-film" : "")} data-hero-tone="light">
       <AivFilm onUnavailable={filmUnavailable} />
 
       {/* The static hero. CSS shows it only under `.no-film`. */}
       <AivHero />
 
       {/* Everything from here scrolls up over the film and hides it. */}
-      <div className="aiv-doc">
+      <div className="hw-doc">
         {/* The gap comes first: it is the question every section below answers. */}
         <AivGap />
         <AivEnvironments onOpen={open} />

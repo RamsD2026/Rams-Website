@@ -1,0 +1,1014 @@
+/* ============================================================================
+   /hardware/rtls — components added on top of `styles/hardware-base.css`.
+
+   Ported from the Location Intelligence showcase build's `loc.css`. Its
+   `site.css` is the same stylesheet the AI Camera and Omnibox builds ship,
+   already ported as the hardware base, so only this file's own components are
+   here.
+
+   Same three adaptations as the other two hardware pages: the site's
+   `<Header>`/`<Footer>` replace the reference's own (so `--nav-h` follows
+   `--header-total`), the type is IBM Plex Sans for headings and Roboto for body
+   per `docs/typography.md`, and every colour with a brand equivalent is bound
+   to a token from `globals.css`.
+
+   ── Scoped under `.loc-page`, not `.hw-page` ────────────────────────
+   Next bundles every route's CSS globally, so a rule scoped only to `.hw-page`
+   reaches the other two hardware pages as well. Most of this file is fine by
+   that measure, but `.tech`, `.today`, `.jobs`, `.job` and `.quiz` are exactly
+   the kind of generic names that caused the `.big` collision documented in
+   `hardware-base.css`. `.loc-page` sits on the same element as `.hw-page` (see
+   `LocPage.tsx`), so it costs one class of specificity and nothing else. The
+   handful of rules that *override* a base rule carry both classes, so they win
+   on specificity rather than on stylesheet order.
+
+   ── The type ceilings that moved ────────────────────────────────────
+   The reference's scale is fluid `clamp()` and this site's is stepped px
+   (`docs/typography.md`). The fluidity is kept — it is part of how the page
+   reads at 1440 and at 390 — but six ceilings now match the documented maximum:
+
+     .pcard3 h3   25 → 22px   (card title)
+     .job h3      24 → 22px   (card title)
+     .tech h3     32 → 28px   (sub-headline)
+     .sb-read h3  34 → 28px   (sub-headline)
+     .quiz-q      34 → 28px   (sub-headline)
+     .res-top h3  38 → 28px   (sub-headline)
+
+   The hero `h1` (112px) and the sandbox's `.sb-acc` (52px, a stat number) were
+   already at this site's ceilings and are untouched.
+
+   ── The colours that did not move ───────────────────────────────────
+   Three groups have no brand equivalent and stay the reference's own, each
+   noted where it appears: the two soft orange tints behind a light badge and
+   the result note; the dark-panel text greys; and `#EEEFF4`/`#E2E2E8`, the plan
+   floor, which has to match the canvas fill in `LocPlan.tsx` and so cannot
+   drift onto a token independently. The four technology identity colours are
+   argued at the head of `loc-data.ts`.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- hero */
+/* The gradient and the shade that sits over it are one object: the shade's
+   rgba stops are `#0B0C0F` at four opacities, so the base colour cannot move to
+   a token on its own without the two drifting apart. Kept as the reference's,
+   which is within a shade of `--color-surface-dark` in any case. */
+/* Carries both classes: the hero is also `.dark`, and `.hw-page .dark` sets a
+   flat black background at the same specificity this would otherwise have. */
+.hw-page.loc-page .li-hero {
+  position: relative;
+  overflow: hidden;
+  color: #f5f5f7;
+  min-height: min(92vh, 840px);
+  display: flex;
+  align-items: center;
+  padding: calc(var(--nav-h) + 8vh) 0 8vh;
+  background: radial-gradient(120% 95% at 76% 45%, #16181e 0%, #0b0c0f 64%);
+}
+.loc-page .li-hero > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.loc-page .hero-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    #0b0c0f 4%,
+    rgba(11, 12, 15, 0.93) 32%,
+    rgba(11, 12, 15, 0.34) 62%,
+    rgba(11, 12, 15, 0.5) 100%
+  );
+}
+.loc-page .hero-in {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.loc-page .hero-copy {
+  max-width: min(46ch, 660px);
+}
+.hw-page.loc-page .li-hero .kicker {
+  color: var(--orange-soft);
+}
+.loc-page .li-hero h1 {
+  font: 700 clamp(52px, 7.6vw, 112px) / 0.96 var(--display);
+  letter-spacing: -0.045em;
+  color: #fff;
+}
+.loc-page .li-hero .tag {
+  font: 500 clamp(21px, 2vw, 28px) / 1.32 var(--sans);
+  letter-spacing: -0.02em;
+  color: #a1a1a6;
+  margin-top: 20px;
+  max-width: 21em;
+}
+.loc-page .li-hero .tag b {
+  color: #fff;
+  font-weight: 600;
+}
+/* The hero is `.dark`, which already tints the secondary button; this warms it
+   the rest of the way, as the reference does. */
+.hw-page.loc-page .li-hero .btn-secondary {
+  color: var(--orange-soft);
+  box-shadow: inset 0 0 0 1.5px var(--orange-soft);
+}
+.hw-page.loc-page .li-hero .btn-secondary:hover {
+  background: var(--orange-soft);
+  color: #0b0c0f;
+}
+.hw-page.loc-page .li-hero .plate {
+  max-width: 700px;
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+.hw-page.loc-page .li-hero .plate dt {
+  color: #8e8e93;
+}
+.hw-page.loc-page .li-hero .plate dd {
+  color: #fff;
+}
+.hw-page.loc-page .li-hero .plate dd small {
+  color: var(--orange-soft);
+}
+
+/* The readout that names whichever technology the hero is cycling through. */
+.loc-page .hero-read {
+  position: absolute;
+  right: clamp(16px, 4vw, 48px);
+  bottom: clamp(18px, 4vw, 46px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(20, 21, 26, 0.74);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font: 500 13px/1 var(--sans);
+  color: #c7c7cc;
+  max-width: calc(100% - 32px);
+}
+.loc-page .hero-read b {
+  color: #fff;
+  font-weight: 600;
+}
+.loc-page .hero-read .hr-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--orange);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.loc-page .hero-read .hr-acc {
+  color: var(--orange-soft);
+  font-weight: 600;
+}
+.loc-page .hero-read .hr-sub {
+  color: #8e8e93;
+}
+.loc-page .plan-cap {
+  position: absolute;
+  left: clamp(16px, 4vw, 48px);
+  bottom: clamp(18px, 4vw, 46px);
+  z-index: 2;
+  font: 500 12px/1 var(--sans);
+  color: var(--ink2);
+}
+
+/* The frame both plans sit in. `#EEEFF4` is the canvas fill in `LocPlan.tsx`
+   too — the two have to match, so neither moves onto a token alone. */
+.loc-page .plan-frame {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #eeeff4;
+  box-shadow: inset 0 0 0 1px #e2e2e8;
+}
+.loc-page .plan-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .loc-page .li-hero {
+    min-height: auto;
+    padding: calc(var(--nav-h) + 44px) 0 40px;
+  }
+  /* Portrait: the plan is behind the copy rather than beside it, so the shade
+     runs top-to-bottom and the caption goes. */
+  .loc-page .hero-shade {
+    background: linear-gradient(180deg, #0b0c0f 10%, rgba(11, 12, 15, 0.9) 44%, rgba(11, 12, 15, 0.45) 100%);
+  }
+  .loc-page .hero-read {
+    position: static;
+    margin: 30px 0 0;
+    width: max-content;
+    max-width: 100%;
+  }
+  .loc-page .plan-cap {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- problem cards */
+.loc-page .pcards3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+}
+.loc-page .pcard3 {
+  background: var(--tile);
+  border-radius: var(--radius);
+  padding: 30px 28px 32px;
+}
+.loc-page .pcard3 .n {
+  font: 600 14px/1 var(--sans);
+  color: var(--orange-ink);
+}
+.loc-page .pcard3 h3 {
+  font: 600 clamp(20px, 1.9vw, 22px) / 1.2 var(--display);
+  letter-spacing: -0.02em;
+  margin-top: 14px;
+}
+.loc-page .pcard3 p {
+  color: var(--ink2);
+  font-size: 15px;
+  margin-top: 10px;
+}
+@media (max-width: 860px) {
+  .loc-page .pcards3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- accuracy sandbox */
+.loc-page .sandbox {
+  margin-top: clamp(40px, 6vh, 64px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.loc-page .sb-stage .plan-frame {
+  aspect-ratio: 16/10;
+}
+.loc-page .sb-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.loc-page .sb-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  cursor: pointer;
+  background: #fff;
+  color: var(--ink);
+  font: 500 15px/1.2 var(--sans);
+  padding: 10px 16px;
+  border-radius: 980px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.loc-page .sb-tab i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--dot, var(--orange));
+  flex: none;
+}
+.loc-page .sb-tab:hover {
+  box-shadow: inset 0 0 0 1px var(--ink3);
+}
+.loc-page .sb-tab[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--d-ink);
+  box-shadow: none;
+}
+.loc-page .sb-under {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+.loc-page .sb-hint {
+  font: 500 12px/1 var(--sans);
+  color: var(--ink3);
+}
+.loc-page .sb-resume {
+  font-size: 13px;
+}
+.loc-page .sb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 12px;
+  font: 500 12px/1 var(--sans);
+  color: var(--ink2);
+}
+.loc-page .sb-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.loc-page .sb-legend .d1::before,
+.loc-page .sb-legend .d2::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.loc-page .sb-legend .d1::before {
+  background: var(--orange);
+}
+.loc-page .sb-legend .d2::before {
+  box-shadow: inset 0 0 0 1.5px var(--ink3);
+}
+/* The fixed-kit swatch — a square, because that is how anchors, gateways and
+   access points are drawn on the plan. The reference injected it inline. */
+.loc-page .sb-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex: none;
+}
+
+/* The readout beside the plan. A dark panel on a white section: the numbers are
+   the section's subject, and this is what makes them read as instrument output
+   rather than as more copy. */
+.loc-page .sb-read {
+  background: var(--d-tile2);
+  color: var(--d-ink);
+  border-radius: var(--radius);
+  padding: clamp(24px, 2.6vw, 32px);
+  align-self: stretch;
+}
+.loc-page .sb-read .badge {
+  display: inline-block;
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 11px;
+  border-radius: 980px;
+}
+.loc-page .sb-read .badge.live {
+  background: var(--orange-btn);
+  color: #fff;
+}
+.loc-page .sb-read .badge.pilot {
+  color: #c7c7cc;
+  box-shadow: inset 0 0 0 1px #48484a;
+}
+.loc-page .sb-read h3 {
+  font: 600 clamp(24px, 2.6vw, 28px) / 1.1 var(--display);
+  letter-spacing: -0.03em;
+  margin-top: 14px;
+}
+.loc-page .sb-read .sub {
+  color: #8e8e93;
+  font-size: 15px;
+  margin-top: 4px;
+}
+.loc-page .sb-acc {
+  font: 600 clamp(34px, 4vw, 52px) / 1 var(--display);
+  letter-spacing: -0.04em;
+  margin-top: 18px;
+}
+.loc-page .sb-acc small {
+  font-size: 0.4em;
+  font-weight: 500;
+  color: var(--orange-soft);
+  margin-left: 0.15em;
+  letter-spacing: 0;
+}
+.loc-page .sb-can {
+  color: var(--d-ink);
+  font-size: 16px;
+  line-height: 1.45;
+  margin-top: 12px;
+}
+.loc-page .sb-facts {
+  list-style: none;
+  margin-top: 20px;
+  padding: 0;
+  border-top: 1px solid var(--d-line);
+}
+.loc-page .sb-facts li {
+  display: flex;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--d-line);
+  font-size: 14px;
+}
+.loc-page .sb-facts b {
+  flex: none;
+  width: 104px;
+  color: #8e8e93;
+  font-weight: 500;
+}
+.loc-page .sb-facts span {
+  color: var(--d-ink);
+}
+
+/* The log scale strip: 10 mm to 15 m, labelled by what it buys you. */
+.loc-page .scale {
+  margin-top: clamp(28px, 4vh, 40px);
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+.loc-page .scale-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #ffd9c2, var(--orange-soft), var(--orange));
+}
+.loc-page .scale-mark {
+  position: absolute;
+  top: -7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--orange), 0 4px 12px rgba(0, 0, 0, 0.18);
+  transform: translateX(-50%);
+  transition: left 0.5s var(--ease);
+}
+.loc-page .scale-ticks {
+  position: relative;
+  height: 42px;
+  margin-top: 10px;
+}
+.loc-page .scale-ticks span {
+  position: absolute;
+  transform: translateX(-50%);
+  text-align: center;
+  font: 500 12px/1.35 var(--sans);
+  color: var(--ink3);
+  white-space: nowrap;
+}
+.loc-page .scale-ticks b {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+}
+@media (max-width: 1000px) {
+  .loc-page .sandbox {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .loc-page .scale-ticks span {
+    font-size: 11px;
+  }
+  /* "Which slot" and "Which rack" collide at this width; the slot label goes,
+     because the two ends of the scale are what the strip is arguing. */
+  .loc-page .scale-ticks span:nth-child(2) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loc-page .scale-mark {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- technology cards */
+.loc-page .techs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+}
+.loc-page .tech {
+  background: var(--tile);
+  border-radius: var(--radius);
+  padding: clamp(26px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+}
+.loc-page .tech-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.loc-page .tech h3 {
+  font: 600 clamp(24px, 2.4vw, 28px) / 1.15 var(--display);
+  letter-spacing: -0.025em;
+}
+.loc-page .tech .sub {
+  color: var(--orange-ink);
+  font: 600 14px/1.2 var(--sans);
+  margin-top: 6px;
+}
+.loc-page .tech .badge {
+  flex: none;
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  border-radius: 980px;
+}
+/* `#FFEFE5` is the reference's own soft orange tint; the brand set has no
+   tinted surface, and `signal-orange` at 10% over white is muddier. */
+.loc-page .tech .badge.live {
+  background: #ffefe5;
+  color: var(--orange-ink);
+}
+.loc-page .tech .badge.pilot {
+  color: var(--ink3);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.loc-page .tech p.lead {
+  color: var(--ink2);
+  margin-top: 14px;
+  font-size: 16px;
+}
+.loc-page .tech dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.loc-page .tech dt {
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.loc-page .tech dd {
+  font-size: 15px;
+  color: var(--ink);
+  margin-top: 6px;
+  margin-left: 0;
+}
+.loc-page .tech .cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: 22px;
+}
+.loc-page .tech .cols h4 {
+  font: 600 13px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+}
+.loc-page .tech ul {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  padding: 0;
+}
+.loc-page .tech li {
+  display: flex;
+  gap: 9px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink2);
+}
+.loc-page .tech li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 8px;
+  background: var(--orange);
+}
+/* The "costs you" column takes a grey bullet, not an orange one — it is the
+   same length as "good at" and it is not a selling point. */
+.loc-page .tech .cost li::before {
+  background: var(--ink3);
+}
+@media (max-width: 900px) {
+  .loc-page .techs {
+    grid-template-columns: 1fr;
+  }
+  .loc-page .tech .cols,
+  .loc-page .tech dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- jobs */
+.loc-page .jobs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+}
+.loc-page .job {
+  background: var(--d-tile);
+  color: var(--d-ink);
+  border-radius: var(--radius);
+  padding: 28px 26px 30px;
+  display: flex;
+  flex-direction: column;
+}
+.loc-page .job h3 {
+  font: 600 clamp(20px, 1.8vw, 22px) / 1.2 var(--display);
+  letter-spacing: -0.02em;
+}
+.loc-page .job p {
+  color: #a1a1a6;
+  font-size: 15px;
+  margin-top: 10px;
+  flex: 1;
+}
+.loc-page .job .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+}
+.loc-page .job .tags span {
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.03em;
+  padding: 7px 10px;
+  border-radius: 980px;
+  background: rgba(255, 255, 255, 0.12);
+}
+/* Orange marks the technology we run today, here as everywhere else. */
+.loc-page .job .tags span.live {
+  background: var(--orange-btn);
+}
+@media (max-width: 900px) {
+  .loc-page .jobs {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- today */
+.loc-page .today {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  margin-top: 48px;
+  align-items: start;
+}
+.loc-page .today p {
+  color: var(--ink2);
+  font-size: 17px;
+  line-height: 1.55;
+}
+.loc-page .today p + p {
+  margin-top: 16px;
+}
+.loc-page .today .box {
+  background: var(--tile);
+  border-radius: var(--radius);
+  padding: clamp(24px, 3vw, 32px);
+}
+.loc-page .today .box h3 {
+  font: 600 20px/1.2 var(--display);
+  letter-spacing: -0.02em;
+}
+.loc-page .today .box ul {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 0;
+}
+.loc-page .today .box li {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink2);
+}
+.loc-page .today .box li::before {
+  content: "";
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #ffefe5
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2.2 5.2l1.9 1.9L7.9 3' fill='none' stroke='%23FF6A00' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center/11px no-repeat;
+}
+@media (max-width: 900px) {
+  .loc-page .today {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- how it fits */
+.loc-page .flow3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+}
+.loc-page .flow3 .tile {
+  display: flex;
+  flex-direction: column;
+}
+.loc-page .flow3 .n {
+  font: 600 13px/1 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+.loc-page .flow3 h3 {
+  margin-top: 10px;
+}
+.loc-page .flow3 p {
+  color: var(--ink2);
+  margin-top: 10px;
+  font-size: 15px;
+  flex: 1;
+}
+.loc-page .flow3 .link {
+  margin-top: 18px;
+  align-self: flex-start;
+}
+/* `.tile.ink` is a dark card on a light section, not a `.dark` section, so the
+   base's dark-link rule does not reach it. The reference set this inline. */
+.hw-page.loc-page .tile.ink .link {
+  color: var(--orange-soft);
+}
+.hw-page.loc-page .tile.ink p {
+  color: rgba(255, 255, 255, 0.6);
+}
+@media (max-width: 900px) {
+  .loc-page .flow3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- pilot */
+/* The same four-up override the Omnibox page carries. Not lifted into the
+   shared base because App Router ships one CSS chunk per route: `omnibox.css`
+   is not loaded here, so the rule has to exist on both pages. */
+.hw-page.loc-page .steps.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1000px) {
+  .hw-page.loc-page .steps.four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .hw-page.loc-page .steps.four {
+    grid-template-columns: 1fr;
+  }
+}
+/* The pilot's buttons sit under a left-aligned section, so they start at the
+   text rather than centring the way the closing CTA's do. */
+.hw-page.loc-page .cta-actions.start {
+  justify-content: flex-start;
+  margin-top: 44px;
+}
+
+/* ---------------------------------------------------------------- stack quiz */
+.loc-page .quiz {
+  margin: clamp(36px, 5vh, 56px) auto 0;
+  max-width: 940px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: clamp(24px, 3vw, 36px);
+  /* Held at the height of the tallest of the four states, so answering a
+     question does not jump the page under the reader's thumb. */
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+}
+.loc-page .quiz-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.loc-page .quiz-step {
+  font: 600 13px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+.loc-page .quiz-dots {
+  display: flex;
+  gap: 6px;
+}
+.loc-page .quiz-dots i {
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.3s;
+}
+.loc-page .quiz-dots i.on {
+  background: var(--orange);
+}
+/* A faded orange for the steps already answered. The reference's own tint. */
+.loc-page .quiz-dots i.done {
+  background: #f0b9a0;
+}
+.loc-page .quiz-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
+}
+.loc-page .quiz-q {
+  font: 600 clamp(24px, 2.6vw, 28px) / 1.15 var(--display);
+  letter-spacing: -0.025em;
+}
+.loc-page .q-opts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+.loc-page .q-opt {
+  text-align: left;
+  border: 0;
+  cursor: pointer;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
+}
+.loc-page .q-opt:hover {
+  box-shadow: inset 0 0 0 1px var(--ink3);
+}
+.loc-page .q-opt:active {
+  transform: scale(0.99);
+}
+.loc-page .q-opt.on {
+  background: #fff3eb;
+  box-shadow: inset 0 0 0 2px var(--orange);
+}
+.loc-page .q-opt b {
+  display: block;
+  font: 600 17px/1.25 var(--display);
+  letter-spacing: -0.01em;
+}
+.loc-page .q-opt span {
+  display: block;
+  font-size: 14px;
+  color: var(--ink2);
+  margin-top: 3px;
+}
+.loc-page .quiz-foot {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+/* the result */
+.loc-page .res {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.loc-page .res-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 14px;
+}
+.loc-page .res .badge {
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  border-radius: 980px;
+}
+.loc-page .res .badge.live {
+  background: #ffefe5;
+  color: var(--orange-ink);
+}
+.loc-page .res .badge.pilot {
+  color: var(--ink3);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.loc-page .res-top h3 {
+  font: 600 clamp(24px, 3vw, 28px) / 1.1 var(--display);
+  letter-spacing: -0.03em;
+  flex-basis: 100%;
+}
+.loc-page .res-acc {
+  font: 600 19px/1 var(--display);
+  color: var(--orange-ink);
+}
+.loc-page .res-acc span {
+  color: var(--ink3);
+  font-weight: 500;
+  font-size: 14px;
+}
+.loc-page .res-why {
+  color: var(--ink2);
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 14px;
+  max-width: 62ch;
+}
+/* Only shown when the action forced the accuracy up a step, so it is tinted:
+   it is the one line of the result the reader did not ask for. */
+.loc-page .res-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--ink);
+  background: #fff3eb;
+  border-radius: 12px;
+  padding: 10px 14px;
+  max-width: 62ch;
+}
+.loc-page .res-kit {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 22px;
+  margin-top: 18px;
+  padding: 0;
+}
+.loc-page .res-kit li {
+  display: flex;
+  gap: 9px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink2);
+}
+.loc-page .res-kit li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 8px;
+  background: var(--orange);
+}
+.loc-page .res-mail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin-top: 22px;
+}
+.loc-page .res-mail input {
+  flex: 1 1 220px;
+  min-width: 0;
+  font: 500 15px/1 var(--sans);
+  color: var(--ink);
+  background: #fff;
+  border: 0;
+  border-radius: 980px;
+  padding: 13px 18px;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.loc-page .res-mail input:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+.loc-page .res-err {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--orange-ink);
+}
+/* The compact button, as on the Omnibox page. Not in the shared base: only
+   these two pages put a button inside a card. */
+.hw-page.loc-page .btn-sm {
+  font-size: 14px;
+  padding: 10px 18px;
+}
+@media (max-width: 700px) {
+  .loc-page .quiz {
+    min-height: 0;
+  }
+  .loc-page .q-opts,
+  .loc-page .res-kit {
+    grid-template-columns: 1fr;
+  }
+  .loc-page .res-mail {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .loc-page .res-mail .btn {
+    justify-content: center;
+  }
+}

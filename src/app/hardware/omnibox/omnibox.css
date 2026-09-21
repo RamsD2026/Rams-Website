@@ -1,0 +1,22 @@
+/* ============================================================================
+   /hardware/omnibox — the one thing that belongs to this route alone.
+
+   Everything else moved to `styles/hardware-omni.css`: the components when
+   /hardware/sensor-stack was built on the same design, and the setup builder
+   when /hardware/inspection turned out to use the same chooser shell. Read that
+   file's head for what it holds and why it is separate. The import order is
+   unchanged: `hardware-base.css` → `hardware-omni.css` → this file.
+
+   What stays here is the film's scroll length, which is genuinely per-page —
+   four boxes to introduce, not one machine or two, so this film runs longest.
+
+   Still not ported: the `.li-stack` / `.li-pill` block at the foot of the
+   reference file. It renders a Location Intelligence sensor stack inside its
+   Omnibox, driven by `stack.js`. That page is now `/hardware/rtls` and its quiz
+   links here with `?find=&prec=&act=` for exactly this — see `loc-data.ts`.
+   ========================================================================== */
+
+/* the film runs a little longer here — four boxes to introduce, not one */
+.hw-page .hw-scrollspace {
+  height: 560vh;
+}

@@ -1,4 +1,4 @@
-import type { Hud } from "./aiv-shared";
+import type { Hud } from "@/components/sections/hardware/hw-shared";
 
 /**
  * The content of /hardware/ai-vision.

@@ -800,7 +800,7 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
 
   return (
     <>
-      <canvas ref={canvasRef} className="aiv-gl" aria-hidden />
+      <canvas ref={canvasRef} className="hw-gl" aria-hidden />
 
       <div className="film" ref={filmRef}>
         <section className="sec hero" data-a="0" data-b="0.143">
@@ -879,7 +879,7 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         </section>
       </div>
 
-      <div className="aiv-tags" ref={tagsRef} aria-hidden>
+      <div className="hw-tags" ref={tagsRef} aria-hidden>
         {[...PART_LABELS, ...PORT_LABELS].map((l, i) => (
           <div
             key={l.nm}
@@ -895,7 +895,7 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         ))}
       </div>
 
-      <div className="aiv-scrollspace" ref={spaceRef} aria-hidden />
+      <div className="hw-scrollspace" ref={spaceRef} aria-hidden />
     </>
   );
 }

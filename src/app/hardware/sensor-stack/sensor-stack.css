@@ -1,0 +1,1085 @@
+/* ============================================================================
+   /hardware/sensor-stack — this page's own components.
+
+   Ported from the reference's `sensors.css`, which is (its words) "omnibox.css
+   minus the builder, plus this page's components". The first part now lives in
+   `styles/hardware-omni.css`, imported before this file; what follows is only
+   the second part — the LiDAR showcase, the Access Control replica, the pallet
+   animation, the battery block and this page's handful of overrides.
+
+   ── Scoped under `.sst-page`, not `.hw-page` ────────────────────────
+   Same reason as `/hardware/rtls`: the App Router ships CSS globally, and
+   `.acc`, `.face`, `.keys`, `.finger`, `.bms` and `.charge` are exactly the kind
+   of generic names that would reach the other hardware pages. `.sst-page` sits
+   on the same element as `.hw-page` (see `SstPage.tsx`), so it costs one class
+   of specificity. Rules that *override* a shared rule carry both classes, so
+   they win on specificity rather than on stylesheet order.
+
+   ── The colours that did not move ───────────────────────────────────
+   Four groups stay the reference's own, each noted where it appears:
+
+   1. **Colours pinned to the 3D.** The stage's `#06080a`, the HUD teal and the
+      `#FFD60A` / `#FF453A` zone colours all have to match values compiled into
+      the scene in `sst-3d.ts` and `SstLidar.tsx`. If one moved to a token the
+      DOM and the canvas would disagree about what a walkway zone looks like.
+   2. **The product's own blue.** `#1f55c9` is the colour of the actual
+      faceplate; the replica is a likeness, not a brand surface.
+   3. **The state greens and reds** on the access steps and the charge meter —
+      go/no-go, not the RAG scale, which `rackiq-shared` owns and which means
+      something specific elsewhere on this site.
+   4. **The dark-panel greys**, as on the other two hardware pages.
+
+   Everything else is bound: `signal-orange`, `--orange-soft`, `--ink`,
+   `--d-tile`, `--d-ink`, `--d-line`, `--line`, `--tile`, `--bg`.
+   ========================================================================== */
+
+/* This film is shorter than the Omnibox one — one truck to introduce, not four
+   boxes. Per-route, which is why it is not in the shared file. */
+.hw-page.sst-page .hw-scrollspace {
+  height: 520vh;
+}
+/* "Sensor Stack" is two long words; the reference tightens them a little
+   further than the shared hero rule does. */
+.hw-page.sst-page .film .sec.hero.center h1 {
+  letter-spacing: -0.05em;
+}
+
+/* The LiDAR chapter plays on a near-black canvas, so the fixed type over it
+   flips to its light colours for that stretch. `SstFilm` toggles `.dark-bg`. */
+.hw-page.sst-page .film .sec h2,
+.hw-page.sst-page .film .sec .lead,
+.hw-page.sst-page .film .sec .label {
+  transition: color 0.4s;
+}
+.hw-page.sst-page .film.dark-bg .sec h2 {
+  color: var(--d-ink);
+}
+.hw-page.sst-page .film.dark-bg .sec .lead {
+  color: rgba(255, 255, 255, 0.62);
+}
+.hw-page.sst-page .film.dark-bg .sec .label {
+  color: var(--orange-soft);
+}
+
+/* ---------------------------------------------------------------- the six cards */
+/* Six sensors want three across, where the Omnibox family's four want four. */
+.hw-page.sst-page .family.six {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.sst-page .family.six .fcard .media {
+  aspect-ratio: 16/11;
+}
+/* The line that says this card is not its own sensor. */
+.sst-page .fcard .via {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font: 600 12px/1 var(--sans);
+  color: var(--ink2);
+}
+.sst-page .fcard .via i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+@media (max-width: 1000px) {
+  .hw-page.sst-page .family.six {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .hw-page.sst-page .family.six {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- LiDAR showcase */
+.sst-page .lidar {
+  position: relative;
+  margin-top: clamp(40px, 6vh, 64px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 16px;
+  align-items: stretch;
+}
+/* `#06080a` is the clear colour the film's LiDAR chapter fades to, and the
+   ground the point cloud is designed to be read against. Pinned to `sst-3d.ts`. */
+.sst-page .lidar-stage {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 30%, #0d1418 0%, #06080a 70%);
+  aspect-ratio: 16/10;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.sst-page .lidar-stage:active {
+  cursor: grabbing;
+}
+.sst-page .lidar-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.sst-page .lidar-stage.no-gl canvas {
+  display: none;
+}
+.sst-page .lidar-stage .lfb {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  color: var(--ink2);
+  font: 500 14px/1.4 var(--sans);
+  text-align: center;
+  padding: 24px;
+}
+.sst-page .lidar-stage.no-gl .lfb {
+  display: grid;
+}
+
+/* The corner caption that says this is a simulation, not a feed. */
+.sst-page .lidar-hud {
+  position: absolute;
+  left: 18px;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--hud);
+  pointer-events: none;
+}
+.sst-page .lidar-hud i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hud);
+  box-shadow: 0 0 0 4px rgba(0, 200, 255, 0.18);
+  animation: sstPulse 1.6s ease-in-out infinite;
+}
+@keyframes sstPulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Tags that ride the truck. Positioned per frame from `SstLidar`, so only the
+   opacity is transitioned — a transform transition would lag the truck. */
+.sst-page .lidar-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sst-page .lidar-tag .in {
+  background: rgba(10, 14, 17, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 11px;
+  color: var(--d-ink);
+  white-space: nowrap;
+  transform: translate(-50%, -100%) translateY(-14px);
+}
+.sst-page .lidar-tag b {
+  display: block;
+  font: 600 13px/1.25 var(--sans);
+}
+.sst-page .lidar-tag span {
+  display: block;
+  font: 500 11px/1.3 var(--sans);
+  color: #a1a1a6;
+  margin-top: 2px;
+}
+/* The alert red is the zone/impact red compiled into the scene — see the head. */
+.sst-page .lidar-tag.alert .in {
+  border-color: rgba(255, 69, 58, 0.7);
+  box-shadow: 0 0 0 4px rgba(255, 69, 58, 0.18);
+}
+.sst-page .lidar-tag.alert b {
+  color: #ff6961;
+}
+
+.sst-page .lidar-seg {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 980px;
+  background: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+.sst-page .lidar-seg button {
+  border: 0;
+  background: transparent;
+  color: #c7c7cc;
+  font: 500 14px/1 var(--sans);
+  padding: 10px 18px;
+  border-radius: 980px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sst-page .lidar-seg button[aria-selected="true"] {
+  background: var(--d-ink);
+  color: var(--ink);
+}
+
+/* the read-out beside it */
+.sst-page .lidar-read {
+  background: var(--d-tile);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  color: var(--d-ink);
+}
+.sst-page .lidar-read .k {
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange-soft);
+}
+.sst-page .lidar-read h3 {
+  font: 600 26px/1.15 var(--display);
+  letter-spacing: -0.025em;
+  margin-top: 10px;
+}
+.sst-page .lidar-read p {
+  color: var(--d-ink2);
+  font-size: 15px;
+  margin-top: 10px;
+}
+.sst-page .lidar-read .live {
+  margin-top: auto;
+  padding-top: 22px;
+  border-top: 1px solid var(--d-line);
+}
+.sst-page .lr-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 17px/1.3 var(--display);
+}
+/* Green / amber / red here are the zone states drawn in the scene, not the
+   site's RAG scale. */
+.sst-page .lr-state i {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #30d158;
+  box-shadow: 0 0 0 4px rgba(48, 209, 88, 0.2);
+}
+.sst-page .lr-state.warn i {
+  background: #ffd60a;
+  box-shadow: 0 0 0 4px rgba(255, 214, 10, 0.2);
+}
+.sst-page .lr-state.alert i {
+  background: #ff453a;
+  box-shadow: 0 0 0 4px rgba(255, 69, 58, 0.22);
+}
+/* Held at two lines so the panel does not jump as the sub-line changes. */
+.sst-page .lr-sub {
+  color: var(--d-ink2);
+  font-size: 14px;
+  margin-top: 6px;
+  min-height: 2.8em;
+}
+
+/* The speed gauge — a proportion of the zone limit, deliberately with no
+   units and no figure. See the head of `sst-data.ts`. */
+.sst-page .gauge {
+  margin-top: 16px;
+}
+.sst-page .gauge svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sst-page .gauge .trk {
+  fill: none;
+  stroke: var(--d-tile2);
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+.sst-page .gauge .val {
+  fill: none;
+  stroke: #30d158;
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke 0.3s;
+}
+.sst-page .gauge .lim {
+  stroke: var(--d-ink);
+  stroke-width: 3;
+}
+.sst-page .gauge.warn .val {
+  stroke: #ffd60a;
+}
+.sst-page .gauge.alert .val {
+  stroke: #ff453a;
+}
+
+.sst-page .lr-log {
+  list-style: none;
+  margin-top: 14px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  color: #c7c7cc;
+}
+.sst-page .lr-log li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  animation: sstLogIn 0.4s var(--ease) both;
+}
+.sst-page .lr-log li b {
+  flex: none;
+  font: 500 11px/1.6 var(--mono);
+  color: #8e8e93;
+}
+@keyframes sstLogIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@media (max-width: 1000px) {
+  .sst-page .lidar {
+    grid-template-columns: 1fr;
+  }
+  .sst-page .lidar-stage {
+    aspect-ratio: 4/3;
+  }
+}
+@media (max-width: 560px) {
+  .sst-page .lidar-stage {
+    aspect-ratio: 3/4;
+  }
+  .sst-page .lidar-seg button {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}
+
+.sst-page .lidar-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.sst-page .lidar-facts > div {
+  background: var(--d-tile);
+  border-radius: 22px;
+  padding: 22px 22px 24px;
+}
+.sst-page .lidar-facts b {
+  display: block;
+  font: 600 19px/1.25 var(--display);
+  letter-spacing: -0.015em;
+}
+.sst-page .lidar-facts span {
+  display: block;
+  color: var(--d-ink2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+@media (max-width: 860px) {
+  .sst-page .lidar-facts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* The reverse alarm tile, on the dark section. The reference set all of this
+   inline on the two tiles; it is a named block here so the tile keeps working
+   if the bento is re-ordered. */
+.sst-page .rsa-bento {
+  margin-top: 56px;
+}
+.hw-page.sst-page .rsa-bento .tile {
+  background: var(--d-tile);
+  color: var(--d-ink);
+}
+.hw-page.sst-page .rsa-bento .tile .label,
+.hw-page.sst-page .rsa-bento .tile .link {
+  color: var(--orange-soft);
+}
+.hw-page.sst-page .rsa-bento .tile .sub {
+  color: var(--d-ink2);
+}
+.hw-page.sst-page .rsa-bento .pills span {
+  background: var(--d-tile2);
+  color: var(--d-ink);
+  box-shadow: none;
+}
+.hw-page.sst-page .rsa-bento .rsa-shot {
+  padding: 0;
+}
+.sst-page .rsa-bento .rsa-shot .media {
+  aspect-ratio: 4/3;
+  background: #eeeff4;
+}
+
+/* ---------------------------------------------------------------- access control */
+.sst-page .acc {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: clamp(40px, 6vh, 64px);
+  align-items: stretch;
+}
+.sst-page .acc-dev {
+  position: relative;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #ededf1, #dcdce2);
+  padding: clamp(22px, 4vw, 48px) clamp(22px, 4vw, 48px) 76px;
+  display: grid;
+  place-items: center;
+}
+/* The moulded plate the blue face sits in, with its two mounting screws. */
+.sst-page .acc-plate {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1.62;
+  border-radius: 34px;
+  background: linear-gradient(180deg, #f7f7f5, #e3e3df);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18), inset 0 -6px 0 rgba(0, 0, 0, 0.06);
+  padding: 4.5%;
+}
+.sst-page .acc-plate::before,
+.sst-page .acc-plate::after {
+  content: "";
+  position: absolute;
+  width: 5.2%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #9a9aa0 30%, #d0d0d4 32%, #b9b9be 60%);
+  top: 4%;
+}
+.sst-page .acc-plate::before {
+  left: 3.2%;
+}
+.sst-page .acc-plate::after {
+  right: 3.2%;
+}
+/* `#1f55c9` is the unit's own blue. A likeness, not a brand surface. */
+.sst-page .face {
+  position: relative;
+  height: 100%;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #1f55c9, #133f9e);
+  color: #fff;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  padding: 6% 6% 6% 7%;
+  gap: 0 4%;
+}
+/* Everything on the faceplate is sized in % of the plate, so the replica scales
+   as one object rather than reflowing into a layout that no unit has. */
+.sst-page .face h4 {
+  grid-column: 1/-1;
+  text-align: center;
+  font: 800 clamp(14px, 2.1vw, 24px) / 1 var(--sans);
+  letter-spacing: 0.02em;
+  margin-bottom: 5%;
+}
+.sst-page .face .lft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.sst-page .face .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 clamp(12px, 1.6vw, 19px) / 1 var(--sans);
+}
+.sst-page .face .brand i {
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 3px;
+  background: #fff;
+  position: relative;
+}
+.sst-page .face .brand i::after {
+  content: "";
+  position: absolute;
+  inset: 25% 18%;
+  border: 2px solid #1f55c9;
+  border-left: 0;
+  border-right: 0;
+}
+.sst-page .rfid {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  width: 34%;
+  aspect-ratio: 1;
+  position: relative;
+}
+.sst-page .rfid svg {
+  width: 100%;
+  height: 100%;
+}
+.sst-page .rfid.hit {
+  animation: sstRfid 0.7s var(--ease);
+}
+@keyframes sstRfid {
+  30% {
+    transform: scale(1.08);
+  }
+}
+/* The fingerprint ring: a cyan-lit bezel that turns green on a match and red on
+   a denial — the same two states the real reader shows. */
+.sst-page .finger {
+  position: absolute;
+  left: 44%;
+  top: 56%;
+  width: 17%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  background: radial-gradient(circle, #0b0c0e 52%, #28d9ff 54%, #1ea9d6 58%, #c9ccd2 60%, #8f9399 74%, #e7e8ea 78%);
+  box-shadow: 0 0 0 0 rgba(40, 217, 255, 0);
+  transition: box-shadow 0.3s;
+}
+.sst-page .finger.hit {
+  box-shadow: 0 0 0 10px rgba(40, 217, 255, 0.25);
+}
+.sst-page .finger.ok {
+  background: radial-gradient(circle, #0b0c0e 52%, #30d158 54%, #28a745 58%, #c9ccd2 60%, #8f9399 74%, #e7e8ea 78%);
+}
+.sst-page .finger.no {
+  background: radial-gradient(circle, #0b0c0e 52%, #ff453a 54%, #c9302c 58%, #c9ccd2 60%, #8f9399 74%, #e7e8ea 78%);
+}
+.sst-page .keys {
+  position: relative;
+  align-self: stretch;
+  justify-self: end;
+  width: 86%;
+  background: #0f1012;
+  border-radius: 6px;
+  box-shadow: 0 0 0 5px #c9c9c4;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7%;
+  padding: 9% 10%;
+}
+.sst-page .keys button {
+  border: 0;
+  border-radius: 5px;
+  background: linear-gradient(#232428, #141518);
+  color: #f2f2f2;
+  font: 600 clamp(12px, 1.9vw, 22px) / 1 var(--sans);
+  cursor: pointer;
+  box-shadow: 0 2px 0 #000;
+  aspect-ratio: 1.15;
+}
+.sst-page .keys button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+.sst-page .glands {
+  position: absolute;
+  left: 24%;
+  right: 44%;
+  bottom: -11%;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.sst-page .glands i {
+  width: 14%;
+  min-width: 26px;
+  aspect-ratio: 0.9;
+  border-radius: 6px 6px 4px 4px;
+  background: repeating-linear-gradient(90deg, #e9e9e6 0 3px, #cfcfcb 3px 5px);
+}
+.sst-page .acc-dev .hint {
+  position: absolute;
+  left: 20px;
+  bottom: 16px;
+  font: 500 12px/1.3 var(--sans);
+  color: var(--ink3);
+}
+
+.sst-page .acc-panel {
+  background: var(--d-tile2);
+  color: var(--d-ink);
+  border-radius: var(--radius);
+  padding: clamp(24px, 3vw, 34px);
+  display: flex;
+  flex-direction: column;
+}
+.hw-page.sst-page .acc-panel .label {
+  color: var(--orange-soft);
+  margin: 0;
+  font-size: 15px;
+}
+.sst-page .acc-steps {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 0;
+}
+/* Dimmed until reached: the sequence is the argument, so a step that has not
+   happened yet should not read as a claim. */
+.sst-page .acc-steps li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: start;
+  opacity: 0.45;
+  transition: opacity 0.3s;
+}
+.sst-page .acc-steps li.on,
+.sst-page .acc-steps li.ok,
+.sst-page .acc-steps li.no {
+  opacity: 1;
+}
+.sst-page .acc-steps li i {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 600 13px/1 var(--sans);
+  font-style: normal;
+  background: var(--d-tile2);
+  box-shadow: inset 0 0 0 1px var(--d-line);
+  color: var(--d-ink);
+  transition: background 0.3s;
+}
+.sst-page .acc-steps li.on i {
+  background: var(--orange-btn);
+  box-shadow: none;
+}
+.sst-page .acc-steps li.ok i {
+  background: #248a3d;
+  box-shadow: none;
+}
+.sst-page .acc-steps li.no i {
+  background: #c9302c;
+  box-shadow: none;
+}
+.sst-page .acc-steps b {
+  display: block;
+  font: 600 16px/1.3 var(--display);
+}
+.sst-page .acc-steps span {
+  display: block;
+  color: #a1a1a6;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* The ignition: the whole point of the section in one row. */
+.sst-page .ign {
+  margin-top: auto;
+  padding-top: 22px;
+  border-top: 1px solid var(--d-line);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sst-page .ign .key {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--d-tile2);
+  box-shadow: inset 0 0 0 1px var(--d-line);
+  transition: background 0.3s;
+}
+.sst-page .ign .key svg {
+  width: 26px;
+  height: 26px;
+  stroke: #8e8e93;
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s, transform 0.5s var(--ease);
+}
+/* The key turns 90° when the circuit closes. */
+.sst-page .ign.on .key {
+  background: rgba(48, 209, 88, 0.16);
+}
+.sst-page .ign.on .key svg {
+  stroke: #30d158;
+  transform: rotate(90deg);
+}
+.sst-page .ign.no .key {
+  background: rgba(255, 69, 58, 0.16);
+}
+.sst-page .ign.no .key svg {
+  stroke: #ff453a;
+}
+.sst-page .ign b {
+  display: block;
+  font: 600 18px/1.25 var(--display);
+}
+.sst-page .ign span {
+  display: block;
+  color: #a1a1a6;
+  font-size: 14px;
+  margin-top: 3px;
+}
+.sst-page .acc-try {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.sst-page .acc-try button {
+  border: 0;
+  cursor: pointer;
+  background: var(--d-tile2);
+  box-shadow: inset 0 0 0 1px var(--d-line);
+  color: var(--d-ink);
+  font: 500 14px/1 var(--sans);
+  padding: 10px 14px;
+  border-radius: 980px;
+}
+.sst-page .acc-try button:hover {
+  background: #3a3a3c;
+}
+@media (max-width: 960px) {
+  .sst-page .acc {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sst-page .specrow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.sst-page .specrow > div {
+  background: var(--tile);
+  border-radius: 22px;
+  padding: 22px;
+}
+.sst-page .white .specrow > div {
+  background: var(--bg);
+}
+.sst-page .specrow b {
+  display: block;
+  font: 600 clamp(22px, 2.2vw, 30px) / 1.1 var(--display);
+  letter-spacing: -0.03em;
+}
+.sst-page .specrow span {
+  display: block;
+  color: var(--ink2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+@media (max-width: 900px) {
+  .sst-page .specrow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------------------------------------------------------------- pallet detection */
+.sst-page .pds {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: clamp(40px, 6vh, 64px);
+}
+.sst-page .pds-anim {
+  position: relative;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #f7f7f9, #e9e9ee);
+  overflow: hidden;
+  aspect-ratio: 4/3;
+}
+.sst-page .pds-anim svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* The pallet slides out of frame rather than fading: it is being driven away. */
+.sst-page .pds-anim .pal {
+  transition: transform 1.4s var(--ease);
+}
+.sst-page .pds-anim.empty .pal {
+  transform: translateX(420px);
+}
+.sst-page .pds-anim .beam {
+  transition: opacity 0.4s;
+}
+.sst-page .pds-anim.empty .beam.hit {
+  opacity: 0;
+}
+.sst-page .pds-anim:not(.empty) .beam.miss {
+  opacity: 0;
+}
+.sst-page .pds-chip {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--ink);
+  color: var(--d-ink);
+  border-radius: 980px;
+  padding: 9px 14px 9px 12px;
+  font: 600 14px/1 var(--sans);
+}
+.sst-page .pds-chip i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #30d158;
+  box-shadow: 0 0 0 4px rgba(48, 209, 88, 0.22);
+}
+.sst-page .pds-anim.empty .pds-chip i {
+  background: #8e8e93;
+  box-shadow: none;
+}
+.sst-page .pds-toggle {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  border: 0;
+  cursor: pointer;
+  background: rgba(29, 29, 31, 0.86);
+  color: #fff;
+  font: 500 14px/1 var(--sans);
+  padding: 11px 18px;
+  border-radius: 980px;
+}
+.sst-page .pds-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sst-page .pds-side .media {
+  aspect-ratio: 16/10;
+  border-radius: var(--radius);
+}
+.sst-page .pds-side .tile {
+  flex: 1;
+}
+@media (max-width: 900px) {
+  .sst-page .pds {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- battery */
+.sst-page .bms {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: clamp(40px, 6vh, 64px);
+  align-items: stretch;
+}
+.sst-page .chip-stage {
+  position: relative;
+  border-radius: var(--radius);
+  background: radial-gradient(90% 80% at 50% 45%, #16241c 0%, #07100b 75%);
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  display: grid;
+  place-items: center;
+}
+.sst-page .chip-stage svg {
+  width: 92%;
+  height: 92%;
+}
+/* The trace greens match `M.trace` in `sst-3d.ts`, so the drawn chip here and
+   the modelled one in the viewer are the same object. */
+.sst-page .chip-stage .trace {
+  fill: none;
+  stroke: #1f7a4a;
+  stroke-width: 2.2;
+}
+.sst-page .chip-stage .flow {
+  fill: none;
+  stroke: #7dffb7;
+  stroke-width: 2.6;
+  stroke-dasharray: 14 180;
+  animation: sstFlow 3.2s linear infinite;
+  filter: drop-shadow(0 0 4px #3dff9a);
+}
+@keyframes sstFlow {
+  to {
+    stroke-dashoffset: -194;
+  }
+}
+.sst-page .bms-cards {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 16px;
+}
+.sst-page .bcard {
+  background: var(--d-tile);
+  color: var(--d-ink);
+  border-radius: 24px;
+  padding: 22px 24px;
+}
+.sst-page .bcard .k {
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8e8e93;
+}
+.sst-page .bcard b {
+  display: block;
+  font: 600 22px/1.2 var(--display);
+  letter-spacing: -0.02em;
+  margin-top: 8px;
+}
+.sst-page .bcard p {
+  color: var(--d-ink2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+/* A meter with no scale, on purpose — see the head of `sst-data.ts`. */
+.sst-page .charge {
+  position: relative;
+  height: 30px;
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 2px #48484a;
+  margin-top: 14px;
+  padding: 4px;
+}
+.sst-page .charge::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 9px;
+  width: 5px;
+  height: 12px;
+  border-radius: 0 3px 3px 0;
+  background: #48484a;
+}
+.sst-page .charge i {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #248a3d, #30d158);
+  width: 30%;
+  animation: sstCharge 5s var(--ease) infinite;
+}
+@keyframes sstCharge {
+  0% {
+    width: 22%;
+  }
+  80%,
+  100% {
+    width: 94%;
+  }
+}
+.sst-page .health {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.sst-page .health i {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: #30d158;
+}
+.sst-page .health i.dim {
+  background: #3a3a3c;
+}
+.sst-page .cycles {
+  margin-top: 12px;
+}
+.sst-page .cycles svg {
+  display: block;
+  width: 100%;
+  height: 70px;
+}
+.sst-page .cycles path {
+  fill: none;
+  stroke: var(--orange-soft);
+  stroke-width: 2.2;
+}
+.sst-page .cycles .area {
+  fill: rgba(255, 155, 77, 0.14);
+  stroke: none;
+}
+@media (max-width: 900px) {
+  .sst-page .bms {
+    grid-template-columns: 1fr;
+  }
+  .sst-page .chip-stage {
+    aspect-ratio: 4/3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sst-page .chip-stage .flow,
+  .sst-page .charge i,
+  .sst-page .lidar-hud i {
+    animation: none;
+  }
+  .sst-page .charge i {
+    width: 80%;
+  }
+}
+
+/* ---------------------------------------------------------------- odds and ends */
+/* Five tabs do not fit one row on a laptop. */
+.hw-page.sst-page #hardware .seg {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+/* The devices are wider than they are tall; the Omnibox viewer's 4/3 leaves
+   the Access Control unit floating in space. */
+.hw-page.sst-page .inside-stage.dev {
+  aspect-ratio: 16/9;
+}
+.hw-page.sst-page .where .wtile.full {
+  grid-column: span 12;
+  min-height: 380px;
+}
+.sst-page .note-dark {
+  color: #8e8e93;
+  font-size: 13px;
+  margin-top: 18px;
+}
+/* `.tile.ink` is a dark card on a light section, not a `.dark` section, so the
+   base's dark-link rule does not reach it. The reference set this inline. */
+.hw-page.sst-page .tile.ink .link {
+  color: var(--orange-soft);
+}

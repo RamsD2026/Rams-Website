@@ -11,6 +11,7 @@ import {
   Crosshair,
   Forklift,
   History,
+  Info,
   Layers,
   LineChart,
   PlugZap,
@@ -19,6 +20,7 @@ import {
 import { EASE, Section, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { ClientStrip } from "@/components/sections/ClientStrip";
+import { clientsFor } from "./industry-clients";
 import { EMAIL, PHONE_1, tel } from "@/components/sections/contact/contact-data";
 import {
   GAP,
@@ -296,6 +298,7 @@ export function IndustriesGap() {
  */
 function IndustrySection({ item, i }: { item: Industry; i: number }) {
   const flip = i % 2 === 1;
+  const clients = clientsFor(item.id);
 
   return (
     <Section
@@ -429,6 +432,28 @@ function IndustrySection({ item, i }: { item: Industry; i: number }) {
               </div>
             ))}
           </div>
+
+          {clients.length > 0 && (
+            <div className="mt-7">
+              <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/35">
+                IRDS clients
+              </p>
+              <ul className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-4">
+                {clients.map((c) => (
+                  <li key={c.slug} className="flex items-center h-7">
+                    <Image
+                      src={`/clients/${c.slug}.png`}
+                      alt={c.name}
+                      width={c.w}
+                      height={c.h}
+                      sizes="120px"
+                      className="w-auto h-auto max-h-[24px] max-w-[96px] object-contain"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </motion.div>
       </div>
     </Section>
@@ -460,6 +485,30 @@ export function IndustrySections() {
           Examples show typical use cases. Final capabilities depend on the
           agreed audit, hardware, integration and application scope.
         </p>
+
+        {/* the logos under each industry are IRDS clients — said once,
+            before any of them appear */}
+        <div
+          role="note"
+          className="mt-6 flex items-start gap-3 text-left px-5 py-3.5 max-w-[760px] mx-auto"
+          style={{
+            borderRadius: 12,
+            background: "rgba(255,106,0,0.06)",
+            border: "1px solid rgba(255,106,0,0.22)",
+          }}
+        >
+          <Info
+            className="w-[17px] h-[17px] text-signal-orange shrink-0 mt-0.5"
+            strokeWidth={2.2}
+            aria-hidden
+          />
+          <p className="text-[13px] leading-[1.6] text-graphite/80">
+            <span className="font-semibold text-carbon">
+              The client logos shown are all IRDS clients.
+            </span>{" "}
+            RAMS 2.0 — the connected platform — has recently launched.
+          </p>
+        </div>
       </Section>
 
       {INDUSTRIES.map((item, i) => (

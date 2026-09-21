@@ -1,6 +1,6 @@
 "use client";
 
-import { Head, useReveal } from "./aiv-shared";
+import { Head, useReveal } from "@/components/sections/hardware/hw-shared";
 import { GAPS } from "./aiv-data";
 
 /**

@@ -6,7 +6,7 @@ import { NewsFAQ } from "@/components/sections/newsroom/NewsFAQ";
 import { NewsCTA } from "@/components/sections/newsroom/NewsCTA";
 
 export const metadata: Metadata = {
-  title: "Newsroom — Announcements & Press Kit | RAMS Digital",
+  title: "Blogs | RAMS Digital",
   description:
     "Announcements, product releases and press material from RAMS Digital, plus brand marks, product films and a direct line for media enquiries.",
 };

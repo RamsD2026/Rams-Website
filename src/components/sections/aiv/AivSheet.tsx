@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Media } from "./aiv-shared";
+import { Media } from "@/components/sections/hardware/hw-shared";
 import { AivBlindSpot } from "./AivBlindSpot";
 import type { UseCase } from "./aiv-data";
 
@@ -102,7 +102,7 @@ export function AivSheet({
 
   return (
     <div
-      className="aiv-sheet open"
+      className="hw-sheet open"
       role="dialog"
       aria-modal="true"
       aria-labelledby={headingId}

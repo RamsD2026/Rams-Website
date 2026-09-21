@@ -57,7 +57,15 @@ import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 
 const WORD = "COMING SOON";
 
-export function CareersComingSoon() {
+/**
+ * `eyebrow` names the page the holding screen stands in for. Careers is the
+ * default; technical notes uses the same screen with its own label.
+ */
+export function CareersComingSoon({
+  eyebrow = "Careers at RAMS Digital",
+}: {
+  eyebrow?: string;
+} = {}) {
   const reduce = useReducedMotion();
 
   return (
@@ -136,7 +144,7 @@ export function CareersComingSoon() {
           transition={{ duration: 0.6, ease: EASE }}
           className="text-[11px] font-mono font-semibold tracking-[0.28em] uppercase text-signal-orange"
         >
-          Careers at RAMS Digital
+          {eyebrow}
         </motion.p>
 
         <h1

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ContactHero } from "@/components/sections/contact/ContactHero";
-import { ContactTrust } from "@/components/sections/contact/ContactTrust";
 import { ContactFAQ } from "@/components/sections/contact/ContactFAQ";
 
 export const metadata: Metadata = {
@@ -10,14 +9,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * /company/contact — the hero, four points, and the footer.
+ * /company/contact — the hero, the FAQ, and the footer.
  *
  *   01 Hero       dark      the reason left, the form right, the address under
- *   02 Trust      white     four points on data, access and support
- *   03 FAQ        offWhite  five questions, on the site's hairline rows
+ *   02 FAQ        offWhite  five questions, on the site's hairline rows
  *
- * The hero is the platform heroes' ground; the two sections under it are the
- * site's bare-column and address-block treatments. They exist because a page
+ * The hero is the platform heroes' ground; the FAQ under it is the
+ * site's hairline rows. It exists because a page
  * that is only a form says nothing about who receives it or where they are.
  *
  * ── It had ten sections ─────────────────────────────────────────────
@@ -46,7 +44,6 @@ export default function ContactPage() {
   return (
     <>
       <ContactHero />
-      <ContactTrust />
       <ContactFAQ />
     </>
   );
