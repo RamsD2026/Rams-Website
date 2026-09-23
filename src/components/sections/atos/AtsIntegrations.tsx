@@ -238,7 +238,7 @@ function WEvents({ t }: { t: number }) {
 const LAYERS: [string, string, string][] = [
   ["Digital Twin", "Place", "#3E63DD"],
   ["MEPS", "Movement", "#F76808"],
-  ["IROS", "Inventory", "#299764"],
+  ["IBIS", "Inventory", "#299764"],
   ["IMDS / RTSS", "Health", "#E5484D"],
   ["AIMS", "Insight", "#6647F0"],
 ];
@@ -331,7 +331,7 @@ const CARDS: {
   {
     kicker: "RAMS platform",
     title: "Orchestrate with context",
-    chips: ["Digital Twin", "MEPS", "IROS", "IMDS", "RTSS", "AIMS"],
+    chips: ["Digital Twin", "MEPS", "IBIS", "IMDS", "RTSS", "AIMS"],
     Widget: ({ t }) => <WContext t={t} />,
   },
 ];

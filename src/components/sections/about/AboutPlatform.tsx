@@ -36,7 +36,7 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  * of step.
  *
  * ── Two cards do not link, on purpose ───────────────────────────────
- * IROS has no page under `src/app`, and custom applications are a conversation
+ * IBIS has no page under `src/app`, and custom applications are a conversation
  * rather than a destination. A link to a 404 is worse than no link, and this
  * is the call `TwinApps` already made when AIMS had no page yet. Add the href
  * when the page exists and the card becomes a link with no other change — the
@@ -71,7 +71,7 @@ const APPS: {
     href: "/platform/rtss",
   },
   {
-    code: "IROS",
+    code: "IBIS",
     name: "Inventory intelligence",
     body: "Location, movement, dwell, accuracy and storage optimisation.",
   },

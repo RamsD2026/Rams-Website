@@ -63,7 +63,7 @@ export const TOPICS: Topic[] = [
     id: "inventory-operations",
     code: "IO",
     name: "Inventory & operations",
-    desc: "IROS, ATOS and AIMS",
+    desc: "IBIS, ATOS and AIMS",
   },
   {
     id: "integrations",
@@ -114,7 +114,7 @@ export const FAQS: Faq[] = [
     id: "choose-product",
     topic: "getting-started",
     question: "How do I know which RAMS product we need?",
-    answer: "Start with the decision you want to improve. Choose IRDS for rack safety, MEPS for MHE productivity, RTSS for MHE safety, IROS for inventory intelligence, IMDS for MHE diagnostics, ATOS for task orchestration and AIMS for management visibility. The Digital Twin can provide the common physical context underneath them.",
+    answer: "Start with the decision you want to improve. Choose IRDS for rack safety, MEPS for MHE productivity, RTSS for MHE safety, IBIS for inventory intelligence, IMDS for MHE diagnostics, ATOS for task orchestration and AIMS for management visibility. The Digital Twin can provide the common physical context underneath them.",
   },
   {
     id: "software-hardware-services",
@@ -243,10 +243,10 @@ export const FAQS: Faq[] = [
     answer: "No safety system should be presented as eliminating all incidents. RTSS can improve visibility, detection and response for supported events, but safe operations still depend on equipment condition, traffic design, operator competence, procedures, supervision and site controls.",
   },
   {
-    id: "what-is-iros",
+    id: "what-is-ibis",
     topic: "inventory-operations",
-    question: "What is IROS or Inventory Intelligence?",
-    answer: "IROS is the RAMS application for physical inventory visibility and optimisation. It can connect inventory identity with location, movement, dwell, exceptions and storage context to complement the records held in enterprise systems.",
+    question: "What is IBIS or Inventory Intelligence?",
+    answer: "IBIS — the Inventory Behaviour Intelligence Suite — is the RAMS application for physical inventory visibility and optimisation. It can connect inventory identity with location, movement, dwell, exceptions and storage context to complement the records held in enterprise systems.",
   },
   {
     id: "inventory-vs-wms",
@@ -469,7 +469,7 @@ export const PRODUCT_MAP: {
     topic: "mhe",
   },
   {
-    code: "IROS",
+    code: "IBIS",
     kind: "Inventory",
     title: "Improve inventory visibility",
     body: "Location, movement, dwell, exceptions and storage intelligence.",

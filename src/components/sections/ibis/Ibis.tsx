@@ -34,7 +34,6 @@ import {
 
 import {
   EASE,
-  ProductVideo,
   Section,
   SURFACE,
   frameStyle,
@@ -52,17 +51,17 @@ import {
   PaneMovement,
   PaneReconcile,
   PaneRecord,
-} from "./IrosPanes";
+} from "./IbisPanes";
 import {
   WCapture,
   WModules,
   WSystems,
   useTick,
-} from "./IrosWidgets";
-import { CLOSE, FAQS, HERO, NOTES, OUTCOMES, PROBLEM } from "./iros-data";
+} from "./IbisWidgets";
+import { CLOSE, FAQS, HERO, NOTES, OUTCOMES, PROBLEM } from "./ibis-data";
 
 /**
- * IROS — the platform page, composed the way the platform pages are composed.
+ * IBIS — the platform page, composed the way the platform pages are composed.
  *
  * ── The spine ───────────────────────────────────────────────────────
  * `/platform/irds` runs Hero → Problem → Overview → How → Capabilities →
@@ -87,7 +86,7 @@ import { CLOSE, FAQS, HERO, NOTES, OUTCOMES, PROBLEM } from "./iros-data";
  * what it is; its caveat travels with it.
  *
  * The Experience section is held back too, for a different reason — there is
- * no IROS capture and that section is a product tour. What it would have shown
+ * no IBIS capture and that section is a product tour. What it would have shown
  * is in the capability panes instead.
  */
 
@@ -152,7 +151,7 @@ function Shine({ ns }: { ns: string }) {
 
 /* ── 01 hero ──────────────────────────────────────────────────────── */
 
-export function IrosHero() {
+export function IbisHero() {
   return (
     <section
       className="relative overflow-hidden text-white"
@@ -179,7 +178,7 @@ export function IrosHero() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
             <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/70">
-              RAMS IROS Platform
+              RAMS IBIS Platform
             </span>
           </motion.div>
 
@@ -223,7 +222,7 @@ export function IrosHero() {
               href="#problem"
               className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
             >
-              Explore IROS
+              Explore IBIS
               <ArrowDown className="w-4 h-4" aria-hidden />
             </Link>
             <Link
@@ -242,20 +241,32 @@ export function IrosHero() {
           transition={{ duration: 1, delay: 0.5, ease: EASE }}
           className="mt-16 sm:mt-20 max-w-[1180px] mx-auto"
         >
-          {/* The shared hero capture, in the chrome, the way `RiqHero` and
-              the MEPS hero mount theirs.
-
-              It is not an IROS capture. There is no IROS footage in
-              /public/Product, and this is the same `/Product/irds/hero.mp4`
-              those two heroes already play — the MEPS hero's own comment
-              says as much about borrowing it. Drop a real inventory capture
-              in and only the `src` changes; the path in the chrome above it
-              already reads as the inventory application, not the rack one. */}
-          <ProductVideo
-            src="/Product/irds/hero.mp4"
-            path="app.rams.digital/inventory/iros"
-            tone="dark"
-          />
+          {/* the inventory twin, in the frame the platform heroes use */}
+          <div
+            className="relative mx-auto"
+            style={{
+              maxWidth: 1240,
+              borderRadius: 28,
+              border: "1px solid rgba(255,255,255,0.08)",
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+              padding: 14,
+              boxShadow:
+                "0 60px 140px -40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(255,106,0,0.15)",
+            }}
+          >
+            <div
+              className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
+              style={{
+                background: "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
+                borderTop: "1px solid rgba(255,255,255,0.06)",
+                borderLeft: "1px solid rgba(255,255,255,0.06)",
+                borderRight: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <InventoryTwinView />
+            </div>
+          </div>
 
           <RiqClients />
         </motion.div>
@@ -277,10 +288,10 @@ export function IrosHero() {
  */
 const PROBLEM_ICONS = [MapPin, Route, Timer, Boxes, PackageSearch];
 
-export function IrosProblem() {
+export function IbisProblem() {
   return (
     <Section surface="white" id="problem">
-      <Shine ns="irosprob" />
+      <Shine ns="ibisprob" />
 
       <SectionHeader
         eyebrow="Problem / Current state"
@@ -301,7 +312,7 @@ export function IrosProblem() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-              className="irosprob-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
+              className="ibisprob-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
               style={CARD}
             >
               <div
@@ -367,7 +378,7 @@ const TILES = [
   { icon: ClipboardDocumentCheckIcon, title: "Capture evidence", body: "Source and timestamp", tint: "#E93D82" },
 ];
 
-export function IrosOverview() {
+export function IbisOverview() {
   return (
     <Section surface="offWhite" id="overview">
       <SectionHeader
@@ -376,16 +387,16 @@ export function IrosOverview() {
         bottom="For physical inventory."
         size="compact"
         width="wide"
-        body="IROS creates a persistent inventory layer on the Digital Twin — connecting stock records, physical place, movement, ageing, exceptions and the action that closes them."
+        body="IBIS creates a persistent inventory layer on the Digital Twin — connecting stock records, physical place, movement, ageing, exceptions and the action that closes them."
       />
 
       <style>{`
-        .irosov-card {
+        .ibisov-card {
           border-radius: 12px;
           background: transparent;
           transition: background .25s ease;
         }
-        .irosov-card:hover {
+        .ibisov-card:hover {
           background: #FFFFFF;
           box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06);
         }
@@ -399,7 +410,7 @@ export function IrosOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.55, delay: (i % 4) * 0.07, ease: EASE }}
-            className="irosov-card flex items-start gap-3.5 p-4"
+            className="ibisov-card flex items-start gap-3.5 p-4"
           >
             <span
               className="w-11 h-11 shrink-0 flex items-center justify-center"
@@ -441,7 +452,7 @@ const SOFT = "#FAFAFB";
  *
  * The facility is the shared `TwinFacility`, the same drawing those two pages
  * use, stepped through its layers as the sequence advances. The panel beside
- * it is one of the light panes from `IrosPanes`.
+ * it is one of the light panes from `IbisPanes`.
  */
 const STEPS: {
   n: string;
@@ -508,7 +519,7 @@ const STEPS: {
   },
 ];
 
-export function IrosHow() {
+export function IbisHow() {
   const [clock, setClock] = useState({ t: 0, i: 0, anchor: 0 });
 
   useEffect(() => {
@@ -742,7 +753,7 @@ const STAGE_RATIO = "5 / 4";
  * The pinned stage, to `RdsCapabilities`' values: a device edge with a
  * hairline and no drop shadow, on a gradient stage, inset from the top left
  * and running off the bottom right. What sits in it is a live pane rather than
- * a screenshot — see `IrosPanes` for why.
+ * a screenshot — see `IbisPanes` for why.
  */
 function Stage({ children }: { children: React.ReactNode }) {
   return (
@@ -848,7 +859,7 @@ const GROUPS: {
   },
 ];
 
-export function IrosCapabilities() {
+export function IbisCapabilities() {
   const track = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState(0);
 
@@ -1061,7 +1072,7 @@ const STATIC_ROWS: [string, string, boolean][] = [
   ["Exceptions", "—", false],
 ];
 
-export function IrosExperience() {
+export function IbisExperience() {
   const [live, setLive] = useState(false);
   const [tab, setTab] = useState(0);
   const v = VIEWS[tab];
@@ -1108,7 +1119,7 @@ export function IrosExperience() {
               >
                 {on && (
                   <motion.span
-                    layoutId="irosexp-switch"
+                    layoutId="ibisexp-switch"
                     className="absolute inset-0 rounded-full bg-white"
                     transition={{ duration: 0.4, ease: EASE }}
                   />
@@ -1145,7 +1156,7 @@ export function IrosExperience() {
             style={{ background: "rgba(255,255,255,0.05)" }}
           >
             <span className="text-[10.5px] font-mono text-white/35 truncate">
-              app.rams.digital/inventory/iros
+              app.rams.digital/inventory/ibis
             </span>
           </div>
 
@@ -1259,10 +1270,10 @@ export function IrosExperience() {
 }
 /* ── 06 outcomes ──────────────────────────────────────────────────── */
 
-export function IrosOutcomes() {
+export function IbisOutcomes() {
   return (
     <Section surface="white" id="outcomes">
-      <Shine ns="irosout" />
+      <Shine ns="ibisout" />
 
       <SectionHeader
         eyebrow="Outcomes / Business value"
@@ -1281,7 +1292,7 @@ export function IrosOutcomes() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-            className="irosout-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
+            className="ibisout-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
             style={CARD}
           >
             <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-signal-orange tabular-nums">
@@ -1357,12 +1368,12 @@ const CARDS: {
 const MODULES: [string, string, string][] = [
   ["WMS", "System of record", "#3E63DD"],
   ["Digital Twin", "Physical context", "#12A594"],
-  ["IROS", "Inventory layer", "#FF6A00"],
+  ["IBIS", "Inventory layer", "#FF6A00"],
   ["ATOS", "Task execution", "#6647F0"],
   ["AIMS", "Management view", "#E93D82"],
 ];
 
-export function IrosIntegrations() {
+export function IbisIntegrations() {
   const t = useTick();
 
   return (
@@ -1418,7 +1429,7 @@ export function IrosIntegrations() {
 
       {/* The line through these five is the inventory record they share, not
           an order they run in, so each node carries its own module colour
-          rather than a position. IROS is the marked node because it is the
+          rather than a position. IBIS is the marked node because it is the
           one the section is about. */}
       <div className="mt-14 sm:mt-16 max-w-[1240px] mx-auto">
         <div className="overflow-x-auto">
@@ -1431,7 +1442,7 @@ export function IrosIntegrations() {
 
             <div className="relative grid grid-cols-5 gap-x-3">
               {MODULES.map(([k, v, tint], i) => {
-                const hub = k === "IROS";
+                const hub = k === "IBIS";
                 return (
                   <motion.div
                     key={k}
@@ -1494,7 +1505,7 @@ function Toggle({ open }: { open: boolean }) {
   );
 }
 
-export function IrosFAQ() {
+export function IbisFAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -1557,7 +1568,7 @@ export function IrosFAQ() {
 
 /* ── the close ────────────────────────────────────────────────────── */
 
-export function IrosCTA() {
+export function IbisCTA() {
   return (
     <section
       className="relative overflow-hidden text-white"
@@ -1631,5 +1642,364 @@ export function IrosCTA() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/* ── the hero visual ──────────────────────────────────────────────── */
+
+/**
+ * The inventory twin, on `IrdsHero`'s visual: the 28px device frame, the
+ * 18px screen at 16/10, a header with a LIVE pill, KPI pills, then the live
+ * location map beside the streaming reconciliation feed.
+ *
+ * The hero played `/Product/irds/hero.mp4` before this — Atlassian's Jira
+ * footage, borrowed by three heroes, and not an inventory capture at all.
+ * A drawn view is the honest option: everything on it is IBIS's own
+ * vocabulary — location, SKU, counted, variance — and nothing claims to be
+ * a screenshot of a product that has not been recorded.
+ *
+ * ── The motion ──────────────────────────────────────────────────────
+ * One 400 × 240 viewBox, so the map stays registered at every width: a
+ * count sweep crosses the zone left to right, locations settle to counted
+ * as it passes, the two variances pulse, and the feed scrolls on the
+ * findings feed's own rail. Every value is written down rather than
+ * generated, so the server and the client render the same first frame.
+ */
+
+const IBIS_EVENTS = [
+  { sku: "SKU-7712", loc: "D02 · L3", status: "ok", note: "" },
+  { sku: "SKU-4180", loc: "C12 · L1", status: "warning", note: "short 2" },
+  { sku: "SKU-9034", loc: "B07 · L2", status: "ok", note: "" },
+  { sku: "SKU-2265", loc: "D09 · L4", status: "critical", note: "not found" },
+  { sku: "SKU-5521", loc: "A03 · L1", status: "ok", note: "" },
+  { sku: "SKU-8890", loc: "C05 · L3", status: "warning", note: "over 1" },
+  { sku: "SKU-1147", loc: "B11 · L2", status: "ok", note: "" },
+  { sku: "SKU-6623", loc: "A08 · L4", status: "ok", note: "" },
+] as const;
+
+function InventoryTwinView() {
+  const KPIS = [
+    { label: "Count accuracy", value: "98.6%", tone: "orange" as const },
+    { label: "Locations", value: "12,480", tone: "white" as const },
+    { label: "Open variances", value: "14", tone: "white" as const },
+  ];
+
+  return (
+    <div className="absolute inset-0 flex flex-col">
+      <div className="flex items-center justify-between gap-4 flex-wrap px-5 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6">
+        <div className="min-w-0">
+          <div className="text-[9px] sm:text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+            Inventory Twin · Pune DC
+          </div>
+          <div className="mt-1.5 text-[15px] sm:text-[18px] font-semibold text-white tracking-[-0.01em] truncate">
+            Zone D — cycle count running
+          </div>
+        </div>
+        <span
+          className="inline-flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-[0.14em] px-2.5 py-1 rounded-full shrink-0"
+          style={{ background: "rgba(43,203,116,0.13)", color: "#54DE91" }}
+        >
+          <span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: "#2BCB74" }}
+          />
+          LIVE
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap px-5 sm:px-8 pb-5 sm:pb-6">
+        {KPIS.map((k) => (
+          <span
+            key={k.label}
+            className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <span className="text-[9px] font-mono font-bold tracking-[0.16em] uppercase text-white/45">
+              {k.label}
+            </span>
+            <span
+              className={
+                "text-[13px] sm:text-[14px] font-bold tabular-nums tracking-[-0.01em] " +
+                (k.tone === "orange" ? "text-signal-orange" : "text-white")
+              }
+            >
+              {k.value}
+            </span>
+          </span>
+        ))}
+      </div>
+
+      <div className="relative flex-1 grid grid-cols-1 sm:grid-cols-[1.55fr_1fr] gap-4 sm:gap-6 mx-4 sm:mx-8 mb-6 sm:mb-8 min-h-0">
+        <div
+          className="relative rounded-xl overflow-hidden min-h-[260px] sm:min-h-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <LocationMap />
+        </div>
+
+        <div
+          className="relative rounded-xl overflow-hidden flex flex-col min-h-[200px] sm:min-h-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <ReconcileFeed />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Four aisles of bays; the sweep counts them, two hold a variance. */
+function LocationMap() {
+  const VB_W = 400;
+  const VB_H = 240;
+
+  const ROWS = ["A", "B", "C", "D"];
+  const COLS = 12;
+  const X0 = 30;
+  const Y0 = 44;
+  const CELL_W = 27;
+  const CELL_H = 38;
+  const GAP = 4;
+
+  /* the two locations the feed calls out, by [row, col] */
+  const SHORT: [number, number] = [2, 4];
+  const MISSING: [number, number] = [3, 8];
+
+  /* an empty location reads as space, not as a fault */
+  const EMPTY = new Set(["0-2", "0-9", "1-5", "2-10", "3-1", "3-5", "1-11"]);
+
+  return (
+    <svg
+      viewBox={`0 0 ${VB_W} ${VB_H}`}
+      className="absolute inset-0 w-full h-full"
+      preserveAspectRatio="xMidYMid meet"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="ibis-sweep" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="rgba(255,106,0,0)" />
+          <stop offset="0.55" stopColor="rgba(255,106,0,0.26)" />
+          <stop offset="1" stopColor="rgba(255,106,0,0)" />
+        </linearGradient>
+      </defs>
+
+      <text
+        x={X0}
+        y={30}
+        fill="rgba(255,255,255,0.35)"
+        style={{ font: "700 7px ui-monospace, monospace", letterSpacing: 1.4 }}
+      >
+        ZONE D · LOCATION MAP
+      </text>
+
+      {ROWS.map((label, r) => (
+        <g key={label}>
+          <text
+            x={X0 - 9}
+            y={Y0 + r * (CELL_H + GAP) + CELL_H / 2 + 3}
+            textAnchor="end"
+            fill="rgba(255,255,255,0.35)"
+            style={{ font: "600 7px ui-monospace, monospace" }}
+          >
+            {label}
+          </text>
+
+          {Array.from({ length: COLS }, (_, c) => {
+            const x = X0 + c * (CELL_W - 2);
+            const y = Y0 + r * (CELL_H + GAP);
+            const empty = EMPTY.has(`${r}-${c}`);
+            const isShort = r === SHORT[0] && c === SHORT[1];
+            const isMissing = r === MISSING[0] && c === MISSING[1];
+            const ink = isMissing
+              ? "#FF4D4D"
+              : isShort
+                ? "#FFB020"
+                : empty
+                  ? "rgba(255,255,255,0.05)"
+                  : "rgba(84,222,145,0.55)";
+
+            return (
+              <g key={c}>
+                <rect
+                  x={x}
+                  y={y}
+                  width={CELL_W - 4}
+                  height={CELL_H}
+                  rx={2.5}
+                  fill="rgba(255,255,255,0.03)"
+                  stroke="rgba(255,255,255,0.09)"
+                  strokeWidth={0.7}
+                />
+                {/* the stock in the location: filled means counted */}
+                <motion.rect
+                  x={x + 3}
+                  y={y + CELL_H - 15}
+                  width={CELL_W - 10}
+                  height={11}
+                  rx={1.6}
+                  fill={ink}
+                  initial={{ opacity: empty ? 0.25 : 0.35 }}
+                  animate={{
+                    opacity: empty ? [0.2, 0.25, 0.2] : [0.35, 0.95, 0.35],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: c * 0.38,
+                  }}
+                />
+              </g>
+            );
+          })}
+        </g>
+      ))}
+
+      {/* the two variances */}
+      {[
+        { at: SHORT, ink: "rgba(255,176,32,0.8)" },
+        { at: MISSING, ink: "rgba(255,77,77,0.8)" },
+      ].map(({ at, ink }, i) => {
+        const cx = X0 + at[1] * (CELL_W - 2) + (CELL_W - 4) / 2;
+        const cy = Y0 + at[0] * (CELL_H + GAP) + CELL_H / 2;
+        return (
+          <motion.circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r={12}
+            fill="none"
+            stroke={ink}
+            strokeWidth={1.4}
+            animate={{ r: [9, 20, 9], opacity: [0.9, 0, 0.9] }}
+            transition={{
+              duration: 2.4,
+              repeat: Infinity,
+              ease: "easeOut",
+              delay: i * 0.8,
+            }}
+          />
+        );
+      })}
+
+      {/* the count sweep */}
+      <motion.rect
+        y={Y0 - 10}
+        width={34}
+        height={4 * (CELL_H + GAP) + 12}
+        fill="url(#ibis-sweep)"
+        initial={{ x: -50 }}
+        animate={{ x: VB_W + 20 }}
+        transition={{
+          duration: 5.5,
+          ease: "linear",
+          repeat: Infinity,
+          repeatDelay: 0.6,
+        }}
+      />
+    </svg>
+  );
+}
+
+/** The reconciliation feed: what the count returned, line by line. */
+function ReconcileFeed() {
+  return (
+    <>
+      <div className="flex items-center justify-between px-4 sm:px-5 pt-4 pb-3 border-b border-white/[0.06]">
+        <div className="text-[9px] font-mono font-bold tracking-[0.22em] uppercase text-white/45">
+          Reconciliation
+        </div>
+        <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-[0.14em] uppercase text-white/55">
+          <span className="w-1.5 h-1.5 rounded-full bg-signal-orange animate-pulse" />
+          Streaming
+        </span>
+      </div>
+
+      <div className="relative flex-1 overflow-hidden">
+        <motion.div
+          className="flex flex-col"
+          initial={{ y: 0 }}
+          animate={{ y: [0, -(IBIS_EVENTS.length * 42)] }}
+          transition={{
+            duration: IBIS_EVENTS.length * 1.8,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {[...IBIS_EVENTS, ...IBIS_EVENTS].map((ev, i) => {
+            const isCritical = ev.status === "critical";
+            const isWarning = ev.status === "warning";
+            const bg = isCritical
+              ? "rgba(255,77,77,0.18)"
+              : isWarning
+                ? "rgba(255,176,32,0.16)"
+                : "rgba(43,203,116,0.16)";
+            const color = isCritical
+              ? "#FF6C6C"
+              : isWarning
+                ? "#FFBE47"
+                : "#54DE91";
+            const glyph = isCritical ? "!" : isWarning ? "•" : "✓";
+            return (
+              <div
+                key={`${ev.sku}-${i}`}
+                className="flex items-center gap-2.5 px-4 sm:px-5 py-2.5 border-b border-white/[0.04]"
+                style={{ height: 42 }}
+              >
+                <span
+                  className="flex items-center justify-center w-4 h-4 rounded-full text-[9px] font-bold"
+                  style={{ background: bg, color }}
+                >
+                  {glyph}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10.5px] font-mono font-semibold text-white tabular-nums truncate">
+                    {ev.sku}
+                  </div>
+                </div>
+                <div className="text-[9.5px] font-mono text-white/50 tabular-nums">
+                  {ev.loc}
+                </div>
+                {ev.note && (
+                  <span
+                    className="text-[8.5px] font-mono font-bold tracking-[0.14em] uppercase"
+                    style={{ color: isCritical ? "#FF6C6C" : "#FFBE47" }}
+                  >
+                    {ev.note}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </motion.div>
+
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-4 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,15,20,1), transparent)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-6 pointer-events-none"
+          style={{
+            background: "linear-gradient(to top, rgba(10,15,20,1), transparent)",
+          }}
+        />
+      </div>
+    </>
   );
 }

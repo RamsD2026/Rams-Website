@@ -116,7 +116,7 @@ const COVERAGE: [string, boolean[]][] = [
   ["IRDS", [true, true, true, true]],
   ["MEPS", [true, true, false, true]],
   ["RTSS", [true, false, true, true]],
-  ["IROS", [true, true, true, false]],
+  ["IBIS", [true, true, true, false]],
   ["IMDS", [true, true, true, true]],
   ["ATOS", [true, true, false, true]],
 ];
@@ -490,7 +490,7 @@ const CARDS: {
       "IRDS rack safety",
       "MEPS productivity",
       "RTSS safety",
-      "IROS inventory",
+      "IBIS inventory",
       "IMDS maintenance",
       "ATOS execution",
     ],

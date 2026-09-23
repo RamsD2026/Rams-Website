@@ -6,77 +6,117 @@ import { ArrowRight } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/**
+ * 09 — The close, in the solution pages' own: the hero's radial inverted to
+ * the foot, the glow rising from the bottom edge, the grid masked upward,
+ * and the two buttons centred under the heading.
+ *
+ * It was a solid orange panel with a black button in a two-column grid and
+ * its own media queries — the only close on the site that fills a section
+ * with the accent colour.
+ */
 export function MheCTA() {
   return (
-    <section className="bg-off-white-cool py-24 sm:py-28 lg:py-32">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8, ease: EASE }}
-        className="mx-auto"
+    <section
+      className="relative overflow-hidden text-white"
+      style={{
+        background:
+          "radial-gradient(80% 100% at 50% 100%, #1D1D1F 0%, #0E0E0F 55%, #08080A 100%)",
+      }}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[560px]"
         style={{
-          width: "min(1180px, calc(100% - 40px))",
-          borderRadius: 28,
-          padding: "58px",
-          background: "linear-gradient(125deg, #FF6A00, #FF8A3C)",
-          color: "#111",
-          display: "grid",
-          gridTemplateColumns: "1.25fr .75fr",
-          gap: 30,
-          alignItems: "center",
+          background:
+            "radial-gradient(60% 60% at 50% 100%, rgba(255,106,0,0.22), transparent 70%)",
         }}
-      >
-        <div>
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-[7px] h-[7px] rounded-full bg-white" />
-            <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-white">
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "linear-gradient(to top, black 0%, black 50%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to top, black 0%, black 50%, transparent 100%)",
+        }}
+      />
+
+      <div className="relative rams-container pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
+        <div className="max-w-[1180px] mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
+            <span className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-white/70">
               Safer fleets. Better throughput.
             </span>
-          </div>
+          </motion.div>
 
-          <h2
-            className="text-white font-bold leading-[1.05] tracking-[-0.03em]"
-            style={{ fontSize: "clamp(28px, 3.4vw, 44px)", margin: "0 0 12px" }}
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, delay: 0.05, ease: EASE }}
+            className="mt-8 text-[36px] sm:text-[58px] lg:text-[76px] font-bold leading-[1.02] tracking-[-0.04em]"
           >
-            Make MHE movement visible, safer and more productive.
-          </h2>
+            <span className="block text-white">Make MHE movement visible,</span>
+            <span
+              className="block"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              safer and more productive.
+            </span>
+          </motion.h2>
 
-          <p
-            className="text-white/85 leading-[1.6] m-0"
-            style={{ maxWidth: 700, fontSize: 15 }}
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+            className="mt-6 text-[14px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[880px] mx-auto"
           >
             Talk to RAMS Digital about MHE safety monitoring, fleet utilisation
             analysis and connected movement intelligence for your warehouse.
-          </p>
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
+            className="mt-10 flex items-center justify-center gap-3 flex-wrap"
+          >
+            <Link
+              href="/book-a-demo"
+              className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
+            >
+              Book a discussion
+              <ArrowRight className="w-4 h-4" aria-hidden />
+            </Link>
+            <Link
+              href="/company/contact"
+              className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 transition-all duration-200 hover:bg-white/[0.06]"
+            >
+              Talk to the team
+            </Link>
+          </motion.div>
         </div>
-
-        <Link
-          href="/book-a-demo"
-          className="inline-flex items-center justify-center gap-2 bg-carbon text-white font-semibold text-[15px] px-7 py-4 rounded-md transition-all duration-200 hover:-translate-y-px hover:bg-carbon-alt justify-self-end"
-          style={{ minWidth: 220 }}
-        >
-          Book a Discussion
-          <ArrowRight className="w-4 h-4" aria-hidden />
-        </Link>
-      </motion.div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          section > div[style*="1.25fr"] {
-            grid-template-columns: 1fr !important;
-          }
-          section > div[style*="1.25fr"] a {
-            justify-self: start !important;
-          }
-        }
-        @media (max-width: 560px) {
-          section > div[style*="1.25fr"] {
-            padding: 34px !important;
-            width: calc(100% - 26px) !important;
-          }
-        }
-      `}</style>
+      </div>
     </section>
   );
 }

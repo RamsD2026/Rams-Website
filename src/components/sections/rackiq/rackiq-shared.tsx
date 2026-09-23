@@ -210,6 +210,17 @@ export const SHOTS = {
     h: 909,
     alt: "IRDS regional dashboard — failed test summary, corrective action closure pipeline, inspection status by warehouse and a live activity feed",
   },
+  /**
+   * The IRDS dashboard, full width. `dashboard` below is the same screen
+   * captured narrow, with its right column and the findings chart cut off
+   * in the file — use this one wherever the whole screen should be visible.
+   */
+  dashboardLifecycle: {
+    src: "/Product/irds/dashboard-lifecycle.png",
+    w: 1917,
+    h: 867,
+    alt: "IRDS Dashboard — the observation lifecycle from observations found through actions, pending actions and closed, a monthly issue-findings chart by severity, and the critical observation log with rack, bay, level and element for each finding",
+  },
   dashboard: {
     src: "/Product/irds/dashboard.webp",
     w: 1472,

@@ -10,7 +10,7 @@ import { EASE } from "@/components/sections/rackiq/rackiq-shared";
  * `RdsIntegrations` puts a 196px animated well at the top of each integration
  * card — a small working diagram rather than an icon — and the card carries a
  * kicker, a title and a row of chips beneath it. These are that, for the three
- * groups the six IROS channels fall into: what captures, what it connects to,
+ * groups the six IBIS channels fall into: what captures, what it connects to,
  * and what the platform does with it.
  *
  * Every label is a term the source document uses. The animation is a clock,

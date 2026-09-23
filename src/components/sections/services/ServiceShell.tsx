@@ -106,6 +106,7 @@ import {
   type SurfaceKey,
 } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { Flow, RagMap, Standards } from "./ServiceBlocks";
 import type { Item, Service, ServiceSection } from "./service-types";
 
 /**
@@ -274,7 +275,7 @@ function ShineStyle() {
 function surfacesFor(sections: ServiceSection[]): SurfaceKey[] {
   let last: SurfaceKey = "offWhite";
   return sections.map((s) => {
-    if (s.kind === "process") {
+    if (s.kind === "process" || s.kind === "flow") {
       last = "ink";
       return "ink";
     }
@@ -1417,7 +1418,7 @@ export function ServiceSections({ service }: { service: Service }) {
         const surface = surfaces[i];
         const dark = isDark(surface);
         const id =
-          block.kind === "process"
+          block.kind === "process" || block.kind === "flow"
             ? "process"
             : block.kind === "faq"
               ? "faq"
@@ -1436,6 +1437,9 @@ export function ServiceSections({ service }: { service: Service }) {
               <Deliverables block={block} dark={dark} />
             )}
             {block.kind === "faq" && <Faq block={block} dark={dark} />}
+            {block.kind === "flow" && <Flow block={block} />}
+            {block.kind === "ragmap" && <RagMap block={block} dark={dark} />}
+            {block.kind === "standards" && <Standards block={block} />}
           </Section>
         );
       })}

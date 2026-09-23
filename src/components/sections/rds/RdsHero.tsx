@@ -19,11 +19,24 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * leading 1.06, tracking -0.045em), centred subline, the strapline, two CTAs,
  * and the product full width beneath, then the client strip.
  *
- * The product here is a **real capture**, not a placeholder. The MEPS hero
- * still plays `/Product/irds/hero.mp4`, which is Atlassian's Jira footage;
- * IRDS is the one platform on this site with genuine screens in `SHOTS`, so
- * this one shows the regional rack-safety dashboard through the shared
- * `ProductFrame` instead of borrowing a video.
+ * The product here is a **real capture**, not a placeholder: the IRDS
+ * dashboard (`SHOTS.dashboardLifecycle`) in the shared `ProductFrame`
+ * chrome — the observation lifecycle, the monthly findings chart and the
+ * critical observation log.
+ *
+ * Two earlier captures sat here. `SHOTS.dashboard` is the same screen cut
+ * off at the right edge in the file itself; `SHOTS.portfolio` is whole, but
+ * its observation log carries customer names, which is more than a hero
+ * needs to say. This one is full width and names racks rather than
+ * customers.
+ *
+ * It played RAMS's own demo recording (`/Product/irds-demo.mp4`) for a
+ * revision, and showed the `regionalDashboard` capture before that. Both are
+ * still on disk; the recording is one `ProductVideo` away if it is wanted
+ * back.
+ *
+ * The MEPS hero still plays `/Product/irds/hero.mp4`, which is Atlassian's
+ * Jira footage — that one is a placeholder and should be replaced too.
  *
  * The reference's INSPECT → CLASSIFY → RECTIFY → VERIFY → LEARN chip chain is
  * not here. The same chain was built into the MEPS hero and taken out again —
@@ -123,7 +136,7 @@ export function RdsHero() {
           className="mt-16 sm:mt-20 max-w-[1180px] mx-auto"
         >
           <ProductFrame
-            shot="regionalDashboard"
+            shot="dashboardLifecycle"
             path="app.rams.digital/irds"
             priority
           />

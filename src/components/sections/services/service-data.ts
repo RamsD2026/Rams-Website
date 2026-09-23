@@ -32,12 +32,12 @@ const RACK_INSPECTION: Service = {
   code: "RI",
   name: "Rack Inspection Services",
   eyebrow: "Rack Inspection Services",
-  h1: ["Know the health", "of every rack."],
+  h1: ["Inspect. Prioritise.", "Close."],
   intro:
-    "Engineering-led rack safety assessments delivered on-site or through a controlled remote-evidence workflow — combining EN 15635-aligned inspection, RAG classification, Digital Twin mapping, actionable reporting and closure support.",
-  chips: ["On-site or remote", "EN 15635-aligned", "Evidence-led closure"],
+    "Professional warehouse inspection services that help you identify physical risks, understand their priority, plan corrective action and verify closure with clear digital evidence.",
+  chips: ["EN 15635-aligned", "Repair & replace support", "Stability certification"],
   action: "Book a rack inspection",
-  meta: "Engineering-led rack safety assessments, on-site or through a controlled remote-evidence workflow: EN 15635-aligned inspection, RAG classification, Digital Twin mapping and closure support.",
+  meta: "Engineering-led rack safety assessments: EN 15635-aligned inspection, RAG classification, Digital Twin mapping, repair and replacement support, and stability certification by chartered engineers.",
   assurances: [
     {
       title: "EN 15635-aligned methodology",
@@ -48,12 +48,12 @@ const RACK_INSPECTION: Service = {
       body: "Every finding tied to its physical location.",
     },
     {
-      title: "Damage report + BOQ",
-      body: "Clear replacement and closure planning.",
+      title: "Repair & replacement support",
+      body: "Damage BOQ, OEM coordination and closure planning.",
     },
     {
-      title: "Evidence-led verification",
-      body: "Certification follows satisfactory closure.",
+      title: "Stability certification by chartered engineers",
+      body: "Issued against rack numbers once closure is verified.",
     },
   ],
   sections: [
@@ -83,26 +83,6 @@ const RACK_INSPECTION: Service = {
           title: "Certification is treated as a paper exercise",
           icon: "Stamp",
           body: "A credible certificate depends on technical scope and closure of agreed safety-critical findings.",
-        },
-      ],
-    },
-    {
-      kind: "modes",
-      eyebrow: "Delivery routes",
-      top: "On-site when physical verification matters.",
-      bottom: "Remote when evidence can travel.",
-      body: "RAMS selects the route around the rack condition, site risk, available documentation, evidence quality and required certification outcome.",
-      note: "Remote assessment is suitable only where the agreed evidence can support the required decision. RAMS may require an on-site visit.",
-      items: [
-        {
-          title: "Certified Rack Safety Assessment",
-          icon: "ClipboardList",
-          body: "A trained rack inspector attends the facility to map the installation, examine accessible elements, capture measurements and record evidence directly in the IRDS workflow.",
-        },
-        {
-          title: "Remote Rack Safety Review",
-          icon: "ScanLine",
-          body: "The site team captures required photos, video, dimensions and documents against RAMS instructions. A competent reviewer evaluates the submitted evidence and identifies gaps or next actions.",
         },
       ],
     },
@@ -162,66 +142,132 @@ const RACK_INSPECTION: Service = {
       ],
     },
     {
-      kind: "process",
-      eyebrow: "How it works",
-      top: "Inspection finds the risk.",
-      bottom: "The workflow closes it.",
-      body: "The audit is connected from first observation to final verified outcome.",
-      steps: [
+      kind: "grid",
+      eyebrow: "Measurement and testing",
+      top: "Measured where the decision",
+      bottom: "Needs measurement.",
+      body: "Applicable checks are selected for the rack type, available design information and inspection package.",
+      cols: 4,
+      items: [
         {
-          n: "01",
-          title: "Inspection",
-          body: "Map racks and capture technical evidence.",
-        },
-        { n: "02", title: "Severity", body: "Classify Green, Amber or Red." },
-        {
-          n: "03",
-          title: "Digital map",
-          body: "Pin each issue to its exact asset.",
+          title: "Upright verticality survey",
+          body: "Electronic theodolite survey of plumb deviation against the applicable rack-system tolerance.",
         },
         {
-          n: "04",
-          title: "Damage BOQ",
-          body: "Quantify required replacement items.",
+          title: "Beam deflection test",
+          body: "Theodolite and EDM measurement of mid-span deflection under representative load.",
         },
         {
-          n: "05",
-          title: "Rectification",
-          body: "Assign, control and evidence actions.",
+          title: "Upright distortion profiling",
+          body: "Calibrated profile gauges quantify dents and bends against the severity matrix in millimetres.",
         },
         {
-          n: "06",
-          title: "Certification",
-          body: "Verify closure before applicable issue.",
+          title: "Ultrasonic thickness",
+          body: "UT probe measurement of remaining section thickness for metal loss and corrosion on critical sections.",
+        },
+        {
+          title: "Bracing integrity diagnostics",
+          body: "Visual and dimensional check of distortion, missing members and weld condition.",
+        },
+        {
+          title: "Bolt tightness verification",
+          body: "Connector and anchor integrity at base plates and tie rods, against the approved technical requirement.",
+        },
+        {
+          title: "Safe working load review",
+          body: "Assess load information, configuration and available design documentation.",
+        },
+        {
+          title: "Structural analysis",
+          body: "Advanced engineering assessment where geometry, loads and information permit.",
         },
       ],
     },
     {
-      kind: "lens",
-      eyebrow: "Risk classification",
-      top: "See what can remain.",
-      bottom: "Know what must change.",
-      body: "Colour creates a common operational language; the technical finding and prescribed control determine the action.",
-      items: [
+      kind: "flow",
+      eyebrow: "How it works",
+      top: "Inspection finds the condition.",
+      bottom: "Engineering closes it.",
+      body: "The audit runs from first observation to verified certification, with the office engineering review kept separate from the field inspection.",
+      chain: [
+        {
+          title: "Prepare",
+          body: "Rack configuration, drawings, loading, history and inspection scope.",
+        },
+        {
+          title: "Inspect",
+          body: "Asset-level observations, measurements and photographic evidence.",
+        },
+        {
+          title: "Classify",
+          body: "Categorise findings by severity, condition and required response.",
+        },
+        {
+          title: "Engineering review",
+          body: "Field findings validated in the office by the engineering team.",
+        },
+        {
+          title: "Conclude",
+          body: "The engineering conclusion and recommended action.",
+        },
+      ],
+      decision: "Certification decision",
+      paths: [
         {
           tone: "green",
-          title: "Serviceable within the assessed condition",
-          body: "Record the observation, maintain normal controls and monitor the element during the next planned inspection cycle.",
-          tags: ["Green", "Monitor"],
+          label: "Acceptable condition",
+          lead: "Certify.",
+          steps: ["Satisfactory conclusion", "Stability certificate"],
+          body: "Where the inspected rack system is acceptable within the applicable criteria, a stability certificate is issued against the rack numbers, with findings and relevant observations recorded.",
         },
         {
           tone: "amber",
-          title: "Damage requires prompt action",
-          body: "Control loading as instructed, plan replacement within the defined window and retain evidence of completion.",
-          tags: ["Amber", "Plan replacement"],
-        },
-        {
-          tone: "red",
-          title: "Critical risk requires immediate control",
-          body: "Unload and isolate the affected location, notify the responsible person and replace the damaged element before verified return to use.",
-          tags: ["Red", "Isolate"],
+          label: "Action required",
+          lead: "Conditional certification, then verified closure.",
+          steps: [
+            "Conditional certification",
+            "Engineering actions",
+            "Damage BoQ",
+            "OEM / vendor support",
+            "Repair / replace",
+            "Post-work verification",
+            "Final certification",
+          ],
+          body: "The racks, bays and components requiring corrective action are identified with the conditions attached. RAMS defines the actions, quantifies the replacement items, helps you engage the OEM or a qualified repair vendor, and verifies completed work before final certification.",
         },
       ],
+      footline:
+        "Inspection identifies the condition. Engineering determines the action. Verification closes the loop.",
+    },
+    {
+      kind: "ragmap",
+      eyebrow: "Risk classification",
+      top: "See exactly where",
+      bottom: "Attention is needed.",
+      body: "RAMS converts the inspection into an asset-linked digital record, so teams can move from site to area to rack to exact finding — with evidence and action status attached.",
+      mapTitle: "Rack inspection · area map",
+      rowsLead: "Do not make teams search through hundreds of observations.",
+      rows: [
+        {
+          tone: "red",
+          title: "Priority finding requiring immediate review and action",
+          body: "Unload and isolate the affected location, notify the responsible person and replace the damaged element before verified return to use.",
+          action: "Isolate",
+        },
+        {
+          tone: "amber",
+          title: "Finding requiring planned attention",
+          body: "Control loading as instructed, plan repair or replacement within the defined window and retain evidence of completion.",
+          action: "Plan repair or replacement",
+        },
+        {
+          tone: "green",
+          title: "No identified priority condition in the inspected item",
+          body: "Record the observation, maintain normal controls and monitor the element during the next planned inspection cycle.",
+          action: "Monitor",
+        },
+      ],
+      closing: "The report is not the end of the inspection. Closure is.",
     },
     {
       kind: "deliverables",
@@ -270,54 +316,16 @@ const RACK_INSPECTION: Service = {
           icon: "BadgeCheck",
           body: "Evidence review or reinspection outcome.",
         },
+        {
+          title: "OEM / vendor coordination",
+          icon: "Handshake",
+          body: "Support engaging the supplier or repair vendor.",
+        },
       ],
       callout: {
         title: "Rack Stability / Safety Certification",
         body: "Certification is the result of an agreed technical assessment and satisfactory closure — not an automatic document issued after a walkthrough.",
       },
-    },
-    {
-      kind: "grid",
-      eyebrow: "Measurement and testing",
-      top: "Measured where the decision",
-      bottom: "Needs measurement.",
-      body: "Applicable checks are selected for the rack type, available design information and inspection package.",
-      note: "Tests are not automatically included in every package. The quotation and inspection plan define the sample, access, equipment, tolerances and reporting basis.",
-      cols: 4,
-      items: [
-        {
-          title: "Upright verticality",
-          body: "Measured alignment against the applicable project and rack-system criteria.",
-        },
-        {
-          title: "Beam deflection",
-          body: "Evaluate loaded beam deflection and visible deformation at identified locations.",
-        },
-        {
-          title: "Anchor-bolt torque",
-          body: "Check selected anchor connections against the approved technical requirement.",
-        },
-        {
-          title: "Ultrasonic thickness",
-          body: "Measure remaining section thickness where corrosion or advanced scope requires it.",
-        },
-        {
-          title: "Safe working load review",
-          body: "Assess load information, configuration and available design documentation.",
-        },
-        {
-          title: "Structural analysis",
-          body: "Advanced engineering assessment where geometry, loads and information permit.",
-        },
-        {
-          title: "Floor & base interface",
-          body: "Review baseplate, anchor, shim, grout and floor condition at supported locations.",
-        },
-        {
-          title: "Configuration verification",
-          body: "Compare the installed arrangement with available drawings and approved changes.",
-        },
-      ],
     },
     {
       kind: "grid",
@@ -339,7 +347,7 @@ const RACK_INSPECTION: Service = {
           body: "Review the installed configuration before or after operational handover.",
         },
         {
-          title: "Before reusing dismantled racks",
+          title: "Before reusing racks",
           body: "Assess condition, completeness and suitability before reinstallation.",
         },
         {
@@ -361,6 +369,50 @@ const RACK_INSPECTION: Service = {
       ],
     },
     {
+      kind: "standards",
+      eyebrow: "Standards-led",
+      top: "Inspection aligned to recognised",
+      bottom: "rack-safety practices.",
+      body: "The applicable methodology is selected based on the rack system, site requirement, client standard and jurisdiction. Where findings need design-level assessment, engineering review is treated separately from visual inspection.",
+      items: [
+        "EN 15635",
+        "EN 15512",
+        "EN 15620",
+        "EN 15629",
+        "AS 4084.1 / 4084.2",
+        "RMI / ANSI MH16.1",
+        "SEMA Practices",
+        "Applicable local requirements",
+      ],
+    },
+    {
+      kind: "modes",
+      eyebrow: "Flexible engagement",
+      top: "From one warehouse to a",
+      bottom: "Multi-site inspection programme.",
+      body: "Choose the inspection model that suits the scale, operating intensity and risk profile of your warehouse network.",
+      items: [
+        {
+          title: "One-time inspection",
+          icon: "ClipboardCheck",
+          body: "Independent inspection of a warehouse or defined rack population with findings, evidence and recommended actions.",
+          tags: ["Single site", "Defined scope"],
+        },
+        {
+          title: "Periodic inspection",
+          icon: "CalendarClock",
+          body: "Planned inspection cycles with consistent methodology, comparison and closure history over time.",
+          tags: ["Recurring cycle", "Trend history"],
+        },
+        {
+          title: "Multi-site programme",
+          icon: "Network",
+          body: "Standardised inspection, reporting and management visibility across multiple warehouses and regions.",
+          tags: ["Multi-site", "One standard"],
+        },
+      ],
+    },
+    {
       kind: "faq",
       eyebrow: "Questions",
       top: "What teams ask",
@@ -368,14 +420,8 @@ const RACK_INSPECTION: Service = {
       body: "Scope, evidence and certification are confirmed for each site. These answers explain the standard RAMS approach.",
       items: [
         {
-          title:
-            "Can a remote assessment replace every on-site rack inspection?",
-          body: "No. Remote review can support screening, selected defect review and closure verification when evidence is sufficient. RAMS may require an on-site inspection where physical access, measurement, hidden condition, structural complexity or certification scope cannot be resolved remotely.",
-        },
-        {
-          title:
-            "Do we receive a stability certificate immediately after inspection?",
-          body: "Not automatically. Certificate status depends on the agreed scope, available technical information, rack condition and completion of required safety-critical actions. Rectification evidence or reinspection may be required before issue.",
+          title: "What certificate do we receive after the inspection?",
+          body: "Racks found acceptable within the applicable inspection criteria receive a stability certificate listing the rack numbers. Racks requiring corrective action receive a conditional certificate identifying those racks, bays or components and the conditions attached; final certification follows verification of the completed work.",
         },
         {
           title: "What happens when a Red finding is identified?",
@@ -391,15 +437,15 @@ const RACK_INSPECTION: Service = {
         },
         {
           title: "Does RAMS help after the report is issued?",
-          body: "Yes. The service can include damage BOQ support, action tracking, rectification supervision, photo-evidence review, reinspection and the applicable certification pathway. The exact post-inspection scope is defined commercially.",
+          body: "Yes. The service can include damage BOQ support, connecting you with the appropriate OEM or qualified repair vendor for repairs and replacements, action tracking, rectification supervision, photo-evidence review, reinspection and the applicable certification pathway. The exact post-inspection scope is defined commercially.",
         },
       ],
     },
   ],
   cta: {
-    top: "Make rack safety visible,",
-    bottom: "Measurable and actionable.",
-    body: "Book an on-site inspection or discuss whether a remote evidence-led assessment is suitable for your facility.",
+    top: "Find the risk. Prioritise the action.",
+    bottom: "Verify the closure.",
+    body: "Book an on-site rack inspection, or talk to the engineering team about an inspection programme across your sites.",
   },
 };
 

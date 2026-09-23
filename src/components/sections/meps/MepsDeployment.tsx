@@ -35,7 +35,7 @@ const LEVELS = [
   {
     lv: "Connect tasks",
     title: "Add the work order",
-    adds: "+ WMS / ERP / ATOS / IROS",
+    adds: "+ WMS / ERP / ATOS / IBIS",
     body: "Task and execution context on top of movement.",
   },
 ];

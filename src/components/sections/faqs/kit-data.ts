@@ -33,7 +33,7 @@ import {
  *
  * Nothing here is new. The solution → module mapping is the FAQ's own answer
  * ("Choose IRDS for rack safety, MEPS for MHE productivity, RTSS for MHE
- * safety, IROS for inventory intelligence, IMDS for MHE diagnostics, ATOS for
+ * safety, IBIS for inventory intelligence, IMDS for MHE diagnostics, ATOS for
  * task orchestration and AIMS for management visibility. The Digital Twin can
  * provide the common physical context underneath them" — `faq-data`, id
  * `which-product`). The hardware on each is what that module's platform page
@@ -45,7 +45,7 @@ import {
  *   MEPS   the MEPS source document — OmniBox Motion, LiDAR, pallet
  *          detection sensor, operator authentication
  *   RTSS   `rts/RtsIntegrations` — AI Vision, impact sensors, LiDAR
- *   IROS   `iros/iros-data` — barcode / QR, RFID, vision / scanners, drone
+ *   IBIS   `ibis/ibis-data` — barcode / QR, RFID, vision / scanners, drone
  *          or AGV; ATOS from `inv/InvATOS`
  *   ATOS   `wex/WexReprioritisation` GPS tracker; `atos/AtsIntegrations`
  *          GPS / telematics, edge + IoT, location systems
@@ -110,7 +110,7 @@ export const KITS: Kit[] = [
       { icon: Database, label: "WMS · ERP", tint: "#12A594" },
     ],
     modules: [
-      { icon: PackageSearch, label: "IROS", tint: "#FFC53D" },
+      { icon: PackageSearch, label: "IBIS", tint: "#FFC53D" },
       { icon: Route, label: "ATOS", tint: "#F76808" },
       TWIN,
     ],
@@ -148,7 +148,7 @@ export const KITS: Kit[] = [
       { icon: ShieldAlert, label: "RTSS", tint: "#E5484D" },
       { icon: ClipboardCheck, label: "IRDS", tint: "#F76808" },
       { icon: HardHat, label: "MEPS & IMDS", tint: "#12A594" },
-      { icon: PackageSearch, label: "ATOS & IROS", tint: "#FFC53D" },
+      { icon: PackageSearch, label: "ATOS & IBIS", tint: "#FFC53D" },
     ],
     modules: [
       { icon: LayoutDashboard, label: "AIMS", tint: "#AB4ABA" },
