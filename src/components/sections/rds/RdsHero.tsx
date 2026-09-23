@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import {
   EASE,
-  ProductFrame,
+  ProductVideo,
   SURFACE,
 } from "@/components/sections/rackiq/rackiq-shared";
 import { BackgroundBeams } from "@/components/ui/background-beams";
@@ -19,16 +19,16 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * leading 1.06, tracking -0.045em), centred subline, the strapline, two CTAs,
  * and the product full width beneath, then the client strip.
  *
- * The product here is a **real capture**, not a placeholder: the IRDS
- * dashboard (`SHOTS.dashboardLifecycle`) in the shared `ProductFrame`
- * chrome — the observation lifecycle, the monthly findings chart and the
- * critical observation log.
+ * The product here is a **real recording**, not a placeholder: RAMS's own
+ * IRDS demo, in the shared `ProductVideo` chrome. The 19.5 MB original is
+ * re-encoded silent at 4.1 MB with a poster frame, so the frame is never
+ * empty while it loads.
  *
- * Two earlier captures sat here. `SHOTS.dashboard` is the same screen cut
- * off at the right edge in the file itself; `SHOTS.portfolio` is whole, but
- * its observation log carries customer names, which is more than a hero
- * needs to say. This one is full width and names racks rather than
- * customers.
+ * Three stills sat here before it and are all still in `SHOTS`:
+ * `dashboardLifecycle` (the whole dashboard — the closest still to this
+ * recording), `portfolio` (whole, but its observation log carries customer
+ * names) and `dashboard` (cut off at the right edge in the file itself).
+ * Swapping back is one `ProductFrame`.
  *
  * It played RAMS's own demo recording (`/Product/irds-demo.mp4`) for a
  * revision, and showed the `regionalDashboard` capture before that. Both are
@@ -135,10 +135,10 @@ export function RdsHero() {
           transition={{ duration: 1, delay: 0.5, ease: EASE }}
           className="mt-16 sm:mt-20 max-w-[1180px] mx-auto"
         >
-          <ProductFrame
-            shot="dashboardLifecycle"
+          <ProductVideo
+            src="/Product/irds/demo.mp4"
+            poster="/Product/irds/demo.jpg"
             path="app.rams.digital/irds"
-            priority
           />
         </motion.div>
 
