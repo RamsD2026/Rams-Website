@@ -458,7 +458,7 @@ const STRUCTURAL_VERIFICATION: Service = {
   eyebrow: "Structural Verification",
   h1: ["Know what the structure", "can safely carry."],
   intro:
-    "Verify warehouse racks, mezzanines, platforms and structural assets through field evidence, load-path analysis, engineering checks and compliance reporting — before approving a load change, modification or continued use.",
+    "Verify warehouse floors, racks, mezzanines, platforms and structural assets through field evidence, load-path analysis, engineering checks and compliance reporting — before approving a load change, modification or continued use.",
   chips: ["Load-path analysis", "Field evidence", "Stated design basis"],
   action: "Discuss a verification",
   meta: "Verify warehouse racks, mezzanines, platforms and structural assets through field evidence, load-path analysis, engineering checks and compliance reporting before a load or configuration change.",
@@ -584,11 +584,16 @@ const STRUCTURAL_VERIFICATION: Service = {
         },
         {
           n: "05",
+          title: "Analysis",
+          body: "Run the structural analysis for the modelled system and actions.",
+        },
+        {
+          n: "06",
           title: "Check",
           body: "Strength, stability, serviceability and connections.",
         },
         {
-          n: "06",
+          n: "07",
           title: "Report",
           body: "State capacity, limitations and required actions.",
         },
@@ -681,7 +686,6 @@ const STRUCTURAL_VERIFICATION: Service = {
       top: "Close the gap between",
       bottom: "Assumed and known.",
       body: "Where records are incomplete, targeted measurement or testing can improve confidence. Methods are chosen only when relevant to the structural decision.",
-      note: "Testing is not a substitute for design information in every case. RAMS records assumptions and identifies where opening-up, laboratory testing, OEM input or further investigation is required.",
       cols: 4,
       items: [
         {
@@ -715,39 +719,6 @@ const STRUCTURAL_VERIFICATION: Service = {
         {
           title: "Condition mapping",
           body: "Damage, corrosion, deformation, missing elements and modifications placed in Digital Twin context.",
-        },
-      ],
-    },
-    {
-      kind: "grid",
-      eyebrow: "Design basis",
-      top: "Standards applied to the",
-      bottom: "Actual asset and decision.",
-      body: "Verification can reference multiple design, application, tolerance and maintenance documents. The agreed design basis is stated in the report rather than implied by a generic compliance badge.",
-      items: [
-        {
-          title: "Structural design principles for adjustable pallet racking",
-          body: "Applied where relevant to rack load capacity and structural verification.",
-        },
-        {
-          title: "Application and maintenance of steel static storage systems",
-          body: "Condition, inspection management and operational controls.",
-        },
-        {
-          title: "Tolerances, deformations and clearances",
-          body: "Relevant dimensional and operational acceptance criteria.",
-        },
-        {
-          title: "Specification of storage equipment",
-          body: "Information interface between user and supplier.",
-        },
-        {
-          title: "Applicable Indian structural and loading provisions",
-          body: "Selected for the material, asset, location and verification scope.",
-        },
-        {
-          title: "Manufacturer drawings, test data and load notices",
-          body: "Proprietary component behaviour and approved configuration information.",
         },
       ],
     },
@@ -927,7 +898,7 @@ const INVENTORY_AUDIT: Service = {
       body: "Rack, floor, staging and controlled zones.",
     },
     {
-      title: "Every exception traceable",
+      title: "Every exception traceable in RAMS 2.0",
       body: "Time, location, operator and supporting proof.",
     },
     {
@@ -990,9 +961,9 @@ const INVENTORY_AUDIT: Service = {
           body: "Defined floor locations, blocks, lanes and bulk-storage quantities.",
         },
         {
-          title: "Inbound & receiving",
+          title: "Location, quantity & damage",
           hero: "ArrowDownTrayIcon",
-          body: "Received, pending inspection, unposted and in-process receipts at cut-off.",
+          body: "Location mismatch, quantity mismatch and physically damaged stock, recorded where it is found.",
         },
         {
           title: "Outbound & staging",
@@ -1061,39 +1032,6 @@ const INVENTORY_AUDIT: Service = {
       ],
     },
     {
-      kind: "grid",
-      eyebrow: "Count controls",
-      top: "Protect the count from",
-      bottom: "Operational noise.",
-      body: "Inventory accuracy cannot be verified unless movements around the cut-off are controlled, recorded and reconciled.",
-      items: [
-        {
-          title: "Time-stamped baseline",
-          body: "Confirm the authoritative extract and transaction boundary.",
-        },
-        {
-          title: "Freeze or controlled movement log",
-          body: "Record all receipts, transfers, picks and dispatches during count.",
-        },
-        {
-          title: "Quantity-hidden verification where agreed",
-          body: "Reduce confirmation bias during physical counting.",
-        },
-        {
-          title: "Independent second verification",
-          body: "Recheck high-value, high-risk and discrepant records.",
-        },
-        {
-          title: "Location-by-location completion",
-          body: "Prevent omissions and duplicated coverage.",
-        },
-        {
-          title: "Segregated adjustment authority",
-          body: "RAMS reports; authorised customer roles approve system changes.",
-        },
-      ],
-    },
-    {
       kind: "lens",
       eyebrow: "Variance classes",
       top: "Know exactly",
@@ -1148,7 +1086,6 @@ const INVENTORY_AUDIT: Service = {
       top: "Use the right evidence",
       bottom: "For the warehouse.",
       body: "RAMS can combine trained physical verification with supported identification and capture technology. The agreed method depends on labels, storage type, access and required confidence.",
-      note: "Technology assists verification; it does not remove the need for cut-off governance, exception review, recount or customer approval.",
       items: [
         {
           title: "Verified physical count",
@@ -1175,59 +1112,6 @@ const INVENTORY_AUDIT: Service = {
           body: "Connect through an approved interface or controlled file extract with defined field mapping.",
         },
       ],
-    },
-    {
-      kind: "deliverables",
-      eyebrow: "Deliverables",
-      top: "An evidence-backed",
-      bottom: "Reconciliation pack.",
-      body: "Outputs are structured for warehouse operations, finance, inventory control, internal audit and management review.",
-      items: [
-        {
-          title: "Audit scope & cut-off record",
-          icon: "CalendarClock",
-          body: "Sites, zones, stock states and controls.",
-        },
-        {
-          title: "Physical count register",
-          icon: "ListChecks",
-          body: "Verified identity, quantity and location.",
-        },
-        {
-          title: "System comparison file",
-          icon: "GitCompareArrows",
-          body: "Baseline and captured fields side by side.",
-        },
-        {
-          title: "Variance classification",
-          icon: "Tags",
-          body: "Shortage, overage, location and identity issues.",
-        },
-        {
-          title: "Recount & evidence trail",
-          icon: "History",
-          body: "Time, location, operator and supporting proof.",
-        },
-        {
-          title: "Accuracy analysis",
-          icon: "LineChart",
-          body: "Site, zone, class and stock-state views.",
-        },
-        {
-          title: "Adjustment recommendation",
-          icon: "FileCheck",
-          body: "Controlled file for authorised customer review.",
-        },
-        {
-          title: "Root-cause action register",
-          icon: "Search",
-          body: "Process, data and location improvements.",
-        },
-      ],
-      callout: {
-        title: "From count difference to controlled action",
-        body: "The final report distinguishes confirmed variance from unresolved evidence gaps and shows what can be closed, monitored or investigated further.",
-      },
     },
     {
       kind: "grid",
@@ -1494,6 +1378,18 @@ const MHE_PRODUCTIVITY: Service = {
           tags: ["Unplanned downtime", "Task gap", "Asset or load search"],
         },
         {
+          tone: "neutral",
+          title: "Energy & charging",
+          body: "Battery exchange, charging and refuelling time held against the asset rather than the operator.",
+          tags: ["Charging", "Battery swap", "Refuelling"],
+        },
+        {
+          tone: "neutral",
+          title: "Shift changeover",
+          body: "Handover, checks and start-up at the boundary between shifts.",
+          tags: ["Handover", "Pre-use check", "Start-up"],
+        },
+        {
           tone: "amber",
           title: "Not scheduled / not used",
           body: "Available fleet capacity outside actual need for the observed period.",
@@ -1504,8 +1400,8 @@ const MHE_PRODUCTIVITY: Service = {
     {
       kind: "modes",
       eyebrow: "Evidence method",
-      top: "Start with the floor. Add technology",
-      bottom: "Where it improves confidence.",
+      top: "Measure the operation first.",
+      bottom: "Instrument it second.",
       body: "The assessment can be completed as a bounded study or strengthened with supported connected data. The chosen method depends on the question, existing systems and required level of detail.",
       items: [
         {
@@ -1563,63 +1459,10 @@ const MHE_PRODUCTIVITY: Service = {
       ],
     },
     {
-      kind: "deliverables",
-      eyebrow: "Deliverables",
-      top: "A decision pack —",
-      bottom: "Not raw tracking data.",
-      body: "Outputs make the measurement basis visible and connect each priority to evidence, operational cause and a practical validation method.",
-      items: [
-        {
-          title: "Scope & KPI definitions",
-          icon: "Target",
-          body: "Assets, shifts, window, formulas and exclusions.",
-        },
-        {
-          title: "Fleet utilisation baseline",
-          icon: "Gauge",
-          body: "Site, class, shift and asset-level views.",
-        },
-        {
-          title: "Time-category analysis",
-          icon: "Timer",
-          body: "Productive, travel, waiting and support time.",
-        },
-        {
-          title: "Movement analysis",
-          icon: "Route",
-          body: "Distance, empty travel and repeated patterns.",
-        },
-        {
-          title: "Congestion & delay map",
-          icon: "Map",
-          body: "Zones, times, queues and operational context.",
-        },
-        {
-          title: "Fleet balance review",
-          icon: "Scale",
-          body: "Peak need, underuse and class suitability.",
-        },
-        {
-          title: "Prioritised opportunity register",
-          icon: "ListOrdered",
-          body: "Impact, confidence, dependency and owner.",
-        },
-        {
-          title: "Validation plan",
-          icon: "BadgeCheck",
-          body: "Before-and-after measures for agreed actions.",
-        },
-      ],
-      callout: {
-        title: "Spend, time and effort directed by evidence",
-        body: "The assessment helps leaders distinguish additional capacity needs from process, layout, task or fleet-allocation problems.",
-      },
-    },
-    {
       kind: "grid",
       eyebrow: "Afterwards",
-      top: "Use the baseline once —",
-      bottom: "Or keep the operation measurable.",
+      top: "A baseline answers today.",
+      bottom: "Measurement answers every month.",
       body: "The assessment can stand alone. Where continuous visibility is required, RAMS can carry the agreed measurement model into MEPS, the MHE Efficiency and Productivity System.",
       note: "MEPS is an optional platform continuation, not a mandatory part of the assessment.",
       cols: 2,
@@ -2152,7 +1995,7 @@ const DEPLOYMENT_SUPPORT: Service = {
             "Helpdesk & priority response",
             "Proactive monitoring",
             "Health checks & updates",
-            "Re-inspection scheduling",
+            "Release adoption",
           ],
         },
       ],
@@ -2242,6 +2085,11 @@ const DEPLOYMENT_SUPPORT: Service = {
         },
         {
           n: "05",
+          title: "Beta period",
+          body: "A minimum of two months running live, with software and hardware observations raised and fixed.",
+        },
+        {
+          n: "06",
           title: "Hand over",
           body: "Train the team and move into managed support.",
         },
@@ -2256,20 +2104,28 @@ const DEPLOYMENT_SUPPORT: Service = {
       cols: 3,
       items: [
         {
-          title: "Administrators",
-          body: "Configuration, users, permissions and the day-to-day running of the platform.",
+          title: "Operations",
+          body: "Day-to-day running of the platform: dashboards, tasks, exceptions and reporting.",
         },
         {
-          title: "Safety leads",
+          title: "Safety",
           body: "Inspection programmes, findings, corrective actions and closure evidence.",
         },
         {
-          title: "Floor teams",
+          title: "Senior management",
+          body: "The management views: performance across sites, trends and where to intervene.",
+        },
+        {
+          title: "Maintenance",
+          body: "Equipment condition, work history and the maintenance workflow.",
+        },
+        {
+          title: "Operators",
           body: "The applications and devices used at the rack, dock and vehicle.",
         },
         {
-          title: "Inspectors",
-          body: "Enablement for the people carrying out and recording inspections.",
+          title: "Third-party managed services",
+          body: "Enablement for contracted teams running part of the operation on your behalf.",
         },
         {
           title: "Certification",
@@ -2305,8 +2161,12 @@ const DEPLOYMENT_SUPPORT: Service = {
           body: "Scheduled reviews of the deployment, data and configuration.",
         },
         {
-          title: "Re-inspection scheduling",
-          body: "Keep the inspection programme running to its intervals.",
+          title: "Release adoption",
+          body: "New 2.0 capability turned on, configured and adopted by the teams using it.",
+        },
+        {
+          title: "Integration watch",
+          body: "The connected systems and devices checked for drift, gaps and failed feeds.",
         },
         {
           title: "Account manager",
@@ -2324,7 +2184,7 @@ const DEPLOYMENT_SUPPORT: Service = {
         {
           title: "Essential",
           icon: "Layers",
-          body: "For teams running RAMS themselves.",
+          body: "The annual maintenance contract for teams running RAMS 2.0 themselves.",
           tags: [
             "Portal & documentation",
             "Product updates",
@@ -2335,13 +2195,13 @@ const DEPLOYMENT_SUPPORT: Service = {
         {
           title: "Priority",
           icon: "ShieldAlert",
-          body: "For sites that want a safety net.",
+          body: "The annual maintenance contract with a response commitment behind it.",
           tags: [
             "Everything in Essential, plus",
             "Priority response",
             "Named contact",
-            "Scheduled health checks",
-            "Re-inspection reminders",
+            "Scheduled platform health checks",
+            "Release adoption support",
           ],
         },
         {
@@ -2351,7 +2211,7 @@ const DEPLOYMENT_SUPPORT: Service = {
           tags: [
             "Everything in Priority, plus",
             "Proactive twin monitoring",
-            "Managed re-inspections",
+            "Managed configuration changes",
             "On-site support days",
             "Quarterly reviews",
           ],
@@ -2374,7 +2234,7 @@ const DEPLOYMENT_SUPPORT: Service = {
         },
         {
           title: "What does managed support include?",
-          body: "A helpdesk with priority response, proactive monitoring of the twin, product updates, regular health checks, re-inspection scheduling and a named account manager — scaled to your plan.",
+          body: "A helpdesk with priority response, proactive monitoring of the twin, product updates, regular health checks, release adoption, integration watch and a named account manager — scaled to your plan.",
         },
         {
           title: "Do you offer SLAs?",
