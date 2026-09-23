@@ -61,7 +61,14 @@ function Chips({ items }: { items: string[] }) {
   );
 }
 
-export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
+/**
+ * `ambient` runs the same film as a framed visual instead of a full-screen
+ * one: it sizes itself to its own box rather than the window, plays its
+ * chapters on a loop rather than on scroll, and renders no copy of its own —
+ * the page around it carries that. The hero on /homepage uses it; nothing
+ * else does, and the scroll build is untouched by it.
+ */
+export function HomeFilm({ onUnavailable, ambient = false }: { onUnavailable: () => void; ambient?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const filmRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
@@ -70,8 +77,18 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
 
   useEffect(() => {
     if (failed) return;
-    const canvas = canvasRef.current, film = filmRef.current, tagsRoot = tagsRef.current, space = spaceRef.current;
-    if (!canvas || !film || !tagsRoot || !space) return;
+    const canvas = canvasRef.current, tagsRoot = tagsRef.current;
+    // In ambient mode there is no copy track and no scroll spacer.
+    const film = filmRef.current, space = spaceRef.current;
+    if (!canvas || !tagsRoot || (!ambient && (!film || !space))) return;
+
+    /* Everything below measured the window. Framed, it measures the canvas's
+       own box, which is the frame the hero gives it. */
+    const vw = () => (ambient ? canvas.clientWidth || 1 : window.innerWidth);
+    const vh = () => (ambient ? canvas.clientHeight || 1 : window.innerHeight);
+    /* One pass through all nine chapters. Slow enough to read a chapter, short
+       enough that the loop comes round while someone is still on the page. */
+    const LOOP = 64;
 
     let disposed = false, raf = 0;
     const cleanups: (() => void)[] = [];
@@ -99,16 +116,22 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
         giveUp();
         return;
       }
-      R.setClearColor(0x0b0c0f, 1);
+      /* Lifted from near-black. The scene is a dark warehouse by design, but
+         at 0x0b0c0f with the old light levels the racking read as one mass and
+         the trucks disappeared into it — worse in a small frame than it ever
+         was full-screen. The ground, the fog and the lights all come up
+         together, so the picture is lighter without the contrast flattening. */
+      R.setClearColor(0x16181d, 1);
       R.toneMapping = THREE.ACESFilmicToneMapping;
+      R.toneMappingExposure = 1.22;
       R.shadowMap.enabled = !isMobile;
       R.shadowMap.type = THREE.PCFShadowMap;
       clearTimeout(bail);
 
       const scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x0b0c0f, 150, 320);
-      scene.add(new THREE.HemisphereLight(0xcfd8e6, 0x0b0c0f, 1.15));
-      const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+      scene.fog = new THREE.Fog(0x16181d, 150, 320);
+      scene.add(new THREE.HemisphereLight(0xdfe7f2, 0x20242b, 1.5));
+      const sun = new THREE.DirectionalLight(0xffffff, 1.9);
       sun.position.set(20, 40, 18);
       sun.castShadow = !isMobile;
       if (!isMobile) {
@@ -219,7 +242,17 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
         const vis = op > 0.01 && ndcV.z < 1 && Math.abs(ndcV.x) < 1.1 && Math.abs(ndcV.y) < 1.1;
         el.style.opacity = vis ? op.toFixed(3) : "0";
         if (vis) {
-          el.style.transform = `translate(${((ndcV.x * 0.5 + 0.5) * window.innerWidth).toFixed(1)}px,${((-ndcV.y * 0.5 + 0.5) * window.innerHeight).toFixed(1)}px)`;
+          const W = vw(), H = vh();
+          let x = (ndcV.x * 0.5 + 0.5) * W, y = (-ndcV.y * 0.5 + 0.5) * H;
+          /* Framed, a tag on something near an edge lands half outside it, and
+             one low on the floor sits on the asset key in the bottom-left
+             corner. Keep them inside a margin that clears both. The tag is
+             drawn up and left of this point, hence the asymmetry. */
+          if (ambient) {
+            x = clamp(x, 62, W - 62);
+            y = clamp(y, 38, H - 52);
+          }
+          el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
         }
       };
 
@@ -463,23 +496,30 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
 
       /* ── scroll ── */
       const state = { p: 0, pT: 0, time: 0 };
-      const secs = [...film.querySelectorAll<HTMLElement>(".hsec")].map((el) => ({ el, a: +el.dataset.a!, b: +el.dataset.b! }));
-      const maxScroll = () => Math.max(1, space.offsetHeight - window.innerHeight);
-      const onScroll = () => {
-        state.pT = clamp(window.scrollY / maxScroll(), 0, 1);
-      };
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-      cleanups.push(() => window.removeEventListener("scroll", onScroll));
+      const secs = film ? [...film.querySelectorAll<HTMLElement>(".hsec")].map((el) => ({ el, a: +el.dataset.a!, b: +el.dataset.b! })) : [];
+      const maxScroll = () => Math.max(1, (space?.offsetHeight ?? 1) - window.innerHeight);
+      if (!ambient) {
+        const onScroll = () => {
+          state.pT = clamp(window.scrollY / maxScroll(), 0, 1);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        cleanups.push(() => window.removeEventListener("scroll", onScroll));
+      }
 
       const look = V3(), camPos = V3();
       let lastOp = -1, fadeK = 0, heatK = 0, first = true, lastInv = 0;
       const U = overlay.mat.uniforms;
 
       const frame = (dt: number) => {
-        state.p += (state.pT - state.p) * Math.min(1, dt * (reduceMotion ? 20 : 3.5));
-        const p = state.p;
         state.time += dt;
+        /* Framed, the track is the clock: one pass every LOOP seconds, driven
+           straight rather than through the scroll smoothing, because there is
+           no input to catch up with. Reduced motion parks it on the opening
+           chapter, which is the floor simply working. */
+        if (ambient) state.p = reduceMotion ? 0.02 : (state.time % LOOP) / LOOP;
+        else state.p += (state.pT - state.p) * Math.min(1, dt * (reduceMotion ? 20 : 3.5));
+        const p = state.p;
         const w = CH.map(([a, b]) => ss(seg(p, a, a + 0.03)) * (1 - ss(seg(p, b - 0.03, b))));
 
         /* the floor works */
@@ -521,8 +561,14 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
         const ahead = CROSSING.x - heroPos.x;
         // Mid-lane while the truck is closing on the walkway, clear as it arrives.
         const cross = seg(ahead, 17, 1.5);
-        walker.position.set(CROSSING.x + 0.5, 0, 10.9 - cross * 8.8);
-        walker.rotation.y = Math.PI;
+        /* Once the truck is past, he keeps walking — out of the cross aisle
+           and off to the side. He used to stop on the walkway at x 0.2, which
+           is the line FLT 14 runs up (x 0.3, z −2 → 8.8): the truck drove
+           straight through him a few seconds later. Stepping him 2.4 m clear
+           puts him beside that lane instead of in it. */
+        const cross2 = seg(-ahead, 0.5, 7);
+        walker.position.set(CROSSING.x + 0.5 + cross2 * 2.4, 0, 10.9 - cross * 8.8 - cross2 * 1.4);
+        walker.rotation.y = Math.PI - cross2 * 1.15;
         const inLane = walker.position.z > 2.8 && walker.position.z < 8.6;
         const alert = eastbound && inLane && ahead > 0 && ahead < 14 ? 1 : 0;
         const inZone = t0.pos.x > -8 && t0.pos.x < 8 && t0.pos.z > 2.8 && t0.pos.z < 9.3;
@@ -590,7 +636,7 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
           first = false;
         }
         look.lerp(tgt, Math.min(1, dt * 3));
-        const W = window.innerWidth, H = window.innerHeight;
+        const W = vw(), H = vh();
         const narrow = W / H < 1;
         camPos.copy(look).add(off.clone().multiplyScalar(narrow ? 1.4 : 1));
         cam.position.lerp(camPos, first ? 1 : Math.min(1, dt * 4));
@@ -631,13 +677,14 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
           s.el.style.visibility = op < 0.005 ? "hidden" : "visible";
         }
 
-        /* past the end of the track the film fades out, handing over to the page */
-        const past = Math.max(0, (window.scrollY - maxScroll()) / Math.max(1, H * 0.6));
+        /* Past the end of the track the scrolling film fades out, handing over
+           to the page. Framed, there is no end to be past. */
+        const past = ambient ? 0 : Math.max(0, (window.scrollY - maxScroll()) / Math.max(1, H * 0.6));
         const fop = 1 - Math.min(1, past);
-        if (Math.abs(fop - lastOp) > 0.004) {
+        if (!ambient && Math.abs(fop - lastOp) > 0.004) {
           lastOp = fop;
           const vis = fop < 0.01 ? "hidden" : "visible";
-          for (const el of [film, tagsRoot, canvas as HTMLElement]) {
+          for (const el of [film as HTMLElement, tagsRoot, canvas as HTMLElement]) {
             el.style.opacity = fop.toFixed(3);
             el.style.visibility = vis;
           }
@@ -646,14 +693,23 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
       };
 
       const resize = () => {
+        const W = vw(), H = vh();
+        if (W < 2 || H < 2) return;
         R.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
-        R.setSize(window.innerWidth, window.innerHeight, false);
-        cam.aspect = window.innerWidth / window.innerHeight;
+        R.setSize(W, H, false);
+        cam.aspect = W / H;
         cam.updateProjectionMatrix();
       };
-      window.addEventListener("resize", resize);
+      if (ambient) {
+        // The frame is laid out by CSS, so watch the box, not the window.
+        const ro = new ResizeObserver(resize);
+        ro.observe(canvas);
+        cleanups.push(() => ro.disconnect());
+      } else {
+        window.addEventListener("resize", resize);
+        cleanups.push(() => window.removeEventListener("resize", resize));
+      }
       resize();
-      cleanups.push(() => window.removeEventListener("resize", resize));
 
       let last = performance.now();
       const tick = (t: number) => {
@@ -675,11 +731,20 @@ export function HomeFilm({ onUnavailable }: { onUnavailable: () => void }) {
       if (raf) cancelAnimationFrame(raf);
       cleanups.forEach((fn) => fn());
     };
-  }, [failed, onUnavailable]);
+  }, [failed, onUnavailable, ambient]);
 
   if (failed) return null;
 
   const at = (i: number) => ({ "data-a": CH[i][0], "data-b": CH[i][1] });
+
+  if (ambient) {
+    return (
+      <>
+        <canvas ref={canvasRef} className="home-gl" aria-hidden />
+        <div className="home-tags" ref={tagsRef} aria-hidden />
+      </>
+    );
+  }
 
   return (
     <>

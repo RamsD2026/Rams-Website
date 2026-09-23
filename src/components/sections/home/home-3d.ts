@@ -381,15 +381,22 @@ export function createHomeKit(THREE: typeof THREE_NS, isMobile: boolean) {
         uHeatOp: { value: 0 },
       },
       vertexShader: "varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
-      // The heat ramp is the site's orange, deep to bright — its one accent, as
-      // `AGENTS.md` asks — rather than a rainbow.
+      /* The heat ramp reads cold to hot — blue, cyan, amber, red — which is
+         what a heatmap is expected to mean; a ramp that ran deep orange to
+         white said "busy" at both ends and nothing about how busy.
+
+         It is also deliberately faint: this sits under a floor full of racking
+         and trucks, and at full strength it flooded the picture and buried
+         them. `.62` on the coverage and a later `smoothstep` floor keep the
+         quiet floor dark and let only the worked lanes come up. Tuned twice:
+         at `.62` over a `.08` floor the field had all but vanished. */
       fragmentShader: `uniform sampler2D uTrail,uHeat;uniform float uTrailOp,uHeatOp;varying vec2 vUv;
-        vec3 ramp(float t){vec3 a=vec3(.35,.07,0.),b=vec3(1.,.42,0.),c=vec3(1.,.75,.45),d=vec3(1.,.96,.88);
-          return t<.4?mix(a,b,t/.4):t<.75?mix(b,c,(t-.4)/.35):mix(c,d,(t-.75)/.25);}
+        vec3 ramp(float t){vec3 a=vec3(.05,.22,.62),b=vec3(.05,.62,.78),c=vec3(.95,.72,.18),d=vec3(.92,.16,.10);
+          return t<.38?mix(a,b,t/.38):t<.72?mix(b,c,(t-.38)/.34):mix(c,d,(t-.72)/.28);}
         void main(){vec2 uv=vec2(vUv.x,1.-vUv.y);
           vec4 tr=texture2D(uTrail,uv);float h=texture2D(uHeat,uv).a;
           vec3 col=tr.rgb*uTrailOp;float a=tr.a*uTrailOp;
-          vec3 hc=ramp(h);float ha=smoothstep(.02,.4,h)*.95*uHeatOp;
+          vec3 hc=ramp(h);float ha=smoothstep(.04,.42,h)*.72*uHeatOp;
           col=mix(col,hc,ha);a=max(a,ha);
           gl_FragColor=vec4(col,a);}`,
     });

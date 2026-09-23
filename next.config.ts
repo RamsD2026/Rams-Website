@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
    */
   redirects() {
     return [
+      // The new homepage was built at /homepage and now lives at /.
+      {
+        source: "/homepage",
+        destination: "/",
+        permanent: true,
+      },
       {
         source: "/hardware/airscan",
         destination: "/hardware/inspection",
