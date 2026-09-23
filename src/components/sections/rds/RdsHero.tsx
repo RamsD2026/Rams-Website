@@ -20,9 +20,12 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * and the product full width beneath, then the client strip.
  *
  * The product here is a **real recording**, not a placeholder: RAMS's own
- * IRDS demo, in the shared `ProductVideo` chrome. The 19.5 MB original is
- * re-encoded silent at 4.1 MB with a poster frame, so the frame is never
+ * IRDS 2.0 demo, in the shared `ProductVideo` chrome. The 81 MB original is
+ * re-encoded silent at 6.3 MB with a poster frame, so the frame is never
  * empty while it loads.
+ *
+ * The file is versioned (`demo-2`) rather than overwritten: the CDN caches
+ * these by path, and a new name is what makes a new cut land immediately.
  *
  * Three stills sat here before it and are all still in `SHOTS`:
  * `dashboardLifecycle` (the whole dashboard — the closest still to this
@@ -136,8 +139,8 @@ export function RdsHero() {
           className="mt-16 sm:mt-20 max-w-[1180px] mx-auto"
         >
           <ProductVideo
-            src="/Product/irds/demo.mp4"
-            poster="/Product/irds/demo.jpg"
+            src="/Product/irds/demo-2.mp4"
+            poster="/Product/irds/demo-2.jpg"
             path="app.rams.digital/irds"
           />
         </motion.div>
