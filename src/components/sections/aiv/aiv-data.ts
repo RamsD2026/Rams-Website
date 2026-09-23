@@ -333,13 +333,28 @@ export const USE_CASES: UseCase[] = [
 
 /* ── see → understand → act ──────────────────────────────────────── */
 
+/** The three frames of the camera view `AivHow` cross-fades between, in the
+ *  order the scroll track reveals them. Cumulative: each one is a full frame,
+ *  not a layer, so they stack rather than swap.
+ *
+ *  The HUD is burned into the images — boxes, labels, zone, event card — which
+ *  is what makes the timestamps in them (16:02:48, :58, 16:03:10) part of the
+ *  asset rather than something the page renders. Replacing a frame means
+ *  matching the camera, the workers and the machine in the other two, or the
+ *  cross-fade shows the difference. */
+export const SUA_FRAMES = [
+  "/ai-vision/how-it-works-1.webp",
+  "/ai-vision/how-it-works-2.webp",
+  "/ai-vision/how-it-works-3.webp",
+] as const;
+
 /** Three steps, and three is structural rather than editorial: `AivHow` pins a
- *  single SVG scene whose layers are keyed off `data-step` in CSS
- *  (`.s-l1`/`.s-l2`/`.s-l3`) and whose scroll handler caps at 3. The copy deck
- *  §4 lists a fourth, "Learn" — that content is `AivSoftware`, which is the
- *  whole section about events becoming trends. Adding a fourth entry here
- *  renders a step that never activates; it needs a fourth scene layer and a
- *  new threshold in `AivHow` first. */
+ *  single camera view whose frames are keyed off `data-step` in CSS
+ *  (`.sua-frame`) and whose scroll handler caps at 3. The copy deck §4 lists a
+ *  fourth, "Learn" — that content is `AivSoftware`, which is the whole section
+ *  about events becoming trends. Adding a fourth entry here renders a step that
+ *  never activates; it needs a fourth frame and a new threshold in `AivHow`
+ *  first. */
 export const SUA_STEPS = [
   {
     n: "01 · See",
@@ -376,14 +391,6 @@ export const IDEAS: { b: string; s: string; img?: string; alt: string; label: st
   { b: "Cold storage", s: "Low light, fog, reach trucks.", alt: "Cold storage warehouse aisle", label: "media/idea-cold-storage.jpg" },
 ];
 
-/* ── numbers ─────────────────────────────────────────────────────── */
-
-export const STATS: { to?: number; dec?: number; v: string; unit: string; h: string; p: string }[] = [
-  { v: "On", unit: "-device", h: "Local inference", p: "The image is read on the camera, not shipped to a server to be understood." },
-  { v: "Events", unit: "", h: "Not footage", p: "The output is the moment that mattered, with its time and zone attached." },
-  { v: "Per", unit: "-site", h: "Tuned rules", p: "A dock, a robot cell and a forklift aisle do not behave alike, so none share a threshold." },
-  { v: "24", unit: "/7", h: "Always watching", p: "Every shift, including the ones nobody supervises." },
-];
 
 /* ── software ────────────────────────────────────────────────────── */
 
@@ -533,4 +540,19 @@ export const EDGE: { b: string; s: string }[] = [
     b: "Connected when available",
     s: "Events synchronise to RAMS Digital for reporting, trends and cross-system intelligence — when there is a network, and not before.",
   },
+];
+
+/* ── where it stops ──────────────────────────────────────────────── */
+
+/** The controls that are already on the floor and stay exactly as they are.
+ *  Copy deck §9 names them in a sentence; the section renders them as one
+ *  unbroken slab, because six separate cards would say "six things" where the
+ *  point is "one system, untouched". */
+export const STAYS: { b: string; s: string }[] = [
+  { b: "Guarding", s: "Fences, cages and fixed barriers" },
+  { b: "Interlocks", s: "Gates and doors that stop the machine" },
+  { b: "Safety scanners", s: "Light curtains and laser scanners" },
+  { b: "Procedures", s: "Permits, isolation and safe systems of work" },
+  { b: "Operator training", s: "Licences, refreshers and supervision" },
+  { b: "CCTV", s: "Whatever is recording today, still recording" },
 ];

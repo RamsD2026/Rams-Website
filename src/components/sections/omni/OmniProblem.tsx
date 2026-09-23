@@ -169,7 +169,7 @@ export function OmniProblem() {
             <div className="fc-head">
               <i className="fc-live" />
               <b>One decision</b>
-              <small>Omnibox, on the truck</small>
+              <small>OmniBox, on the truck</small>
             </div>
             <div className="fc-slots">
               {SIGNALS.map((s, i) => (

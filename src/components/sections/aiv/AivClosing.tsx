@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
-import { DEPLOY, FAQ, IMG, SPECS } from "./aiv-data";
+import { DEPLOY, FAQ, IMG, SPECS, STAYS } from "./aiv-data";
 
 /** The site's FAQ easing, from `rackiq-shared`. */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -111,15 +111,41 @@ export function AivBoundary() {
             <br />
             It does not remove one.
           </h2>
-          <p>
-            The RAMS AI Camera is an additional operational intelligence layer. Existing guarding,
-            interlocks, safety scanners, procedures, operator training and CCTV all remain part of
-            your site&rsquo;s safety system, and nothing here is offered as a replacement for any of
-            them.
+          <p className="boundary-lead">
+            Every safety control on your floor today is still there tomorrow. The camera sits on
+            top of them and watches; it takes nothing away, and it is not certified to.
           </p>
+        </Reveal>
+
+        {/* The stack, drawn rather than asserted — see the note above. */}
+        <div className="stack">
+          <Reveal className="stack-add">
+            <span className="stack-tag">Added</span>
+            <h3>RAMS AI Camera</h3>
+            <p>Detects, reads the zone, responds and keeps the evidence.</p>
+          </Reveal>
+
+          <Reveal className="stack-seam" delay={90}>
+            <span>sits on top of</span>
+          </Reveal>
+
+          <Reveal className="stack-base" delay={140}>
+            <span className="stack-tag">Unchanged</span>
+            <ul>
+              {STAYS.map((x) => (
+                <li key={x.b}>
+                  <b>{x.b}</b>
+                  <span>{x.s}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+
+        <Reveal className="boundary-note">
           <p>
-            Where a camera is connected to a machine response, the integration and its failure
-            behaviour are defined and validated for that specific application before it goes live.
+            Where a camera is wired to a machine response, that integration and its failure
+            behaviour are defined and validated for the specific application before it goes live.
           </p>
         </Reveal>
       </div>
@@ -159,7 +185,7 @@ export function AivFAQ() {
   return (
     <section className="section white" id="faq">
       <div className="wrap">
-        <Head label="FAQ" top="Frequently asked" bottom="questions." />
+        <Head label="FAQ" top="Frequently asked questions." className="one-line" />
 
         <div className="faq">
           {FAQ.map((f, i) => {
@@ -206,11 +232,11 @@ export function AivCTA() {
     <section className="section cta" id="contact">
       <Reveal className="wrap">
         <span className="label">Start here</span>
-        <h2 className="h2">Show us your floor.</h2>
+        <h2 className="h2">Show us where the risk happens.</h2>
         <p className="intro">
-          A truck, a cell, a door, a zone. We walk the site, map where people and machines actually
-          meet, and show you what the camera would catch. No obligation — you keep the survey either
-          way.
+          A truck. A robot cell. A shared doorway. A hazard zone. We walk the operating
+          environment, define what the camera needs to see, and show you how the event becomes a
+          response you can use. You keep the survey either way.
         </p>
         <div className="cta-actions">
           <a
@@ -224,7 +250,7 @@ export function AivCTA() {
           </a>
         </div>
         <p className="cta-meta">
-          Mounts beside existing equipment · Power from what is already there · On-device AI
+          Adds to existing controls · Power from what is already there · On-device AI
         </p>
       </Reveal>
     </section>

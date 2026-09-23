@@ -52,7 +52,7 @@ export const metadata: Metadata = {
  *
  * The stack quiz is here too, with its `?find=&prec=&act=` round trip to
  * `/hardware/omnibox`. The far half of that trip — the reference's `.li-stack`
- * block, which renders the recommended sensor stack *inside* the Omnibox on
+ * block, which renders the recommended sensor stack *inside* the OmniBox on
  * that page — is still not ported; see the note at the head of `omnibox.css`.
  * The link works regardless: the hash opens the recommended model's sheet.
  *

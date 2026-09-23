@@ -9,13 +9,13 @@ import type { InsideView } from "./GiInside";
 /**
  * 05 — Find your inspection.
  *
- * Two questions, both multi-select, on the Omnibox builder's shell. What's on
+ * Two questions, both multi-select, on the OmniBox builder's shell. What's on
  * your floor, then what you want to know — and the second question only offers
  * what the first makes relevant, which is what keeps it to four or five options
  * instead of eight.
  *
  * ── It is pointed the other way round ───────────────────────────────
- * The Omnibox builder configures something you can buy. This cannot: both
+ * The OmniBox builder configures something you can buy. This cannot: both
  * machines are concepts. So the result panel sells a conversation instead — the
  * note under it says in as many words that sending this orders nothing, and the
  * section header says the answers tell us what to build first. That is the
@@ -90,8 +90,8 @@ export function GiChooser({
     const names = (list: { id: string; label: string }[], sel: Record<string, boolean>) =>
       list.filter((o) => sel[o.id]).map((o) => o.label).join(", ");
     const body =
-      "Hi RAMS Digital,\n\nI’d be interested in Guided Inspection as a design partner.\n\n" +
-      "On our floor: " + names(PLACES, place) + "\n" +
+      "Hi RAMS Digital,\n\nI’d like to talk about Guided Inspection.\n\n" +
+      "What we’re up against: " + names(PLACES, place) + "\n" +
       "What we want to know: " + (names(visibleKnow, know) || "-") + "\n" +
       "Suggested: " + title + "\n\nCould you get in touch?\n";
     return (
@@ -118,7 +118,7 @@ export function GiChooser({
                 take `useReveal` directly rather than a `<Reveal>` wrapper. */}
             <fieldset ref={step1Ref} className={step1Cls + " b-step"}>
               <legend>
-                <span className="b-n">1</span>What’s on your floor?<small>Pick all that apply</small>
+                <span className="b-n">1</span>What’s the problem?<small>Pick all that apply</small>
               </legend>
               <div className="b-opts big">
                 {PLACES.map((o) => (

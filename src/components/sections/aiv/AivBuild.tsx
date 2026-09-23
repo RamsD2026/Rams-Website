@@ -13,7 +13,7 @@ import { DETECTS, IDEAS, TRIGGERS } from "./aiv-data";
  */
 export function AivBuild() {
   return (
-    <section className="section" id="build">
+    <section className="section white" id="build">
       <div className="wrap">
         <Head
           label="Build your own"

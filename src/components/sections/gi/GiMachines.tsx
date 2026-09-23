@@ -10,7 +10,7 @@ import type { InsideView } from "./GiInside";
  * 03 — The machines.
  *
  * Two cards at equal weight — one goes up, one goes down — then the formula that
- * says what they have in common. The Omnibox family grid, set to two.
+ * says what they have in common. The OmniBox family grid, set to two.
  *
  * Each card carries three actions, and the third is the one that matters:
  * **"Watch it scan"** drops the reader straight into the 3D viewer's scan view
@@ -116,9 +116,6 @@ export function GiMachines({
               <h3>Every finding. One live picture of the building.</h3>
               <p>Next to everything your cameras and trucks already report.</p>
             </div>
-            <a className="link" href="#works">
-              How it fits together
-            </a>
           </div>
         </div>
       </div>

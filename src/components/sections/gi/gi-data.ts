@@ -16,7 +16,7 @@
       time, no slab depth. Each sheet ends with "Specification: not published —
       it's a concept, and we won't quote figures we haven't measured", and the
       spec table is headed "What we're building" rather than "Spec".
-   2. **A Concept badge on every product mention** — cards, sheets, compare
+   2. **A stage badge on every product mention** — cards, sheets, compare
       table, chooser result, film tags — driven by `STAGE` below.
    3. **Standards are named once**, in one FAQ answer, and always as the
       customer's own obligation.
@@ -35,8 +35,8 @@ export const KEYS: MachineKey[] = ["airscan", "floorscan"];
 
 /** Where each machine has got to. 0 Concept · 1 Prototype · 2 Pilot · 3 Available. */
 export const STAGE: Record<MachineKey, { stage: 0 | 1 | 2 | 3; badge: string }> = {
-  airscan: { stage: 0, badge: "Concept" },
-  floorscan: { stage: 0, badge: "Concept" },
+  airscan: { stage: 2, badge: "Pilot" },
+  floorscan: { stage: 2, badge: "Pilot" },
 };
 
 export const RAIL = ["Concept", "Prototype", "Pilot", "Available"];
@@ -127,12 +127,12 @@ export const MACHINES: MachineCard[] = [
     img: IMG.airscan,
     alt: "AirScan concept model: an inspection drone with four ducted prop guards and its battery stacked on top",
     tag: "↑ Drone rack scanning",
-    lead: ["Up the rack face.", "A drone that flies the aisles out of hours and reads every bay, at every level."],
-    bestFor: "High-bay racking, stock counts and rack audits",
+    lead: ["Up the rack face.", "A drone that flies the aisles out of hours and reads every bay, at every level — no reach truck, no cage, nobody at height."],
+    bestFor: "Rack audits, stock counts and high-bay racking",
     checks: [
       "Reads location and pallet labels at every level",
+      "Checks uprights for plumb, and grades a dent by severity",
       "Finds free space, and bays that don’t match the system",
-      "Spots bent uprights, missing pins and unsafe loads",
     ],
   },
   {
@@ -140,12 +140,12 @@ export const MACHINES: MachineCard[] = [
     img: IMG.floorscan,
     alt: "FloorScan concept model: a low floor robot with a radar unit underneath and a LiDAR on top",
     tag: "↓ Floor-level inspection",
-    lead: ["Down into the slab.", "A floor robot with ground-penetrating radar that maps your floor on top, and underneath."],
-    bestFor: "Automation readiness, new installs and ageing floors",
+    lead: ["Down into the slab.", "A floor robot with ground-penetrating radar that finds the voids and soft ground under your slab, before they become settlement."],
+    bestFor: "Voids and settlement, ageing floors and automation readiness",
     checks: [
-      "Maps flatness, cracks and joint damage along every aisle",
-      "Finds reinforcement and cables before anyone drills",
-      "Looks for voids and settlement under the slab",
+      "Finds voids and washouts under the slab, ranked worst first",
+      "Maps reinforcement, post-tension cables, conduit and drains",
+      "Reads flatness, cracks and joint damage along every aisle",
     ],
   },
 ];
@@ -154,7 +154,7 @@ export const FORMULA: { b: string; s: string }[] = [
   { b: "Move", s: "Flies the aisle or drives the floor, on its own." },
   { b: "Sense", s: "Cameras, LiDAR and radar, pointed at what matters." },
   { b: "Locate", s: "Every finding pinned to a bay or a spot on the floor." },
-  { b: "Report", s: "A ranked list of what to fix, not hours of footage." },
+  { b: "Act", s: "A ranked list of what to fix, routed into the workflow that fixes it." },
 ];
 
 /* ── 04 inside ───────────────────────────────────────────────────── */
@@ -178,10 +178,26 @@ export const INSIDE_CAPS: Record<MachineKey, { h: string; ci: string; cc: string
 export type PlaceId = "racking" | "floor" | "auto" | "slab";
 
 export const PLACES: { id: PlaceId; label: string; sub: string }[] = [
-  { id: "racking", label: "High-bay racking", sub: "Pallets stored at height" },
-  { id: "floor", label: "Floor storage", sub: "Block stacking and floor lanes" },
-  { id: "auto", label: "Automation on the way", sub: "Robots, AGVs or VNA trucks" },
-  { id: "slab", label: "An older or busy slab", sub: "Cracks, repairs, heavy traffic" },
+  {
+    id: "racking",
+    label: "We can't see the top levels",
+    sub: "High-bay racking — inspection means a MEWP, an aisle closure and working at height",
+  },
+  {
+    id: "floor",
+    label: "Our stock never matches the system",
+    sub: "Floor storage and block stacking — counts go stale as soon as they are done",
+  },
+  {
+    id: "auto",
+    label: "We're putting automation on a floor we don't know",
+    sub: "Robots, AGVs or VNA trucks arriving onto a slab nobody has measured",
+  },
+  {
+    id: "slab",
+    label: "The slab is cracking and we don't know why",
+    sub: "Repairs, heavy traffic and damage that keeps coming back in the same places",
+  },
 ];
 
 /**
@@ -205,24 +221,24 @@ export const KNOW: { id: string; m: MachineKey; label: string; get: string; at: 
 
 export const WHY: Record<MachineKey, string> = {
   airscan: "AirScan flies the rack face and reads every bay, at every level.",
-  floorscan: "FloorScan drives the floor and looks down through the slab.",
+  floorscan: "FloorScan drives the floor and looks down through the slab for voids and settlement.",
 };
 
 /* ── 06 compare ──────────────────────────────────────────────────── */
 
 export const COMPARE_ROWS: { h: string; air: string | true; floor: string | true }[] = [
-  { h: "Best for", air: "High-bay racking, stock counts and rack audits", floor: "Automation readiness, new installs and ageing floors" },
+  { h: "Best for", air: "Rack audits, stock counts and high-bay racking", floor: "Voids and settlement, ageing floors and automation readiness" },
   { h: "Where it looks", air: "Up and down the rack face, at every level", floor: "Along the floor, and down into the slab beneath it" },
   { h: "How it gets there", air: "Flies the aisle", floor: "Drives the floor" },
   {
     h: "What it reads",
     air: "Location and pallet labels, load notices, what’s in each bay",
-    floor: "Flatness and levelness, surface condition, what’s under the surface",
+    floor: "What’s under the slab first, then reinforcement and services, then the surface",
   },
   {
     h: "What it flags",
-    air: "Stock in the wrong place, free space, rack damage, unsafe loads",
-    floor: "Aisles out of tolerance, cracks and joints, cables in the way, voids",
+    air: "Uprights out of plumb, dents graded by severity, stock in the wrong place, free space",
+    floor: "Voids and soft ground, settlement, cables in the way, cracks and joints",
   },
   { h: "When it runs", air: "Out of hours, in a quiet building", floor: "Out of hours, in a quiet building" },
   { h: "What you get back", air: "Your rack plan, marked up and ranked", floor: "Your floor plan, marked up and ranked" },
@@ -285,40 +301,12 @@ export const WHERE: { img: string; alt: string; pills: string[]; h: string; p: s
   },
 ];
 
-/* ── 09 where we are today ───────────────────────────────────────── */
-
-export const PARTNER_STEPS: { b: string; s: string }[] = [
-  {
-    b: "Tell us what hurts",
-    s: "The count you don’t trust, the audit you dread, the floor you’re about to put robots on.",
-  },
-  {
-    b: "Shape it together",
-    s: "What it should look for, what a finding should look like, and where it should land.",
-  },
-  {
-    b: "First runs on your site",
-    s: "When there’s something to run, your building is one of the first it runs in.",
-  },
-  {
-    b: "Decide together",
-    s: "An honest go or no-go, with the findings yours to keep either way.",
-  },
-];
-
-export const PARTNER_PILLS = [
-  "A say in what gets built",
-  "First runs on your site",
-  "Findings you keep",
-  "No commitment to buy",
-];
-
 /* ── 10 FAQ ──────────────────────────────────────────────────────── */
 
 export const FAQ: { q: string; a: string }[] = [
   {
     q: "Can I buy either of these today?",
-    a: "Not yet. Both are at concept stage and neither has run in a customer’s building. What you can do today is join as a design partner — help shape what gets built, and host the first runs when there’s something to run. If you need an inspection done this quarter, we’ll say so and point you to a conventional survey.",
+    a: "Not yet. Neither has run in a customer’s building. What you can do today is tell us which building and which problem — the racking you can’t see the top of, or the slab you suspect is moving — and we’ll tell you honestly where we are with it. If you need an inspection done this quarter, we’ll say so and point you to a conventional survey.",
   },
   {
     q: "Does AirScan replace our racking inspection?",
@@ -342,7 +330,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Why show something that isn’t finished?",
-    a: "Because we’d rather build these with a few sites than for them. Showing the concept early is how we find out which findings matter most to you — and if a problem turns out not to be as painful as we think, that’s a useful answer too.",
+    a: "Because we’d rather build these with a few sites than for them. Showing it early is how we find out which findings matter most to you — and if a problem turns out not to be as painful as we think, that’s a useful answer too.",
   },
 ];
 
@@ -373,17 +361,17 @@ export const SHEETS: Sheet[] = [
     hero: IMG.airscanHero,
     heroAlt: "AirScan concept model",
     outcomes: [
+      { t: "Damage found and graded", s: "Uprights checked for plumb, dents rated by severity, so the worst bay is the first one you fix." },
       { t: "A count you can trust", s: "What’s actually in each location, at every level, next to what the system believes." },
-      { t: "Space you didn’t know you had", s: "Free positions and half-used bays, found and put back into the plan." },
-      { t: "Damage found early", s: "Bent uprights, missing pins and unsafe loads, with the bay and a picture." },
+      { t: "An audit that isn’t a day’s work", s: "No reach truck, no cage, no closed aisle, no one working at height — and every bay, not the ones you had time for." },
     ],
     looks: [
+      "Uprights out of plumb",
+      "Dent severity, graded",
+      "Beams, pins & connectors",
       "Location & pallet labels",
       "What’s in each bay",
       "Free positions",
-      "Uprights, beams & pins",
-      "Load notices",
-      "Sprinkler clearance",
     ],
     ctx: {
       img: IMG_WHERE.highbay,
@@ -400,27 +388,27 @@ export const SHEETS: Sheet[] = [
       ["Specification", "Not published — it’s a concept, and we won’t quote figures we haven’t measured"],
     ],
     ctaLine: "Racking you’d like read properly?",
-    mail: "mailto:connect@rams.digital?subject=AirScan%20design%20partner",
+    mail: "mailto:connect@rams.digital?subject=AirScan%20enquiry",
   },
   {
     key: "floorscan",
-    title: "The floor, on top and underneath.",
+    title: "The voids under your slab, before they show.",
     intro:
-      "A floor robot that drives your aisles with ground-penetrating radar looking down through the slab and a profiler reading the surface — and returns a map of a structure nobody has ever seen.",
+      "A floor robot that drives your aisles with ground-penetrating radar looking down through the slab. It is there first for what is washing out underneath — and it maps the services and the surface on the same pass.",
     hero: IMG.floorscanHero,
     heroAlt: "FloorScan concept model",
     outcomes: [
-      { t: "Ready for automation", s: "Know which aisles are in tolerance before the robots or VNA trucks arrive." },
-      { t: "Drill without guessing", s: "Reinforcement and cables found before anchors go in." },
-      { t: "Problems while they’re cheap", s: "Voids, settlement and failing joints, located before they crack through." },
+      { t: "Voids before they’re settlement", s: "Washouts and soft ground under the slab, found and ranked while a repair is still small." },
+      { t: "Drill without guessing", s: "Reinforcement, post-tension cables, conduit and drains mapped before anchors go in." },
+      { t: "Ready for automation", s: "Which aisles are in tolerance, before the robots or VNA trucks arrive." },
     ],
     looks: [
-      "Flatness & levelness",
-      "Cracks & joints",
+      "Voids & washouts",
+      "Settlement & soft ground",
       "Reinforcement",
       "Post-tension cables",
-      "Buried conduit",
-      "Voids underneath",
+      "Buried conduit & drains",
+      "Flatness, cracks & joints",
     ],
     ctx: {
       img: IMG_WHERE.automation,
@@ -437,7 +425,7 @@ export const SHEETS: Sheet[] = [
       ["Specification", "Not published — it’s a concept, and we won’t quote figures we haven’t measured"],
     ],
     ctaLine: "A floor you’d like to see underneath?",
-    mail: "mailto:connect@rams.digital?subject=FloorScan%20design%20partner",
+    mail: "mailto:connect@rams.digital?subject=FloorScan%20enquiry",
   },
 ];
 

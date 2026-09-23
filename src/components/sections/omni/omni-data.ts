@@ -1,5 +1,5 @@
 /**
- * The content of /hardware/omnibox, carried across from the Omnibox showcase
+ * The content of /hardware/omnibox, carried across from the OmniBox showcase
  * build without rewriting.
  *
  * Its spec sets three content rules, and they are why the copy reads the way it
@@ -18,20 +18,32 @@
  */
 
 export const IMG = {
-  lineup: "/omnibox/omnibox-lineup.jpg",
-  edge: "/omnibox/omnibox-edge.jpg",
-  ai: "/omnibox/omnibox-ai.jpg",
-  motion: "/omnibox/omnibox-motion.jpg",
-  core: "/omnibox/omnibox-core.jpg",
-  edgeHero: "/omnibox/omnibox-edge-hero.jpg",
-  aiHero: "/omnibox/omnibox-ai-hero.jpg",
-  motionHero: "/omnibox/omnibox-motion-hero.jpg",
-  coreHero: "/omnibox/omnibox-core-hero.jpg",
-  motionTruck: "/omnibox/omnibox-motion-truck.jpg",
-  insideEdge: "/omnibox/inside-edge.jpg",
-  insideAi: "/omnibox/inside-ai.jpg",
-  insideMotion: "/omnibox/inside-motion.jpg",
-  insideCore: "/omnibox/inside-core.jpg",
+  /* Every picture of an OmniBox on this page is rendered from the page's own
+     3D models — the same geometry, materials and lid logo as the hero film
+     and the Inside viewer — so no image can show a box that is not the
+     product. The first set of images were generated renders of an earlier
+     design (a clear-lidded Core, different ports, different proportions) and
+     were deleted rather than kept alongside, so the old boxes cannot creep
+     back in. Re-render these if a model changes.
+
+     Product shots: one isometric angle (45° round, 30° down, orthographic),
+     each fitted to its frame by the same margin, transparent ground with its
+     contact shadow. The family cards, the comparison table, the setup builder
+     and the sheets' heroes all use them. */
+  lineup: "/omnibox/omnibox-lineup.png",
+  edge: "/omnibox/family-edge.png",
+  ai: "/omnibox/family-ai.png",
+  motion: "/omnibox/family-motion.png",
+  core: "/omnibox/family-core.png",
+  /* Motion at real size on the sensor-stack forklift, on the hood behind the
+     seat. Shared with /hardware/sensor-stack. */
+  motionTruck: "/omnibox/motion-on-truck.jpg",
+  /* The Inside viewer's no-WebGL fallback: each box taken apart, as the viewer
+     shows it. Core stays whole, as it does in the viewer. */
+  insideEdge: "/omnibox/inside-edge.png",
+  insideAi: "/omnibox/inside-ai.png",
+  insideMotion: "/omnibox/inside-motion.png",
+  insideCore: "/omnibox/inside-core.png",
   whereForklift: "/omnibox/where-forklift.jpg",
   whereDock: "/omnibox/where-dock.jpg",
   whereCustom: "/omnibox/where-custom.jpg",
@@ -44,6 +56,10 @@ export const IMG = {
 
 export type ModelKey = "edge" | "ai" | "motion" | "core";
 export const ORDER: ModelKey[] = ["edge", "ai", "motion", "core"];
+/** The boxes with a "What it connects to" view — a fixed kit to show wired up.
+ *  Core has none: what it connects to is decided per job. The viewer, the page
+ *  and the 3D rig (`CONN` in `omni-3d.ts`) all read this one list. */
+export const HAS_CONN: ModelKey[] = ["edge", "ai", "motion"];
 
 /* ── problem ─────────────────────────────────────────────────────── */
 
@@ -62,7 +78,7 @@ export const PROBLEMS: { n: string; h: string; p: string; fix: string }[] = [
     n: "01",
     h: "Latency at the moment that matters",
     p: "When someone steps in front of a moving truck or into a robot cell, there’s no time to ask a server far away and wait for the answer.",
-    fix: "Omnibox decides on the spot.",
+    fix: "OmniBox decides on the spot.",
   },
   {
     n: "02",
@@ -85,10 +101,59 @@ export const PROBLEMS: { n: string; h: string; p: string; fix: string }[] = [
 ];
 
 export const PROBLEM_STATS: { v: string; unit: string; h: string; p: string }[] = [
-  { v: "<0.5", unit: "s", h: "From noticing to acting", p: "Fast enough to matter when someone steps into the wrong place." },
+  { v: "On", unit: "-site", h: "From noticing to acting", p: "The decision is made beside the machine, not in a data centre." },
   { v: "0", unit: "cloud", h: "Needed to decide", p: "It keeps working when the network doesn’t." },
   { v: "24", unit: "/7", h: "Every shift", p: "Including the ones nobody is supervising." },
 ];
+
+/* ── the loop ────────────────────────────────────────────────────── */
+
+/** Copy deck §3. Four beats, and unlike most lists on this page they *are* a
+ *  sequence — each one hands to the next, and only the last needs a network. */
+export const LOOP: { n: string; b: string; s: string }[] = [
+  {
+    n: "01",
+    b: "Sense",
+    s: "Take in events and measurements from cameras, LiDAR, access control, impact and pallet sensors, machine I/O and the rest of what is already on the floor.",
+  },
+  {
+    n: "02",
+    b: "Decide",
+    s: "Apply the logic, model or threshold that says what this event means here — on this machine, in this zone, on this shift.",
+  },
+  {
+    n: "03",
+    b: "Act",
+    s: "Fire the configured output: a warning, a beacon, a machine signal, a reject, a notification or a whole workflow.",
+  },
+  {
+    n: "04",
+    b: "Sync",
+    s: "Send the event and its context to RAMS Digital for history, analysis and visibility across the business — once there is a network, and not before.",
+  },
+];
+
+/* ── what it connects to ─────────────────────────────────────────── */
+
+/** Copy deck §3, "Built to connect with the equipment already on the floor."
+ *  The per-model `connect` lines in INSIDE_CAPS say what each box takes; this
+ *  is the consolidated answer to "will it talk to ours?", which is the question
+ *  that actually gets asked. The caveat rendered under it is not boilerplate —
+ *  what a machine signal costs to interface with is genuinely a per-application
+ *  question, and the deck is careful to say so. */
+export const CONNECTS: string[] = [
+  "RAMS AI Cameras",
+  "LiDAR",
+  "Impact and motion sensors",
+  "Pallet and load detection",
+  "RFID and operator access control",
+  "Battery monitoring",
+  "Displays and warning devices",
+  "Digital I/O",
+  "Machine and robot signals",
+  "Existing industrial sensors",
+];
+
 
 /* ── the family ──────────────────────────────────────────────────── */
 
@@ -123,7 +188,7 @@ export const MODELS: Model[] = [
   {
     key: "edge",
     tag: "Edge · Raspberry Pi",
-    name: "Omnibox Edge",
+    name: "OmniBox Edge",
     short: "Edge",
     lineTitle: "Process AI cameras.",
     line: "Compact compute that sits beside your RAMS AI Cameras.",
@@ -135,10 +200,10 @@ export const MODELS: Model[] = [
       "Remembers its settings and events through a power cut",
     ],
     sheet: {
-      hero: IMG.edgeHero,
+      hero: IMG.edge,
       title: "The brain beside your AI Cameras.",
       intro:
-        "The RAMS AI Camera sees a person step into a robot cell. Omnibox Edge is what stops the robot — and writes down that it happened.",
+        "The RAMS AI Camera sees a person step into a robot cell. OmniBox Edge is what stops the robot — and writes down that it happened.",
       outcomes: [
         { t: "A robot that stops when someone steps in", s: "In about a fifth of a second, typically." },
         { t: "A record of every entry", s: "Kept on the box, even through a power cut, and ready to export." },
@@ -165,13 +230,13 @@ export const MODELS: Model[] = [
         ["Power cut", "Settings and event record are kept"],
       ],
       ctaLine: "See what’s inside, or talk to us about your cell.",
-      mail: "mailto:connect@rams.digital?subject=Omnibox%20Edge",
+      mail: "mailto:connect@rams.digital?subject=OmniBox%20Edge",
     },
   },
   {
     key: "ai",
     tag: "AI · 67 TOPS",
-    name: "Omnibox AI",
+    name: "OmniBox AI",
     short: "AI",
     lineTitle: "Run custom models.",
     line: "Dedicated NVIDIA Jetson AI power for your own checks.",
@@ -183,10 +248,10 @@ export const MODELS: Model[] = [
       "Acts on the result — stop, reject, alert, record",
     ],
     sheet: {
-      hero: IMG.aiHero,
+      hero: IMG.ai,
       title: "Your own AI, running on site.",
       intro:
-        "Every line has checks that only it needs. Omnibox AI runs a model trained on your parts and your process — and does something with the answer.",
+        "Every line has checks that only it needs. OmniBox AI runs a model trained on your parts and your process — and does something with the answer.",
       outcomes: [
         { t: "Defects caught at the station", s: "Not at inspection, and not at the customer." },
         { t: "Counts you can trust", s: "Every part, every shift, without a clipboard." },
@@ -208,7 +273,7 @@ export const MODELS: Model[] = [
         img: IMG.weld,
         alt: "Four welds passed and one flagged as missing",
         title: "Trained for your line",
-        body: "RAMS Digital trains and deploys the model with you, using images from your own station. When the check fails, Omnibox AI can stop the line, reject the part, light an alarm or simply record it.",
+        body: "RAMS Digital trains and deploys the model with you, using images from your own station. When the check fails, OmniBox AI can stop the line, reject the part, light an alarm or simply record it.",
       },
       specs: [
         ["Brain", "NVIDIA Jetson Orin Nano Super"],
@@ -218,13 +283,13 @@ export const MODELS: Model[] = [
         ["Internet", "Not needed to run"],
       ],
       ctaLine: "Got a check you’d love to automate?",
-      mail: "mailto:connect@rams.digital?subject=Omnibox%20AI",
+      mail: "mailto:connect@rams.digital?subject=OmniBox%20AI",
     },
   },
   {
     key: "motion",
     tag: "Motion · RAMS 2.0",
-    name: "Omnibox Motion",
+    name: "OmniBox Motion",
     short: "Motion",
     lineTitle: "Connect the MHE.",
     line: "The complete intelligence box for a forklift.",
@@ -236,10 +301,10 @@ export const MODELS: Model[] = [
       "Built-in backup power and cooling",
     ],
     sheet: {
-      hero: IMG.motionHero,
+      hero: IMG.motion,
       title: "Everything a smart forklift needs, in one box.",
       intro:
-        "RAMS 2.0 turns a forklift into a truck that sees people, feels impacts and knows its load. Omnibox Motion is the box at the centre of it all.",
+        "RAMS 2.0 turns a forklift into a truck that sees people, feels impacts and knows its load. OmniBox Motion is the box at the centre of it all.",
       outcomes: [
         { t: "Drivers warned in time", s: "Cameras and LiDAR watch all around the truck." },
         { t: "Every impact and load on record", s: "Who, where, when — and how hard." },
@@ -253,7 +318,7 @@ export const MODELS: Model[] = [
       ],
       ctx: {
         img: IMG.motionTruck,
-        alt: "Omnibox Motion fitted to a forklift",
+        alt: "OmniBox Motion mounted on the hood of a forklift",
         light: true,
         title: "Made for life on a truck",
         body: "Backup power and battery management keep it running through supply dips. Every circuit is fused. Two cooling fans keep it steady on hot, dusty floors, and a health light on the side shows at a glance that it’s working.",
@@ -267,13 +332,13 @@ export const MODELS: Model[] = [
         ["Status", "Box health light"],
       ],
       ctaLine: "Tell us about your fleet.",
-      mail: "mailto:connect@rams.digital?subject=Omnibox%20Motion%20%2F%20RAMS%202.0",
+      mail: "mailto:connect@rams.digital?subject=OmniBox%20Motion%20%2F%20RAMS%202.0",
     },
   },
   {
     key: "core",
     tag: "Core · Custom",
-    name: "Omnibox Core",
+    name: "OmniBox Core",
     short: "Core",
     lineTitle: "Engineer the use case.",
     line: "Purpose-built hardware for a job no standard box fits.",
@@ -285,10 +350,10 @@ export const MODELS: Model[] = [
       "Built, tested and installed by RAMS Digital",
     ],
     sheet: {
-      hero: IMG.coreHero,
+      hero: IMG.core,
       title: "Built around your problem.",
       intro:
-        "When the job is unusual, the box should be too. Core is a custom Omnibox, designed, built and supported by the team behind the rest of the family.",
+        "When the job is unusual, the box should be too. Core is a custom OmniBox, designed, built and supported by the team behind the rest of the family.",
       outcomes: [
         { t: "Exactly what the job needs", s: "No paying for connections you’ll never use, no missing the one you need." },
         { t: "Tested before it arrives", s: "Proven on our bench before it reaches your floor." },
@@ -312,7 +377,7 @@ export const MODELS: Model[] = [
         { b: "We install", s: "With a clear handover." },
       ],
       ctaLine: "Describe the problem. We’ll sketch the box.",
-      mail: "mailto:connect@rams.digital?subject=Omnibox%20Core%20project",
+      mail: "mailto:connect@rams.digital?subject=OmniBox%20Core%20project",
     },
   },
 ];
@@ -332,26 +397,28 @@ export const FORMULA: { b: string; s: string }[] = [
 
 export const INSIDE_CAPS: Record<ModelKey, { h: string; inside: string; connect?: string; img: string }> = {
   edge: {
-    h: "Omnibox Edge",
+    h: "OmniBox Edge",
     inside: "A Raspberry Pi 5 brain and two outputs, in a box small enough to sit inside the cell.",
     connect:
       "Two RAMS AI Cameras in. Two outputs out — one stops the robot, one sounds the alarm. Set up from a phone.",
     img: IMG.insideEdge,
   },
   ai: {
-    h: "Omnibox AI",
+    h: "OmniBox AI",
     inside: "An NVIDIA Jetson brain with 67 TOPS of AI power, cooled to keep up all shift.",
+    connect:
+      "Two RAMS AI Cameras in, a speaker out. The Jetson runs the vision models on site and answers what they see with an alert or a spoken warning, with no cloud in the loop.",
     img: IMG.insideAi,
   },
   motion: {
-    h: "Omnibox Motion",
+    h: "OmniBox Motion",
     inside: "The brain, the power for every sensor, backup power and cooling — for the whole truck.",
     connect:
       "LiDAR, cameras, impact, speed and weight sensors, access control and the driver’s displays — all into one box on the truck.",
     img: IMG.insideMotion,
   },
   core: {
-    h: "Omnibox Core",
+    h: "OmniBox Core",
     inside: "Modules we pick for your job: the brain, the connections and the power.",
     img: IMG.insideCore,
   },
@@ -405,10 +472,10 @@ export const ACT: Opt[] = [
 ];
 
 export const BOX_META: Record<ModelKey, { name: string; short: string; img: string; unit: string; units: string }> = {
-  edge: { name: "Omnibox Edge", short: "Edge", img: IMG.edge, unit: "cell or zone", units: "cells or zones" },
-  ai: { name: "Omnibox AI", short: "AI", img: IMG.ai, unit: "line or station", units: "lines or stations" },
-  motion: { name: "Omnibox Motion", short: "Motion", img: IMG.motion, unit: "forklift", units: "forklifts" },
-  core: { name: "Omnibox Core", short: "Core", img: IMG.core, unit: "build", units: "builds" },
+  edge: { name: "OmniBox Edge", short: "Edge", img: IMG.edge, unit: "cell or zone", units: "cells or zones" },
+  ai: { name: "OmniBox AI", short: "AI", img: IMG.ai, unit: "line or station", units: "lines or stations" },
+  motion: { name: "OmniBox Motion", short: "Motion", img: IMG.motion, unit: "forklift", units: "forklifts" },
+  core: { name: "OmniBox Core", short: "Core", img: IMG.core, unit: "build", units: "builds" },
 };
 
 /** Line-art icons for the builder options, drawn in a 24×24 box. */
@@ -477,6 +544,7 @@ export const CORE_STEPS: { b: string; s: string }[] = [
   { b: "We design", s: "The right brain, connections, power and enclosure for it." },
   { b: "We build & test", s: "On our bench first, so it works before it reaches your floor." },
   { b: "We install", s: "On site, with a handover your team understands." },
+  { b: "We connect", s: "The events worth keeping sync to RAMS Digital, so one box becomes part of the bigger picture." },
 ];
 
 export const CORE_SHAPE = [
@@ -487,28 +555,28 @@ export const CORE_SHAPE = [
 
 export const FAQ: { q: string; a: string }[] = [
   {
-    q: "Which Omnibox do I need?",
+    q: "Which OmniBox do I need?",
     a: "If you’re using RAMS AI Cameras to keep a cell, door or zone safe, it’s Edge. If you want AI trained on your own parts or process, it’s AI. For forklifts, it’s Motion. If none of those fit, it’s Core. The chooser above walks you through it, or just ask us.",
   },
   {
     q: "Does it need the internet or the cloud?",
-    a: "No. Every Omnibox makes its decisions on site. A network connection is only used to send events to your dashboard, and if it drops, the box carries on doing its job.",
+    a: "No. Every OmniBox makes its decisions on site. A network connection is only used to send events to your dashboard, and if it drops, the box carries on doing its job.",
   },
   {
     q: "Will it work with the equipment we already have?",
-    a: "Usually, yes. Omnibox is built to sit beside existing machines and signal them the way a safety device or an operator would. We check your setup during a site visit before anything is ordered.",
+    a: "Usually, yes. OmniBox is built to sit beside existing machines and signal them the way a safety device or an operator would. We check your setup during a site visit before anything is ordered.",
   },
   {
     q: "What happens if the power drops?",
-    a: "Omnibox Motion has built-in battery management and backup power. Omnibox Edge keeps its settings and event record through a power cut, and can be wired so that a failure stops the machine rather than letting it run.",
+    a: "OmniBox Motion has built-in battery management and backup power. OmniBox Edge keeps its settings and event record through a power cut, and can be wired so that a failure stops the machine rather than letting it run.",
   },
   {
     q: "Is our video kept private?",
-    a: "Detection happens on site. Omnibox Edge, for example, sends no video off the machine and is set up over its own Wi-Fi, right at the machine. What gets recorded, and who can see it, is agreed with you.",
+    a: "Detection happens on site. OmniBox Edge, for example, sends no video off the machine and is set up over its own Wi-Fi, right at the machine. What gets recorded, and who can see it, is agreed with you.",
   },
   {
     q: "Does it replace our existing safety guarding?",
-    a: "No. Fences, light curtains and interlocks stay as they are. Omnibox adds a layer on top — one that notices, acts and keeps a record.",
+    a: "No. Fences, light curtains and interlocks stay as they are. OmniBox adds a layer on top — one that notices, acts and keeps a record.",
   },
   {
     q: "Can we start small?",

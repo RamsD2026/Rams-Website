@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Head, Reveal } from "@/components/sections/hardware/hw-shared";
 import { LocPlan } from "./LocPlan";
-import { ORDER, SCALE_TICKS, TECH, scaleMarkPct, type TechKey } from "./loc-data";
+import {
+  ORDER, SCALE_TICKS, TECH, coarsestTechFor, scaleAccAt, scaleBuysAt, scaleMarkPct,
+  type TechKey,
+} from "./loc-data";
 
 /**
  * 03 — the accuracy sandbox. The centrepiece.
@@ -17,19 +20,71 @@ import { ORDER, SCALE_TICKS, TECH, scaleMarkPct, type TechKey } from "./loc-data
  *
  * The strip underneath places the same number on a log scale from 10 mm to 15 m,
  * labelled by what it buys — which millimetre, which slot, which rack, which
- * aisle, which zone. The marker transitions between positions rather than
- * jumping, so the distance between LiDAR and Wi-Fi is felt as well as read.
+ * aisle, which zone.
+ *
+ * ── The strip is draggable, and the direction is the argument ───────
+ * Dragging the marker asks the page the question the deck actually poses: how
+ * precise does *your* use case need to be? The answer is `coarsestTechFor` —
+ * the least infrastructure that clears that bar, not the most accurate sensor
+ * on the page. Drag to "which aisle" and it lands on Bluetooth, because paying
+ * for LiDAR to find an aisle is the mistake this section exists to prevent.
+ *
+ * The marker is its own state rather than a function of the selected tab, and
+ * that is deliberate. If the tab drove the marker while the marker drove the
+ * tab, dragging to 1 m would select UWB, which would snap the marker back to
+ * 20 cm and out from under the pointer. So: a tab click moves the marker, a
+ * drag moves the tabs, and neither writes back. The `left` transition is
+ * dropped while dragging or the marker would trail the finger by half a
+ * second.
  *
  * Everything shown comes from `TECH` in `loc-data.ts`, including the badge that
  * separates the one technology we run today from the three we pilot first.
  */
 export function LocSandbox() {
   const [key, setKey] = useState<TechKey>("lidar");
+  /* The precision the reader is asking for, in metres. Seeded from the opening
+     tab so the strip reads correctly before anyone touches it. */
+  const [need, setNeed] = useState(TECH.lidar.acc);
+  const [dragging, setDragging] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
   const [manual, setManual] = useState(false);
   /* Bumped to hand the truck back to its route; `LocPlan` owns the position. */
   const [resume, setResume] = useState(0);
 
   const T = TECH[key];
+  const pct = scaleMarkPct(need);
+  const buys = scaleBuysAt(need);
+
+  /* A position on the bar becomes a required precision, and the precision picks
+     the technology. Never the other way round — see the note above. */
+  const applyPct = useCallback((next: number) => {
+    const acc = scaleAccAt(next);
+    setNeed(acc);
+    setKey(coarsestTechFor(acc));
+  }, []);
+
+  const setFromX = useCallback((clientX: number) => {
+    const el = barRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0) return;
+    applyPct(((clientX - r.left) / r.width) * 100);
+  }, [applyPct]);
+
+  const nudgeTo = applyPct;
+
+  const onKey = (e: React.KeyboardEvent) => {
+    const step = e.shiftKey ? 10 : 3;
+    const to =
+      e.key === "ArrowLeft" || e.key === "ArrowDown" ? pct - step
+      : e.key === "ArrowRight" || e.key === "ArrowUp" ? pct + step
+      : e.key === "Home" ? 0
+      : e.key === "End" ? 100
+      : null;
+    if (to === null) return;
+    e.preventDefault();
+    applyPct(Math.max(0, Math.min(100, to)));
+  };
 
   return (
     <section className="section white" id="accuracy">
@@ -51,7 +106,10 @@ export function LocSandbox() {
                   className="sb-tab"
                   aria-pressed={key === k}
                   style={{ "--dot": TECH[k].colour } as React.CSSProperties}
-                  onClick={() => setKey(k)}
+                  onClick={() => {
+                    setKey(k);
+                    setNeed(TECH[k].acc);
+                  }}
                 >
                   <i />
                   {TECH[k].name}
@@ -122,26 +180,58 @@ export function LocSandbox() {
         </Reveal>
 
         <Reveal className="scale">
-          <div className="scale-bar">
-            <span className="scale-mark" style={{ left: scaleMarkPct(T.acc).toFixed(1) + "%" }} />
+          <div
+            className="scale-bar"
+            ref={barRef}
+            onPointerDown={(e) => {
+              /* Same convention as the draggable truck in `LocPlan`: capture on
+                 the element so a fast drag that leaves the bar keeps tracking. */
+              e.currentTarget.setPointerCapture(e.pointerId);
+              setDragging(true);
+              setFromX(e.clientX);
+            }}
+            onPointerMove={(e) => dragging && setFromX(e.clientX)}
+            onPointerUp={(e) => {
+              e.currentTarget.releasePointerCapture(e.pointerId);
+              setDragging(false);
+            }}
+            onPointerCancel={() => setDragging(false)}
+          >
+            <span
+              className={"scale-mark" + (dragging ? " dragging" : "")}
+              style={{ left: pct.toFixed(1) + "%" }}
+              role="slider"
+              tabIndex={0}
+              aria-label="How precise do you need to be?"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(pct)}
+              aria-valuetext={`${buys.b} — ${buys.s.toLowerCase()}`}
+              onKeyDown={onKey}
+            />
           </div>
           <div className="scale-ticks">
             {SCALE_TICKS.map((t) => (
-              <span key={t.b} style={{ left: t.left + "%" }}>
+              <button
+                key={t.b}
+                type="button"
+                style={{ left: t.left + "%" }}
+                onClick={() => nudgeTo(t.left)}
+                aria-label={`${t.b} — ${t.s.toLowerCase()}`}
+              >
                 <b>{t.b}</b>
                 {t.s}
-              </span>
+              </button>
             ))}
           </div>
-        </Reveal>
 
-        {/* The disclaimer the whole page is built around — see `loc-data.ts`. */}
-        <p className="note">
-          LiDAR is the sensor we run today, quoted at its ±10 mm accuracy. The UWB, Bluetooth and
-          Wi-Fi figures are typical industry ranges, not RAMS measurements. Indoor accuracy depends
-          on the building, the racking and the survey — we commit to numbers only after a site
-          survey and a pilot.
-        </p>
+          {/* What the current position actually means, in a sentence. Without
+              this the strip is a control with no readout. */}
+          <p className="scale-read" aria-live="polite">
+            Need to know <b>{buys.s.toLowerCase()}</b>? The cheapest thing that gets you there is{" "}
+            <b style={{ color: TECH[key].colour }}>{TECH[key].name}</b>.
+          </p>
+        </Reveal>
       </div>
     </section>
   );

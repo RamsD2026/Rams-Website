@@ -5,7 +5,7 @@
    `index.html` + `loc.css` + `stack.js`, with its design note under
    `docs/superpowers/specs/2026-09-16-location-intelligence-design.md`). The
    reference kept its copy inline in the markup and its recommendation engine in
-   `stack.js` as a `window.RAMS_STACK` global, shared with the Omnibox page. Both
+   `stack.js` as a `window.RAMS_STACK` global, shared with the OmniBox page. Both
    are collected here instead: a page whose entire argument is a set of numbers
    wants those numbers in one file, where the honesty constraint below can be
    audited in a single read rather than chased through nine sections.
@@ -71,7 +71,7 @@ export const TECH: Record<TechKey, Tech> = {
     badge: "Running today",
     live: true,
     tags: "None — it sees the world itself",
-    infra: "A sensor and an Omnibox on the moving asset",
+    infra: "A sensor and an OmniBox on the moving asset",
     rate: "10–20 times a second",
     forTxt: "Shape of the space, obstacles, people as shapes",
     can: "Map the space in 3D and put a pallet exactly where it belongs.",
@@ -89,7 +89,7 @@ export const TECH: Record<TechKey, Tech> = {
     badge: "Pilot first",
     live: false,
     tags: "One tag per asset or person",
-    infra: "Anchors on the walls, powered and surveyed",
+    infra: "Anchors on the walls and racks, powered and surveyed",
     rate: "10–100 times a second",
     forTxt: "Tight zones, fast movement, knowing which tag",
     can: "Fence a machine to 30 cm and know exactly who crossed.",
@@ -106,7 +106,7 @@ export const TECH: Record<TechKey, Tech> = {
     colour: "#30D158",
     badge: "Pilot first",
     live: false,
-    tags: "Cheap tags, years on a battery",
+    tags: "One tag per asset, years on a battery",
     infra: "Gateways every few aisles",
     rate: "About once a second",
     forTxt: "Thousands of assets, answered by area",
@@ -125,7 +125,7 @@ export const TECH: Record<TechKey, Tech> = {
     badge: "Pilot first",
     live: false,
     tags: "Often none — phones and handhelds",
-    infra: "The access points you already have",
+    infra: "Compatible APs and routers, on walls or racks",
     rate: "Every few seconds",
     forTxt: "Whole-site coverage, zone by zone",
     can: "Know which zone a device is in, across the whole site.",
@@ -168,6 +168,36 @@ export function scaleMarkPct(acc: number) {
   return Math.max(0, Math.min(1, pos)) * 100;
 }
 
+/** The inverse, for dragging: a position on the strip back to metres. */
+export function scaleAccAt(pct: number) {
+  const p = Math.max(0, Math.min(100, pct)) / 100;
+  return Math.pow(10, LOW + p * (HIGH - LOW));
+}
+
+/**
+ * The cheapest technology that still clears a required precision.
+ *
+ * This is the page's argument in one function, and the direction matters: the
+ * reader drags to the precision their job actually needs, and the answer is the
+ * *least* infrastructure that gets there — not the most accurate sensor we
+ * sell. `ORDER` runs coarse-ward, so the last one that qualifies wins. Asking
+ * for better than LiDAR returns LiDAR rather than nothing, because the honest
+ * answer to "I need a millimetre" is still the millimetre sensor.
+ */
+export function coarsestTechFor(acc: number): TechKey {
+  let best: TechKey = ORDER[0];
+  for (const k of ORDER) if (TECH[k].acc <= acc) best = k;
+  return best;
+}
+
+/** The tick nearest a given accuracy — what that precision buys, in words. */
+export function scaleBuysAt(acc: number) {
+  const pct = scaleMarkPct(acc);
+  return SCALE_TICKS.reduce((a, b) =>
+    Math.abs(b.left - pct) < Math.abs(a.left - pct) ? b : a,
+  );
+}
+
 /* ── the stack quiz ───────────────────────────────────────────────── */
 
 export type Opt = { id: string; l: string; s: string };
@@ -202,9 +232,9 @@ export type Answers = { find: string; prec: string; act: string };
 
 type BoxKey = "motion" | "edge" | "core";
 const BOXN: Record<BoxKey, string> = {
-  motion: "Omnibox Motion",
-  edge: "Omnibox Edge",
-  core: "Omnibox Core",
+  motion: "OmniBox Motion",
+  edge: "OmniBox Edge",
+  core: "OmniBox Core",
 };
 
 /* Written out rather than lower-cased from the labels, which mangled "MHE". */
@@ -297,13 +327,13 @@ export function compute(a: Answers): Stack {
     kit.push(f === "space" ? "A LiDAR scanner and a survey rig" : "A 4D LiDAR on each " + thing);
   if (tech === "uwb") {
     kit.push("A UWB tag on each " + thing);
-    kit.push("UWB anchors on the walls, surveyed for the area");
+    kit.push("UWB anchors on the walls and racks, surveyed for the area");
   }
   if (tech === "ble") {
     kit.push("A Bluetooth tag on each " + thing);
     kit.push("Gateways every few aisles");
   }
-  if (tech === "wifi") kit.push("Your existing access points — usually no tags at all");
+  if (tech === "wifi") kit.push("Compatible APs and routers — usually no tags at all");
   kit.push(BOXN[box] + " on site, doing the working out");
   if (act === "stop") kit.push("Two outputs wired to the machine or the truck");
   if (act === "warn")
@@ -316,8 +346,8 @@ export function compute(a: Answers): Stack {
       : tech === "uwb"
         ? "UWB is the only one that holds centimetres while things are moving."
         : tech === "ble"
-          ? "Bluetooth tags are cheap enough to put on everything, and an aisle is close enough for this job."
-          : "Wi-Fi uses the network you already own, which is the cheapest way to cover a whole site.";
+          ? "Bluetooth tags are priced to go on everything, and an aisle is close enough for this job."
+          : "Wi-Fi uses compatible access points, often the network you already own, which is the cheapest way to cover a whole site.";
 
   return {
     tech,
@@ -385,7 +415,7 @@ export function fromQuery(search: string): Answers | null {
 }
 
 /**
- * The same three ids, pointed at the Omnibox page and the recommended model.
+ * The same three ids, pointed at the OmniBox page and the recommended model.
  *
  * `/hardware/omnibox` opens a model sheet from `#omni-<key>` (see `OmniPage`),
  * so the hash is what does the work here; the query rides along for the day
@@ -461,17 +491,17 @@ export const TECH_CARDS: {
       "Fast movement, where a slow fix would be useless",
     ],
     cost: [
-      "Anchors on walls or ceilings, with power and network",
+      "Anchors on walls, racks or ceilings, with power and network",
       "A survey, and a re-check when the layout changes",
       "The highest cost per square metre of the four",
     ],
   },
   {
     key: "ble",
-    lead: "Small battery tags chirp every few seconds. Gateways around the building hear them and work out roughly where each tag is — cheap enough to put on everything.",
+    lead: "Small battery tags chirp every few seconds. Gateways around the building hear them and work out roughly where each tag is — at a price that lets you tag everything.",
     facts: [
       ["Accuracy", "1–5 m (typical)"],
-      ["Tags needed", "Yes, cheap ones"],
+      ["Tags needed", "Yes, one per asset"],
       ["Fixed kit", "Gateways every few aisles"],
       ["Updates", "About once a second"],
     ],
@@ -488,11 +518,11 @@ export const TECH_CARDS: {
   },
   {
     key: "wifi",
-    lead: "Uses the access points you already own. Handhelds, tablets and phones are located from the strength of the signal they see — no new hardware on the asset.",
+    lead: "Uses compatible access points and routers, often the ones you already own. Handhelds, tablets and phones are located from the strength of the signal they see — no new hardware on the asset.",
     facts: [
       ["Accuracy", "5–15 m (typical)"],
       ["Tags needed", "Often none"],
-      ["Fixed kit", "Your existing access points"],
+      ["Fixed kit", "Compatible APs and routers, on walls or racks"],
       ["Updates", "Every few seconds"],
     ],
     good: [
@@ -518,7 +548,7 @@ export const JOBS: { h: string; p: string; tags: { t: string; live?: boolean }[]
   },
   {
     h: "Find trolleys, cages and tools",
-    p: "Every asset carries a cheap tag, so the search starts with an aisle instead of a walk around the building.",
+    p: "Every asset carries a tag, so the search starts with an aisle instead of a walk around the building.",
     tags: [{ t: "Bluetooth" }],
   },
   {
@@ -580,7 +610,7 @@ export const FAQ = [
   },
   {
     q: "Does it need the internet?",
-    a: "No. Positions are worked out on site by an Omnibox, and the rules that act on them run there too. The network is only for sending events on to the dashboard, and the box keeps its record when the network drops.",
+    a: "No. Positions are worked out on site by an OmniBox, and the rules that act on them run there too. The network is only for sending events on to the dashboard, and the box keeps its record when the network drops.",
   },
   {
     q: "Do we have to tag everything?",

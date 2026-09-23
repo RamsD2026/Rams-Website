@@ -12,7 +12,7 @@
 
    Still not ported: the `.li-stack` / `.li-pill` block at the foot of the
    reference file. It renders a Location Intelligence sensor stack inside its
-   Omnibox, driven by `stack.js`. That page is now `/hardware/rtls` and its quiz
+   OmniBox, driven by `stack.js`. That page is now `/hardware/rtls` and its quiz
    links here with `?find=&prec=&act=` for exactly this — see `loc-data.ts`.
    ========================================================================== */
 

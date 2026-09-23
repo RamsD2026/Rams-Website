@@ -330,7 +330,7 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         });
       };
 
-      /* ── contact shadow + dust ────────────────────────────── */
+      /* ── contact shadow ───────────────────────────────────── */
       const cvs = (w: number, h: number, fn: (c: CanvasRenderingContext2D, w: number, h: number) => void) => {
         const c = document.createElement("canvas");
         c.width = w;
@@ -360,33 +360,6 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
       (shadow.material as THREE_NS.MeshBasicMaterial).opacity = 0.75;
       device.add(shadow);
       scene.add(device);
-
-      // Normal blending, not additive: additive motes blow out to white on a
-      // light ground.
-      const makeDust = (n: number, r: number, size: number, op: number, color: number) => {
-        const g = new THREE.BufferGeometry();
-        const pos = new Float32Array(n * 3);
-        for (let i = 0; i < n; i++) {
-          pos[i * 3] = (Math.random() - 0.5) * r * 2;
-          pos[i * 3 + 1] = (Math.random() - 0.5) * r * 1.4;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * r * 2;
-        }
-        g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-        return new THREE.Points(
-          g,
-          new THREE.PointsMaterial({
-            size,
-            color,
-            transparent: true,
-            opacity: op,
-            depthWrite: false,
-            sizeAttenuation: true,
-          }),
-        );
-      };
-      const dustNear = makeDust(isMobile ? 120 : 240, 3.2, 0.02, 0.4, 0x8d7454);
-      const dustFar = makeDust(isMobile ? 200 : 420, 22, 0.05, 0.2, 0x8d8d92);
-      scene.add(dustNear, dustFar);
 
       /* ── post: bloom + ACES + a touch of CA, then a wash ──── */
       const vsh = `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`;
@@ -641,15 +614,40 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
         state.drag.x += (state.drag.tx - state.drag.x) * follow;
         state.drag.y += (state.drag.ty - state.drag.y) * follow;
         const selfMove = EASE_ST(seg(p, PH.hero[1], PH.hero[1] + 0.065));
-        state.idleAng += dt * 0.1 * selfMove;
+        if (selfMove < 0.001) {
+          /* Back in the hero chapter, so unwind the idle spin.
+             `idleAng` only ever accumulated, which meant scrolling up to the
+             top showed the camera at whatever yaw it had drifted to rather
+             than the angle the page opens on — the hero is a composed shot and
+             it has to be the same shot every time you return to it.
+
+             Wrapped into (-pi, pi] before easing, or a long spin would unwind
+             through several visible turns on the way back to zero. */
+          const TAU = Math.PI * 2;
+          state.idleAng = ((state.idleAng + Math.PI) % TAU + TAU) % TAU - Math.PI;
+          state.idleAng += (0 - state.idleAng) * Math.min(1, dt * 2.4);
+        } else {
+          state.idleAng += dt * 0.1 * selfMove;
+        }
         // The idle spin eases out approaching POWER rather than snapping to
         // zero on the boundary.
         const idleK = 1 - EASE_ST(seg(p, PH.mach[1] - 0.06, PH.mach[1]));
         const portYaw =
           -0.35 * EASE_ST(tPor) * (1 - EASE_ST(seg(p, PH.expl[0], PH.expl[0] + 0.104)));
+        /* The pose the page opens on. Square-on, the unit reads as a white
+           rectangle with a lens in it — the side that says what it *is* (the
+           fin stack, the ports, the status light) is hidden. Turning it far
+           enough to show that flank costs nothing and makes the silhouette
+           legible immediately.
+
+           Negative, for the same reason `portYaw` is: it brings the port face
+           toward the viewer. It eases out as `selfMove` ramps up, handing the
+           model to the DESIGN chapter's own orbit rather than fighting it. */
+        const heroYaw = -0.46 * (1 - selfMove);
         const bob = p < PH.mach[1] ? 1 : 0;
         device.rotation.y =
-          state.idleAng * idleK + state.drag.x + portYaw + Math.sin(state.time * 0.5) * 0.03 * selfMove * bob;
+          state.idleAng * idleK + state.drag.x + portYaw + heroYaw +
+          Math.sin(state.time * 0.5) * 0.03 * selfMove * bob;
         device.rotation.x = state.drag.y + Math.sin(state.time * 0.33) * 0.02 * selfMove * bob;
         device.position.y = Math.sin(state.time * 0.8) * 0.035 * selfMove * bob;
 
@@ -696,8 +694,6 @@ export function AivFilm({ onUnavailable }: { onUnavailable: () => void }) {
           place(el, tmp, ioOp * EASE_ST(seg(tPor, 0.3 + i * 0.07, 0.48 + i * 0.07)));
         });
 
-        dustNear.rotation.y = state.time * 0.02;
-        dustFar.rotation.y = -state.time * 0.008;
 
         finalMat.uniforms.uExp.value = exposure.value;
         finalMat.uniforms.uWash.value = clamp(1 - exposure.value, 0, 1);

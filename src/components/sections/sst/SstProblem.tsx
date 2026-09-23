@@ -7,7 +7,7 @@ import { PROBLEMS, SIGNALS } from "./sst-data";
 /**
  * 02 — The problem.
  *
- * The same fuse board as the Omnibox page, making a different argument. There
+ * The same fuse board as the OmniBox page, making a different argument. There
  * the six chips are six *signals* converging into one decision; here they are
  * six **questions about one forklift** — who started it, what bent that upright,
  * why it was fast by the dock — each answered today from a different place: a
@@ -193,7 +193,7 @@ export function SstProblem() {
           ))}
         </div>
 
-        <div className="pcards">
+        <div className="pcards six">
           {PROBLEMS.map((p, i) => (
             <Reveal key={p.n} className="pcard" delay={i * 60}>
               <span className="n">{p.n}</span>

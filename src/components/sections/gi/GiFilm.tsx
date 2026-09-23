@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import type * as THREE_NS from "three";
 import { createGiKit, type Holder } from "./gi-3d";
-import { INFO, KEYS } from "./gi-data";
+import { INFO, KEYS, STAGE } from "./gi-data";
 
 /**
- * The hero film — two machines, two directions.
+ * The hero film — two machines, three chapters.
  *
  * A fixed canvas behind fixed type, driven by scroll. Four chapters:
  *
@@ -16,7 +16,7 @@ import { INFO, KEYS } from "./gi-data";
  *                FloorScan, with its reinforcement, a void, and a radar cone,
  *                and it drives across
  *   p 0.50–0.80  "Different machines. Same idea inside." — both explode
- *   p 0.85–1.00  "Coming soon."
+ *   p 0.82–1.00  "Start with the one that hurts."
  *
  * Chapter two is the page's whole thesis in one frame: one machine goes up, one
  * goes down, and the building they inspect is drawn transparent so you can see
@@ -158,24 +158,32 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
       scene.add(cone);
 
       /* ── camera and layout ─────────────────────────────── */
-      const WIDE = { air: V3(-3.3, 1.4, 0), floor: V3(3.1, 0, 0.4), rack: V3(-3.3, 0, -3.6), slab: V3(3.1, 0, 0.4) };
-      const NARROW = { air: V3(-1.2, 2.6, -1.6), floor: V3(1.1, 0, 1.8), rack: V3(-1.2, 0, -5), slab: V3(1.1, 0, 1.8) };
+      const WIDE = { air: V3(-3.3, 0.9, 0), floor: V3(3.1, 0, 0.4), rack: V3(-3.3, 0, -3.6), slab: V3(3.1, 0, 0.4) };
+      const NARROW = { air: V3(-1.2, 1.9, -1.6), floor: V3(1.1, 0, 1.8), rack: V3(-1.2, 0, -5), slab: V3(1.1, 0, 1.8) };
+      /* Three chapters, not four. Cutting "Two directions" freed 0.24–0.45 of
+         the track, and every p below closed up into it — camera keys here, the
+         chapter-two and chapter-three animation windows further down, and the
+         `heroHold` clearance lift. They all read the same p, so they all had to
+         move together: leaving any one of them on the old numbers would play a
+         camera move, or an explode, against a chapter that is no longer there.
+         The track shortened from 520vh to 430vh by the same proportion, so the
+         pacing per chapter is unchanged. */
       const KW: [number, THREE_NS.Vector3, THREE_NS.Vector3][] = [
         [0, V3(0, 3.3, 17), V3(0, 1.9, 0)],
         [0.2, V3(0, 3.3, 17), V3(0, 1.9, 0)],
-        [0.4, V3(0.8, 5.4, 19), V3(0, 1.9, -0.6)],
-        [0.56, V3(-2.2, 7.6, 19.5), V3(0, 3.1, 0)],
-        [0.8, V3(-1.4, 8, 19), V3(0, 3.1, 0)],
-        [0.94, V3(0, 3.3, 17), V3(0, 2.1, 0)],
+        [0.33, V3(0.8, 5.4, 19), V3(0, 1.9, -0.6)],
+        [0.5, V3(-2.2, 7.6, 19.5), V3(0, 3.1, 0)],
+        [0.76, V3(-1.4, 8, 19), V3(0, 3.1, 0)],
+        [0.92, V3(0, 3.3, 17), V3(0, 2.1, 0)],
         [1, V3(0, 3.3, 17), V3(0, 2.1, 0)],
       ];
       const KN: [number, THREE_NS.Vector3, THREE_NS.Vector3][] = [
         [0, V3(0, 9, 22), V3(0, 3.6, 0)],
         [0.2, V3(0, 9, 22), V3(0, 3.6, 0)],
-        [0.4, V3(1, 10, 23), V3(0, 2.8, 0)],
-        [0.56, V3(-1.6, 12.5, 23), V3(0, 4.4, 0)],
-        [0.8, V3(-1, 13, 22.5), V3(0, 4.4, 0)],
-        [0.94, V3(0, 9, 22), V3(0, 3.8, 0)],
+        [0.33, V3(1, 10, 23), V3(0, 2.8, 0)],
+        [0.5, V3(-1.6, 12.5, 23), V3(0, 4.4, 0)],
+        [0.76, V3(-1, 13, 22.5), V3(0, 4.4, 0)],
+        [0.92, V3(0, 9, 22), V3(0, 3.8, 0)],
         [1, V3(0, 9, 22), V3(0, 3.8, 0)],
       ];
       const camPos = V3(), camTgt = V3(), tmp = V3(), ndc = V3();
@@ -241,6 +249,26 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
         state.drag += (state.dragT - state.drag) * Math.min(1, dt * 6);
 
         keyed(narrow ? KN : KW, p, camPos, camTgt);
+
+        /* ── keep the machines out of the headline ───────────────────
+           In the opening and closing chapters the type block owns the middle of
+           the screen, and the machines were rendering straight through it — the
+           drone sat at y 1.4 with the camera looking at 1.9, half a metre below
+           centre, which is no clearance at all.
+
+           Raising the camera target tips the camera up and drops the subject
+           down the frame. The lift is a fraction of the *visible frame height*
+           rather than a fixed number of units, so it holds at any viewport:
+           compute how tall the frame is at this distance and push down by a
+           fifth of it. That is why this is here rather than in `KW`/`KN` — a
+           hard-coded target would need a different value per aspect. */
+        const heroHold =
+          (1 - ss(seg(p, 0.12, 0.22))) + ss(seg(p, 0.88, 0.96));
+        if (heroHold > 0.001) {
+          const frameH = 2 * camPos.distanceTo(camTgt) * Math.tan((cam.fov * Math.PI) / 360);
+          camTgt.y += Math.min(1, heroHold) * frameH * (narrow ? 0.26 : 0.2);
+        }
+
         const a = cam.aspect;
         const push = narrow ? clamp(0.56 / a, 0.85, 1.35) : clamp(1.6 / a, 1, 1.6);
         camPos.sub(camTgt).multiplyScalar(push).add(camTgt);
@@ -251,10 +279,10 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
         cam.position.lerp(camPos, Math.min(1, dt * 5));
         cam.lookAt(camTgt);
 
-        /* chapter two: up and down */
-        const ch2 = ss(seg(p, 0.24, 0.34)) * (1 - ss(seg(p, 0.45, 0.52)));
-        const climb = ss(seg(p, 0.27, 0.44)) * (1 - ss(seg(p, 0.46, 0.56)));
-        const drive = ss(seg(p, 0.25, 0.46));
+        /* the transition: up and down */
+        const ch2 = ss(seg(p, 0.2, 0.28)) * (1 - ss(seg(p, 0.36, 0.44)));
+        const climb = ss(seg(p, 0.22, 0.34)) * (1 - ss(seg(p, 0.37, 0.46)));
+        const drive = ss(seg(p, 0.21, 0.38));
         for (const f of fade) {
           f.m.opacity = f.max * ch2;
           f.m.visible = ch2 > 0.01;
@@ -271,7 +299,7 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
         voidM.emissiveIntensity = 0.45 + (reduceMotion ? 0 : Math.sin(state.time * 2.4) * 0.2);
 
         /* chapter three: both come apart */
-        const e = ss(seg(p, 0.5, 0.62)) * (1 - ss(seg(p, 0.82, 0.92)));
+        const e = ss(seg(p, 0.42, 0.54)) * (1 - ss(seg(p, 0.84, 0.93)));
         hs.forEach((h, i) => {
           kit.explode(h, e, 0.65);
           kit.spinRotors(h, dt);
@@ -362,7 +390,7 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
           }}
         >
           <div className="heroblock">
-            <p className="kicker">RAMS Digital · Coming soon</p>
+            <p className="kicker">RAMS Digital</p>
             <h1>Guided Inspection</h1>
             <p className="tag">
               Machines that go and look at the parts of your building <b>nobody checks.</b>
@@ -371,8 +399,8 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
               <a className="btn btn-primary" href="#machines">
                 Meet the machines
               </a>
-              <a className="btn btn-secondary" href="#today">
-                Become a design partner
+              <a className="btn btn-secondary" href="#contact">
+                Tell us what to look at
               </a>
             </div>
           </div>
@@ -381,29 +409,18 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
           </div>
         </section>
 
+        {/* The drone's climb and the robot's run across the slab now play as a
+            transition rather than a chapter — the type block that narrated them
+            ("Two directions · Above the floor. Below it.") said what the
+            machines section below says again three screens later, so it was
+            cut. Everything keyed to this p-space moved with it; see the note on
+            `KW`. */}
         <section
           className="sec top"
-          data-a="0.24"
-          data-b="0.45"
+          data-a="0.4"
+          data-b="0.74"
           ref={(el) => {
             secRefs.current[1] = el;
-          }}
-        >
-          <span className="label">Two directions</span>
-          <h2>
-            Above the floor.
-            <br />
-            Below it.
-          </h2>
-          <p className="lead">AirScan flies up the rack face. FloorScan looks down through the slab.</p>
-        </section>
-
-        <section
-          className="sec top"
-          data-a="0.5"
-          data-b="0.8"
-          ref={(el) => {
-            secRefs.current[2] = el;
           }}
         >
           <span className="label">Inside</span>
@@ -419,17 +436,17 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
 
         <section
           className="sec top"
-          data-a="0.85"
+          data-a="0.82"
           data-b="1.08"
           ref={(el) => {
-            secRefs.current[3] = el;
+            secRefs.current[2] = el;
           }}
         >
-          <h2>Coming soon.</h2>
-          <p className="lead">We’re building both with a small number of design partners.</p>
+          <h2>Start with the one that hurts.</h2>
+          <p className="lead">The racking nobody can see the top of, or the slab nobody has ever looked under.</p>
           <div className="hero-cta" style={{ justifyContent: "center", marginTop: 28 }}>
-            <a className="btn btn-primary" href="#today">
-              Become a design partner
+            <a className="btn btn-primary" href="#contact">
+              Tell us what to look at
             </a>
           </div>
         </section>
@@ -448,7 +465,7 @@ export function GiFilm({ onUnavailable }: { onUnavailable: () => void }) {
             <span>{INFO[k].tag}</span>
             {/* The badge rides the film too — no mention of either machine
                 anywhere on this page appears without it. */}
-            <em>Concept</em>
+            <em>{STAGE[k].badge}</em>
           </div>
         ))}
       </div>

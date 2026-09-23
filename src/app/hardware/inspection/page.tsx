@@ -7,7 +7,7 @@ import "./inspection.css";
 export const metadata: Metadata = {
   title: "Guided Inspection — AirScan and FloorScan | RAMS",
   description:
-    "Two concept machines that inspect what nobody checks: AirScan flies the rack face and reads every bay, FloorScan drives the floor and looks down through the slab. Built with design partners.",
+    "Two machines that inspect what nobody checks: AirScan flies the rack face and reads every bay at every level, FloorScan drives the floor and looks down through the slab for voids and settlement.",
 };
 
 /**
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
  * Roboto per `docs/typography.md` with every ceiling capped, and the palette is
  * bound to the brand tokens in `globals.css`.
  *
- * Its `inspect.css` is the Omnibox stylesheet plus this page's own components,
+ * Its `inspect.css` is the OmniBox stylesheet plus this page's own components,
  * so the shared part comes from `styles/hardware-omni.css` — including the
  * chooser shell, which moved there from `omnibox.css` when this page turned out
  * to use it. `inspection.css` adds only what is this page's alone.
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
  *
  * ── Both machines are concepts ──────────────────────────────────────
  * That is the page's governing constraint and it shapes the markup, not just the
- * copy: a Concept badge on every mention driven by one `STAGE` record, stage
+ * copy: a stage badge on every mention driven by one `STAGE` record, stage
  * rails in two places, "What we're building" where a spec table would be, and no
  * measurement figure anywhere on the page. The rules are restated in full at the
  * head of `gi-data.ts`. If a machine moves on, `STAGE` is the single edit.

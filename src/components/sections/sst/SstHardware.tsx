@@ -9,11 +9,12 @@ import { HW_TABS, type LidarMode, type SheetKey } from "./sst-data";
 /**
  * 08 — Meet the hardware.
  *
- * Five devices on a turntable, one at a time, drag to turn, labels on request.
- * They are the same `DEV` builds the film mounts on the truck, so what you turn
- * here is what you saw up there — modelled from the product photographs down to
- * the cable glands, the power switch on the side of the Access Control unit and
- * the three status lights on the reverse alarm.
+ * Four devices on a turntable, one at a time, drag to turn, labels on request.
+ * They are the same builds the film mounts on the truck, so what you turn here
+ * is what you saw up there: the Pallet Detection Sensor and the LiDAR are their
+ * real CAD models (`REAL` in `sst-3d.ts`), the other two are modelled down to
+ * the power switch on the side of the Access Control unit. Labels are part names only — the
+ * caption under the stage carries the prose.
  *
  * ── Labels are laid out, not just projected ─────────────────────────
  * Projecting each part's centre to screen space stacks chips on top of one
@@ -21,7 +22,7 @@ import { HW_TABS, type LidarMode, type SheetKey } from "./sst-data";
  * each chip flips to whichever side it fits on, is clamped inside the stage,
  * and — per side, top to bottom — is pushed down to clear the one above. Under
  * 600px there is no room beside the model at all, so they become two columns
- * pinned to the stage edges. Same treatment as the Omnibox Inside viewer, and
+ * pinned to the stage edges. Same treatment as the OmniBox Inside viewer, and
  * for the same reason.
  *
  * ── If WebGL is missing ─────────────────────────────────────────────
@@ -93,6 +94,9 @@ export function SstHardware({
       }
       const cam = new THREE.PerspectiveCamera(30, 16 / 9, 0.002, 50);
 
+      /* Procedural first: these build instantly and cost no network. The
+         pallet sensor then upgrades itself to the real CAD model the first
+         time its tab is shown — see `upgrade` below. */
       const devs = {} as Record<DevKey, Device>;
       for (const t of HW_TABS) {
         const d = kit.DEV[t.key]();
@@ -108,19 +112,24 @@ export function SstHardware({
         devs[t.key] = d;
       }
 
+      /* The device actually on screen. Deliberately not `activeRef`: that
+         flips the moment a tab is clicked, while the old model is still
+         fading out — and framing the old model for the new one's size is what
+         made it jump just before every switch. */
+      let shown: DevKey = activeRef.current;
+
       let chips: Chip[] = [];
       const buildChips = () => {
         chips.forEach((c) => c.el.remove());
-        chips = devs[activeRef.current].parts.map((p) => {
+        chips = devs[shown].parts.map((p) => {
           const d = document.createElement("div");
           d.className = "pchip";
           const inner = document.createElement("div");
           inner.className = "in";
+          // The part's name only — the caption under the stage carries the prose.
           const b = document.createElement("b");
           b.textContent = p.label;
-          const s = document.createElement("span");
-          s.textContent = p.desc;
-          inner.append(b, s);
+          inner.append(b);
           d.append(inner);
           chipRoot.appendChild(d);
           return { el: d, obj: p.obj, x: 0, y: 0, h: 0, flip: false };
@@ -128,27 +137,66 @@ export function SstHardware({
       };
       buildChips();
 
-      let ang = 0.55, elev = 0.32, lk = 0;
+      /* The real model, fetched only when its own tab is looked at. Two
+         megabytes is not much, but it is two megabytes nobody who never opens
+         this tab should be made to download. */
+      const upgrading = new Map<DevKey, Promise<void>>();
+      const upgrade = (k: DevKey): Promise<void> => {
+        if (!kit.hasDevGlb(k)) return Promise.resolve();
+        let p = upgrading.get(k);
+        if (!p) {
+          p = doUpgrade(k);
+          upgrading.set(k, p);
+        }
+        return p;
+      };
+      const doUpgrade = async (k: DevKey) => {
+        const d = await kit.loadDevice(k);
+        if (disposed || d === devs[k]) return;
+        d.group.visible = devs[k].group.visible;
+        scene.remove(devs[k].group);
+        d.group.traverse((o) => {
+          const mesh = o as THREE_NS.Mesh;
+          // Label anchors are invisible markers; they must not cast a shadow.
+          if (mesh.isMesh && (mesh.material as THREE_NS.Material)?.opacity !== 0) {
+            mesh.castShadow = !isMobile;
+            mesh.receiveShadow = !isMobile;
+          }
+        });
+        scene.add(d.group);
+        devs[k] = d;
+        if (shown === k) buildChips();
+      };
+      void upgrade(activeRef.current);
+
+      let ang = 0.55, elev = activeRef.current === "bms" ? 0.72 : 0.32, lk = 0;
       let drag: { x: number; y: number } | null = null;
 
-      /* Switching device: fade the stage out, swap, fade back. Without the
-         beat the old model is simply replaced mid-frame and reads as a glitch. */
+      /* Switching device: fade the stage out, swap while it is invisible,
+         fade back. The swap also waits for the real CAD model if that tab has
+         one and it has not arrived yet — otherwise the stand-in shows first and
+         the real model replaces it a beat later, a second jump. `token` drops
+         a switch that a quicker click has already overtaken. */
+      let token = 0;
       selectRef.current = (k: DevKey) => {
+        const mine = ++token;
         const swap = () => {
+          if (disposed || mine !== token) return;
+          shown = k;
           for (const t of HW_TABS) devs[t.key].group.visible = t.key === k;
           buildChips();
           ang = 0.55;
+          // A board is read from above; at the enclosures' angle it is all edge.
+          elev = k === "bms" ? 0.72 : 0.32;
+          stage.classList.remove("swap");
         };
         if (reduceMotion) {
-          swap();
+          void upgrade(k).then(swap);
           return;
         }
         stage.classList.add("swap");
-        window.setTimeout(() => {
-          if (disposed) return;
-          swap();
-          stage.classList.remove("swap");
-        }, 200);
+        const faded = new Promise((r) => window.setTimeout(r, 230));
+        void Promise.all([upgrade(k), faded]).then(swap);
       };
       cleanups.push(() => {
         selectRef.current = null;
@@ -186,13 +234,15 @@ export function SstHardware({
         lk = reduceMotion ? on : lk + (on - lk) * Math.min(1, dt * 8);
         if (!drag && !reduceMotion) ang += dt * 0.25;
 
-        const d = devs[activeRef.current];
+        const d = devs[shown];
         const s = d.size;
         const span = Math.max(s.x, s.y, s.z);
         look.set(0, s.y * 0.5, 0);
         /* Distance from the device's own size, not a constant: the chip is
-           120mm across and the reverse alarm with its beacon is 380mm. */
-        const dist = span * (cam.aspect < 1 ? 5.2 : 3.4);
+           120mm across and Access Control is 240mm. */
+        // A flat board is small from any angle, so it is brought in closer.
+        const near = shown === "bms" ? 0.72 : 1;
+        const dist = span * near * (cam.aspect < 1 ? 5.2 : 3.4);
         cam.position.set(
           Math.sin(ang) * Math.cos(elev) * dist,
           look.y + Math.sin(elev) * dist,

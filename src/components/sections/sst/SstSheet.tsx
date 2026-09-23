@@ -14,7 +14,7 @@ import type { DevKey } from "./sst-3d";
  * because there is nothing quotable to put in one, which is the same reason the
  * battery block has no figures.
  *
- * The accessibility contract is the Omnibox sheet's, unchanged and for the same
+ * The accessibility contract is the OmniBox sheet's, unchanged and for the same
  * reasons: focus moves in and returns, Tab is trapped, Escape closes, and the
  * page behind is pinned with `position: fixed` rather than `overflow: hidden`,
  * because iOS Safari ignores the latter behind a fixed overlay.

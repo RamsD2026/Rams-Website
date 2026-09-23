@@ -8,7 +8,7 @@ import { STAGE, RAIL, type MachineKey } from "./gi-data";
  * we are today" tiles and the film's own tags.
  *
  * Both read `STAGE` in `gi-data.ts` and nothing else, so moving a machine from
- * Concept to Prototype is one edit and every badge and rail on the page follows.
+ * Moving a machine along the rail is one edit and every badge and rail on the page follows.
  * That is the reference's own design, and it is the reason no mention of either
  * machine anywhere can quietly lose its badge.
  */

@@ -34,7 +34,7 @@ export function OmniFamily({
           label="The family"
           top="Four edge systems."
           bottom="One physical intelligence layer."
-          intro="Each Omnibox is matched to its job — the right brain, the right connections, the right enclosure. Every event that matters then flows into the same RAMS Digital Twin."
+          intro="Each OmniBox is matched to its job — the right brain, the right connections, the right enclosure. Every event that matters then flows into the same RAMS Digital Twin."
         />
 
         <div className="family">

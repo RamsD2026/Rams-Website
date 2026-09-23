@@ -15,7 +15,7 @@ import type * as THREE_NS from "three";
    mounting plate, the brain and a long "RAMS" battery box stacked on top) and
    the FloorScan build from the same sketch idea — radar underneath, profiler at
    the front, LiDAR on top. They are drawn to read clearly at a glance, not to a
-   tolerance. The viewer carries a "Concept model" chip saying exactly that.
+   tolerance. The viewer carries a "Pilot machine" chip saying exactly that.
 
    The reference supports dropping in `airscan.glb` / `floorscan.glb` to replace
    the stand-ins, with part names mapped to plain-language labels. That loader is
@@ -82,7 +82,7 @@ export function createGiKit(THREE: typeof THREE_NS, isMobile: boolean, reduceMot
     return t;
   };
 
-  /** The diagonal rib pattern on FloorScan's lid — the Omnibox lid texture. */
+  /** The diagonal rib pattern on FloorScan's lid — the OmniBox lid texture. */
   const RIB = tex(512, 512, (x, w, h) => {
     x.fillStyle = "#232428";
     x.fillRect(0, 0, w, h);
@@ -250,16 +250,6 @@ export function createGiKit(THREE: typeof THREE_NS, isMobile: boolean, reduceMot
     return o;
   };
   /** An open-topped box — FloorScan's chassis. */
-  const tray = (W: number, H: number, D: number, t: number, m: THREE_NS.Material, p: THREE_NS.Object3D) => {
-    const g = new THREE.Group();
-    p.add(g);
-    bx(W, t, D, m, 0, t / 2, 0, g);
-    bx(W, H, t, m, 0, H / 2, D / 2 - t / 2, g);
-    bx(W, H, t, m, 0, H / 2, -D / 2 + t / 2, g);
-    bx(t, H, D - 2 * t, m, W / 2 - t / 2, H / 2, 0, g);
-    bx(t, H, D - 2 * t, m, -W / 2 + t / 2, H / 2, 0, g);
-    return g;
-  };
   const outline = (w: number, h: number, d: number, m: THREE_NS.Material, x: number, y: number, z: number, p: THREE_NS.Object3D) => {
     const e = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), m);
     e.position.set(x, y, z);
@@ -383,69 +373,175 @@ export function createGiKit(THREE: typeof THREE_NS, isMobile: boolean, reduceMot
 
     floorscan() {
       const g = new THREE.Group(), parts: Part[] = [], spin: THREE_NS.Group[] = [];
-      const L = 3.4, W = 2.2, cl = 0.3, H = 0.58;
+      /* Overall footprint is unchanged — the scan scenes, the rack and the
+         camera framing are all built around it. What changed is everything
+         inside it: this was a flat tray on four thin discs, which read as a
+         laptop on castors. A slab survey vehicle works on broken concrete,
+         expansion joints and ramps, so it now has the proportions of one. */
+      const L = 3.4, W = 2.2;
+      const R = 0.42, TW = 0.34;          // wheel radius and width
+      const FLOOR = 0.52;                 // hull underside, clear of the tyres
+      const H = 0.6;                      // hull height
+      const TOP = FLOOR + H;
+
+      /* One wheel: carcass, moulded shoulder lugs, sidewall, machined hub and
+         five bolts. The lugs are the whole reason this reads as an outdoor
+         machine rather than an office robot — a smooth cylinder at this size
+         always looks like a castor. */
+      const wheel = (o: THREE_NS.Group, x: number, z: number) => {
+        const w = new THREE.Group();
+        w.position.set(x, R, z);
+        o.add(w);
+        cy(R, TW, M.tyre, 0, 0, 0, w, "z", 32);
+        const LUGS = 18;
+        for (let i = 0; i < LUGS; i++) {
+          const a = (i / LUGS) * Math.PI * 2;
+          const lug = bx(0.115, 0.075, TW * 0.9, M.tyre, Math.cos(a) * R, Math.sin(a) * R, 0, w);
+          lug.rotation.z = a;
+        }
+        cy(R * 0.66, TW + 0.014, M.nylon, 0, 0, 0, w, "z", 28);
+        cy(R * 0.44, TW + 0.032, M.alu, 0, 0, 0, w, "z", 24);
+        cy(R * 0.17, TW + 0.05, M.grey, 0, 0, 0, w, "z", 16);
+        for (let i = 0; i < 5; i++) {
+          const a = (i / 5) * Math.PI * 2 + 0.3;
+          cy(0.027, TW + 0.062, M.metal, Math.cos(a) * R * 0.28, Math.sin(a) * R * 0.28, 0, w, "z", 10);
+        }
+      };
 
       part(g, parts, "Chassis", "Low and stable, with a soft bumper all the way round.", V3(0, 0, 0), (o) => {
         const b = new THREE.Group();
-        b.position.y = cl;
+        b.position.y = FLOOR;
         o.add(b);
-        tray(L, H, W, 0.05, M.shell, b);
-        bx(0.09, 0.16, W + 0.04, M.orange, L / 2 + 0.045, cl + 0.24, 0, o);
-        bx(0.09, 0.16, W + 0.04, M.orange, -L / 2 - 0.045, cl + 0.24, 0, o);
-        bx(L * 0.5, 0.05, 0.012, M.orange, 0.2, cl + H * 0.62, W / 2 + 0.007, o);
-        bx(L * 0.5, 0.05, 0.012, M.orange, 0.2, cl + H * 0.62, -W / 2 - 0.007, o);
+
+        /* The hull, built as facets rather than one box: a full-width lower
+           body, a narrower shoulder above it, and sloped plates closing the
+           nose and tail. */
+        bx(L, H * 0.52, W, M.shell, 0, H * 0.26, 0, b);
+        bx(L * 0.94, H * 0.5, W * 0.88, M.shell, 0, H * 0.72, 0, b);
+
+        const slope = (sx: number) => {
+          const p = bx(H * 0.66, H * 0.56, W * 0.9, M.shell, sx * (L / 2 - 0.04), H * 0.72, 0, b);
+          p.rotation.z = sx * 0.62;
+        };
+        slope(1);
+        slope(-1);
+
+        /* Chamfer strips down the long top edges — a hard 90° corner is what
+           makes untextured geometry look like a cardboard box. */
+        for (const s of [1, -1]) {
+          const c = bx(L * 0.95, 0.1, 0.1, M.nylon, 0, H * 0.95, s * (W * 0.44), b);
+          c.rotation.x = s * Math.PI / 4;
+        }
+
+        /* Bumpers, side rails and the wheel-arch spacers. */
+        bx(0.13, 0.2, W + 0.05, M.orange, L / 2 + 0.05, FLOOR + 0.2, 0, o);
+        bx(0.13, 0.2, W + 0.05, M.orange, -L / 2 - 0.05, FLOOR + 0.2, 0, o);
+        for (const s of [1, -1]) {
+          bx(L * 0.62, 0.055, 0.055, M.alu, 0.1, FLOOR + 0.12, s * (W / 2 + 0.05), o);
+          bx(L * 0.5, 0.05, 0.014, M.orange, 0.2, FLOOR + H * 0.55, s * (W / 2 + 0.008), o);
+        }
+
+        /* Front sensor bar: three lenses recessed into a dark housing. */
+        const bar = new THREE.Group();
+        bar.position.set(L / 2 + 0.005, FLOOR + H * 0.52, 0);
+        o.add(bar);
+        bx(0.1, 0.22, W * 0.62, M.chip, 0, 0, 0, bar);
+        for (let i = -1; i <= 1; i++) {
+          cy(0.075, 0.055, M.lens, 0.055, 0, i * W * 0.2, bar, "x", 20);
+          cy(0.085, 0.02, M.alu, 0.04, 0, i * W * 0.2, bar, "x", 20);
+        }
+
+        /* Suspension arms, so the wheels are attached to something. */
+        for (const sx of [1, -1]) {
+          for (const sz of [1, -1]) {
+            const arm = bx(0.42, 0.13, 0.16, M.grey, sx * 1.05, FLOOR - 0.06, sz * (W / 2 - 0.05), o);
+            arm.rotation.z = sx * -0.22;
+            cy(0.07, 0.3, M.alu, sx * 1.05, R, sz * (W / 2 + 0.04), o, "z", 16);
+          }
+        }
       });
 
       part(g, parts, "Top cover", "Sealed against dust and the odd spill.", V3(0, 1.75, 0), (o) => {
-        o.position.y = cl + H;
-        bx(L, 0.07, W, ribMat(4, 2.6), 0, 0.035, 0, o);
-        decal(M.logo, 0.6, 0.24, -0.95, 0.072, 0.55, o);
+        o.position.y = TOP;
+        bx(L * 0.9, 0.08, W * 0.84, ribMat(4, 2.6), 0, 0.04, 0, o);
+        /* Two beacons, on the corners where they can be seen from an aisle. */
+        for (const sz of [1, -1]) {
+          cy(0.075, 0.055, M.metal, -L * 0.34, 0.1, sz * W * 0.3, o, "y", 16);
+          cy(0.07, 0.11, M.orange, -L * 0.34, 0.185, sz * W * 0.3, o, "y", 16);
+        }
+        decal(M.logo, 0.62, 0.25, -0.5, 0.085, 0.5, o);
       });
 
-      const wheel = (o: THREE_NS.Group, x: number, z: number) => {
-        cy(0.26, 0.2, M.tyre, x, 0.26, z, o, "z");
-        cy(0.12, 0.21, M.alu, x, 0.26, z, o, "z");
-      };
       part(g, parts, "Drive wheels", "Steady, straight passes down the aisle.", V3(0, 0, 1.2), (o) => {
-        wheel(o, 1.05, W / 2 + 0.03);
-        wheel(o, -1.05, W / 2 + 0.03);
+        wheel(o, 1.05, W / 2 + 0.06);
+        wheel(o, -1.05, W / 2 + 0.06);
       });
       // The far pair explodes the other way and takes no label of its own.
       part(g, parts, "", "", V3(0, 0, -1.2), (o) => {
-        wheel(o, 1.05, -W / 2 - 0.03);
-        wheel(o, -1.05, -W / 2 - 0.03);
+        wheel(o, 1.05, -W / 2 - 0.06);
+        wheel(o, -1.05, -W / 2 - 0.06);
       });
 
+      /* Both ground-facing instruments have to sit low — a radar reads down
+         through the slab and a profiler reads across it, so neither can be
+         tucked up under the hull. That means they need visible structure
+         holding them there, or they read as floating. The brackets belong to
+         the instrument rather than the chassis so they fly with it when the
+         model explodes. */
       part(g, parts, "Ground-penetrating radar", "Looks down through the slab as it drives.", V3(-2.9, 0.1, 0), (o) => {
-        o.position.set(-0.25, 0.05, 0);
-        bx(1.3, 0.14, 1.5, M.white, 0, 0.07, 0, o);
-        bx(1.3, 0.025, 1.5, M.orange, 0, 0.15, 0, o);
+        o.position.set(-0.25, 0.06, 0);
+        bx(1.3, 0.16, 1.5, M.white, 0, 0.08, 0, o);
+        bx(1.34, 0.03, 1.54, M.orange, 0, 0.17, 0, o);
+        // Four drop posts up to the hull underside at FLOOR.
+        for (const sx of [1, -1]) {
+          for (const sz of [1, -1]) {
+            bx(0.075, FLOOR - 0.15, 0.075, M.alu, sx * 0.52, (FLOOR - 0.15) / 2 + 0.16, sz * 0.6, o);
+          }
+        }
       });
       part(g, parts, "Surface profiler", "Reads flatness and levelness along the aisle.", V3(1.3, 0.1, 0), (o) => {
-        o.position.set(L / 2 + 0.24, 0.1, 0);
-        bx(0.2, 0.16, 1.9, M.metal, 0, 0.08, 0, o);
-        bx(0.02, 0.04, 1.7, M.laser, 0.11, 0.06, 0, o);
+        o.position.set(L / 2 + 0.3, 0.12, 0);
+        bx(0.22, 0.18, 1.9, M.metal, 0, 0.09, 0, o);
+        bx(0.025, 0.045, 1.72, M.laser, 0.12, 0.07, 0, o);
+        /* Two swept arms back to the chassis nose. The hull front face is at
+           x = L/2 and its underside at y = FLOOR, which in this group's local
+           space is (-0.3, FLOOR - 0.12) — the arms span exactly that, so the
+           bar hangs off the machine instead of in front of it. */
+        const dx = 0.3, dy = FLOOR - 0.12 - 0.09;
+        const len = Math.hypot(dx, dy);
+        for (const sz of [1, -1]) {
+          const arm = bx(len, 0.085, 0.09, M.alu, -dx / 2, 0.09 + dy / 2, sz * 0.62, o);
+          arm.rotation.z = -Math.atan2(dy, dx);
+          // A gusset where the arm meets the bar, so the joint is not a seam.
+          bx(0.1, 0.14, 0.1, M.grey, -0.03, 0.12, sz * 0.62, o);
+        }
       });
       part(g, parts, "The brain", "Turns radar and surface readings into a floor plan.", V3(0.5, 1.05, 0), (o) => {
-        o.position.set(0.6, cl + 0.07, 0);
+        o.position.set(0.6, FLOOR + 0.1, 0);
         bx(0.9, 0.03, 0.8, M.pcb, 0, 0, 0, o);
         bx(0.56, 0.03, 0.42, M.chip, 0, 0.03, 0, o);
         for (let i = 0; i < 8; i++) bx(0.012, 0.12, 0.36, M.alu, -0.22 + i * 0.063, 0.1, 0, o);
       });
       part(g, parts, "Battery", "Charges at its dock between runs.", V3(-0.6, 0.65, 0), (o) => {
-        o.position.set(-0.8, cl + 0.05, 0);
+        o.position.set(-0.8, FLOOR + 0.06, 0);
         bx(1.1, 0.3, 1.3, M.batt, 0, 0.15, 0, o);
         bx(0.25, 0.06, 0.1, M.orange, 0, 0.33, 0.5, o);
       });
+
+      /* The turret, and the one thing on the machine that should read from
+         across a warehouse: a stepped pedestal, a machined drum and a smoked
+         window, sat on the centre line rather than tucked at one end. */
       part(g, parts, "Navigation LiDAR", "Knows where it is on your floor plan.", V3(0.2, 2.7, 0), (o) => {
-        o.position.set(1.05, cl + H + 0.07, 0);
-        cy(0.04, 0.3, M.grey, 0, 0.15, 0, o);
-        cy(0.2, 0.16, M.white, 0, 0.38, 0, o);
-        cy(0.21, 0.03, M.chip, 0, 0.47, 0, o);
-        cy(0.13, 0.05, M.lens, 0, 0.5, 0, o);
+        o.position.set(0.55, TOP + 0.08, 0);
+        cy(0.16, 0.08, M.chip, 0, 0.04, 0, o, "y", 24);
+        cy(0.1, 0.16, M.grey, 0, 0.16, 0, o, "y", 20);
+        cy(0.185, 0.2, M.alu, 0, 0.34, 0, o, "y", 28);
+        cy(0.175, 0.13, M.lens, 0, 0.42, 0, o, "y", 28);
+        cy(0.195, 0.045, M.chip, 0, 0.52, 0, o, "y", 28);
+        cy(0.06, 0.03, M.orange, 0, 0.55, 0, o, "y", 16);
       });
 
-      return { group: g, parts, spin, size: V3(L + 0.7, cl + H + 0.6, W + 0.5) };
+      return { group: g, parts, spin, size: V3(L + 0.8, TOP + 0.75, W + 0.55) };
     },
   };
 

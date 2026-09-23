@@ -78,8 +78,28 @@ export function loadFork(): Promise<THREE_NS.Group> {
   return forkSrc;
 }
 
+const glbSrc = new Map<string, Promise<THREE_NS.Group>>();
+
+/** A device GLB, parsed once for the whole page — the viewer, the lineup and the truck share it. */
+function loadGlb(url: string): Promise<THREE_NS.Group> {
+  let p = glbSrc.get(url);
+  if (!p) {
+    p = import("three/examples/jsm/loaders/GLTFLoader.js").then(
+      ({ GLTFLoader }) => new GLTFLoader().loadAsync(url).then((g) => g.scene as unknown as THREE_NS.Group),
+    );
+    glbSrc.set(url, p);
+    // As with the truck: a failed load must not stay cached.
+    p.catch(() => glbSrc.delete(url));
+  }
+  return p;
+}
+
 export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
   const V3 = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
+  /** The Pallet Detection Sensor's real size, off the supplied CAD (millimetres in the 3MF). */
+  const PDS_SIZE = V3(0.1048, 0.08, 0.035);
+  /** The LiDAR's, off its STEP: 74.9 × 63.6 × 75 mm. */
+  const LIDAR_SIZE = V3(0.0749, 0.0636, 0.075);
   const TAU = Math.PI * 2;
 
   /* ── shared bits ────────────────────────────────────────── */
@@ -92,6 +112,53 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
     t.anisotropy = 8;
+    return t;
+  };
+
+  /* ── the brand mark ─────────────────────────────────────── */
+  //
+  // Drawn from the site's own `RAMS_Logo_White.svg` — white wordmark, #FF6A00
+  // corner tick — rather than re-lettered in canvas, so every unit carries the
+  // real logo in the real colours. The SVG decodes asynchronously, so a texture
+  // that uses it is drawn once now and again the moment the image is ready.
+
+  const LOGO_AR = 626.25 / 247.58;
+  const logoImg = new Image();
+  const logoReady: (() => void)[] = [];
+  logoImg.onload = () => logoReady.splice(0).forEach((f) => f());
+  logoImg.src = "/RAMS_Logo_White.svg";
+
+  /** The logo at `w` px wide; `mono` recolours the whole mark (silkscreen, laser etch). */
+  const drawLogo = (x: CanvasRenderingContext2D, px: number, py: number, w: number, mono?: string) => {
+    if (!logoImg.complete || !logoImg.naturalWidth) return;
+    const h = w / LOGO_AR;
+    if (!mono) {
+      x.drawImage(logoImg, px, py, w, h);
+      return;
+    }
+    const c = document.createElement("canvas");
+    c.width = Math.ceil(w);
+    c.height = Math.ceil(h);
+    const y = c.getContext("2d")!;
+    y.drawImage(logoImg, 0, 0, w, h);
+    y.globalCompositeOperation = "source-in";
+    y.fillStyle = mono;
+    y.fillRect(0, 0, c.width, c.height);
+    x.drawImage(c, px, py);
+  };
+
+  /** `tex`, redrawn once the logo has decoded. */
+  const brandTex = (w: number, h: number, fn: (c: CanvasRenderingContext2D, w: number, h: number) => void) => {
+    const t = tex(w, h, fn);
+    if (!logoImg.complete) {
+      logoReady.push(() => {
+        const c = t.image as HTMLCanvasElement;
+        const x = c.getContext("2d")!;
+        x.clearRect(0, 0, w, h);
+        fn(x, w, h);
+        t.needsUpdate = true;
+      });
+    }
     return t;
   };
 
@@ -160,15 +227,22 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
     key: std(0x1b1c20, { roughness: 0.5 }),
     cable: std(0x121214, { roughness: 0.7 }),
     yellow: std(0xf2b200, { roughness: 0.45 }),
-    red: std(0xc62828, { roughness: 0.5 }),
-    pcb: std(0x0f3d27, { roughness: 0.6 }),
-    gold: std(0xc8a65a, { roughness: 0.3, metalness: 0.9 }),
-    smd: std(0x3a3b40, { roughness: 0.5 }),
     lidar: std(0xe9eaec, { roughness: 0.35, metalness: 0.1 }),
-    cyan: new THREE.MeshStandardMaterial({ color: 0x28d9ff, emissive: 0x28d9ff, emissiveIntensity: 1.2 }),
+    /* The branded units: a matte black shell, gunmetal hardware, brand orange. */
+    shell: std(0x131416, { roughness: 0.58, envMapIntensity: 0.55 }),
+    gunmetal: std(0x3b3d42, { roughness: 0.32, metalness: 0.85 }),
+    orange: new THREE.MeshStandardMaterial({ color: 0xff6a00, emissive: 0xff6a00, emissiveIntensity: 0.9 }),
+    /* The BMS board: none of it glows — real copper sits under solder mask. */
+    fr4: std(0xb3ad8a, { roughness: 0.8 }),
+    mask: std(0x0e4a2c, { roughness: 0.45 }),
+    epoxy: std(0x17181a, { roughness: 0.6 }),
+    tin: std(0xd3d6da, { roughness: 0.28, metalness: 0.9 }),
+    ceramic: std(0xa88a62, { roughness: 0.65 }),
+    header: std(0xefe7d2, { roughness: 0.55 }),
+    alu: std(0xc7cacf, { roughness: 0.3, metalness: 0.85 }),
+    ledOn: new THREE.MeshStandardMaterial({ color: 0x7dffb0, emissive: 0x30d158, emissiveIntensity: 1.4 }),
     ledR: new THREE.MeshStandardMaterial({ color: 0xff3b30, emissive: 0xff3b30, emissiveIntensity: 1.1 }),
     ledG: new THREE.MeshStandardMaterial({ color: 0x30d158, emissive: 0x30d158, emissiveIntensity: 1.1 }),
-    trace: new THREE.MeshStandardMaterial({ color: 0x2eff9a, emissive: 0x2eff9a, emissiveIntensity: 0.7 }),
     beacon: new THREE.MeshStandardMaterial({
       color: 0xff2d20, emissive: 0xff2d20, emissiveIntensity: 0.35, transparent: true, opacity: 0.9, roughness: 0.2,
     }),
@@ -182,24 +256,8 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
   // Nothing from the supplied manuals' screenshots is reproduced here — see the
   // head of `sst-data.ts`.
 
-  const RAMSLOGO = (x: CanvasRenderingContext2D, px: number, py: number, s: number, col = "#fff", bg = "#1f55c9") => {
-    x.fillStyle = col;
-    x.fillRect(px, py, s, s);
-    x.fillStyle = bg;
-    x.fillRect(px + s * 0.18, py + s * 0.28, s * 0.64, s * 0.1);
-    x.fillRect(px + s * 0.18, py + s * 0.62, s * 0.64, s * 0.1);
-    x.fillRect(px + s * 0.3, py + s * 0.28, s * 0.08, s * 0.44);
-    x.fillRect(px + s * 0.62, py + s * 0.28, s * 0.08, s * 0.44);
-    x.fillStyle = col;
-    // Named directly: a canvas font string cannot take a CSS variable, and this
-    // site's body family is Roboto (`docs/typography.md`).
-    x.font = `500 ${s * 0.95}px Roboto, Arial, sans-serif`;
-    x.textBaseline = "middle";
-    x.fillText("RAMS", px + s * 1.25, py + s * 0.55);
-  };
-
   const blueFace = (extra: (x: CanvasRenderingContext2D, w: number, h: number) => void) =>
-    tex(1024, 640, (x, w, h) => {
+    brandTex(1024, 640, (x, w, h) => {
       const g = x.createLinearGradient(0, 0, w, h);
       g.addColorStop(0, "#2160d6");
       g.addColorStop(1, "#123c99");
@@ -210,32 +268,63 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
       extra(x, w, h);
     });
 
-  const ACCESS_FACE = blueFace((x, w, h) => {
-    x.fillStyle = "#fff";
-    x.font = "800 70px Roboto, Arial, sans-serif";
-    x.textAlign = "center";
-    x.textBaseline = "middle";
-    x.fillText("ACCESS CONTROL", w * 0.56, h * 0.13);
-    x.textAlign = "left";
-    RAMSLOGO(x, 120, 200, 58);
-    x.strokeStyle = "#fff";
-    x.lineWidth = 9;
+  /* The Access Control face. A black glass panel, laid out to the hardware
+     mounted on it: every position below is the matching part's position in
+     `DEV.access()` mapped into this 1024 × 598 canvas — the RFID zone at
+     x −0.3W, the fingerprint ring at −0.035W, the keypad block on the right —
+     so the print and the parts line up at any angle. */
+  const ACCESS_FACE = brandTex(1024, 598, (x, w, h) => {
+    const g = x.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#1a1b1f");
+    g.addColorStop(1, "#0b0c0e");
+    x.fillStyle = g;
     x.beginPath();
-    x.roundRect(120, 330, 190, 190, 22);
+    x.roundRect(0, 0, w, h, 40);
+    x.fill();
+    x.strokeStyle = "rgba(255,255,255,.07)";
+    x.lineWidth = 3;
+    x.beginPath();
+    x.roundRect(6, 6, w - 12, h - 12, 36);
     x.stroke();
-    x.lineWidth = 8;
+
+    drawLogo(x, 66, 52, 236);
+
+    x.fillStyle = "#f3f1ec";
+    x.textAlign = "right";
+    x.textBaseline = "alphabetic";
+    x.font = "500 34px Roboto, Arial, sans-serif";
+    x.letterSpacing = "7px";
+    x.fillText("ACCESS CONTROL", w - 64, 88);
+    x.fillStyle = "#ff6a00";
+    x.fillRect(w - 64 - 56, 104, 56, 4);
+
+    // The RFID zone: a hairline field with the contactless mark in it.
+    const rx = 171, ry = 406;
+    x.strokeStyle = "rgba(243,241,236,.28)";
+    x.lineWidth = 3;
+    x.beginPath();
+    x.roundRect(rx - 92, ry - 92, 184, 184, 26);
+    x.stroke();
+    x.strokeStyle = "#f3f1ec";
+    x.lineCap = "round";
+    x.lineWidth = 9;
     for (let i = 0; i < 3; i++) {
       x.beginPath();
-      x.arc(212, 420, 28 + i * 24, -Math.PI * 0.95, -Math.PI * 0.05);
+      x.arc(rx - 30, ry, 22 + i * 20, -Math.PI * 0.3, Math.PI * 0.3);
       x.stroke();
     }
-    x.fillStyle = "#fff";
+    x.fillStyle = "#f3f1ec";
     x.beginPath();
-    x.arc(212, 420, 11, 0, TAU);
+    x.arc(rx - 30, ry, 8, 0, TAU);
     x.fill();
-    x.font = "800 58px Roboto, Arial, sans-serif";
+
     x.textAlign = "center";
-    x.fillText("RFID", 215, 488);
+    x.font = "500 22px Roboto, Arial, sans-serif";
+    x.letterSpacing = "5px";
+    x.fillStyle = "rgba(243,241,236,.62)";
+    x.fillText("TAP CARD", rx, ry + 136);
+    x.fillText("FINGER", 472, ry + 136);
+    x.letterSpacing = "0px";
   });
 
   const RSA_FACE = blueFace((x, w, h) => {
@@ -247,7 +336,7 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
     x.font = "600 50px Roboto, Arial, sans-serif";
     x.fillText("Reverse Sensor Alarm", w * 0.5, h * 0.88);
     x.textAlign = "left";
-    RAMSLOGO(x, w * 0.7, h * 0.58, 52);
+    drawLogo(x, w * 0.68, h * 0.56, 190);
     x.fillStyle = "#f2b200";
     x.fillRect(90, 170, 120, 70);
     x.fillStyle = "#fff";
@@ -274,33 +363,42 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
     });
   });
 
-  const EMBOSS = tex(1024, 300, (x, w, h) => {
-    x.fillStyle = "#141416";
+  /** The PDS front logo on its own, for the fallback build's engraved panel. */
+  const PDS_LOGO = brandTex(512, 203, (x, w) => drawLogo(x, 0, 0, w));
+
+  /** The MCU's top: laser-etched, so low-contrast grey on black, never white. */
+  const CHIPTOP = brandTex(512, 512, (x, w, h) => {
+    x.fillStyle = "#18191b";
     x.fillRect(0, 0, w, h);
-    x.font = "italic 700 150px Roboto, Arial, sans-serif";
+    x.fillStyle = "#0d0e0f";
+    x.beginPath();
+    x.arc(70, 70, 26, 0, TAU);
+    x.fill();
+    drawLogo(x, w / 2 - 150, 120, 300, "#8b8e93");
+    x.fillStyle = "#8b8e93";
     x.textAlign = "center";
     x.textBaseline = "middle";
-    x.fillStyle = "#0a0a0b";
-    x.fillText("RAMS Digital", w / 2 + 4, h / 2 + 4);
-    x.fillStyle = "#2a2b30";
-    x.fillText("RAMS Digital", w / 2, h / 2);
+    x.font = "500 58px Roboto Mono, monospace";
+    x.fillText("RD-BMS", w / 2, h * 0.62);
+    x.font = "500 42px Roboto Mono, monospace";
+    x.fillText("2631  A7Q", w / 2, h * 0.76);
   });
 
-  const CHIPTOP = tex(512, 512, (x, w, h) => {
-    x.fillStyle = "#111312";
+  /** The AFE's top, the same etch at TSSOP proportions. */
+  const AFETOP = tex(512, 232, (x, w, h) => {
+    x.fillStyle = "#18191b";
     x.fillRect(0, 0, w, h);
-    x.fillStyle = "#2a2d2b";
+    x.fillStyle = "#0d0e0f";
     x.beginPath();
-    x.arc(60, 60, 22, 0, TAU);
+    x.arc(34, h - 34, 14, 0, TAU);
     x.fill();
-    x.fillStyle = "#e8e8e8";
-    x.font = "800 130px Roboto, Arial, sans-serif";
+    x.fillStyle = "#8b8e93";
     x.textAlign = "center";
     x.textBaseline = "middle";
-    x.fillText("BMS", w / 2, h * 0.46);
-    x.fillStyle = "#7a7d7b";
-    x.font = "600 44px Roboto, Arial, sans-serif";
-    x.fillText("RAMS DIGITAL", w / 2, h * 0.7);
+    x.font = "500 50px Roboto Mono, monospace";
+    x.fillText("RD-AFE", w / 2, h * 0.38);
+    x.font = "500 34px Roboto Mono, monospace";
+    x.fillText("2629 K1", w / 2, h * 0.7);
   });
 
   const matOf = (t: THREE_NS.Texture) => new THREE.MeshStandardMaterial({ map: t, roughness: 0.45 });
@@ -312,97 +410,107 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
   // Every dimension is off the product photos in `public/sensor-stack/`.
 
   /** The sealed enclosure Access Control and the Reverse Sensor Alarm share. */
-  const enclosure = (g: THREE_NS.Group, w: number, h: number, d: number) => {
-    const body = roundBox(w, h, d, 0.018, M.abs);
+  const enclosure = (
+    g: THREE_NS.Group, w: number, h: number, d: number,
+    shell: THREE_NS.Material = M.abs, screw: THREE_NS.Material | null = M.steel, ears = true,
+  ) => {
+    const body = roundBox(w, h, d, 0.018, shell);
     body.position.set(0, h / 2, 0);
     g.add(body);
     for (const sx of [-1, 1]) {
       for (const sy of [-1, 1]) {
-        const ear = roundBox(0.03, 0.03, 0.008, 0.006, M.abs);
-        ear.position.set(sx * (w / 2 + 0.008), h / 2 + sy * (h / 2 - 0.012), -d / 2 + 0.006);
-        g.add(ear);
-        cy(0.006, 0.01, M.steel, sx * (w / 2 - 0.012), h / 2 + sy * (h / 2 - 0.012), d / 2 + 0.004, g, "z", 16);
+        if (ears) {
+          const ear = roundBox(0.03, 0.03, 0.008, 0.006, shell);
+          ear.position.set(sx * (w / 2 + 0.008), h / 2 + sy * (h / 2 - 0.012), -d / 2 + 0.006);
+          g.add(ear);
+        }
+        if (screw) cy(0.006, 0.01, screw, sx * (w / 2 - 0.012), h / 2 + sy * (h / 2 - 0.012), d / 2 + 0.004, g, "z", 16);
       }
     }
   };
 
   const DEV: Record<DevKey, () => Device> = {
+    /* Matte black shell, black glass face, gunmetal hardware, brand orange for
+       the one thing that is alive — the fingerprint ring. No cable glands in
+       view: the supply, key circuit and relay leave through the back. */
     access() {
-      const g = new THREE.Group(), parts: Part[] = [], W = 0.24, H = 0.15, D = 0.085;
-      enclosure(g, W, H, D);
-      plane(W * 0.9, H * 0.84, matOf(ACCESS_FACE), 0, H / 2, D / 2 + 0.0085, g);
+      const g = new THREE.Group(), parts: Part[] = [], W = 0.24, H = 0.15, D = 0.07;
+      // No face screws and no corner mounting ears: a clean black block.
+      enclosure(g, W, H, D, M.shell, null, false);
+      const face = new THREE.MeshStandardMaterial({
+        map: ACCESS_FACE, roughness: 0.16, metalness: 0.1, transparent: true, alphaTest: 0.5,
+      });
+      plane(W * 0.9, H * 0.84, face, 0, H / 2, D / 2 + 0.0085, g);
 
       const kp = new THREE.Group();
       kp.position.set(W * 0.235, H * 0.43, D / 2 + 0.0105);
       g.add(kp);
-      bx(0.074, 0.094, 0.006, M.steel, 0, 0, 0, kp);
+      bx(0.074, 0.094, 0.006, M.gunmetal, 0, 0, 0, kp);
       plane(0.066, 0.086, matOf(KEYPAD), 0, 0, 0.0032, kp);
 
       const fp = new THREE.Group();
-      fp.position.set(-W * 0.035, H * 0.3, D / 2 + 0.0105);
+      fp.position.set(-W * 0.035, H * 0.35, D / 2 + 0.0105);
       g.add(fp);
-      fp.add(new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.0045, 14, 40), M.steel));
-      const glow = new THREE.Mesh(new THREE.TorusGeometry(0.0112, 0.0012, 10, 40), M.cyan);
+      fp.add(new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.0045, 14, 40), M.gunmetal));
+      const glow = new THREE.Mesh(new THREE.TorusGeometry(0.0112, 0.0012, 10, 40), M.orange);
       glow.position.z = 0.002;
       fp.add(glow);
       cy(0.0108, 0.004, M.gloss, 0, 0, 0.001, fp, "z");
 
-      for (const sx of [-0.055, 0.035]) {
-        cy(0.011, 0.02, M.abs, sx, -0.008, 0, g);
-        cy(0.005, 0.05, M.cable, sx, -0.035, 0, g);
-      }
-      bx(0.006, 0.022, 0.03, M.black, -W / 2 - 0.004, H * 0.55, 0, g);
-      bx(0.004, 0.012, 0.012, M.key, -W / 2 - 0.008, H * 0.58, 0, g);
+      bx(0.006, 0.022, 0.03, M.shell, -W / 2 - 0.004, H * 0.55, 0, g);
+      bx(0.004, 0.012, 0.012, M.gunmetal, -W / 2 - 0.008, H * 0.58, 0, g);
 
-      parts.push({ obj: mark(-W * 0.3, H * 0.35, D / 2, g), label: "RFID reader", desc: "Tap an enrolled card." });
-      parts.push({ obj: fp, label: "Fingerprint reader", desc: "Lights up when it reads." });
-      parts.push({ obj: kp, label: "PIN keypad", desc: "A 4-digit code per operator." });
-      parts.push({ obj: mark(-W / 2 - 0.006, H * 0.56, 0, g), label: "Power switch", desc: "On the side, no unplugging." });
-      parts.push({ obj: mark(-0.01, -0.005, 0, g), label: "Cable glands", desc: "Supply, key circuit, relay." });
+      parts.push({ obj: mark(-W * 0.3, H * 0.35, D / 2, g), label: "RFID reader", desc: "" });
+      parts.push({ obj: fp, label: "Fingerprint reader", desc: "" });
+      parts.push({ obj: kp, label: "PIN keypad", desc: "" });
+      parts.push({ obj: mark(-W / 2 - 0.006, H * 0.56, 0, g), label: "Power switch", desc: "" });
       return { group: g, parts, size: V3(W, H, D) };
     },
 
+    /* The fallback for the real CAD model (`REAL.lidar`), at its 74.9 × 63.6 ×
+       75 mm: a round black base and the twin-lobed scanning head on top. */
     lidar() {
       const g = new THREE.Group(), parts: Part[] = [];
-      bx(0.12, 0.006, 0.12, M.black, 0, 0.003, 0, g);
-      cy(0.055, 0.03, M.lidar, 0, 0.021, 0, g, "y", 48);
-      const win = cy(0.052, 0.038, M.gloss, 0, 0.055, 0, g, "y", 48);
-      cy(0.055, 0.018, M.lidar, 0, 0.083, 0, g, "y", 48);
-      cy(0.045, 0.004, M.black, 0, 0.093, 0, g, "y", 48);
-      cy(0.004, 0.06, M.cable, 0.07, 0.01, 0, g, "x", 12);
-      parts.push({ obj: win, label: "Scanning window", desc: "Sees all around the truck, in 3D." });
-      parts.push({ obj: mark(0, 0.003, 0.06, g), label: "Mounting plate", desc: "Fixed up high on the truck." });
-      return { group: g, parts, size: V3(0.12, 0.095, 0.12) };
+      const W = LIDAR_SIZE.x, H = LIDAR_SIZE.y;
+      cy(W / 2, H * 0.38, M.shell, 0, H * 0.19, 0, g, "y", 48);
+      bx(W * 0.94, 0.003, W * 0.94, M.gunmetal, 0, H * 0.39, 0, g);
+      const head = new THREE.Group();
+      g.add(head);
+      for (const sx of [-1, 1]) {
+        cy(W * 0.2, W * 0.9, M.shell, sx * W * 0.24, H * 0.72, 0, head, "z", 32);
+        bx(W * 0.4, H * 0.3, W * 0.9, M.shell, sx * W * 0.24, H * 0.55, 0, head);
+      }
+      parts.push({ obj: head, label: "Scanning head", desc: "" });
+      parts.push({ obj: mark(0, H * 0.2, W / 2, g), label: "Base", desc: "" });
+      return { group: g, parts, size: V3(W, H, LIDAR_SIZE.z) };
     },
 
+    /* The fallback for the real CAD model (`REAL.pds`), built to the same
+       104.8 x 80 x 35 mm — measured off the GLB itself, not estimated — and
+       the same layout: two sensor windows across the
+       top of the front, the engraved logo below them, the XT30 on the side.
+       It only shows if the GLB fails to load. */
     pds() {
-      const g = new THREE.Group(), parts: Part[] = [], W = 0.17, H = 0.07, D = 0.135;
-      const body = roundBox(W, H, D, 0.008, M.black);
+      const g = new THREE.Group(), parts: Part[] = [], W = PDS_SIZE.x, H = PDS_SIZE.y, D = PDS_SIZE.z;
+      const body = roundBox(W, H, D, 0.004, M.shell);
       body.position.set(0, H / 2, 0);
       g.add(body);
 
       const heads: THREE_NS.Group[] = [];
-      for (const sx of [-W * 0.25, W * 0.25]) {
+      for (const sx of [-W * 0.235, W * 0.235]) {
         const hd = new THREE.Group();
-        hd.position.set(sx, H + 0.001, -D * 0.18);
+        hd.position.set(sx, H * 0.76, D / 2 + 0.0014);
         g.add(hd);
-        bx(0.062, 0.004, 0.038, M.gloss, 0, -0.001, 0, hd);
-        bx(0.056, 0.006, 0.03, M.key, 0, 0.002, 0, hd);
-        for (const lx of [-0.013, 0.013]) {
-          cy(0.0105, 0.006, M.gloss, lx, 0.005, 0, hd, "y", 28);
-          cy(0.006, 0.007, M.steel, lx, 0.005, 0, hd, "y", 20);
-        }
+        bx(W * 0.29, H * 0.33, 0.001, M.gloss, 0, 0, 0, hd);
+        for (const lx of [-0.0065, 0.0065]) cy(0.0048, 0.0016, M.key, lx, 0, 0.0004, hd, "z", 28);
         heads.push(hd);
       }
-      plane(W * 0.8, H * 0.34, matOf(EMBOSS), 0, H * 0.58, D / 2 + 0.0045, g);
-      bx(W * 0.36, H * 0.22, 0.004, M.gloss, 0, H * 0.18, D / 2 + 0.002, g);
-      bx(0.012, 0.012, 0.02, M.yellow, W / 2 + 0.006, H * 0.4, D * 0.3, g);
-      cy(0.0022, 0.04, M.red, W / 2 + 0.03, H * 0.42, D * 0.3, g, "x", 10);
-      cy(0.0022, 0.04, M.cable, W / 2 + 0.03, H * 0.36, D * 0.3, g, "x", 10);
+      const logo = new THREE.MeshBasicMaterial({ map: PDS_LOGO, transparent: true, depthWrite: false });
+      plane(W * 0.48, (W * 0.48) / LOGO_AR, logo, W * 0.03, H * 0.34, D / 2 + 0.0016, g);
+      const xt = bx(0.006, 0.008, 0.016, M.yellow, W / 2 + 0.003, H * 0.2, 0, g);
 
-      parts.push({ obj: heads[0], label: "Sensing heads", desc: "Two, looking along the forks." });
-      parts.push({ obj: mark(0, H * 0.58, D / 2, g), label: "RAMS Digital housing", desc: "Compact, for the fork carriage." });
-      parts.push({ obj: mark(W / 2 + 0.01, H * 0.4, D * 0.3, g), label: "Power lead", desc: "One locking connector." });
+      parts.push({ obj: heads[0], label: "TF-Luna LiDAR", desc: "" });
+      parts.push({ obj: xt, label: "XT30 power in", desc: "" });
       return { group: g, parts, size: V3(W, H, D) };
     },
 
@@ -441,33 +549,350 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
       return { group: g, parts, size: V3(W + 0.16, H, D) };
     },
 
+    /* A real board, at real scale: 100 × 64 mm, 1.6 mm FR4, matte green mask
+       with the copper visible through it, tinned pads, white silkscreen. On it,
+       the parts a battery-management board actually carries — a cell-
+       balance header, an RC filter per cell, the analogue front end, the MCU
+       and its crystal, four protection MOSFETs, a pair of current-sense
+       shunts, the pack terminals and a status connector. Everything is placed
+       from one table (`at`, below) that both the 3D parts and the printed
+       board read, so pads, outlines and parts cannot drift apart. */
     bms() {
-      const g = new THREE.Group(), parts: Part[] = [], S = 0.12;
-      bx(S, 0.004, S, M.pcb, 0, 0.002, 0, g);
-      const ic = bx(0.05, 0.008, 0.05, M.black, 0, 0.008, 0, g);
-      // Only the top face carries the printed chip; the sides stay moulded black.
-      ic.material = [M.black, M.black, matOf(CHIPTOP), M.black, M.black, M.black];
-      for (let i = 0; i < 8; i++) {
+      const g = new THREE.Group(), parts: Part[] = [];
+      const L = 0.1, WD = 0.064, T = 0.0016, Y = T;
+      const CW = 2048, CH = Math.round((CW * WD) / L);
+      const X = (x: number) => (x / L + 0.5) * CW, Z = (z: number) => (z / WD + 0.5) * CH, S = (m: number) => (m / L) * CW;
+
+      /* ── placement ── */
+      const at = {
+        j1: V3(-0.0425, 0, 0), u1: V3(-0.002, 0, 0.013), u2: V3(-0.018, 0, -0.004),
+        y1: V3(-0.0115, 0, 0.0215), d1: V3(-0.004, 0, 0.027), j2: V3(0.006, 0, 0.0275),
+        can: V3(0.005, 0, -0.02), qz: [-0.021, -0.007, 0.007, 0.021], qx: 0.018,
+        rs: [V3(0.029, 0, -0.006), V3(0.029, 0, 0.006)], bneg: V3(0.043, 0, -0.016), pneg: V3(0.043, 0, 0.016),
+      };
+      /** 0603 passives: [x, z, along-x?, resistor?] */
+      const pass: [number, number, boolean, boolean][] = [];
+      for (let i = 0; i < 9; i++) pass.push([-0.0335, -0.0104 + i * 0.0026, true, true]);
+      for (let i = 0; i < 8; i++) pass.push([-0.0298, -0.0091 + i * 0.0026, true, false]);
+      for (let i = 0; i < 5; i++) pass.push([-0.022 + i * 0.002, -0.0098, false, false]);
+      for (let i = 0; i < 5; i++) pass.push([-0.022 + i * 0.002, 0.0017, false, true]);
+      for (let i = 0; i < 4; i++) pass.push([-0.0085, 0.0102 + i * 0.002, true, false]);
+      for (let i = 0; i < 4; i++) pass.push([0.0045, 0.0102 + i * 0.002, true, true]);
+      for (const z of at.qz) pass.push([0.0105, z, true, true]);
+      for (let i = 0; i < 6; i++) pass.push([-0.004 + i * 0.0022, -0.0125, false, i % 2 === 0]);
+      pass.push([0.0005, 0.0222, true, false], [0.0005, 0.0245, true, false]);
+
+      /* ── the printed board ── */
+      const BOARD = brandTex(CW, CH, (x) => {
+        x.fillStyle = "#0a3a22";
+        x.fillRect(0, 0, CW, CH);
+        for (let i = 0; i < 900; i++) {
+          x.fillStyle = `rgba(255,255,255,${(Math.random() * 0.025).toFixed(3)})`;
+          x.fillRect(Math.random() * CW, Math.random() * CH, 1 + Math.random() * 3, 1 + Math.random() * 3);
+        }
+        const copper = "#114f2e";
+        // The power pour: MOSFETs, shunts and terminals sit on solid copper.
+        x.fillStyle = copper;
+        x.beginPath();
+        x.roundRect(X(0.0125), Z(-0.0295), X(0.049) - X(0.0125), Z(0.0295) - Z(-0.0295), S(0.002));
+        x.fill();
+        x.fillStyle = "#0a3a22";
+        x.fillRect(X(0.0125), Z(-0.0003), X(0.049) - X(0.0125), S(0.0006));
+        // Tented vias through the pour, stitching it to the back layer.
+        for (let vx = 0.014; vx < 0.049; vx += 0.0032) {
+          for (let vz = -0.028; vz < 0.029; vz += 0.0032) {
+            if (Math.abs(vz) < 0.001) continue;
+            x.fillStyle = "#082e1b";
+            x.beginPath();
+            x.arc(X(vx), Z(vz), S(0.00042), 0, TAU);
+            x.fill();
+          }
+        }
+        const line = (pts: [number, number][], w: number) => {
+          x.strokeStyle = copper;
+          x.lineWidth = S(w);
+          x.lineCap = "round";
+          x.lineJoin = "round";
+          x.beginPath();
+          pts.forEach(([px, pz], i) => (i ? x.lineTo(X(px), Z(pz)) : x.moveTo(X(px), Z(pz))));
+          x.stroke();
+        };
+        // Balance header → one RC filter per cell → the AFE's cell inputs.
+        for (let i = 0; i < 9; i++) {
+          const z = -0.0104 + i * 0.0026;
+          line([[-0.0395, z], [-0.0335, z]], 0.0005);
+          if (i < 8) {
+            const zc = -0.0091 + i * 0.0026;
+            const ex = -0.0228 + Math.min(i, 6) * 0.00065 * 2;
+            line([[-0.0298, zc], [-0.0265, zc], [-0.0255 + i * 0.0003, -0.0082], [ex, -0.0082]], 0.00028);
+          }
+        }
+        // AFE ↔ MCU bus, and the MCU out to the status connector and LED.
+        for (let i = 0; i < 5; i++) {
+          const xs = -0.0165 + i * 0.00065 * 2;
+          line([[xs, -0.0005], [xs, 0.004 + i * 0.0006], [-0.0062, 0.0085 + i * 0.0009 - 0.0009], [-0.0055, 0.0105 + i * 0.0006]], 0.00022);
+        }
+        for (let i = 0; i < 4; i++) line([[0.0015, 0.0115 + i * 0.001], [0.0035 + i * 0.0012, 0.0165 + i * 0.0004], [0.0035 + i * 0.0012, 0.0255]], 0.00022);
+        line([[-0.0045, 0.0165], [-0.004, 0.0262]], 0.00022);
+        line([[-0.0065, 0.0215], [-0.0098, 0.0215]], 0.00022);
+        // Gate drive: MCU/AFE → gate resistors → MOSFET gates.
+        for (const z of at.qz) line([[-0.0131, -0.0032], [0.0065, z * 0.4], [0.0092, z], [0.0118, z], [0.0142, z - 0.0023]], 0.00025);
+
+        const tin = "#cfd3d7";
+        const pad = (px: number, pz: number, w: number, d: number, r = 0.0001) => {
+          x.fillStyle = tin;
+          x.beginPath();
+          x.roundRect(X(px - w / 2), Z(pz - d / 2), S(w), (d / WD) * CH, S(r));
+          x.fill();
+        };
+        for (const [px, pz, ax] of pass) {
+          for (const s of [-1, 1]) {
+            if (ax) pad(px + s * 0.00075, pz, 0.0007, 0.00095);
+            else pad(px, pz + s * 0.00075, 0.00095, 0.0007);
+          }
+        }
+        for (let i = 0; i < 12; i++) {
+          const o = -0.00275 + i * 0.0005;
+          pad(at.u1.x + o, at.u1.z - 0.0043, 0.00028, 0.0013);
+          pad(at.u1.x + o, at.u1.z + 0.0043, 0.00028, 0.0013);
+          pad(at.u1.x - 0.0043, at.u1.z + o, 0.0013, 0.00028);
+          pad(at.u1.x + 0.0043, at.u1.z + o, 0.0013, 0.00028);
+        }
+        for (let i = 0; i < 14; i++) {
+          const o = -0.004225 + i * 0.00065;
+          pad(at.u2.x + o, at.u2.z - 0.0029, 0.00038, 0.0013);
+          pad(at.u2.x + o, at.u2.z + 0.0029, 0.00038, 0.0013);
+        }
+        for (const z of at.qz) {
+          pad(at.qx + 0.0022, z, 0.0068, 0.0064, 0.0003);
+          pad(at.qx - 0.0048, z - 0.00229, 0.0018, 0.0011);
+          pad(at.qx - 0.0048, z + 0.00229, 0.0018, 0.0011);
+        }
+        for (const r of at.rs) for (const s of [-1, 1]) pad(r.x, r.z + s * 0.0029, 0.0036, 0.0014);
+        for (const p of [at.bneg, at.pneg]) pad(p.x, p.z, 0.0095, 0.0125, 0.0008);
+        pad(at.can.x, at.can.z - 0.0026, 0.0016, 0.0022);
+        pad(at.can.x, at.can.z + 0.0026, 0.0016, 0.0022);
+        pad(at.y1.x - 0.0011, at.y1.z, 0.0012, 0.0021);
+        pad(at.y1.x + 0.0011, at.y1.z, 0.0012, 0.0021);
+        pad(at.j2.x - 0.0048, at.j2.z + 0.0005, 0.0012, 0.0026);
+        pad(at.j2.x + 0.0048, at.j2.z + 0.0005, 0.0012, 0.0026);
+        // Mounting holes: a tinned ring and the hole through the board.
+        for (const sx of [-1, 1]) {
+          for (const sz of [-1, 1]) {
+            const hx = sx * (L / 2 - 0.0035), hz = sz * (WD / 2 - 0.0035);
+            x.fillStyle = tin;
+            x.beginPath();
+            x.arc(X(hx), Z(hz), S(0.0029), 0, TAU);
+            x.fill();
+            x.fillStyle = "#0b0c0d";
+            x.beginPath();
+            x.arc(X(hx), Z(hz), S(0.0016), 0, TAU);
+            x.fill();
+          }
+        }
+        // Test points.
+        for (const [tx, tz] of [[-0.012, -0.0265], [-0.006, -0.0265], [0.035, -0.0265], [0.035, 0.0265]]) {
+          x.fillStyle = tin;
+          x.beginPath();
+          x.arc(X(tx), Z(tz), S(0.0007), 0, TAU);
+          x.fill();
+        }
+
+        /* silkscreen */
+        const silk = "#eeeee8";
+        x.strokeStyle = silk;
+        x.fillStyle = silk;
+        x.lineWidth = S(0.00016);
+        const box = (cx: number, cz: number, w: number, d: number) =>
+          x.strokeRect(X(cx - w / 2), Z(cz - d / 2), S(w), (d / WD) * CH);
+        const text = (t: string, tx: number, tz: number, size: number, align: CanvasTextAlign = "center") => {
+          x.font = `600 ${S(size)}px Roboto, Arial, sans-serif`;
+          x.textAlign = align;
+          x.textBaseline = "middle";
+          x.fillText(t, X(tx), Z(tz));
+        };
+        box(at.u1.x, at.u1.z, 0.0079, 0.0079);
+        box(at.u2.x, at.u2.z, 0.0105, 0.0046);
+        box(at.j1.x, at.j1.z, 0.0068, 0.0262);
+        box(at.j2.x, at.j2.z, 0.0118, 0.0056);
+        for (const z of at.qz) box(at.qx, z, 0.0122, 0.0072);
+        x.beginPath();
+        x.arc(X(at.u1.x - 0.0048), Z(at.u1.z - 0.0048), S(0.00035), 0, TAU);
+        x.fill();
+        x.beginPath();
+        x.arc(X(at.u2.x - 0.0056), Z(at.u2.z + 0.0031), S(0.00035), 0, TAU);
+        x.fill();
+        text("U1", at.u1.x + 0.0058, at.u1.z - 0.0048, 0.0011, "left");
+        text("U2", at.u2.x - 0.0062, at.u2.z - 0.0012, 0.0011, "right");
+        text("J1", at.j1.x, at.j1.z - 0.0148, 0.0012);
+        text("BAL", at.j1.x + 0.0052, at.j1.z + 0.0148, 0.001);
+        for (let i = 0; i < 9; i++) text("B" + i, -0.0368, -0.0104 + i * 0.0026, 0.00072, "left");
+        text("J2", at.j2.x, at.j2.z - 0.0038, 0.001);
+        text("STATUS", at.j2.x + 0.0072, at.j2.z + 0.0004, 0.00085, "left");
+        at.qz.forEach((z, i) => text("Q" + (i + 1), at.qx - 0.0078, z, 0.001, "right"));
+        text("RS1", at.rs[0].x + 0.0031, at.rs[0].z, 0.00085, "left");
+        text("RS2", at.rs[1].x + 0.0031, at.rs[1].z, 0.00085, "left");
+        text("R001", at.rs[0].x + 0.0031, 0, 0.00075, "left");
+        text("Y1", at.y1.x, at.y1.z + 0.0024, 0.0009);
+        text("D1", at.d1.x, at.d1.z + 0.0017, 0.0009);
+        text("RUN", at.d1.x - 0.0014, at.d1.z, 0.0008, "right");
+        text("C1", at.can.x + 0.0046, at.can.z, 0.001, "left");
+        text("+", at.can.x - 0.0042, at.can.z - 0.0026, 0.0014);
+        text("B−", at.bneg.x, at.bneg.z - 0.0086, 0.0024);
+        text("P−", at.pneg.x, at.pneg.z + 0.0086, 0.0024);
+        drawLogo(x, X(-0.0375), Z(0.0172), S(0.0165), silk);
+        text("BATTERY MANAGEMENT  REV A", -0.0375, 0.0262, 0.00105, "left");
+        text("LOT 2631", -0.0375, 0.0288, 0.00085, "left");
+        // A datamatrix-style serial code.
+        for (let i = 0; i < 12; i++) {
+          for (let k = 0; k < 12; k++) {
+            if (i === 0 || k === 11 || (i === 11 && k % 2 === 0) || (k === 0 && i % 2 === 1) || Math.random() < 0.45)
+              x.fillRect(X(0.0265 + i * 0.00036), Z(0.0262 + k * 0.00036), S(0.00036) + 0.5, S(0.00036) + 0.5);
+          }
+        }
+      });
+
+      /* ── the board itself ── */
+      const top = new THREE.MeshStandardMaterial({ map: BOARD, roughness: 0.5, envMapIntensity: 0.6 });
+      bx(L, T, WD, [M.fr4, M.fr4, top, M.mask, M.fr4, M.fr4], 0, T / 2, 0, g);
+
+      /* ── passives, instanced: one draw call per material, not 120 meshes ── */
+      const dummy = new THREE.Object3D();
+      const inst = (geo: THREE_NS.BufferGeometry, m: THREE_NS.Material, place: (i: number) => boolean, n: number) => {
+        const im = new THREE.InstancedMesh(geo, m, n);
+        let c = 0;
+        for (let i = 0; i < n; i++) {
+          if (!place(i)) continue;
+          dummy.updateMatrix();
+          im.setMatrixAt(c++, dummy.matrix);
+        }
+        im.count = c;
+        g.add(im);
+        return im;
+      };
+      const body0603 = new THREE.BoxGeometry(0.001, 0.00045, 0.00078);
+      const end0603 = new THREE.BoxGeometry(0.0003, 0.00047, 0.0008);
+      const placeBody = (res: boolean) => (i: number) => {
+        const [px, pz, ax, r] = pass[i];
+        if (r !== res) return false;
+        dummy.position.set(px, Y + 0.000225, pz);
+        dummy.rotation.set(0, ax ? 0 : Math.PI / 2, 0);
+        return true;
+      };
+      inst(body0603, M.epoxy, placeBody(true), pass.length);
+      inst(body0603, M.ceramic, placeBody(false), pass.length);
+      inst(end0603, M.tin, (i) => {
+        const [px, pz, ax] = pass[i >> 1];
+        const s = i & 1 ? 1 : -1;
+        dummy.position.set(px + (ax ? s * 0.00065 : 0), Y + 0.000235, pz + (ax ? 0 : s * 0.00065));
+        dummy.rotation.set(0, ax ? 0 : Math.PI / 2, 0);
+        return true;
+      }, pass.length * 2);
+
+      /* ── ICs: moulded bodies, etched tops, gull-wing leads ── */
+      const leads = (grp: THREE_NS.Group, bodyX: number, bodyZ: number, n: number, pitch: number, w: number, reach: number, sides: ("x" | "z")[]) => {
+        const foot = new THREE.BoxGeometry(w, 0.00012, reach);
+        const count = n * sides.length * 2;
+        const im = new THREE.InstancedMesh(foot, M.tin, count);
+        let c = 0;
+        for (const side of sides) {
+          for (const s of [-1, 1]) {
+            for (let i = 0; i < n; i++) {
+              const o = (i - (n - 1) / 2) * pitch;
+              if (side === "z") {
+                dummy.position.set(o, 0.00006, s * (bodyZ / 2 + reach / 2 - 0.0002));
+                dummy.rotation.set(0, 0, 0);
+              } else {
+                dummy.position.set(s * (bodyX / 2 + reach / 2 - 0.0002), 0.00006, o);
+                dummy.rotation.set(0, Math.PI / 2, 0);
+              }
+              dummy.updateMatrix();
+              im.setMatrixAt(c++, dummy.matrix);
+            }
+          }
+        }
+        grp.add(im);
+      };
+      const ic = (pos: THREE_NS.Vector3, bw: number, bd: number, bh: number, topTex: THREE_NS.Texture) => {
+        const grp = new THREE.Group();
+        grp.position.set(pos.x, Y, pos.z);
+        g.add(grp);
+        const b = bx(bw, bh, bd, M.epoxy, 0, bh / 2 + 0.0001, 0, grp);
+        b.material = [M.epoxy, M.epoxy, new THREE.MeshStandardMaterial({ map: topTex, roughness: 0.62 }), M.epoxy, M.epoxy, M.epoxy];
+        return grp;
+      };
+      const u1 = ic(at.u1, 0.007, 0.007, 0.0014, CHIPTOP);
+      leads(u1, 0.007, 0.007, 12, 0.0005, 0.00022, 0.0011, ["x", "z"]);
+      const u2 = ic(at.u2, 0.0097, 0.0044, 0.0011, AFETOP);
+      leads(u2, 0.0097, 0.0044, 14, 0.00065, 0.0003, 0.0011, ["z"]);
+
+      /* crystal and status LED */
+      bx(0.0032, 0.0008, 0.0025, M.alu, at.y1.x, Y + 0.0004, at.y1.z, g);
+      bx(0.0016, 0.00055, 0.0008, M.ledOn, at.d1.x, Y + 0.000275, at.d1.z, g);
+
+      /* electrolytic: black base, aluminium can, the dark polarity band */
+      bx(0.0066, 0.0007, 0.0066, M.epoxy, at.can.x, Y + 0.00035, at.can.z, g);
+      cy(0.00315, 0.0054, M.alu, at.can.x, Y + 0.0007 + 0.0027, at.can.z, g, "y", 40);
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.00316, 0.00316, 0.0054, 40, 1, true, -0.5, 1.0), M.epoxy);
+      band.position.set(at.can.x, Y + 0.0007 + 0.0027, at.can.z);
+      band.rotation.y = Math.PI;
+      g.add(band);
+      for (let i = 0; i < 3; i++) {
+        const v = bx(0.0045, 0.00005, 0.00022, M.epoxy, at.can.x, Y + 0.0061 + 0.00003, at.can.z, g);
+        v.rotation.y = (i * Math.PI) / 3;
+      }
+
+      /* protection MOSFETs, DPAK: body, the tab soldered down behind, two legs */
+      const qs = new THREE.Group();
+      g.add(qs);
+      for (const z of at.qz) {
+        bx(0.0065, 0.0023, 0.0061, M.epoxy, at.qx, Y + 0.00115, z, qs);
+        bx(0.0016, 0.0005, 0.0054, M.tin, at.qx + 0.0036, Y + 0.00025, z, qs);
         for (const s of [-1, 1]) {
-          bx(0.003, 0.002, 0.006, M.gold, -0.021 + i * 0.006, 0.0045, s * 0.028, g);
-          bx(0.006, 0.002, 0.003, M.gold, s * 0.028, 0.0045, -0.021 + i * 0.006, g);
+          bx(0.0018, 0.0003, 0.00075, M.tin, at.qx - 0.0045, Y + 0.00015, z + s * 0.00229, qs);
+          bx(0.0006, 0.0009, 0.00075, M.tin, at.qx - 0.0035, Y + 0.00045, z + s * 0.00229, qs);
         }
       }
-      const traces = new THREE.Group();
-      g.add(traces);
-      ([[0, 0.036, 0.004, 0.036], [0.036, 0, 0.036, 0.004], [0, -0.036, 0.004, 0.036],
-        [-0.036, 0, 0.036, 0.004], [0.03, 0.03, 0.04, 0.003], [-0.03, -0.03, 0.04, 0.003]] as const)
-        .forEach(([x, z, w, d]) => bx(w, 0.0012, d, M.trace, x, 0.0046, z, traces));
-      for (let i = 0; i < 10; i++) {
-        const a = (i / 10) * TAU;
-        bx(0.006, 0.003, 0.004, M.smd, Math.cos(a) * 0.048, 0.0055, Math.sin(a) * 0.048, g);
-      }
-      for (let i = 0; i < 5; i++) bx(0.008, 0.003, 0.005, M.gold, -S / 2 + 0.006, 0.004, -0.03 + i * 0.015, g);
 
-      parts.push({ obj: ic, label: "Battery management chip", desc: "Charge, cycles and health." });
-      parts.push({ obj: mark(-S / 2 + 0.006, 0.004, 0, g), label: "Cell connections", desc: "Reads the battery directly." });
-      parts.push({ obj: traces, label: "Status out", desc: "Into the truck’s record." });
-      return { group: g, parts, size: V3(S, 0.02, S) };
+      /* current-sense shunts, 2512 */
+      const rs = new THREE.Group();
+      g.add(rs);
+      for (const r of at.rs) {
+        bx(0.0032, 0.0008, 0.0052, M.epoxy, r.x, Y + 0.0004, r.z, rs);
+        for (const s of [-1, 1]) bx(0.0032, 0.00082, 0.0007, M.tin, r.x, Y + 0.00041, r.z + s * 0.0029, rs);
+      }
+
+      /* pack terminals: tinned pads with a solder dome where the cable lands */
+      for (const p of [at.bneg, at.pneg]) {
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.004, 28, 14, 0, TAU, 0, Math.PI / 2), M.tin);
+        dome.scale.set(1, 0.28, 1.25);
+        dome.position.set(p.x, Y, p.z);
+        g.add(dome);
+      }
+
+      /* cell-balance header, JST-XH 9-way: housing, open cavity, pins */
+      const j1 = new THREE.Group();
+      j1.position.set(at.j1.x, Y, at.j1.z);
+      g.add(j1);
+      bx(0.0058, 0.007, 0.0248, M.header, 0, 0.0035, 0, j1);
+      bx(0.0036, 0.0002, 0.0228, M.key, 0.0004, 0.0070, 0, j1);
+      bx(0.0012, 0.0016, 0.0248, M.header, -0.0023, 0.0078, 0, j1);
+      for (let i = 0; i < 9; i++) bx(0.00064, 0.0056, 0.00064, M.tin, 0.0004, 0.0042, -0.01 + i * 0.0025, j1);
+
+      /* status connector, JST-GH 4-way */
+      const j2 = new THREE.Group();
+      j2.position.set(at.j2.x, Y, at.j2.z);
+      g.add(j2);
+      bx(0.0078, 0.0042, 0.0045, M.header, 0, 0.0021, 0, j2);
+      bx(0.0062, 0.0002, 0.0026, M.key, 0, 0.0042, 0.0004, j2);
+      for (const s of [-1, 1]) bx(0.001, 0.0022, 0.0022, M.tin, s * 0.0048, 0.0011, 0.0005, j2);
+
+      parts.push({ obj: u1, label: "Battery management chip", desc: "" });
+      parts.push({ obj: j1, label: "Cell connections", desc: "" });
+      parts.push({ obj: qs, label: "Protection MOSFETs", desc: "" });
+      parts.push({ obj: rs, label: "Current sense", desc: "" });
+      parts.push({ obj: j2, label: "Status out", desc: "" });
+      return { group: g, parts, size: V3(L, T + 0.0086, WD) };
     },
   };
 
@@ -550,6 +975,197 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
    * GLB is ever replaced with a different truck the sensors follow it, and the
    * fallbacks behind each `||` keep the film standing if a part is renamed.
    */
+
+  /* ── the real Pallet Detection Sensor ─────────────────────────────
+     Converted from the supplied 3MF: its CAD sub-assemblies became glTF nodes,
+     so the viewer's callout chips hang off real parts — the Pico, the TF-Luna,
+     the lid, the magnet — instead of shapes named by hand.
+
+     It is the PDS everywhere on the page: the viewer, the film's lineup and
+     the unit on the truck's carriage all load it (one fetch, shared — see
+     `loadGlb`). `DEV.pds()` is built to the same size and only shows if the
+     file fails. */
+  /* The CAD ships without normals, so GLTFLoader would flat-shade it; the
+     replacements keep that. Black housing, dark metal hardware, the XT30 in
+     its real yellow, and the engraved logo in the brand's white and orange. */
+  const flat = (color: number, o: THREE_NS.MeshStandardMaterialParameters = {}) =>
+    std(color, Object.assign({ flatShading: true }, o));
+  const PDS_MAT = {
+    shell: flat(0x111214, { roughness: 0.55, envMapIntensity: 0.5 }),
+    metal: flat(0x44474d, { roughness: 0.35, metalness: 0.8 }),
+    steel: flat(0x9a9ea6, { roughness: 0.3, metalness: 0.9 }),
+    pcb: flat(0x145a33, { roughness: 0.6 }),
+    xt30: flat(0xf2b200, { roughness: 0.45 }),
+    logo: flat(0xf3f1ec, { roughness: 0.5 }),
+    // Unlit and outside tone mapping: lit, the key light washed #FF6A00 out to
+    // a pale apricot. The tick is the brand colour, exactly, from every angle.
+    tick: new THREE.MeshBasicMaterial({ color: 0xff6a00, toneMapped: false }),
+  };
+  const pdsMatFor = (name: string): THREE_NS.Material | THREE_NS.Material[] =>
+    name === "Enclosure" ? [PDS_MAT.shell, PDS_MAT.logo, PDS_MAT.tick]
+    : name === "Lock" || name === "Magnet" ? PDS_MAT.metal
+    : name === "Fasteners" ? PDS_MAT.steel
+    : name === "Raspberry_Pi_Pico_W" ? PDS_MAT.pcb
+    : name === "XT30_power_in" ? PDS_MAT.xt30
+    : PDS_MAT.shell;
+
+  /**
+   * The logo is geometry, not print: "RAMS DIGITAL" and the corner tick are
+   * engraved 0.005 units into the front face (z 0.158 → 0.153, file units).
+   * This sorts the enclosure's triangles into three index ranges — housing,
+   * wordmark, tick — so each can take its own material. A triangle is logo if
+   * it lies in the engraving's depth band inside the logo's box on the face;
+   * the tick is the part of that right of the S. Runs once per geometry.
+   */
+  const splitLogo = (geo: THREE_NS.BufferGeometry) => {
+    if (geo.userData.logoSplit || !geo.index) return;
+    const pos = geo.attributes.position, idx = geo.index;
+    const body: number[] = [], word: number[] = [], tick: number[] = [];
+    for (let t = 0; t < idx.count; t += 3) {
+      const v = [idx.getX(t), idx.getX(t + 1), idx.getX(t + 2)];
+      let zMin = 9, zMax = -9, xMin = 9, xMax = -9, yMin = 9, yMax = -9;
+      for (const i of v) {
+        const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+        zMin = Math.min(zMin, z); zMax = Math.max(zMax, z);
+        xMin = Math.min(xMin, x); xMax = Math.max(xMax, x);
+        yMin = Math.min(yMin, y); yMax = Math.max(yMax, y);
+      }
+      const inLogo = zMin > 0.15 && zMin < 0.157 && zMax < 0.1585 && xMin > -0.22 && xMax < 0.28 && yMin > -0.24 && yMax < 0;
+      (inLogo ? (xMin > 0.216 ? tick : word) : body).push(...v);
+    }
+    geo.setIndex([...body, ...word, ...tick]);
+    geo.clearGroups();
+    geo.addGroup(0, body.length, 0);
+    geo.addGroup(body.length, word.length, 1);
+    geo.addGroup(body.length + word.length, tick.length, 2);
+    geo.userData.logoSplit = true;
+  };
+
+  /* ── the real LiDAR ─────────────────────────────────────────────────
+     Converted from the supplied STEP (`L2 3D Model - no text.STEP`, 74.9 ×
+     63.6 × 75 mm) with OpenCascade: one glTF node per part group, with real
+     normals, so it shades smooth where the PDS — which came without them —
+     stays faceted. */
+  const LIDAR_MAT = {
+    head: std(0x121315, { roughness: 0.42, envMapIntensity: 0.7 }),
+    flange: std(0x3b3d42, { roughness: 0.35, metalness: 0.8 }),
+    base: std(0x18191c, { roughness: 0.6, envMapIntensity: 0.5 }),
+    plate: std(0x0e0f11, { roughness: 0.7 }),
+    steel: std(0x9a9ea6, { roughness: 0.3, metalness: 0.9 }),
+    led: new THREE.MeshBasicMaterial({ color: 0x30d158, toneMapped: false }),
+  };
+  const lidarMatFor = (name: string): THREE_NS.Material =>
+    name === "LiDAR_head" ? LIDAR_MAT.head
+    : name === "Flange" ? LIDAR_MAT.flange
+    : name === "Base_housing" ? LIDAR_MAT.base
+    : name === "Base_plate" ? LIDAR_MAT.plate
+    : name === "Status_LED" ? LIDAR_MAT.led
+    : LIDAR_MAT.steel;
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  type Anchor = [label: string, node: string, pick: (b: THREE_NS.Box3) => THREE_NS.Vector3];
+  /**
+   * Every device that has a real CAD file: where it is, the real-world size it
+   * is scaled to (the files' own units are arbitrary), how its parts are
+   * dressed, and where its labels go.
+   *
+   * Labels go on what you can see from outside. Pinning one to each CAD node
+   * put the PDS's Pico, magnet and fasteners — all inside the box — on its
+   * centre, and stacked every chip across the logo. So each label names a
+   * node and picks a point on the face of it that shows.
+   */
+  const REAL: Partial<Record<DevKey, {
+    url: string; size: THREE_NS.Vector3;
+    dress: (m: THREE_NS.Mesh) => void; labels: Anchor[];
+  }>> = {
+    pds: {
+      url: "/sensor-stack/pallet-detection.glb",
+      size: PDS_SIZE,
+      dress: (m) => {
+        if (m.name === "Enclosure") splitLogo(m.geometry);
+        m.material = pdsMatFor(m.name);
+      },
+      labels: [
+        ["TF-Luna LiDAR", "TF-Luna_LiDAR", (b) => V3(lerp(b.min.x, b.max.x, 0.2), lerp(b.min.y, b.max.y, 0.7), b.max.z)],
+        ["RAMS Digital housing", "Enclosure", (b) => V3(lerp(b.min.x, b.max.x, 0.52), lerp(b.min.y, b.max.y, 0.3), b.max.z)],
+        ["Service lid", "Lid", (b) => V3(lerp(b.min.x, b.max.x, 0.75), lerp(b.min.y, b.max.y, 0.6), b.min.z)],
+        ["XT30 power in", "XT30_power_in", (b) => b.getCenter(V3())],
+      ],
+    },
+    lidar: {
+      url: "/sensor-stack/lidar-l2.glb",
+      size: LIDAR_SIZE,
+      dress: (m) => {
+        m.material = lidarMatFor(m.name);
+      },
+      labels: [
+        ["Scanning head", "LiDAR_head", (b) => V3(b.max.x, lerp(b.min.y, b.max.y, 0.6), lerp(b.min.z, b.max.z, 0.5))],
+        ["Base", "Base_housing", (b) => V3(lerp(b.min.x, b.max.x, 0.5), lerp(b.min.y, b.max.y, 0.4), b.max.z)],
+        ["Status LED", "Status_LED", (b) => b.getCenter(V3())],
+      ],
+    },
+  };
+
+  /** The real device, scaled to its real size and standing on y = 0 like every `DEV` build — or null. */
+  const loadReal = async (key: DevKey): Promise<Device | null> => {
+    const cfg = REAL[key];
+    if (!cfg) return null;
+    const real = cfg.size;
+    try {
+      const src = (await loadGlb(cfg.url)).clone(true);
+      src.traverse((o) => {
+        const mesh = o as THREE_NS.Mesh;
+        if (mesh.isMesh) cfg.dress(mesh);
+      });
+      const sz = new THREE.Box3().setFromObject(src).getSize(V3());
+      src.scale.setScalar(real.x / Math.max(sz.x, 1e-6));
+      src.updateMatrixWorld(true);
+      const bb = new THREE.Box3().setFromObject(src);
+      const c = bb.getCenter(V3());
+      src.position.set(-c.x, -bb.min.y, -c.z);
+
+      const group = new THREE.Group();
+      group.add(src);
+      group.updateMatrixWorld(true);
+
+      const parts: Part[] = [];
+      for (const [label, n, pick] of cfg.labels) {
+        const o = src.getObjectByName(n);
+        if (!o) continue;
+        const p = pick(new THREE.Box3().setFromObject(o));
+        parts.push({ obj: mark(p.x, p.y, p.z, group, 0.002), label, desc: "" });
+      }
+      return { group, parts, size: bb.getSize(V3()) };
+    } catch (err) {
+      console.warn("Sensor Stack: falling back to the procedural " + key + " —", err);
+      return null;
+    }
+  };
+
+  /** The real device where one exists, else the procedural build. */
+  const loadDevice = async (key: DevKey): Promise<Device> => (await loadReal(key)) ?? DEV[key]();
+
+  /**
+   * Swaps a procedural build already in a scene for the real one, in place:
+   * same group, so its position, rotation and scale on the truck or in the
+   * lineup are kept. `each` sees every new mesh (the film clones materials so
+   * its fades don't leak). Resolves false if there is no real model.
+   */
+  const upgradeInPlace = async (d: Device, key: DevKey, each?: (m: THREE_NS.Mesh) => void) => {
+    const real = await loadReal(key);
+    if (!real) return false;
+    d.group.clear();
+    for (const c of [...real.group.children]) d.group.add(c);
+    d.parts = real.parts;
+    d.size.copy(real.size);
+    if (each) {
+      d.group.traverse((o) => {
+        if ((o as THREE_NS.Mesh).isMesh) each(o as THREE_NS.Mesh);
+      });
+    }
+    return true;
+  };
+
   const mountsOf = (g: THREE_NS.Group): Mounts => {
     g.updateMatrixWorld(true);
     const box = (n: string) => {
@@ -566,6 +1182,7 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
     return {
       lidar: V3(mid(roof).x, roof.max.y + 0.01, mid(roof).z),
       access: panel ? V3(mid(panel).x + 0.28, panel.max.y + 0.02, mid(panel).z) : V3(0.3, 1.4, -0.2),
+      // On the carriage face, looking forward down the forks.
       pds: carriage
         ? V3(mid(carriage).x, carriage.min.y + (carriage.max.y - carriage.min.y) * 0.62, carriage.min.z - 0.02)
         : V3(0, 1, -1.4),
@@ -686,7 +1303,7 @@ export function createSstKit(THREE: typeof THREE_NS, isMobile: boolean) {
       fragmentShader: `varying vec3 vC;varying float vA;void main(){vec2 c=gl_PointCoord-.5;float d=dot(c,c);if(d>.25)discard;gl_FragColor=vec4(vC,vA*(1.-d*2.2));}`,
     });
 
-  return { M, DEV, setupRenderer, makeScene, fitFork, mountsOf, buildCloud, cloudMaterial };
+  return { M, DEV, loadDevice, upgradeInPlace, hasDevGlb: (k: DevKey) => !!REAL[k], setupRenderer, makeScene, fitFork, mountsOf, buildCloud, cloudMaterial };
 }
 
 export type SstKit = ReturnType<typeof createSstKit>;

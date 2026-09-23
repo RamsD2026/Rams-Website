@@ -5,23 +5,33 @@ import type * as THREE_NS from "three";
 import { createSstKit, loadFork, type DevKey, type Mounts } from "./sst-3d";
 
 /**
- * The hero film — the truck, the five sensors on it, and the LiDAR chapter.
+ * The hero film — the four sensors, then the truck, then the LiDAR chapter.
  *
  * A fixed canvas behind fixed type, driven entirely by how far the page has been
  * scrolled. Four chapters over one scroll track:
  *
- *   p 0.00–0.20  the truck, three-quarter front, under the headline
- *   p 0.24–0.45  "Six senses. One truck." — every sensor lights where it really
- *                mounts, each with a name tag pinned to it in screen space
+ *   p 0.00–0.20  the four devices in a lineup, under the headline
+ *   p 0.24–0.45  "Four units. Six senses." — the row turns to face the orbiting
+ *                camera, each unit with a name tag pinned under it
+ *   p 0.40–0.54  the handover: the lineup fades as the truck rises into frame
  *   p 0.50–0.80  "One LiDAR layer. Three answers." — the room fills with a
  *                point cloud sweeping out from the truck's own LiDAR, and the
  *                canvas washes to near-black under it
  *   p 0.85–1.00  "Know every truck." — back to the opening frame
  *
+ * ── Why it opens on the lineup, not the truck ───────────────────────
+ * It opened on a finished forklift, which answered a question the page had not
+ * asked yet and quietly made the stack look like one fitted product. It is not:
+ * the whole argument of this page is that you buy the sensors that answer your
+ * question and add the rest later. So the film now opens the way the OmniBox
+ * film opens on its four boxes — the family first, the thing you bolt them to
+ * second. The truck is still the subject from the LiDAR chapter on, where the
+ * point is precisely that these units are mounted on a moving vehicle.
+ *
  * ── Why the sensors are placed by the model, not by hand ────────────
  * `mountsOf()` reads the GLB's own named parts, so the Access Control unit is on
  * the rider panel, the pallet sensor is on the lift carriage, the LiDAR is on
- * the roof and the reverse alarm is on the engine cover — because that is where
+ * the roof and the battery chip is at the battery — because that is where
  * they are on the model, not because five vectors were typed in until they
  * looked right. It also means the halos and the tags point at the real thing.
  *
@@ -39,13 +49,12 @@ import { createSstKit, loadFork, type DevKey, type Mounts } from "./sst-3d";
  * the reference's own designed state.
  */
 
-/** The five tags that ride on the truck in chapter two. */
+/** The four devices: the lineup in chapter two, and where they mount later. */
 const TAGS: { k: DevKey; name: string; tag: string }[] = [
   { k: "access", name: "Access Control", tag: "Who can drive" },
-  { k: "lidar", name: "LiDAR", tag: "Crash · speed · location" },
+  { k: "lidar", name: "LiDAR", tag: "Location, Speed, Impact detection" },
   { k: "pds", name: "Pallet Detection", tag: "What’s on the forks" },
   { k: "bms", name: "Battery Management", tag: "Charge and health" },
-  { k: "rsa", name: "Reverse Sensor Alarm", tag: "What’s behind" },
 ];
 
 const ss = (t: number) => t * t * (3 - 2 * t);
@@ -108,6 +117,94 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
       const cam = new THREE.PerspectiveCamera(30, 1, 0.05, 200);
       const truck = new THREE.Group();
       scene.add(truck);
+      /* Hidden until the LiDAR chapter — the film now opens on the sensors
+         themselves, not on the truck they end up bolted to. */
+      truck.visible = false;
+
+      /* ── the lineup ──────────────────────────────────────────────
+         Four devices standing in a row, the way the OmniBox film opens on its
+         four boxes. The page's argument is that the stack is modular — you buy
+         the sensors that answer your question, not a fitted truck — and opening
+         on a finished forklift undercut that before the first section.
+
+         Materials are cloned per mesh. `createSstKit` builds its materials once
+         and every `DEV.*()` call shares them, so fading the lineup by setting
+         `material.opacity` would fade the same units where they sit on the
+         truck in chapter three. */
+      const lineup = new THREE.Group();
+      scene.add(lineup);
+      const lineMats: THREE_NS.Material[] = [];
+      const LINEUP_LIDAR = 1.35;
+      const lineItems = TAGS.map((t) => {
+        const d = kit.DEV[t.k]();
+        d.group.traverse((o) => {
+          const mesh = o as THREE_NS.Mesh;
+          if (!mesh.isMesh) return;
+          const one = (m: THREE_NS.Material) => {
+            const c = m.clone();
+            c.transparent = true;
+            lineMats.push(c);
+            return c;
+          };
+          mesh.material = Array.isArray(mesh.material)
+            ? mesh.material.map(one)
+            : one(mesh.material as THREE_NS.Material);
+          mesh.castShadow = !isMobile;
+        });
+        /* The PDS swaps to the real CAD model once it has loaded — same group,
+           so its place in the row is kept, and the same material cloning so
+           the lineup's fade still leaves the truck's unit alone. */
+        if (kit.hasDevGlb(t.k)) {
+          void kit.upgradeInPlace(d, t.k, (mesh) => {
+            const one = (m: THREE_NS.Material) => {
+              const c = m.clone();
+              c.transparent = true;
+              lineMats.push(c);
+              return c;
+            };
+            mesh.material = Array.isArray(mesh.material) ? mesh.material.map(one) : one(mesh.material);
+            mesh.castShadow = !isMobile;
+          });
+        }
+        /* The LiDAR is the smallest unit by far and read as an afterthought in
+           the row, so the lineup — only the lineup — shows it at about the
+           PDS's size. The viewer and the truck keep it true to scale. */
+        if (t.k === "lidar") {
+          d.group.scale.setScalar(LINEUP_LIDAR);
+          return { k: t.k, g: d.group, size: d.size.clone().multiplyScalar(LINEUP_LIDAR) };
+        }
+        return { k: t.k, g: d.group, size: d.size };
+      });
+
+      /* Laid out along X on a common centre line, spaced by each unit's own
+         width so the larger ones get the room they need. The row is then scaled
+         as a group, not per device: scaling each one to a common size would
+         flatten the differences between them, and those differences are real
+         product information. */
+      {
+        const GAP = 0.09;
+        const total = lineItems.reduce((n, it) => n + it.size.x, 0) + GAP * (lineItems.length - 1);
+        let x = -total / 2;
+        for (const it of lineItems) {
+          it.g.position.set(x + it.size.x / 2, 0, 0);
+          /* The board is flat: stood level it is a sliver edge-on to this
+             camera. Tilted up to face it, lifted so its front edge still
+             touches the ground. */
+          if (it.k === "bms") {
+            it.g.rotation.x = 1.05;
+            it.g.position.y = (it.size.z / 2) * Math.sin(1.05);
+          }
+          x += it.size.x + GAP;
+          lineup.add(it.g);
+        }
+        /* Sized and placed to OmniFilm's composition, because that one is known
+           to sit clear of the headline at every aspect: the row spans ~9 units
+           and stands on the ground, while its camera looks at a point 2.2 above
+           it. Do not lift this to the camera target — that is exactly what put
+           the devices behind the type the first time. */
+        lineup.scale.setScalar(9 / Math.max(total, 1e-6));
+        lineup.position.y = 0;
+      }
 
       const cloud = new THREE.Points(kit.buildCloud(0.55), kit.cloudMaterial());
       cloud.rotation.y = Math.PI / 2;
@@ -142,17 +239,34 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
           const f = kit.fitFork(src);
           truck.add(f);
           mounts = kit.mountsOf(f);
+
+          /* `mountsOf` measures world-space bounding boxes, but every device
+             below is added as a child of `truck` — so the numbers have to be
+             converted or they are read as local coordinates under whatever
+             transform `truck` is carrying.
+
+             That used to be none. The lineup handover now scales `truck` to
+             0.94 and lifts it as it rises into frame, and a world point used
+             as a local one under that lands the LiDAR inside the cab instead
+             of on top of the overhead guard. */
+          truck.updateMatrixWorld(true);
+          for (const k of ["access", "lidar", "pds", "bms"] as const) {
+            truck.worldToLocal(mounts[k]);
+          }
           for (const t of TAGS) {
             const d = kit.DEV[t.k]();
             // The chip is tiny next to a forklift, so it is drawn larger than
             // life — the film is making the point that it is there at all.
             d.group.scale.setScalar(t.k === "bms" ? 2.4 : 1.5);
             d.group.position.copy(mounts[t.k]);
-            if (t.k === "pds") {
-              d.group.rotation.x = -Math.PI / 2;
-              d.group.rotation.z = Math.PI;
+            // Upright on the carriage face, windows looking down the forks (−Z);
+            // the TF-Lunas inside it aim 45° down.
+            if (t.k === "pds") d.group.rotation.y = Math.PI;
+            if (kit.hasDevGlb(t.k)) {
+              void kit.upgradeInPlace(d, t.k, (mesh) => {
+                mesh.castShadow = !isMobile;
+              });
             }
-            if (t.k === "rsa") d.group.rotation.y = Math.PI;
             if (t.k === "access") d.group.rotation.set(-0.5, Math.PI, 0);
             truck.add(d.group);
             anchors[t.k] = mounts[t.k].clone();
@@ -182,11 +296,25 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
         [0.94, V3(7.4, 3.6, -8.1), V3(0, 2.65, 0)],
         [1, V3(7.4, 3.6, -8.1), V3(0, 2.65, 0)],
       ];
-      const camPos = V3(), camTgt = V3(), ndc = V3(), wp = V3();
-      const keyed = (p: number, outP: THREE_NS.Vector3, outT: THREE_NS.Vector3) => {
+      /* The lineup's own rails, modelled on the OmniBox film's: straight on,
+         well back, looking above the row. Blended into `KW` across the handover
+         so the move to the truck is one continuous camera rather than a cut. */
+      const KL: [number, THREE_NS.Vector3, THREE_NS.Vector3][] = [
+        [0, V3(0, 4.4, 17), V3(0, 2.2, 0)],
+        [0.2, V3(0, 4.4, 17), V3(0, 2.2, 0)],
+        [0.4, V3(2.4, 4.0, 15.5), V3(0, 2.0, 0)],
+        [1, V3(2.4, 4.0, 15.5), V3(0, 2.0, 0)],
+      ];
+      const camPos = V3(), camTgt = V3(), linePos = V3(), lineTgt = V3(), ndc = V3(), wp = V3();
+      const keyed = (
+        keys: [number, THREE_NS.Vector3, THREE_NS.Vector3][],
+        p: number,
+        outP: THREE_NS.Vector3,
+        outT: THREE_NS.Vector3,
+      ) => {
         let i = 0;
-        while (i < KW.length - 2 && p > KW[i + 1][0]) i++;
-        const [a, pa, ta] = KW[i], [b, pb, tb] = KW[i + 1];
+        while (i < keys.length - 2 && p > keys[i + 1][0]) i++;
+        const [a, pa, ta] = keys[i], [b, pb, tb] = keys[i + 1];
         const t = ss(seg(p, a, b));
         outP.lerpVectors(pa, pb, t);
         outT.lerpVectors(ta, tb, t);
@@ -205,8 +333,8 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
       onScroll();
       cleanups.push(() => window.removeEventListener("scroll", onScroll));
 
-      /* Drag turns the truck, not the camera: the film's camera is on rails and
-         taking it off them mid-chapter loses the composition. */
+      /* Drag turns the sensors in the lineup, each on its own axis — not the
+         camera, which is on rails, and not the truck. */
       const onDown = (e: PointerEvent) => {
         state.dragging = true;
         state.px = e.clientX;
@@ -239,7 +367,28 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
         state.time += dt;
         state.drag += (state.dragT - state.drag) * Math.min(1, dt * 6);
 
-        keyed(p, camPos, camTgt);
+        /* How far the handover has run. Computed here rather than lower down
+           because the camera has to blend with it: the lineup and the truck
+           need different framing and a cut between them would be jarring. */
+        const truckIn = ss(seg(p, 0.44, 0.54));
+
+        keyed(KW, p, camPos, camTgt);
+        if (truckIn < 0.999) {
+          keyed(KL, p, linePos, lineTgt);
+          camPos.lerpVectors(linePos, camPos, truckIn);
+          camTgt.lerpVectors(lineTgt, camTgt, truckIn);
+        }
+        /* Same clearance guard as the Guided Inspection film: in the opening
+           and closing chapters the type owns the middle of the screen, so the
+           camera target is lifted by a fraction of the visible frame height and
+           the subject drops into the lower third. A fraction rather than a
+           fixed offset, so it holds at any viewport. */
+        const heroHold = (1 - ss(seg(p, 0.14, 0.26))) + ss(seg(p, 0.9, 0.97));
+        if (heroHold > 0.001) {
+          const frameH = 2 * camPos.distanceTo(camTgt) * Math.tan((cam.fov * Math.PI) / 360);
+          camTgt.y += Math.min(1, heroHold) * frameH * 0.18;
+        }
+
         /* Pull the camera back on a narrow viewport rather than change the
            keyframes: the truck is long, and a portrait phone crops it. */
         const a = cam.aspect;
@@ -251,10 +400,42 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
         }
         cam.position.lerp(camPos, Math.min(1, dt * 5));
         cam.lookAt(camTgt);
-        truck.rotation.y = state.drag + (reduceMotion ? 0 : Math.sin(state.time * 0.2) * 0.04);
+        // Not tied to the drag: turning the sensors in the lineup must not turn the truck.
+        truck.rotation.y = reduceMotion ? 0 : Math.sin(state.time * 0.2) * 0.04;
 
         const ch2 = ss(seg(p, 0.22, 0.3)) * (1 - ss(seg(p, 0.44, 0.5)));
         const ch3 = ss(seg(p, 0.48, 0.56)) * (1 - ss(seg(p, 0.8, 0.88)));
+
+        /* ── lineup → truck ──────────────────────────────────────────
+           The handover, and the one place in this film where two subjects share
+           the track. The lineup fades out over 0.40–0.50 and the truck rises in
+           over 0.44–0.54, so for a tenth of the track they overlap rather than
+           one popping in where the other vanished. Both are driven off the same
+           `seg` easing the chapter envelopes use.
+
+           The camera is mid-orbit here and the background is washing to black
+           for the point cloud, which is what makes the swap read as a cut in a
+           film rather than as a component unmounting. */
+        const lineOp = 1 - ss(seg(p, 0.4, 0.5));
+        lineup.visible = lineOp > 0.01;
+        if (lineup.visible) {
+          for (const m of lineMats) m.opacity = lineOp;
+          /* The row turns to face wherever the camera has orbited to, so it is
+             never seen edge-on. `KW` swings from +x to −x across chapter two and
+             a fixed row would present its own end for half of it. */
+          lineup.rotation.y = Math.atan2(cam.position.x - lineup.position.x, cam.position.z - lineup.position.z);
+          /* Dragging turns each unit on its own axis, where it stands — as the
+             OmniBox film does — not the whole row round like a carousel. */
+          lineItems.forEach((it, i) => {
+            it.g.rotation.y = (reduceMotion ? 0 : Math.sin(state.time * 0.25 + i * 1.7) * 0.06) + state.drag;
+          });
+        }
+
+        truck.visible = truckIn > 0.01;
+        /* Transform, not opacity: the truck's own materials are shared with the
+           hardware viewer, and this is a rise into frame rather than a fade. */
+        truck.scale.setScalar(0.94 + truckIn * 0.06);
+        truck.position.y = (1 - truckIn) * -0.45;
 
         const u = cloud.material.uniforms;
         u.uOp.value = ch3;
@@ -269,22 +450,40 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
           u.uO.value.copy(wp);
         }
 
+        lineup.updateMatrixWorld(true);
+        /* One baseline for all four tags. Each used to hang half its own unit's
+           height below it, so the tall Access Control box dropped its tag far
+           below the others. Now every unit's front-bottom edge is projected,
+           the lowest one sets the line, and each tag sits on it under its
+           unit's centre. */
+        let base = -Infinity;
+        const tagX: number[] = [];
+        lineItems.forEach((item, i) => {
+          item.g.getWorldPosition(wp);
+          ndc.copy(wp).project(cam);
+          tagX[i] = (ndc.x * 0.5 + 0.5) * window.innerWidth;
+          wp.y = lineup.position.y;
+          wp.z += (item.size.z / 2) * lineup.scale.z;
+          ndc.copy(wp).project(cam);
+          base = Math.max(base, (-ndc.y * 0.5 + 0.5) * window.innerHeight);
+        });
         TAGS.forEach((t, i) => {
           const el = tagRefs.current[i];
-          const h = halos[t.k];
           if (!el) return;
-          if (!h) {
+          /* The halos existed to find five small things on a large truck. The
+             lineup is those same things at full height with nothing else in
+             frame, so there is nothing left for them to point out — and the
+             truck they are parented to is not on screen during chapter two. */
+          const h = halos[t.k];
+          if (h) h.material.opacity = 0;
+
+          const item = lineItems[i];
+          if (!item) {
             el.style.opacity = "0";
             return;
           }
-          const pulse = reduceMotion ? 1 : 0.75 + 0.25 * Math.sin(state.time * 3 + i);
-          h.material.opacity = ch2 * pulse;
-          truck.localToWorld(wp.copy(anchors[t.k]!));
-          ndc.copy(wp).project(cam);
-          el.style.transform =
-            `translate(${((ndc.x * 0.5 + 0.5) * window.innerWidth).toFixed(1)}px,` +
-            `${((-ndc.y * 0.5 + 0.5) * window.innerHeight + 18).toFixed(1)}px) translate(-50%,0)`;
-          el.style.opacity = (ndc.z < 1 ? ch2 : 0).toFixed(3);
+          el.style.transform = `translate(${tagX[i].toFixed(1)}px,${(base + 28).toFixed(1)}px) translate(-50%,0)`;
+          el.style.opacity = (ch2 * lineOp).toFixed(3);
         });
 
         for (const s of secs) {
@@ -388,13 +587,13 @@ export function SstFilm({ onUnavailable }: { onUnavailable: () => void }) {
         >
           <span className="label">The stack</span>
           <h2>
-            Six senses.
+            Four units.
             <br />
-            One truck.
+            Six senses.
           </h2>
           <p className="lead">
-            Each sensor answers one question. Together they tell you everything that happened on a
-            shift.
+            Each one answers a single question, and each one can be bought on its own. Together
+            they tell you everything that happened on a shift.
           </p>
         </section>
 

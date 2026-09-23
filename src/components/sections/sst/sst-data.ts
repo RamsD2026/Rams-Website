@@ -19,7 +19,7 @@
      LiDAR range. The battery panel and the LiDAR read-outs use words, meters
      and gauges rather than numbers, deliberately — see `SstBattery.tsx`.
    · The electrical specs that *are* quoted (12–24 V DC supply, 30 A relay,
-     12–80 V key-on sense, 12 V DC for the reverse alarm) come from those
+     12–80 V key-on sense) come from those
      manuals and are the only hard numbers on the page besides the ±10 mm LiDAR
      sensor accuracy, which is the same figure `/hardware/rtls` quotes.
 
@@ -27,12 +27,12 @@
    Crash, speed and location are three products in the nav but **one sensor** on
    the truck. The page says so everywhere: one LiDAR section answering three
    questions, a "Through LiDAR" line on each of the three cards, and one row per
-   answer in the compare table. The rear-facing Reverse Sensor Alarm is a
+   answer in the compare table. The
    separate device and is kept separate — it is not one of the six.
    ========================================================================== */
 
 /** Where the media lives. The three `/omnibox/` paths are the same files the
-    Omnibox page already ships — byte-identical in the reference too — so they
+    OmniBox page already ships — byte-identical in the reference too — so they
     are referenced rather than copied a second time into `/sensor-stack/`. */
 export const IMG = {
   truck: "/sensor-stack/stack-truck.jpg",
@@ -43,10 +43,9 @@ export const IMG = {
   pds: "/sensor-stack/pds.jpg",
   bms: "/sensor-stack/bms.jpg",
   lidar: "/sensor-stack/lidar.jpg",
-  rsa: "/sensor-stack/rsa.jpg",
   whereForklift: "/omnibox/where-forklift.jpg",
   whereDock: "/omnibox/where-dock.jpg",
-  motionTruck: "/omnibox/omnibox-motion-truck.jpg",
+  motionTruck: "/omnibox/motion-on-truck.jpg",
 } as const;
 
 /** The forklift the film and the LiDAR showcase both drive. */
@@ -96,12 +95,24 @@ export const PROBLEMS: { n: string; h: string; p: string; fix: string }[] = [
     p: "Finding a truck, a load or a battery that’s about to fail still means walking the floor.",
     fix: "Live position, load state and battery health for every truck.",
   },
+  {
+    n: "05",
+    h: "Distance is not work",
+    p: "Two trucks can cover the same ground in a shift and do completely different amounts of useful work. Travel time on its own never says which was which.",
+    fix: "Load state separates the loaded runs from the empty ones.",
+  },
+  {
+    n: "06",
+    h: "The battery surprises you",
+    p: "A truck that is available but cannot finish the shift was never really available. Battery trouble usually shows up once productivity has already gone.",
+    fix: "Charge, cycle and health tracked as a planning number, not a maintenance one.",
+  },
 ];
 
 /* ── 03 the six sensors ──────────────────────────────────────────── */
 
 export type SheetKey = "access" | "lidar" | "pds" | "bms";
-export type DeviceKey = "access" | "lidar" | "pds" | "rsa" | "bms";
+export type DeviceKey = "access" | "lidar" | "pds" | "bms";
 /** Which of the LiDAR showcase's three answers to open on. */
 export type LidarMode = "position" | "speed" | "impact";
 
@@ -246,8 +257,15 @@ export const LIDAR_COPY: Record<LidarMode, { k: string; h: string; p: string }> 
 export const LIDAR_TABS: { mode: LidarMode; label: string }[] = [
   { mode: "position", label: "Location" },
   { mode: "speed", label: "Speed" },
-  { mode: "impact", label: "Crash" },
+  { mode: "impact", label: "Impact" },
 ];
+
+/** The deck's closing line on the spatial layer, and it is load-bearing:
+ *  positioning performance is a property of a specific building, not of the
+ *  sensor. Racking, layout, sensor placement and commissioning all move it, so
+ *  the page commits to validating on site rather than to a number. */
+export const LIDAR_NOTE =
+  "Positioning performance depends on the building, the layout, where the sensors sit and how the system is commissioned. It is validated on your site rather than quoted from a datasheet.";
 
 export const LIDAR_FACTS: { b: string; s: string }[] = [
   {
@@ -261,7 +279,6 @@ export const LIDAR_FACTS: { b: string; s: string }[] = [
   },
 ];
 
-export const RSA_PILLS = ["12 V DC", "30 A relay", "Beacon and buzzer", "Set up from a phone"];
 
 /* ── 05 access control ───────────────────────────────────────────── */
 
@@ -298,7 +315,7 @@ export const HW_TABS: {
     key: "access",
     tab: "Access Control",
     h: "Access Control",
-    p: "A sealed white enclosure with an RFID reader, a fingerprint sensor and a 12-key keypad on the face, a power switch on the side and two cable glands underneath.",
+    p: "A sealed black enclosure with an RFID reader, a fingerprint sensor and a 12-key keypad on its glass face, and a power switch on the side.",
     img: IMG.access,
     alt: "Access Control unit",
     cta: { label: "Learn more about Access Control", sheet: "access" },
@@ -322,15 +339,6 @@ export const HW_TABS: {
     cta: { label: "Learn more about Pallet Detection", sheet: "pds" },
   },
   {
-    key: "rsa",
-    tab: "Reverse alarm",
-    h: "Reverse Sensor Alarm",
-    p: "A LiDAR puck on a blue face, with Power, Sense and Trigger lights, wired to a beacon that sounds when something is too close behind.",
-    img: IMG.rsa,
-    alt: "Reverse Sensor Alarm",
-    cta: { label: "See the LiDAR view", lidar: "impact" },
-  },
-  {
     key: "bms",
     tab: "Battery chip",
     h: "Battery management chip",
@@ -352,7 +360,6 @@ export const COMPARE_ROWS: { h: string; cells: string[] }[] = [
   { h: "Location Monitoring", cells: ["Where is every truck?", "High on the truck", "LiDAR"] },
   { h: "Pallet Detection", cells: ["Loaded or empty?", "On the fork carriage", "Two sensing heads"] },
   { h: "Battery Management", cells: ["Charge, health and cycles?", "At the battery", "Battery management chip"] },
-  { h: "Reverse Sensor Alarm", cells: ["What’s behind while reversing?", "Back of the truck", "LiDAR, with beacon and buzzer"] },
 ];
 
 /* ── 09 where it's used ──────────────────────────────────────────── */
@@ -369,14 +376,14 @@ export const WHERE: { img: string; alt: string; pills: string[]; h: string; p: s
   {
     img: IMG.whereDock,
     alt: "Dock door with a forklift and a pedestrian walkway",
-    pills: ["Speed", "Reverse alarm"],
+    pills: ["Speed", "Location"],
     h: "Docks & walkways",
-    p: "Slower where people cross, and eyes behind when reversing.",
+    p: "Slower where people cross, and a record of who crossed when.",
   },
   {
     img: IMG.motionTruck,
-    alt: "Omnibox Motion on a forklift, with sensor cables plugged in",
-    pills: ["All six sensors", "Omnibox Motion"],
+    alt: "OmniBox Motion mounted on the hood of a forklift",
+    pills: ["All six sensors", "OmniBox Motion"],
     h: "Wired into one box on the truck",
     p: "Know who had the truck, what happened while they had it, and whether its battery will last the next shift — all from one box.",
     full: true,
@@ -391,7 +398,7 @@ export const FAQ: { q: string; a: string }[] = [
     a: "Usually, yes. Access Control wires into the truck’s key circuit and senses key-on anywhere from 12 to 80 V, so it suits a wide range of electric and engine trucks. The other sensors mount on the truck itself. We survey your fleet before anything is ordered.",
   },
   {
-    q: "Do we have to fit all six?",
+    q: "Do we have to fit all of it?",
     a: "No. Start with the question that matters most — usually who’s driving, or what’s being hit — and add the rest later. The LiDAR brings crash, speed and location monitoring together.",
   },
   {
@@ -400,7 +407,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Does any of it need the internet?",
-    a: "No. Access Control and the Reverse Sensor Alarm are set up over their own Wi-Fi from a phone or laptop, and the sensors connected to Omnibox Motion are decided on the truck. A network is only used to send events on to the dashboard.",
+    a: "No. Access Control is set up over its own Wi-Fi from a phone or laptop, and the sensors connected to OmniBox Motion are decided on the truck. A network is only used to send events on to the dashboard.",
   },
   {
     q: "Does the LiDAR need anything fitted in the building?",
@@ -481,7 +488,7 @@ export const SHEETS: Sheet[] = [
   },
   {
     key: "lidar",
-    label: "Crash · Speed · Location",
+    label: "Location · Speed · Impact Detection",
     title: "One picture. Three answers.",
     intro:
       "A LiDAR on the truck sees the space around it in 3D. The same picture tells the truck where it is, how fast it’s going against the zone it’s in, and the moment it hits something.",
@@ -507,8 +514,8 @@ export const SHEETS: Sheet[] = [
     ctx: {
       img: IMG.whereDock,
       alt: "Dock door with a forklift and a pedestrian walkway",
-      title: "Behind the truck, too",
-      body: "The Reverse Sensor Alarm puts a LiDAR on the back of the truck. It measures what’s behind while reversing and sounds the beacon — 12 V DC, a 30 A relay, and Power, Sense and Trigger lights on the face.",
+      title: "One sensor, three answers",
+      body: "The same roof LiDAR that places the truck on your floor plan is what measures its speed against the zone it is in, and what fixes where an impact happened. One device, not three.",
     },
     specs: [
       ["Senses", "The space around the truck, in 3D"],

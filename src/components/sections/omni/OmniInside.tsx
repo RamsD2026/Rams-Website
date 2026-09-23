@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type * as THREE_NS from "three";
 import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
 import { createOmniKit, type BoxModel, type Holder } from "./omni-3d";
-import { INSIDE_CAPS, MODEL_BY_KEY, ORDER, type ModelKey } from "./omni-data";
+import { HAS_CONN, INSIDE_CAPS, MODEL_BY_KEY, ORDER, type ModelKey } from "./omni-data";
 
 /**
  * 03 — Inside.
@@ -14,9 +14,9 @@ import { INSIDE_CAPS, MODEL_BY_KEY, ORDER, type ModelKey } from "./omni-data";
  *   **Inside** — the box comes apart, each part labelled in plain words. This
  *   is the section's job: to say what is actually in there.
  *   **What it connects to** — the box reassembles and the devices it is wired
- *   to appear around it, with cables that draw themselves and pulses that run
- *   the direction the signal travels. Only Edge and Motion have a fixed kit, so
- *   the view switch hides for AI and Core.
+ *   to appear around it, with cables that draw themselves and a streak of light that runs
+ *   the direction the signal travels. Edge, AI and Motion have a fixed kit;
+ *   Core does not, so the view switch hides for it.
  *
  * ── The camera orbits; the model never turns ────────────────────────
  * Dragging moves the *camera* around a stationary box (azimuth `ang`, elevation
@@ -46,6 +46,14 @@ import { INSIDE_CAPS, MODEL_BY_KEY, ORDER, type ModelKey } from "./omni-data";
  * unprompted, the first time it is scrolled to — the section has to make its
  * own point before anyone thinks to press a button. Any deliberate input
  * cancels that.
+ *
+ * ── Every tab opens the same way, every time ────────────────────────
+ * Picking a model resets it to its opening view — connections where the box
+ * has a fixed kit (Edge, AI, Motion), taken apart where it does not (Core) —
+ * and plays that from the start: the box swaps in assembled, then the cables
+ * draw or the parts lift. Going back to a tab already seen plays it again
+ * rather than showing the end state, so flicking between models always shows
+ * the models doing something.
  */
 
 const ss = (t: number) => t * t * (3 - 2 * t);
@@ -89,14 +97,21 @@ export function OmniInside({
   const apiRef = useRef<any>(null);
 
   const cap = INSIDE_CAPS[active];
-  const hasConn = active === "edge" || active === "motion";
-  /* AI and Core have no fixed kit, so they always show the inside view even if
-     the visitor last asked for connections on Edge. */
+  const hasConn = HAS_CONN.includes(active);
+  /* Core has no fixed kit, so it always shows the inside view even if the
+     visitor last asked for connections on another box. */
   const shownView: InsideView = hasConn ? view : "inside";
+
+  /* The scene builds asynchronously, after these effects have first run, so it
+     reads the view it should open on from here once it exists. */
+  const viewNow = useRef(shownView);
 
   /* Keep the imperative scene in step with React's state. */
   useEffect(() => { apiRef.current?.setActive(active); }, [active]);
-  useEffect(() => { apiRef.current?.setView(shownView); }, [shownView]);
+  useEffect(() => {
+    viewNow.current = shownView;
+    apiRef.current?.setView(shownView);
+  }, [shownView]);
   useEffect(() => { apiRef.current?.setApart(apart); }, [apart]);
   useEffect(() => { apiRef.current?.setLabels(labels); }, [labels]);
 
@@ -130,6 +145,10 @@ export function OmniInside({
       if (disposed) return;
 
       const cam = new THREE.PerspectiveCamera(30, 16 / 9, 0.05, 120);
+      /* Procedural first, always. These build instantly and cost no network,
+         so the viewer is usable the moment it renders. Edge and Motion then
+         upgrade themselves to the real CAD-derived models when their tab is
+         actually looked at — see `upgrade` below. */
       const hs: Record<string, Holder> = {};
       for (const k of ORDER) {
         const h = kit.makeHolder(k);
@@ -141,7 +160,7 @@ export function OmniInside({
          scene space beside the holder rather than parented to it. */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const conns: Record<string, any> = {};
-      for (const k of ["edge", "motion"]) {
+      for (const k of HAS_CONN) {
         const c = kit.buildConn(k, hs[k].model);
         if (c) {
           conns[k] = c;
@@ -152,7 +171,7 @@ export function OmniInside({
 
       const st = {
         key: active as string,
-        view: "inside" as InsideView,
+        view: viewNow.current,
         apart: false,
         labels: false,
         lk: 0,           // smoothed label opacity — labels fade, never snap
@@ -182,19 +201,62 @@ export function OmniInside({
               }))
             : hs[st.key].model.parts
                 .filter((p) => p.label && !/^housing$|^enclosure$/i.test(p.label))
-                .map((p) => ({ label: p.label, desc: p.desc, dir: "", obj: p.obj }));
+                /* Part chips carry the name only. With the description under
+                   every name, a taken-apart box read as a wall of text over
+                   the model it was meant to label. The descriptions stay in
+                   the data (`PART_DESC`, the builders) should they be wanted
+                   elsewhere; the connect view's device chips keep theirs. */
+                .map((p) => ({ label: p.label, desc: "", dir: "", obj: p.obj }));
         chips = list.map((s) => {
           const d = document.createElement("div");
           d.className = "pchip";
           if (s.dir) d.setAttribute("data-dir", s.dir);
-          d.innerHTML = '<div class="in"><b></b><span></span></div>';
+          d.innerHTML = s.desc ? '<div class="in"><b></b><span></span></div>' : '<div class="in"><b></b></div>';
           d.querySelector("b")!.textContent = s.label;
-          d.querySelector("span")!.textContent = s.desc;
+          if (s.desc) d.querySelector("span")!.textContent = s.desc;
           chipsRoot.appendChild(d);
           return { el: d, obj: s.obj, x: 0, y: 0, h: 40, flip: false, vis: false };
         });
       };
       buildChips();
+
+      /* ── the real models ─────────────────────────────────────────
+         Nine megabytes of CAD sit behind Edge and Motion. Fetching both up
+         front would put that on every visitor to the page, including everyone
+         who never opens this section — so each one is fetched the first time
+         its own tab is shown, and swapped in when it lands.
+
+         The swap has to take the cable rig with it: `buildConn` measures the
+         model it is given, so a rig built around the procedural box would hang
+         in the wrong places on the real one. */
+      const upgraded = new Set<string>();
+      const upgrade = async (k: string) => {
+        if (upgraded.has(k) || !kit.hasGlb(k)) return;
+        upgraded.add(k);
+        const h = await kit.loadHolder(k);
+        if (disposed || h.model === hs[k].model) return;
+
+        h.g.visible = hs[k].g.visible;
+        scene.remove(hs[k].g);
+        scene.add(h.g);
+        hs[k] = h;
+
+        if (conns[k]) {
+          scene.remove(conns[k].group);
+          delete conns[k];
+        }
+        const c = kit.buildConn(k, h.model);
+        if (c) {
+          conns[k] = c;
+          c.group.visible = false;
+          scene.add(c.group);
+        }
+        if (st.key === k) buildChips();
+        console.info(
+          `OmniBox: ${k} upgraded to the CAD model — ${h.model.parts.length} parts`,
+        );
+      };
+      void upgrade(st.key);
 
       /* The controls sit inside the drag surface, so a press that starts on one
          must not begin a drag: `setPointerCapture` would retarget the pointerup
@@ -330,9 +392,16 @@ export function OmniInside({
           ch.el.style.opacity = (ch.vis ? op * st.lk : 0).toFixed(3);
         }
 
+        /* Nothing is drawn until the stage has a size. `resize` returns early
+           while the element has no layout, which leaves the drawing buffer at
+           0x0 — and clearing or drawing to that is an incomplete-framebuffer
+           error, once per frame, forever. */
+        const db = R.getDrawingBufferSize(bufSize);
+        if (db.width < 2 || db.height < 2) return;
         R.render(scene, cam);
       };
 
+      const bufSize = new THREE.Vector2();
       const resize = () => {
         const w = stage.clientWidth, hh = stage.clientHeight;
         if (!w || !hh) return;
@@ -374,11 +443,17 @@ export function OmniInside({
         touch() { st.touched = true; },
         setActive(k: string) {
           if (k === st.key) return;
+          void upgrade(k);
           st.cp = 0;
           const swap = () => {
             Object.values(hs).forEach((x) => (x.g.visible = x.key === k));
             st.key = k;
             st.ang = 0.7;
+            // Start assembled and unwired, so the opening plays from its start
+            // on every visit to the tab, not just the first.
+            st.e = 0;
+            st.cp = 0;
+            st.lk = 0;
             buildChips();
           };
           if (reduceMotion) { swap(); return; }
@@ -420,14 +495,21 @@ export function OmniInside({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Switch model, back to its opening view, with the opening played again. */
+  const pick = (k: ModelKey) => {
+    apiRef.current?.touch();
+    onActive(k);
+    onView("connect");
+    setApart(true);
+  };
+
   const onKey = (e: React.KeyboardEvent) => {
     const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (!d) return;
     e.preventDefault();
     const i = ORDER.indexOf(active);
     const next = ORDER[(i + d + ORDER.length) % ORDER.length];
-    apiRef.current?.touch();
-    onActive(next);
+    pick(next);
     document.getElementById("omni-itab-" + next)?.focus();
   };
 
@@ -438,7 +520,7 @@ export function OmniInside({
           center
           label="Inside"
           top="Take one apart."
-          intro="Pick a box to see what it’s made of — and, for Edge and Motion, what it connects to on the job. Drag to turn it around."
+          intro="Pick a box to see what it connects to on the job, and what it’s made of. Drag to turn it around."
         />
 
         <Reveal className={"inside-stage" + (noGl ? " no-gl" : "")}>
@@ -447,7 +529,7 @@ export function OmniInside({
               ref={canvasRef}
               className="inside-canvas"
               role="img"
-              aria-label="3D model of the selected Omnibox, shown taken apart with its main parts labelled, or with the devices it connects to"
+              aria-label="3D model of the selected OmniBox, shown taken apart with its main parts labelled, or with the devices it connects to"
             />
             <div ref={chipsRef} aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
 
@@ -476,7 +558,9 @@ export function OmniInside({
                 <i aria-hidden />
                 Labels
               </button>
-              {shownView === "inside" && (
+              {/* Core has no fixed internals, so there is nothing honest to
+                  take apart — see the note in `omni-3d.ts`. */}
+              {shownView === "inside" && active !== "core" && (
                 <button
                   type="button"
                   className="inside-toggle"
@@ -503,7 +587,7 @@ export function OmniInside({
         </Reveal>
 
         <div className="env-ui">
-          <div className="seg" role="tablist" aria-label="Omnibox model" onKeyDown={onKey}>
+          <div className="seg" role="tablist" aria-label="OmniBox model" onKeyDown={onKey}>
             {ORDER.map((k) => (
               <button
                 key={k}
@@ -512,7 +596,7 @@ export function OmniInside({
                 type="button"
                 aria-selected={k === active}
                 tabIndex={k === active ? 0 : -1}
-                onClick={() => { apiRef.current?.touch(); onActive(k); }}
+                onClick={() => pick(k)}
               >
                 {MODEL_BY_KEY[k].short}
               </button>

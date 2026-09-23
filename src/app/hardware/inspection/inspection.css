@@ -1,7 +1,7 @@
 /* ============================================================================
    /hardware/inspection — this page's own components.
 
-   Ported from the reference's `inspect.css`, which is the Omnibox stylesheet
+   Ported from the reference's `inspect.css`, which is the OmniBox stylesheet
    plus the block below. The shared part comes from `styles/hardware-omni.css`,
    imported before this file — including the chooser shell (`.builder`,
    `.b-step`, `.b-opt`, `.b-result`), which moved there from `omnibox.css` when
@@ -28,10 +28,13 @@
    the other hardware pages. Everything else is bound to a token.
    ========================================================================== */
 
-/* This film is the shortest of the three — two machines, and chapter two is one
-   move each rather than an explode. Per-route, so it is not in the shared file. */
+/* This film is the shortest of the three — two machines, three chapters, and
+   the middle one is a move each rather than an explode. It was 520vh when there
+   were four chapters; cutting "Two directions" took a chapter's worth of track
+   with it, and the remaining beats keep their old pace at 430vh. Per-route, so
+   it is not in the shared file. */
 .hw-page.gi-page .hw-scrollspace {
-  height: 520vh;
+  height: 430vh;
 }
 
 /* ---------------------------------------------------------------- film */

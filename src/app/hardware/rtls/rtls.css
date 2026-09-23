@@ -2,7 +2,7 @@
    /hardware/rtls — components added on top of `styles/hardware-base.css`.
 
    Ported from the Location Intelligence showcase build's `loc.css`. Its
-   `site.css` is the same stylesheet the AI Camera and Omnibox builds ship,
+   `site.css` is the same stylesheet the AI Camera and OmniBox builds ship,
    already ported as the hardware base, so only this file's own components are
    here.
 
@@ -57,10 +57,23 @@
   position: relative;
   overflow: hidden;
   color: #f5f5f7;
-  min-height: min(92vh, 840px);
+  /* Fills the viewport at any resolution, like `.hw-hero` on the other four
+     hardware pages. It used to be `min(92vh, 840px)`, and the 840px cap was
+     the whole problem: past roughly a 910px-tall window the hero stopped
+     growing and sat in a short band with the page ground below it.
+
+     `svh` is the small-viewport unit — the height with the mobile browser's
+     chrome showing. `dvh` would be more exact but it changes as the chrome
+     hides on scroll, which resizes the hero mid-scroll and makes the floor
+     plan behind it re-render. `vh` first, so anything without `svh` still
+     gets a full-height hero. */
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: calc(var(--nav-h) + 8vh) 0 8vh;
+  /* Bounded rather than pure `vh`: at 8vh a tall monitor gave the copy 200px
+     of padding it did not need, and a short laptop crushed it. */
+  padding: calc(var(--nav-h) + clamp(24px, 6vh, 76px)) 0 clamp(24px, 6vh, 76px);
   background: radial-gradient(120% 95% at 76% 45%, #16181e 0%, #0b0c0f 64%);
 }
 .loc-page .li-hero > canvas {
@@ -76,22 +89,26 @@
   pointer-events: none;
   background: linear-gradient(
     90deg,
-    #0b0c0f 4%,
-    rgba(11, 12, 15, 0.93) 32%,
-    rgba(11, 12, 15, 0.34) 62%,
-    rgba(11, 12, 15, 0.5) 100%
+    #0b0c0f 2%,
+    rgba(11, 12, 15, 0.92) 26%,
+    rgba(11, 12, 15, 0.28) 58%,
+    rgba(11, 12, 15, 0.46) 100%
   );
 }
+/* The copy sits against the viewport's left gutter and vertically centred,
+   which is how the AI Camera hero is set — not inside the centred page
+   container. Two reasons it is better here: the headline starts where the eye
+   starts rather than 120px in from it, and the floor plan behind gets the
+   whole right-hand half of the frame instead of competing with a container
+   edge. The gutter value is the film hero's own, so the two pages line up. */
 .loc-page .hero-in {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
+  padding: 0 clamp(22px, 7vw, 110px);
 }
 .loc-page .hero-copy {
-  max-width: min(46ch, 660px);
+  max-width: min(52ch, 720px);
 }
 .hw-page.loc-page .li-hero .kicker {
   color: var(--orange-soft);
@@ -121,19 +138,6 @@
 .hw-page.loc-page .li-hero .btn-secondary:hover {
   background: var(--orange-soft);
   color: #0b0c0f;
-}
-.hw-page.loc-page .li-hero .plate {
-  max-width: 700px;
-  border-top-color: rgba(255, 255, 255, 0.14);
-}
-.hw-page.loc-page .li-hero .plate dt {
-  color: #8e8e93;
-}
-.hw-page.loc-page .li-hero .plate dd {
-  color: #fff;
-}
-.hw-page.loc-page .li-hero .plate dd small {
-  color: var(--orange-soft);
 }
 
 /* The readout that names whichever technology the hero is cycling through. */
@@ -201,7 +205,11 @@
 
 @media (max-width: 900px) {
   .loc-page .li-hero {
-    min-height: auto;
+    /* Still fills the screen in portrait — `auto` let it end partway down with
+       the next section showing under it. The padding drops because the copy
+       stacks over the plan here rather than sitting beside it. */
+    min-height: 100vh;
+    min-height: 100svh;
     padding: calc(var(--nav-h) + 44px) 0 40px;
   }
   /* Portrait: the plan is behind the copy rather than beside it, so the shade
@@ -436,33 +444,81 @@
   height: 6px;
   border-radius: 3px;
   background: linear-gradient(90deg, #ffd9c2, var(--orange-soft), var(--orange));
+  cursor: ew-resize;
+  touch-action: none;
+}
+/* The grab strip. A 6px drag target is unusable with a finger, but padding
+   cannot widen it: this page is `border-box`, so padding would come out of the
+   6px height and leave the gradient nothing to paint into. A transparent
+   overlay adds the target without touching the painted box. */
+.loc-page .scale-bar::before {
+  content: "";
+  position: absolute;
+  inset: -18px 0;
 }
 .loc-page .scale-mark {
   position: absolute;
   top: -7px;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 3px var(--orange), 0 4px 12px rgba(0, 0, 0, 0.18);
+  border: 5px solid var(--orange);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
   transform: translateX(-50%);
   transition: left 0.5s var(--ease);
+  cursor: grab;
+}
+/* While the pointer owns the marker it must track it exactly; the easing that
+   makes a tab change feel considered would read as lag under a finger. */
+.loc-page .scale-mark.dragging {
+  transition: none;
+  cursor: grabbing;
+  box-shadow: 0 0 0 3px var(--orange), 0 6px 18px rgba(0, 0, 0, 0.26);
+}
+.loc-page .scale-mark:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 .loc-page .scale-ticks {
   position: relative;
   height: 42px;
   margin-top: 10px;
 }
-.loc-page .scale-ticks span {
+.loc-page .scale-ticks button {
   position: absolute;
   transform: translateX(-50%);
   text-align: center;
   font: 500 12px/1.35 var(--sans);
   color: var(--ink3);
   white-space: nowrap;
+  background: none;
+  border: 0;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.loc-page .scale-ticks button:hover b,
+.loc-page .scale-ticks button:focus-visible b {
+  color: var(--orange-ink);
+}
+.loc-page .scale-ticks button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
 }
 .loc-page .scale-ticks b {
   display: block;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* The readout. Without it the strip is a control that reports nothing. */
+.loc-page .scale-read {
+  margin-top: 6px;
+  font: 400 15px/1.5 var(--sans);
+  color: var(--ink2);
+}
+.loc-page .scale-read b {
   color: var(--ink);
   font-weight: 600;
 }
@@ -477,7 +533,7 @@
   }
   /* "Which slot" and "Which rack" collide at this width; the slot label goes,
      because the two ends of the scale are what the strip is arguing. */
-  .loc-page .scale-ticks span:nth-child(2) {
+  .loc-page .scale-ticks button:nth-child(2) {
     display: none;
   }
 }
@@ -758,7 +814,7 @@
 }
 
 /* ---------------------------------------------------------------- pilot */
-/* The same four-up override the Omnibox page carries. Not lifted into the
+/* The same four-up override the OmniBox page carries. Not lifted into the
    shared base because App Router ships one CSS chunk per route: `omnibox.css`
    is not loaded here, so the rule has to exist on both pages. */
 .hw-page.loc-page .steps.four {
@@ -794,84 +850,7 @@
   display: flex;
   flex-direction: column;
 }
-.loc-page .quiz-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.loc-page .quiz-step {
-  font: 600 13px/1 var(--sans);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--orange-ink);
-}
-.loc-page .quiz-dots {
-  display: flex;
-  gap: 6px;
-}
-.loc-page .quiz-dots i {
-  width: 22px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--line);
-  transition: background 0.3s;
-}
-.loc-page .quiz-dots i.on {
-  background: var(--orange);
-}
 /* A faded orange for the steps already answered. The reference's own tint. */
-.loc-page .quiz-dots i.done {
-  background: #f0b9a0;
-}
-.loc-page .quiz-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-top: 18px;
-}
-.loc-page .quiz-q {
-  font: 600 clamp(24px, 2.6vw, 28px) / 1.15 var(--display);
-  letter-spacing: -0.025em;
-}
-.loc-page .q-opts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 22px;
-}
-.loc-page .q-opt {
-  text-align: left;
-  border: 0;
-  cursor: pointer;
-  background: #fff;
-  color: var(--ink);
-  border-radius: 18px;
-  padding: 16px 18px;
-  box-shadow: inset 0 0 0 1px var(--line);
-  transition: box-shadow 0.2s, transform 0.15s, background 0.2s;
-}
-.loc-page .q-opt:hover {
-  box-shadow: inset 0 0 0 1px var(--ink3);
-}
-.loc-page .q-opt:active {
-  transform: scale(0.99);
-}
-.loc-page .q-opt.on {
-  background: #fff3eb;
-  box-shadow: inset 0 0 0 2px var(--orange);
-}
-.loc-page .q-opt b {
-  display: block;
-  font: 600 17px/1.25 var(--display);
-  letter-spacing: -0.01em;
-}
-.loc-page .q-opt span {
-  display: block;
-  font-size: 14px;
-  color: var(--ink2);
-  margin-top: 3px;
-}
 .loc-page .quiz-foot {
   display: flex;
   gap: 20px;
@@ -990,7 +969,7 @@
   font-size: 13px;
   color: var(--orange-ink);
 }
-/* The compact button, as on the Omnibox page. Not in the shared base: only
+/* The compact button, as on the OmniBox page. Not in the shared base: only
    these two pages put a button inside a card. */
 .hw-page.loc-page .btn-sm {
   font-size: 14px;
@@ -1010,5 +989,195 @@
   }
   .loc-page .res-mail .btn {
     justify-content: center;
+  }
+}
+
+/* The "not yet" state of the recommendation panel. A stack cannot half-exist,
+   so rather than showing an unearned result the panel names what is still
+   outstanding — which doubles as the progress indicator the step counter used
+   to provide. */
+.loc-page .res-wait {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+}
+.loc-page .res-wait-n {
+  font: 600 13px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--orange-ink);
+}
+.loc-page .res-wait p {
+  font: 500 clamp(17px, 1.8vw, 20px) / 1.35 var(--display);
+  letter-spacing: -0.02em;
+  color: var(--ink2);
+  margin: 0;
+  max-width: 22em;
+}
+
+/* ---------------------------------------------------------------- the hero film
+   `LocFilm`. Unlike every other hardware film this one is dark — the point
+   cloud has to be read against black, and it keeps the page's dark hero — so
+   the shared film type, which is set for #F5F5F7, is flipped to light here:
+   white headings, a dark halo instead of a light one. */
+.hw-page.loc-page .hw-scrollspace {
+  height: 620vh;
+}
+.hw-page.loc-page .film .sec {
+  text-shadow: 0 0 22px rgba(6, 8, 10, 0.95), 0 0 52px rgba(6, 8, 10, 0.8);
+}
+.hw-page.loc-page .film .hero h1 {
+  font: 700 clamp(52px, 7.6vw, 112px) / 0.96 var(--display);
+  letter-spacing: -0.045em;
+  color: #fff;
+}
+.hw-page.loc-page .film .hero .tag {
+  color: #a1a1a6;
+  max-width: 21em;
+}
+.hw-page.loc-page .film .hero .tag b,
+.hw-page.loc-page .film .sec h2 {
+  color: #f5f5f7;
+}
+.hw-page.loc-page .film .kicker {
+  color: var(--orange-soft);
+}
+.hw-page.loc-page .film .lead {
+  color: #a1a1a6;
+}
+.hw-page.loc-page .film .hero-support {
+  color: rgba(255, 255, 255, 0.66);
+}
+.hw-page.loc-page .film .btn-secondary {
+  color: var(--orange-soft);
+}
+.hw-page.loc-page .film .chips span {
+  color: #f5f5f7;
+  background: rgba(20, 22, 26, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.hw-page.loc-page .film .fnote {
+  font: 500 12px/1.4 var(--sans);
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 14px;
+}
+.hw-page.loc-page .film .sec.right .fnote {
+  text-align: right;
+}
+.hw-page.loc-page .scrollcue {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* The truck's live readout, projected from the scene. */
+.loc-page .loc-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.loc-page .loc-tag .in {
+  background: rgba(10, 14, 17, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 11px;
+  color: #f5f5f7;
+  white-space: nowrap;
+  transform: translate(-50%, -100%) translateY(-12px);
+}
+.loc-page .loc-tag b {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 600 13px/1.25 var(--sans);
+}
+.loc-page .loc-tag b i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.loc-page .loc-tag span {
+  display: block;
+  font: 500 11px/1.3 var(--sans);
+  color: #a1a1a6;
+  margin-top: 2px;
+}
+
+/* The 2D floor-plan hero is the film's fallback: hidden while the film runs,
+   shown under `.no-film`. Its own rule, not `.hw-hero` — that class brings the
+   other pages' two-column hero layout with it. */
+.hw-page.loc-page:not(.no-film) .li-hero {
+  display: none;
+}
+
+/* The problem section's closing line. Its rule lives in `hardware-omni.css`,
+   which this route does not import, so the line rendered as plain body text;
+   the same rule, scoped here. */
+.loc-page .principle {
+  margin: clamp(80px, 12vh, 140px) auto 0;
+  max-width: 1000px;
+  text-align: center;
+}
+.loc-page .principle p {
+  font: 600 clamp(32px, 4.2vw, 58px) / 1.1 var(--display);
+  letter-spacing: -0.035em;
+}
+.loc-page .principle span {
+  color: var(--orange-ink);
+}
+
+/* The plan view's legend, fixed beside the rings. */
+.loc-page .loc-legend {
+  position: absolute;
+  right: clamp(22px, 7vw, 110px);
+  bottom: 14vh;
+  opacity: 0;
+  background: rgba(10, 14, 17, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 14px 16px 12px;
+  color: #f5f5f7;
+  min-width: 210px;
+}
+.loc-page .loc-legend .row {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font: 600 13px/1 var(--sans);
+}
+.loc-page .loc-legend .row + .row {
+  margin-top: 10px;
+}
+.loc-page .loc-legend .row i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+.loc-page .loc-legend .row span {
+  font-weight: 500;
+  color: #d1d1d6;
+}
+.loc-page .loc-legend p {
+  margin-top: 12px;
+  font: 500 11px/1.35 var(--sans);
+  color: #8e8e93;
+  max-width: 22ch;
+}
+@media (max-width: 760px) {
+  .loc-page .loc-legend {
+    left: 22px;
+    right: 22px;
+    bottom: 3vh;
   }
 }

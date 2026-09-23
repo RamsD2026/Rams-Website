@@ -7,7 +7,7 @@ import "./sensor-stack.css";
 export const metadata: Metadata = {
   title: "Sensor Stack — a forklift that knows itself | RAMS",
   description:
-    "Access control, crash, speed and location monitoring, pallet detection and battery management. Six sensors on one truck, decided on the truck by Omnibox Motion.",
+    "Access control, crash, speed and location monitoring, pallet detection and battery management. Six sensors on one truck, decided on the truck by OmniBox Motion.",
 };
 
 /**
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
  *
  * Its `sensors.css` is, in the reference's own words, "omnibox.css minus the
  * builder, plus this page's components" — so the shared part now lives in
- * `styles/hardware-omni.css`, imported by this route and the Omnibox one, and
+ * `styles/hardware-omni.css`, imported by this route and the OmniBox one, and
  * `sensor-stack.css` adds only this page's own. See that file's head.
  *
  * ── What is built ───────────────────────────────────────────────────

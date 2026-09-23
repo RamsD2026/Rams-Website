@@ -5,7 +5,7 @@ import { Media } from "@/components/sections/hardware/hw-shared";
 import type { Model, ModelKey } from "./omni-data";
 
 /**
- * The model sheet — one full-screen panel per Omnibox.
+ * The model sheet — one full-screen panel per OmniBox.
  *
  * One template, four fillings: product hero → the problem it solves → how it
  * helps → what connects to it (or what it can check) → context photo → the

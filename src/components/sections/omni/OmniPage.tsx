@@ -7,9 +7,9 @@ import { OmniProblem } from "./OmniProblem";
 import { OmniFamily } from "./OmniFamily";
 import { OmniInside, type InsideView } from "./OmniInside";
 import { OmniBuilder } from "./OmniBuilder";
-import { OmniCompare, OmniCore, OmniCTA, OmniFAQ, OmniWhere, OmniWorks } from "./OmniSections";
+import { OmniCompare, OmniConnects, OmniCore, OmniCTA, OmniFAQ, OmniLoop, OmniWhere, OmniWorks } from "./OmniSections";
 import { OmniSheet } from "./OmniSheet";
-import { MODELS, type ModelKey } from "./omni-data";
+import { HAS_CONN, MODELS, type ModelKey } from "./omni-data";
 
 /**
  * The page shell.
@@ -31,7 +31,9 @@ export function OmniPage() {
   const [pushed, setPushed] = useState(false);
   const [noFilm, setNoFilm] = useState(false);
   const [insideKey, setInsideKey] = useState<ModelKey>("edge");
-  const [insideView, setInsideView] = useState<InsideView>("inside");
+  // Connections first: where a box has a fixed kit, what it is wired to is the
+  // more telling first picture than its parts. AI and Core fall back to Inside.
+  const [insideView, setInsideView] = useState<InsideView>("connect");
 
   const filmUnavailable = useCallback(() => setNoFilm(true), []);
 
@@ -71,10 +73,10 @@ export function OmniPage() {
   }, [pushed]);
 
   /** Point the viewer at a model and scroll to it. */
-  const showInside = useCallback((key: ModelKey, view: InsideView = "inside") => {
+  const showInside = useCallback((key: ModelKey, view: InsideView = "connect") => {
     setInsideKey(key);
-    // AI and Core have no fixed kit, so there is nothing to connect them to.
-    setInsideView(key === "edge" || key === "motion" ? view : "inside");
+    // Core has no fixed kit, so there is nothing to connect it to.
+    setInsideView(HAS_CONN.includes(key) ? view : "inside");
     requestAnimationFrame(() => {
       document.getElementById("inside")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -89,6 +91,7 @@ export function OmniPage() {
 
       <div className="hw-doc">
         <OmniProblem />
+        <OmniLoop />
         <OmniFamily onOpen={open} onInside={showInside} />
         <OmniInside
           active={insideKey}
@@ -100,6 +103,7 @@ export function OmniPage() {
         <OmniBuilder onOpen={open} onInside={showInside} />
         <OmniCompare />
         <OmniWhere />
+        <OmniConnects />
         <OmniWorks />
         <OmniCore />
         <OmniFAQ />

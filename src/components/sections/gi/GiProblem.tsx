@@ -7,7 +7,7 @@ import { PROBLEMS, SIGNALS } from "./gi-data";
 /**
  * 02 — The problem.
  *
- * The Omnibox fuse board, making this page's argument: six checks on the same
+ * The OmniBox fuse board, making this page's argument: six checks on the same
  * building — a rack inspection on a clipboard, a cycle count on a handheld, a
  * bent upright in an email, a mismatch in the WMS, a floor survey as a
  * contractor's PDF, a crack in a photo — slide together into **one marked-up

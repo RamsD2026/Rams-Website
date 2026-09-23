@@ -59,29 +59,10 @@ export function LocHero() {
               Talk to us
             </a>
           </div>
-
-          <dl className="plate">
-            <div>
-              <dt>LiDAR accuracy today</dt>
-              <dd>
-                ±10<small>mm</small>
-              </dd>
-            </div>
-            <div>
-              <dt>Technologies</dt>
-              <dd>4</dd>
-            </div>
-            <div>
-              <dt>Starts with</dt>
-              <dd>
-                1<small>aisle</small>
-              </dd>
-            </div>
-            <div>
-              <dt>Decisions</dt>
-              <dd>on site</dd>
-            </div>
-          </dl>
+          <p className="hero-support">
+            LiDAR <span aria-hidden>·</span> UWB <span aria-hidden>·</span> Bluetooth{" "}
+            <span aria-hidden>·</span> Wi-Fi
+          </p>
 
           <div className="hero-read" aria-hidden>
             <span

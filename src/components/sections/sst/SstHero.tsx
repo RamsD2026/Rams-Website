@@ -28,6 +28,11 @@ export function SstHero() {
             See the LiDAR
           </a>
         </div>
+        <p className="hero-support">
+          Operator <span aria-hidden>·</span> Location <span aria-hidden>·</span> Speed{" "}
+          <span aria-hidden>·</span> Impact <span aria-hidden>·</span> Load{" "}
+          <span aria-hidden>·</span> Battery
+        </p>
       </div>
 
       <Media

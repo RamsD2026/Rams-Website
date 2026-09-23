@@ -89,6 +89,7 @@ export function OmniFilm({ onUnavailable }: { onUnavailable: () => void }) {
         return h;
       });
 
+
       const WIDE = [V3(-4.45, 0, 0), V3(-1.8, 0, 0), V3(1.25, 0, 0), V3(4.45, 0, 0)];
       const NARROW = [V3(-1.55, 0, -2.4), V3(1.55, 0, -2.4), V3(-1.45, 0, 1.6), V3(1.75, 0, 1.7)];
       type Key = [number, THREE_NS.Vector3, THREE_NS.Vector3];
@@ -145,6 +146,33 @@ export function OmniFilm({ onUnavailable }: { onUnavailable: () => void }) {
         narrow = window.innerWidth / window.innerHeight < 1;
         hs.forEach((h, i) => h.g.position.copy((narrow ? NARROW : WIDE)[i]));
       };
+
+      /* ── the real models ─────────────────────────────────────────
+         Edge, AI and Motion exist as CAD. The film still *builds* procedurally,
+         because this is the hero: it has to be on screen at first paint, and
+         thirteen megabytes of geometry cannot be in that path. The real models are
+         fetched after the film is already running and swapped into the lineup
+         in place, so what a reader sees is the boxes appear immediately and
+         then sharpen.
+
+         `hs` is indexed by `ORDER` and the frame loop, the name tags and the
+         layout arrays all index the same way — so a swap has to keep the index
+         and the position, and reapply the layout the new holder missed. */
+      void (async () => {
+        await Promise.all(
+          ORDER.map(async (k, i) => {
+            if (!kit.hasGlb(k)) return;
+            const h = await kit.loadHolder(k);
+            if (disposed || h.model === hs[i].model) return;
+            h.g.position.copy(hs[i].g.position);
+            h.g.rotation.copy(hs[i].g.rotation);
+            scene.remove(hs[i].g);
+            scene.add(h.g);
+            hs[i] = h;
+          }),
+        );
+        if (!disposed) layout();
+      })();
 
       const frame = (dt: number) => {
         state.p += (state.pT - state.p) * Math.min(1, dt * (reduceMotion ? 20 : 4));
@@ -248,12 +276,12 @@ export function OmniFilm({ onUnavailable }: { onUnavailable: () => void }) {
         <section className="sec hero center" data-a="0" data-b="0.24">
           <div className="heroblock">
             <p className="kicker">RAMS Digital</p>
-            <h1>Omnibox</h1>
+            <h1>OmniBox</h1>
             <p className="tag">
               The on-site brain that turns what cameras and sensors notice into <b>action.</b>
             </p>
             <div className="hero-cta">
-              <a className="btn btn-primary" href="#choose">Find your Omnibox</a>
+              <a className="btn btn-primary" href="#choose">Find your OmniBox</a>
               <a className="btn btn-secondary" href="#models">Meet the family</a>
             </div>
           </div>

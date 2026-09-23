@@ -7,8 +7,8 @@ import { ACCESS_SPECS, ACCESS_STEPS, DEMO_PIN } from "./sst-data";
 /**
  * 05 — Access Control, as a thing you can actually use.
  *
- * A CSS replica of the unit's blue faceplate — RFID symbol, fingerprint ring,
- * 12-key pad, cable glands — wired to the same three-step sequence the real one
+ * A CSS replica of the unit in the 3D viewer — black glass face, RFID zone,
+ * fingerprint ring, 12-key pad — wired to the same three-step sequence the real one
  * runs: **Identify → Authenticate → Authorise**, ending in the key circuit
  * closing or staying open. Tap the RFID, press the ring, or type the PIN and
  * press `#`.
@@ -160,53 +160,57 @@ export function SstAccess() {
 
         <div className="acc">
           <Reveal className="acc-dev">
+            {/* A likeness of the unit in the 3D viewer: black shell, black
+                glass face, the RAMS Digital logo, gunmetal keypad bezel. */}
             <div className="acc-plate">
               <div className="face">
-                <h4>ACCESS CONTROL</h4>
                 <div className="lft">
-                  <span className="brand" aria-hidden>
-                    <i />
-                    RAMS
-                  </span>
-                  <button
-                    type="button"
-                    className="rfid"
-                    ref={rfidRef}
-                    onClick={() => tapCard(true)}
-                    aria-label="Tap an enrolled RFID card"
-                  >
-                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth={5} aria-hidden>
-                      <rect x="8" y="8" width="84" height="84" rx="12" />
-                      <path d="M40 44a10 10 0 0 1 10-10M36 36a22 22 0 0 1 22-10M32 28a34 34 0 0 1 34-10" transform="translate(4 8)" />
-                      <circle cx="44" cy="52" r="5" />
-                      <text x="50" y="84" fill="currentColor" stroke="none" fontWeight="800" fontSize="24" textAnchor="middle">
-                        RFID
-                      </text>
-                    </svg>
-                  </button>
-                </div>
-                <div className="keys">
-                  {["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"].map((k) => (
+                  {/* eslint-disable-next-line @next/next/no-img-element -- a 5 KB SVG; next/image adds nothing */}
+                  <img className="brand" src="/RAMS_Logo_White.svg" alt="" aria-hidden />
+                  <div className="inputs">
                     <button
-                      key={k}
                       type="button"
-                      onClick={() => key(k)}
-                      aria-label={k === "*" ? "Clear" : k === "#" ? "Enter" : k}
+                      className="rfid"
+                      ref={rfidRef}
+                      onClick={() => tapCard(true)}
+                      aria-label="Tap an enrolled RFID card"
                     >
-                      {k === "*" ? "∗" : k}
+                      <span className="zone">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" aria-hidden>
+                          <circle cx="13" cy="20" r="2.4" fill="currentColor" stroke="none" />
+                          <path d="M18 14a8 8 0 0 1 0 12M22.5 10a14 14 0 0 1 0 20M27 6a20 20 0 0 1 0 28" />
+                        </svg>
+                      </span>
+                      <span className="cap">TAP CARD</span>
                     </button>
-                  ))}
+                    <div className="fp">
+                      <button
+                        type="button"
+                        className={"finger " + finger}
+                        onClick={tapFinger}
+                        aria-label="Place an enrolled finger on the reader"
+                      />
+                      <span className="cap" aria-hidden>
+                        FINGER
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <button
-                type="button"
-                className={"finger " + finger}
-                onClick={tapFinger}
-                aria-label="Place an enrolled finger on the reader"
-              />
-              <div className="glands" aria-hidden>
-                <i />
-                <i />
+                <div className="rgt">
+                  <h4>ACCESS CONTROL</h4>
+                  <div className="keys">
+                    {["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"].map((k) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => key(k)}
+                        aria-label={k === "*" ? "Clear" : k === "#" ? "Enter" : k}
+                      >
+                        {k === "*" ? "∗" : k}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
             <span className="hint">Tap the RFID symbol, press the fingerprint ring, or type {DEMO_PIN} then #.</span>

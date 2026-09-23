@@ -26,12 +26,12 @@ import type { DevKey } from "./sst-3d";
  *   · **which sheet is open**, mirrored into the URL as `#ss-access`,
  *     `#ss-lidar`, `#ss-pds`, `#ss-bms`, so a sheet is shareable and the Back
  *     gesture closes it rather than leaving the page. Same contract as the
- *     Omnibox and AI Vision sheets.
+ *     OmniBox and AI Vision sheets.
  *   · **which answer the LiDAR showcase is showing** — set by its own tabs, by
  *     "Watch it" on the Crash, Speed and Location cards, by the LiDAR sheet, and
- *     by the reverse alarm's caption in the hardware viewer.
+ *     by the hardware viewer's captions.
  *   · **which device the hardware viewer is turning** — set by its own tabs, by
- *     "See it in 3D" in any sheet, and by the reverse alarm tile.
+ *     "See it in 3D" in any sheet.
  *
  * Lifting all three here is what lets a button in one section drive a canvas in
  * another; nothing else on the page needs to know.
@@ -126,7 +126,7 @@ export function SstPage() {
       <div className="hw-doc">
         <SstProblem />
         <SstSensors onOpen={open} onLidar={showLidar} />
-        <SstLidar mode={lidarMode} onMode={setLidarMode} onHw={showHw} />
+        <SstLidar mode={lidarMode} onMode={setLidarMode} />
         <SstAccess />
         <SstPallet />
         <SstBattery />

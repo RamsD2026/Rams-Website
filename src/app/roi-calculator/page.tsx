@@ -1,45 +1,47 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowDown, ArrowRight } from "lucide-react";
-import { MepsCalculator } from "@/components/sections/meps/MepsCalculator";
+import { RoiCalculator } from "@/components/sections/roi/RoiCalculator";
 
 export const metadata: Metadata = {
   title: "ROI Calculator | RAMS Digital",
   description:
-    "Test the MHE productivity opportunity against your own assumptions. Every value is yours to set — RAMS supplies the measurement, not the improvement figures.",
+    "Model rack damage, inspection and counting labour, search time, MHE productivity, safety incidents and slab repairs against your own numbers. Every value is yours to set — RAMS supplies the measurement, not the improvement figures.",
 };
 
 /**
  * /roi-calculator
  *
- * The navbar now carries a standing "ROI calculator" CTA, and this is what it
+ * The navbar carries a standing "ROI calculator" CTA, and this is what it
  * points at.
  *
- * `MepsCalculator` was already written — a scenario model with its own header,
- * sliders and working — but it had been dropped from the MEPS page during that
- * page's rebuild and was left on disk unimported. So the calculator is not new
- * here; only the route around it is. It is rendered unchanged, which keeps one
- * calculator on the site rather than a second one that has to agree with it.
+ * ── It used to model one thing ──────────────────────────────────────
+ * The route opened with `meps/MepsCalculator` — a scenario model for MHE
+ * productivity alone, written for the MEPS page and left unimported when that
+ * page was rebuilt. One lever is a fair answer for one product, and this site
+ * sells seven things. A reader whose problem is rack damage, or a slab nobody
+ * has looked under, found a page that could not price their problem.
+ *
+ * So the calculator is now `sections/roi`, which models all seven and lets the
+ * reader switch off the ones they do not have. `MepsCalculator` is left on
+ * disk, unchanged and still exported, because the MEPS page may yet pick it
+ * back up — and `MODULES.mhe` in `roi-model.ts` carries its arithmetic
+ * verbatim so the two cannot disagree about the same claim.
  *
  * ── The surfaces alternate ──────────────────────────────────────────
- * Dark hero, white calculator, dark close.
- *
- * The calculator was dark-only for a revision and the whole page went dark
- * with it, which left the one section a reader actually uses sitting on the
- * same ground as the two that only talk. Rather than copy the component to
- * re-colour it, `MepsCalculator` now takes a `tone` — the colours were always
- * a fixed set, so they became a table with two columns. It still defaults to
- * dark, so the MEPS page is unaffected if it ever picks the section back up.
+ * Dark hero → white (the operation) → off-white (the levers) → white (the
+ * sources) → dark close. No two adjacent sections share a ground.
  *
  * ── The hero is static ──────────────────────────────────────────────
  * No motion, so this stays a server component and the only client boundary on
  * the route is the calculator itself, which needs one for its state.
  *
  * ── It states whose numbers these are ───────────────────────────────
- * The calculator's own subline already says that RAMS does not supply the
- * improvement figures, and the hero says it again above the fold: the output
- * is the reader's assumptions worked through, not a RAMS claim about savings.
- * Nothing on this page should be quotable as a promised return.
+ * Three times, and not by accident: the hero chips, the line under the running
+ * total, and a whole section listing every default that came from published
+ * work with a link to it. Seven levers multiplied together reach a large
+ * number fast, and a large number nobody can source is worth less than no
+ * number. Nothing on this page should be quotable as a promised return.
  */
 export default function RoiCalculatorPage() {
   return (
@@ -151,7 +153,7 @@ export default function RoiCalculatorPage() {
         </div>
       </section>
 
-      <MepsCalculator tone="light" />
+      <RoiCalculator />
 
       <section
         className="relative overflow-hidden text-white"

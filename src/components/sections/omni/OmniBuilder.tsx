@@ -11,7 +11,7 @@ import {
  * 04 — Build your setup.
  *
  * Three questions — where it works, what it should notice, what should happen —
- * and a live panel that names the Omnibox (or Omniboxes) that answer them,
+ * and a live panel that names the OmniBox (or OmniBoxes) that answer them,
  * draws the kit around each one, and composes an email you can send.
  *
  * ── The three rules that make it feel like it understands you ───────
@@ -21,7 +21,7 @@ import {
  *    an invisible "impacts" still driving the recommendation.
  * 2. **The recommendation can be more than one box.** Safety on a line plus a
  *    quality check is Edge *and* AI, and the reference is deliberate about
- *    that: `Omnibox Edge + AI`, two hubs, two rows in the kit.
+ *    that: `OmniBox Edge + AI`, two hubs, two rows in the kit.
  * 3. **The kit is derived, never listed.** `kit()` reads the actual answers, so
  *    picking "missing PPE" changes the camera's label, and picking nothing
  *    still yields a sensible default. The `edge` flag stops AI claiming the
@@ -95,7 +95,7 @@ const Hub = ({ box, k }: { box: ModelKey | null; k: { i: KitItem[]; o: KitItem[]
         <b>{BOX_META[box].name}</b>
       </div>
     ) : (
-      <div className="hub-box empty">Your Omnibox</div>
+      <div className="hub-box empty">Your OmniBox</div>
     )}
     <div className="hub-col hub-out">
       {k.o.map((x) => (
@@ -218,25 +218,25 @@ export function OmniBuilder({
     if (box === "edge") {
       const n = shorts(NOTICE, "notice", ["person", "ppe"]);
       const a = shorts(ACT, "act", ["stop", "door", "alarm"]);
-      return `<b>Omnibox Edge</b>: RAMS AI Cameras watch for ${n.length ? listText(n) : "people in the zone"}, and the box can ${a.length ? listText(a) : "stop a machine or sound an alarm"} the moment it happens.`;
+      return `<b>OmniBox Edge</b>: RAMS AI Cameras watch for ${n.length ? listText(n) : "people in the zone"}, and the box can ${a.length ? listText(a) : "stop a machine or sound an alarm"} the moment it happens.`;
     }
     if (box === "ai") {
       const n = shorts(NOTICE, "notice", ["defect", "count", "tool"]);
       const a = shorts(ACT, "act", boxes.includes("edge") ? ["reject"] : ["reject", "stop", "alarm"]);
-      return `<b>Omnibox AI</b>: AI trained on your own line checks ${n.length ? listText(n) : "your parts and process"}${a.length ? ", and can " + listText(a) : ""}.`;
+      return `<b>OmniBox AI</b>: AI trained on your own line checks ${n.length ? listText(n) : "your parts and process"}${a.length ? ", and can " + listText(a) : ""}.`;
     }
     if (box === "motion") {
       const n = shorts(NOTICE, "notice", ["near", "blind", "impact", "load", "speed", "driver"]);
-      return `<b>Omnibox Motion</b>: one box on each truck keeps track of ${n.length ? listText(n) : "everything around it"}, and powers every camera, sensor and display — the full RAMS 2.0 kit.`;
+      return `<b>OmniBox Motion</b>: one box on each truck keeps track of ${n.length ? listText(n) : "everything around it"}, and powers every camera, sensor and display — the full RAMS 2.0 kit.`;
     }
-    return `<b>Omnibox Core</b>: ${picks.notice.custom ? "you need something no standard box covers" : "the job doesn’t fit a standard box"}, so we design one around it.`;
+    return `<b>OmniBox Core</b>: ${picks.notice.custom ? "you need something no standard box covers" : "the job doesn’t fit a standard box"}, so we design one around it.`;
   };
 
   const title = boxes.length
     ? boxes.length === 1
       ? BOX_META[boxes[0]].name
-      : "Omnibox " + boxes.map((b) => BOX_META[b].short).join(" + ")
-    : "Your Omnibox appears here.";
+      : "OmniBox " + boxes.map((b) => BOX_META[b].short).join(" + ")
+    : "Your OmniBox appears here.";
 
   const names = (list: Opt[], g: Group) =>
     list.filter((o) => picks[g][o.id]).map((o) => o.label).join(", ");
@@ -249,10 +249,10 @@ export function OmniBuilder({
       return `- ${q} × ${BOX_META[b].name} (${q} ${q === 1 ? BOX_META[b].unit : BOX_META[b].units}): ${[...k.i, ...k.o].map((x) => x.l).join(", ")}`;
     });
     const body =
-      `Hi RAMS Digital,\n\nI put this setup together on the Omnibox page.\n\nWhere: ${names(PLACES, "place")}` +
+      `Hi RAMS Digital,\n\nI put this setup together on the OmniBox page.\n\nWhere: ${names(PLACES, "place")}` +
       `\nIt should notice: ${names(NOTICE, "notice") || "-"}\nThen: ${names(ACT, "act") || "-"}` +
       `\n\nSuggested kit:\n${lines.join("\n")}\n\nCould you get in touch about it?\n`;
-    return `mailto:connect@rams.digital?subject=${encodeURIComponent("Omnibox setup: " + title)}&body=${encodeURIComponent(body)}`;
+    return `mailto:connect@rams.digital?subject=${encodeURIComponent("OmniBox setup: " + title)}&body=${encodeURIComponent(body)}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxes, kit, qty, picks, title]);
 
@@ -305,7 +305,7 @@ export function OmniBuilder({
     <section className="section white" id="choose">
       <div className="wrap">
         <Head
-          label="Find your Omnibox"
+          label="Find your OmniBox"
           top="Build your setup."
           intro="Three quick questions. Watch your setup come together as you pick, then send it to us."
         />

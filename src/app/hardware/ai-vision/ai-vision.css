@@ -1,0 +1,9 @@
+
+/* The detection chip's third state: the camera does not have this person.
+   Deliberately drained rather than tinted — an out-of-cover reading should
+   look like an absence, not like a different kind of alert. */
+.aiv-page .env-chip.unseen {
+  background: rgba(110, 110, 115, 0.9);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.72);
+}

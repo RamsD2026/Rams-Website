@@ -12,26 +12,30 @@ import { IMG } from "./omni-data";
  */
 export function OmniHero() {
   return (
-    <section className="hw-hero" id="top" aria-label="Omnibox">
+    <section className="hw-hero" id="top" aria-label="OmniBox">
       <div>
         <p className="kicker">RAMS Digital</p>
-        <h1>Omnibox</h1>
+        <h1>OmniBox</h1>
         <p className="tag">
           The on-site brain that turns what cameras and sensors notice into <b>action.</b>
         </p>
         <div className="hero-cta">
           <a className="btn btn-primary" href="#choose">
-            Find your Omnibox
+            Find your OmniBox
           </a>
           <a className="btn btn-secondary" href="#models">
             Meet the family
           </a>
         </div>
+        <p className="hero-support">
+          Edge compute <span aria-hidden>·</span> Local decision logic{" "}
+          <span aria-hidden>·</span> Machine &amp; sensor integration
+        </p>
       </div>
 
       <Media
         src={IMG.lineup}
-        alt="The four Omnibox models side by side"
+        alt="The four OmniBox models side by side"
         label={IMG.lineup}
         className="contain"
         tone="light"

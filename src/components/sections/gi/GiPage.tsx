@@ -7,7 +7,7 @@ import { GiProblem } from "./GiProblem";
 import { GiMachines } from "./GiMachines";
 import { GiInside, type InsideView } from "./GiInside";
 import { GiChooser } from "./GiChooser";
-import { GiCompare, GiCTA, GiFAQ, GiToday, GiWhere, GiWorks } from "./GiSections";
+import { GiCompare, GiCTA, GiFAQ, GiWhere } from "./GiSections";
 import { GiSheet } from "./GiSheet";
 import { SHEETS, type MachineKey } from "./gi-data";
 
@@ -18,7 +18,7 @@ import { SHEETS, type MachineKey } from "./gi-data";
  *
  *   · **which machine sheet is open**, mirrored into the URL as `#gi-airscan` /
  *     `#gi-floorscan`, so a sheet is shareable and the Back gesture closes it
- *     rather than leaving the page. Same contract as the Omnibox, AI Vision and
+ *     rather than leaving the page. Same contract as the OmniBox, AI Vision and
  *     Sensor Stack sheets.
  *   · **what the Inside viewer is showing** — which machine, and whether it is
  *     taken apart or at work. Four places drive it: the viewer's own tabs, "See
@@ -109,8 +109,6 @@ export function GiPage() {
         <GiChooser onOpen={open} onInside={showInside} />
         <GiCompare />
         <GiWhere />
-        <GiWorks />
-        <GiToday />
         <GiFAQ />
         <GiCTA />
       </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Head, Reveal } from "@/components/sections/hardware/hw-shared";
-import { FAQ, JOBS, PILOT_GIVES, PILOT_STEPS, PROBLEMS } from "./loc-data";
+import { FAQ, JOBS, PILOT_STEPS, PROBLEMS } from "./loc-data";
 
 /** The site's FAQ easing, from `rackiq-shared`. */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -37,6 +37,14 @@ export function LocProblem() {
             </Reveal>
           ))}
         </div>
+
+        {/* The deck lands the section on one line rather than trailing off after
+            the cards. It is the sentence the whole page is an answer to. */}
+        <Reveal className="principle">
+          <p>
+            RAMS adds the <span>where</span> to everything else you already measure.
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -82,50 +90,6 @@ export function LocJobs() {
 
 /* ── 07 where we are today ───────────────────────────────────────── */
 
-/**
- * The honesty section, stated in prose rather than in badges.
- *
- * It is the reason the rest of the page can make claims at all, so it sits
- * before the pilot ask and after the six jobs — at the point where a reader who
- * believes us is about to ask what it costs.
- */
-export function LocToday() {
-  return (
-    <section className="section white" id="today">
-      <div className="wrap">
-        <Head label="Straight answer" top="Where we are today." />
-        <Reveal className="today">
-          <div>
-            <p>
-              <b>LiDAR is ours.</b> We run it on RAMS 2.0 trucks and we have mapped real floors with
-              it, at ±10 mm sensor accuracy, with the processing done on site by an Omnibox.
-            </p>
-            <p>
-              <b>UWB, Bluetooth and Wi-Fi we design, install and prove with you</b> — starting with a
-              pilot rather than a promise. The engineering is well understood and the parts are off
-              the shelf; what nobody can tell you from a brochure is how a specific building behaves,
-              with its racking, its steel and its traffic.
-            </p>
-            <p>
-              So we measure it. One aisle, one cell or one dock, instrumented properly, with the
-              accuracy written down. If it hits the number, we roll it out. If it doesn’t, you have
-              spent a pilot, not a project.
-            </p>
-          </div>
-          <div className="box">
-            <h3>What a pilot gives you</h3>
-            <ul>
-              {PILOT_GIVES.map((g) => (
-                <li key={g}>{g}</li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 /* ── 08 how it fits ──────────────────────────────────────────────── */
 
 /**
@@ -157,13 +121,13 @@ export function LocHow() {
           </Reveal>
           <Reveal className="tile" delay={70}>
             <span className="n">02 · Decide</span>
-            <h3>Omnibox, on site</h3>
+            <h3>OmniBox, on site</h3>
             <p>
               The box turns raw distances into a position, checks it against your zones and rules,
               and acts in the moment — no cloud in the loop.
             </p>
             <a className="link" href="/hardware/omnibox">
-              Explore Omnibox
+              Explore OmniBox
             </a>
           </Reveal>
           <Reveal className="tile ink" delay={140}>
@@ -231,7 +195,7 @@ export function LocFAQ() {
   return (
     <section className="section" id="faq">
       <div className="wrap">
-        <Head label="FAQ" top="Frequently asked" bottom="questions." />
+        <Head label="FAQ" top="Frequently asked questions." className="one-line" />
         <div className="faq">
           {FAQ.map((f, i) => {
             const on = open === i;

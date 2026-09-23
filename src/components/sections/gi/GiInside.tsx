@@ -25,7 +25,7 @@ import { INSIDE_CAPS, KEYS, MACHINES, type MachineKey } from "./gi-data";
  * flags, and the key under the stage says so.
  *
  * ── The camera orbits; the machine never turns ──────────────────────
- * Dragging moves the *camera*, as in the Omnibox viewer. Spinning the model
+ * Dragging moves the *camera*, as in the OmniBox viewer. Spinning the model
  * instead looks near enough on an assembled machine but falls apart the moment
  * it explodes — parts swing through their own labels — and the scan scenes live
  * in scene space, so a rack would be dragged round with the drone inside it.
@@ -39,7 +39,7 @@ import { INSIDE_CAPS, KEYS, MACHINES, type MachineKey } from "./gi-data";
  * view because the scan view has a key bar along the bottom.
  *
  * The viewer takes itself apart once, unprompted, the first time it is scrolled
- * to; any deliberate input cancels that. And it carries a **Concept model** chip
+ * to; any deliberate input cancels that. And it carries a **Pilot machine** chip
  * throughout — these are stand-ins for machines that do not exist yet.
  */
 
@@ -69,7 +69,12 @@ export function GiInside({
   const chipsRef = useRef<HTMLDivElement>(null);
   const [noGl, setNoGl] = useState(false);
   const [apart, setApart] = useState(false);
-  const [labels, setLabels] = useState(true);
+  /* Off, matching the OmniBox viewer. Both viewers auto-explode ~900ms after
+     they are first seen, so the state a reader lands on is the machine apart
+     with its parts unlabelled — the shape first, the names on demand. Turning
+     labels on by default put a chip over every part of a machine the reader had
+     not looked at yet. */
+  const [labels, setLabels] = useState(false);
 
   const activeRef = useRef(active);
   const viewRef = useRef(view);
@@ -255,12 +260,26 @@ export function GiInside({
         kit.explode(h, se);
         kit.spinRotors(h, dt);
 
+        /* The scene grows from the floor on the way in and simply leaves on the
+           way out, and the asymmetry is the point. Growing reads as the slab
+           being cut away and the rack being built — worth the half second.
+           Running the same thing backwards did not read as anything: a
+           full-height rack squashing flat into the floor looks like the scene
+           collapsing, not like it ending. So on the way out it keeps its full
+           height and disappears, which reads as a cut. The threshold is high
+           on purpose — at 0.8 it is gone within about a tenth of a second of
+           the click, so the scene leaves on the input rather than drifting out
+           afterwards.
+
+           `cp` itself is left easing at the same rate either way, because the
+           camera and the machine's return journey are keyed off it further down
+           and those *should* stay smooth. Only the scene's own presentation
+           changes direction. */
+        const leaving = want === 0;
         for (const k of KEYS) {
           const s = scans[k];
-          s.group.visible = k === activeRef.current && cp > 0.002;
-          // Grown from the floor up rather than faded, so the slab reads as
-          // being cut away rather than as a ghost.
-          if (s.group.visible) s.group.scale.set(1, Math.max(0.001, sc), 1);
+          s.group.visible = k === activeRef.current && cp > (leaving ? 0.8 : 0.002);
+          if (s.group.visible) s.group.scale.set(1, leaving ? 1 : Math.max(0.001, sc), 1);
         }
         sn.place(h, time, sc);
 
@@ -437,14 +456,14 @@ export function GiInside({
               ref={canvasRef}
               className="inside-canvas"
               role="img"
-              aria-label="3D concept model of the selected machine, shown taken apart with its main parts labelled, or at work scanning a rack or a floor slab"
+              aria-label="3D model of the selected machine, shown taken apart with its main parts labelled, or at work scanning a rack or a floor slab"
             />
             <div ref={chipsRef} aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
 
             {/* Said plainly, and never removed: these are not photographs of
                 machines that exist. */}
             <span className="concept-note" aria-hidden>
-              Concept model
+              Pilot machine
             </span>
 
             <div className="view-seg" role="group" aria-label="What to show">

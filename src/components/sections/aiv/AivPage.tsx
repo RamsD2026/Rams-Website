@@ -6,7 +6,6 @@ import { AivEnvironments } from "./AivEnvironments";
 import { AivUseCases } from "./AivUseCases";
 import { AivHow } from "./AivHow";
 import { AivBuild } from "./AivBuild";
-import { AivNumbers } from "./AivNumbers";
 import { AivSoftware } from "./AivSoftware";
 import { AivBoundary, AivCTA, AivDeploy, AivFAQ, AivSpecs } from "./AivClosing";
 import { AivGap } from "./AivGap";
@@ -104,7 +103,6 @@ export function AivPage() {
         {/* Why the How works without asking anything of the network. */}
         <AivEdge />
         <AivBuild />
-        <AivNumbers />
         <AivSoftware />
         <AivDeploy />
         <AivSpecs />

@@ -212,6 +212,18 @@
   letter-spacing: -0.035em;
   color: inherit;
 }
+/* A heading that must hold one line — the FAQ title on every hardware page.
+   "Frequently asked questions." is ~12.3em in Plex Sans 600, which overruns the
+   880px `.head` cap at the 78px ceiling, so the cap is lifted. Below ~620px the
+   40px floor would still wrap it, so the size also tracks 6.6vw (≈81vw of text
+   against ≥84vw of column at the 22px gutter floor). */
+.hw-page .head.one-line {
+  max-width: none;
+}
+.hw-page .head.one-line .h2 {
+  font-size: min(78px, max(5.6vw, 40px), 6.6vw);
+  white-space: nowrap;
+}
 .hw-page .intro {
   font: 500 clamp(15px, 1.6vw, 16px) / 1.4 var(--sans);
   letter-spacing: -0.015em;
@@ -667,7 +679,7 @@
   margin-top: 6px;
 }
 /* Scoped to `.uc-tile`, where it is the use-case tile's circular affordance.
-   Unscoped, `.plus` is another name too generic for a shared base: the Omnibox
+   Unscoped, `.plus` is another name too generic for a shared base: the OmniBox
    formula separates its four terms with `<i class="plus">+</i>`, which matched
    this rule and turned into three absolutely-positioned grey discs stacked at
    the bottom-right of the page, over the closing CTA. Same trap as `.big`. */
@@ -1204,43 +1216,36 @@
   width: 100%;
   justify-self: center;
 }
-.hw-page .sua-svg {
+/* The three camera frames, stacked and cross-faded.
+   They replace an inline SVG whose layers switched on in turn; the mechanic is
+   unchanged — still pure CSS keyed off `data-step` on the panel, so the
+   component still only has to decide which of the three numbers is current.
+
+   Opacity is cumulative, exactly as the vector layers were: frame 1 is always
+   on, frame 2 comes on at step 2 and stays, frame 3 on at step 3. That is not
+   tidiness. Each frame is a full opaque photograph, so if frame 2 faded out
+   while frame 3 faded in, both would be semi-transparent for half a second and
+   frame 1 would show through — putting the same worker in two places at once,
+   which is the one thing this sequence cannot do. Stacked, the background
+   never moves and only the overlay appears to change. */
+.hw-page .sua-frames {
+  display: grid;
   width: 100%;
   height: 100%;
 }
-.hw-page .sua-svg text {
-  font-family: var(--mono);
-  font-weight: 500;
-}
-.hw-page .s-l1,
-.hw-page .s-l2,
-.hw-page .s-l3 {
+.hw-page .sua-frame {
+  grid-area: 1/1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   opacity: 0;
   transition: opacity 0.5s var(--ease);
 }
-.hw-page .s-only12 {
-  transition: opacity 0.5s var(--ease);
-}
-.hw-page [data-step="1"] .s-l1,
-.hw-page [data-step="2"] .s-l1,
-.hw-page [data-step="3"] .s-l1 {
+.hw-page .sua-frame:nth-child(1),
+.hw-page [data-step="2"] .sua-frame:nth-child(2),
+.hw-page [data-step="3"] .sua-frame:nth-child(2),
+.hw-page [data-step="3"] .sua-frame:nth-child(3) {
   opacity: 1;
-}
-.hw-page [data-step="2"] .s-l2,
-.hw-page [data-step="3"] .s-l2 {
-  opacity: 1;
-}
-.hw-page [data-step="3"] .s-l3 {
-  opacity: 1;
-}
-.hw-page [data-step="3"] .s-only12 {
-  opacity: 0;
-}
-.hw-page .s-walk {
-  transition: transform 1s var(--ease);
-}
-.hw-page [data-step="3"] .s-walk {
-  transform: translate(118px, 6px);
 }
 @media (max-width: 860px) {
   .hw-page .sua {
@@ -1345,7 +1350,7 @@
 }
 /* Scoped to `.tile`, where it is the bento's one giant gradient number.
    Unscoped, `.big` is far too generic a name to live in a shared base: the
-   Omnibox builder has a `.b-opts.big` modifier, which matched this rule and
+   OmniBox builder has a `.b-opts.big` modifier, which matched this rule and
    inherited a 52px font and −0.05em tracking into every option label. */
 .hw-page .tile .big {
   font: 700 clamp(44px, 6vw, 52px) / 1 var(--display);
@@ -2290,11 +2295,127 @@
 .aiv-page .boundary .h2 {
   margin-top: 4px;
 }
-.aiv-page .boundary p {
+.aiv-page .boundary-lead {
   font: 400 clamp(15px, 1.6vw, 17px) / 1.65 var(--sans);
   color: var(--d-ink2);
   margin-top: 26px;
+  max-width: 54ch;
+}
+
+/* ── the stack ─────────────────────────────────────────────────────
+   The section's headline is a claim about layers, so the section draws them.
+   Two blocks with a seam between: what the camera adds on top, and the
+   controls already on the floor underneath.
+
+   The base is deliberately ONE slab divided by hairlines rather than six
+   cards. Six cards would say "six separate things"; the point being made is
+   "one system, and none of it moves". */
+.aiv-page .stack {
+  margin-top: clamp(44px, 5vw, 64px);
+  max-width: 860px;
+}
+.aiv-page .stack-add {
+  border: 1px solid var(--orange);
+  border-radius: 18px 18px 6px 6px;
+  padding: clamp(20px, 2.4vw, 28px);
+  background: rgba(255, 106, 0, 0.07);
+}
+.aiv-page .stack-add h3 {
+  font: 600 clamp(21px, 2.2vw, 27px) / 1.2 var(--display);
+  letter-spacing: -0.028em;
+  color: var(--d-ink);
+  margin-top: 10px;
+}
+.aiv-page .stack-add p {
+  font: 400 15px/1.55 var(--sans);
+  color: var(--d-ink2);
+  margin-top: 8px;
+}
+.aiv-page .stack-tag {
+  display: inline-block;
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange-soft);
+}
+.aiv-page .stack-base .stack-tag {
+  color: #8e8e93;
+}
+
+/* The seam: the join the whole section is about. */
+.aiv-page .stack-seam {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 4px;
+}
+.aiv-page .stack-seam span {
+  font: 400 13px/1 var(--sans);
+  color: #8e8e93;
+  white-space: nowrap;
+}
+.aiv-page .stack-seam::before,
+.aiv-page .stack-seam::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--d-line);
+}
+
+.aiv-page .stack-base {
+  border: 1px solid var(--d-line);
+  border-radius: 6px 6px 18px 18px;
+  padding: clamp(20px, 2.4vw, 28px);
+}
+.aiv-page .stack-base ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--d-line);
+  border: 1px solid var(--d-line);
+}
+/* Hairline dividers are the grid's own gaps showing through, so the six read
+   as one divided surface rather than as six floating tiles. */
+.aiv-page .stack-base li {
+  background: var(--d-bg);
+  padding: 16px 18px;
+}
+.aiv-page .stack-base b {
+  display: block;
+  font: 600 15.5px/1.3 var(--display);
+  letter-spacing: -0.015em;
+  color: var(--d-ink);
+}
+.aiv-page .stack-base span {
+  display: block;
+  font: 400 13.5px/1.45 var(--sans);
+  color: #8e8e93;
+  margin-top: 4px;
+}
+
+.aiv-page .boundary-note {
+  margin-top: 30px;
   max-width: 62ch;
+}
+.aiv-page .boundary-note p {
+  font: 400 14px/1.6 var(--sans);
+  color: #8e8e93;
+  border-left: 2px solid var(--d-line);
+  padding-left: 16px;
+}
+
+@media (max-width: 760px) {
+  .aiv-page .stack-base ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 460px) {
+  .aiv-page .stack-base ul {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 860px) {
@@ -2305,17 +2426,27 @@
 }
 
 /* The copy deck's hero support line. Sits under the CTAs in both heroes — the
-   film's and the static fallback's — so the two stay interchangeable. */
-.aiv-page .hero-support {
+   film's and the static fallback's — so the two stay interchangeable. Scoped
+   `.hw-page` rather than `.aiv-page`: the AI Camera page introduced it, the
+   OmniBox page now uses it too, and any hardware hero should be able to. */
+.hw-page .hero-support {
   font: 500 13px/1.5 var(--sans);
   letter-spacing: -0.005em;
   color: var(--ink2);
   margin-top: 22px;
 }
-.aiv-page .hero-support span {
+.hw-page .hero-support span {
   color: var(--orange-ink);
   margin: 0 2px;
 }
-.aiv-page .film .hero-support {
-  color: rgba(255, 255, 255, 0.62);
+/* One hero on this site is dark: the Location page's `li-hero`, which sits
+   over a live canvas rather than on the shared light ground. It needs the
+   light value or the line disappears.
+
+   The scroll films do NOT. This rule used to include `.hw-page .film` on the
+   assumption that a film hero is dark — but every one of them (AI Camera,
+   OmniBox, Sensor Stack, Guided Inspection) renders on `#F5F5F7`, so that
+   painted the line white on white and it vanished. */
+.loc-page .li-hero .hero-support {
+  color: rgba(255, 255, 255, 0.66);
 }

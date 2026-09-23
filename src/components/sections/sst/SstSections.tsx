@@ -18,7 +18,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /* ── 09 at a glance ──────────────────────────────────────────────── */
 
 /**
- * The whole stack as one table, with the **Reverse Sensor Alarm as a seventh
+ * The whole stack as one table, with each sensor as a
  * row**. It is not one of the six sensors and is not sold as one, but a reader
  * comparing what each device answers wants it in the same list — and the three
  * LiDAR rows sitting together, all saying "LiDAR" in the last column, is the
@@ -102,14 +102,14 @@ export function SstWorks() {
         <Head label="Works with" top="Part of a" bottom="bigger picture." />
         <div className="bento">
           <Reveal className="tile span-7">
-            <span className="label">Omnibox Motion</span>
+            <span className="label">OmniBox Motion</span>
             <h3>Every sensor, into one box.</h3>
             <p className="sub">
-              LiDAR, access control, pallet sensing and the rest plug into Omnibox Motion on the
+              LiDAR, access control, pallet sensing and the rest plug into OmniBox Motion on the
               truck, which powers them, decides on the spot, and keeps the record.
             </p>
             <a className="link" href="/hardware/omnibox">
-              Explore Omnibox
+              Explore OmniBox
             </a>
           </Reveal>
 
@@ -148,7 +148,7 @@ export function SstFAQ() {
   return (
     <section className="section white" id="faq">
       <div className="wrap">
-        <Head label="FAQ" top="Frequently asked" bottom="questions." />
+        <Head label="FAQ" top="Frequently asked questions." className="one-line" />
         <div className="faq">
           {FAQ.map((f, i) => {
             const on = open === i;

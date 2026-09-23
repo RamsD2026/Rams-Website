@@ -4,18 +4,104 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
 import {
-  COMPARE_HEAD, COMPARE_ROWS, CORE_SHAPE, CORE_STEPS, FAQ, MODEL_BY_KEY, WHERE,
+  COMPARE_HEAD, COMPARE_ROWS, CONNECTS, CORE_SHAPE, CORE_STEPS, FAQ, LOOP,
+  MODEL_BY_KEY, WHERE,
 } from "./omni-data";
 
 /** The site's FAQ easing, from `rackiq-shared`. */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * 05–10 — Compare, Where it's used, Works with, Core, FAQ and the close.
+ * The loop, Compare, Where it's used, What it connects to, Works with, Core,
+ * FAQ and the close.
  *
- * Six short sections in one file: only the FAQ carries behaviour, and splitting
- * them six ways would cost more in imports than it buys in navigation.
+ * Eight short sections in one file: only the FAQ carries behaviour, and
+ * splitting them eight ways would cost more in imports than it buys in
+ * navigation.
  */
+
+/* ── the loop ────────────────────────────────────────────────────── */
+
+/**
+ * Sense. Decide. Act. Sync. — copy deck §3.
+ *
+ * The page had no how-it-works loop. `FORMULA`, rendered up in `OmniFamily`,
+ * lists what a box is made of (compute, connectivity, context, action); this is
+ * what it does with those parts, in order. The sibling AI Camera page has
+ * carried its equivalent from the start as "See. Understand. Act.", and the
+ * absence here was the reason this page jumped from the problem straight to a
+ * product catalogue.
+ *
+ * Numbered, unlike most lists on these pages, because this genuinely is a
+ * sequence — each beat hands to the next, and the last one is the only part
+ * that needs a network.
+ */
+export function OmniLoop() {
+  return (
+    <section className="section dark" id="loop">
+      <div className="wrap">
+        <Head
+          center
+          label="How it works"
+          top="Sense. Decide."
+          bottom="Act. Sync."
+          intro="A camera can detect. A sensor can measure. A machine can raise a fault. None of those is a decision — the value shows up when they are read together and something useful happens next."
+        />
+        <ol className="loop">
+          {LOOP.map((l, i) => (
+            <Reveal as="li" key={l.b} className="loop-step" delay={i * 90}>
+              <span className="loop-n">{l.n}</span>
+              <h3>{l.b}</h3>
+              <p>{l.s}</p>
+            </Reveal>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* ── what it connects to ─────────────────────────────────────────── */
+
+/**
+ * "Built to connect with the equipment already on the floor" — copy deck §3.
+ *
+ * `INSIDE_CAPS` already says what each individual box accepts, but that is
+ * spread across four model panels behind a tab. The question a maintenance
+ * engineer actually arrives with is "will it talk to ours?", and that deserves
+ * one consolidated answer rather than four partial ones.
+ *
+ * The closing note is the deck's own and is load-bearing rather than cautious
+ * boilerplate: voltages, safety architecture and I/O genuinely differ per
+ * machine, and the page should not imply that any signal on the list is a
+ * plug-in job.
+ */
+export function OmniConnects() {
+  return (
+    <section className="section white" id="connects">
+      <div className="wrap">
+        <Head
+          label="What it connects to"
+          top="It meets the floor"
+          bottom="as you already built it."
+          intro="Depending on the configuration, an OmniBox can take in and drive most of what is already out there. Nothing here asks you to replace a working sensor."
+        />
+        <ul className="connects">
+          {CONNECTS.map((c, i) => (
+            <Reveal as="li" key={c} delay={i * 40}>
+              {c}
+            </Reveal>
+          ))}
+        </ul>
+        <p className="note">
+          The final interface and its failure behaviour are reviewed against the specific machine
+          and use case before anything is deployed. Machine signals, voltages, safety architecture
+          and I/O requirements vary too much between applications for that to be assumed.
+        </p>
+      </div>
+    </section>
+  );
+}
 
 /* ── 05 compare ──────────────────────────────────────────────────── */
 
@@ -110,9 +196,9 @@ export function OmniWorks() {
         <div className="bento">
           <Reveal className="tile span-7">
             <span className="label">RAMS AI Camera</span>
-            <h3>The eyes. Omnibox is the hands.</h3>
+            <h3>The eyes. OmniBox is the hands.</h3>
             <p className="sub">
-              The AI Camera spots people, PPE and zones. Paired with Omnibox Edge, it stops the
+              The AI Camera spots people, PPE and zones. Paired with OmniBox Edge, it stops the
               robot, holds the door or sounds the alarm.
             </p>
             {/* The reference linked a sibling static site; this is the real route. */}
@@ -152,12 +238,12 @@ export function OmniCore() {
     <section className="section white" id="core">
       <div className="wrap">
         <Head
-          label="Omnibox Core"
+          label="OmniBox Core"
           top="Built around"
           bottom="your problem."
           intro="Some jobs don’t fit a standard box. Core is how we build one that does — using the same parts and know-how as the rest of the family."
         />
-        <ol className="steps four">
+        <ol className="steps five">
           {CORE_STEPS.map((s, i) => (
             <Reveal key={s.b} as="li" delay={i * 60}>
               <b>{s.b}</b>
@@ -173,7 +259,7 @@ export function OmniCore() {
           </div>
           <a
             className="btn btn-primary"
-            href="mailto:connect@rams.digital?subject=Omnibox%20Core%20project"
+            href="mailto:connect@rams.digital?subject=OmniBox%20Core%20project"
           >
             Start a Core project
           </a>
@@ -195,7 +281,7 @@ export function OmniFAQ() {
   return (
     <section className="section" id="faq">
       <div className="wrap">
-        <Head label="FAQ" top="Frequently asked" bottom="questions." />
+        <Head label="FAQ" top="Frequently asked questions." className="one-line" />
         <div className="faq">
           {FAQ.map((f, i) => {
             const on = open === i;
@@ -245,10 +331,10 @@ export function OmniCTA() {
         <h2 className="h2">Tell us what you’d fix first.</h2>
         <p className="intro">
           A cell, a line, a door or a fleet. We’ll visit, see how the work actually happens, and
-          recommend the right Omnibox — no obligation.
+          recommend the right OmniBox — no obligation.
         </p>
         <div className="cta-actions">
-          <a className="btn btn-primary" href="mailto:connect@rams.digital?subject=Omnibox%20enquiry">
+          <a className="btn btn-primary" href="mailto:connect@rams.digital?subject=OmniBox%20enquiry">
             Talk to us
           </a>
           <a className="btn btn-secondary" href="tel:+919028638907">

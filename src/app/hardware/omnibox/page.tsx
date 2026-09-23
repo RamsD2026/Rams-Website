@@ -5,9 +5,9 @@ import "@/styles/hardware-omni.css";
 import "./omnibox.css";
 
 export const metadata: Metadata = {
-  title: "Omnibox — The on-site brain for your floor | RAMS",
+  title: "OmniBox — The on-site brain for your floor | RAMS",
   description:
-    "Omnibox turns what cameras and sensors notice into action, on site and without a network. Four models — Edge, AI, Motion and Core — one physical intelligence layer.",
+    "OmniBox turns what cameras and sensors notice into action, on site and without a network. Four models — Edge, AI, Motion and Core — one physical intelligence layer.",
 };
 
 /**
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  * still 404 — this page covers all four models, so those want redirects here.
  *
  * ── Where the design came from ──────────────────────────────────────
- * A port of the Omnibox showcase build supplied as a static site
+ * A port of the OmniBox showcase build supplied as a static site
  * (`Omnibox Website/`: `index.html` + `site.css` + `omnibox.css`, with its
  * design note under `docs/superpowers/specs/`). Structure, copy, geometry and
  * motion are carried across as given, with the same three adaptations as
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
  * `models/README.md` describing how a real one would drop in.
  *
  * Not ported: the `.li-stack` block, which renders a Location Intelligence
- * sensor stack inside its Omnibox and is driven by `stack.js` from a sibling
+ * sensor stack inside its OmniBox and is driven by `stack.js` from a sibling
  * reference site. That site has no route here yet.
  */
-export default function OmniboxPage() {
+export default function OmniBoxPage() {
   return <OmniPage />;
 }

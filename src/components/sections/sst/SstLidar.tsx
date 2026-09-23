@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type * as THREE_NS from "three";
-import { Head, Media, Reveal } from "@/components/sections/hardware/hw-shared";
-import { BAY, RACK_X, createSstKit, loadFork, type DevKey, type Mounts } from "./sst-3d";
-import { IMG, LIDAR_COPY, LIDAR_FACTS, LIDAR_TABS, RSA_PILLS, type LidarMode } from "./sst-data";
+import { Head, Reveal } from "@/components/sections/hardware/hw-shared";
+import { BAY, RACK_X, createSstKit, loadFork, type Mounts } from "./sst-3d";
+import { LIDAR_COPY, LIDAR_FACTS, LIDAR_NOTE, LIDAR_TABS, type LidarMode } from "./sst-data";
 
 /**
  * 04 — One LiDAR layer. Three answers.
@@ -18,14 +18,15 @@ import { IMG, LIDAR_COPY, LIDAR_FACTS, LIDAR_TABS, RSA_PILLS, type LidarMode } f
  *   **Location** — an orange trail behind the truck, and a read-out naming the
  *   aisle and the bay it is passing, logged each time it changes aisle.
  *   **Speed** — the walkway and the dock light up as zones with their own
- *   limits, a gauge reads the truck's speed against the limit for the zone it
- *   is *actually in*, and going over logs an overspeed with the place.
- *   **Crash** — the truck drifts into the third upright of rack A, the point
+ *   limits, a live graph runs the truck's speed, the trace turns red whenever
+ *   it is over the limit for the zone it is *actually in*, and going over logs
+ *   an overspeed with the place.
+ *   **Impact** — the truck drifts into the third upright of rack A, the point
  *   cloud takes a red shockwave out from the contact, and the impact is logged
  *   with what it hit and that the operator was verified at start.
  *
  * ── Nothing here is a number we do not have ─────────────────────────
- * The gauge has no units and the read-out has no figures; the spec forbids
+ * The graph has no units and the read-out has no figures; the spec forbids
  * both. Speed is a proportion of a zone limit, an impact is a place and a time.
  * See the head of `sst-data.ts`.
  *
@@ -49,11 +50,9 @@ type LogRow = { id: number; m: LidarMode; t: string; txt: string };
 export function SstLidar({
   mode,
   onMode,
-  onHw,
 }: {
   mode: LidarMode;
   onMode: (m: LidarMode) => void;
-  onHw: (k: DevKey) => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -63,7 +62,13 @@ export function SstLidar({
 
   const [noGl, setNoGl] = useState(false);
   const [read, setRead] = useState<Read>({ state: "Aisle 2", sub: "Heading east, loaded.", cls: "" });
-  const [gauge, setGauge] = useState({ val: 0, lim: 0, cls: "" });
+  /* The speed graph is drawn by the scene every frame, straight onto these
+     paths — through React it would step four times a second, not flow. */
+  const spdRef = useRef<SVGPathElement>(null);
+  const areaRef = useRef<SVGPathElement>(null);
+  const overRef = useRef<SVGPathElement>(null);
+  const clipRef = useRef<SVGPathElement>(null);
+  const clipId = useId().replace(/:/g, "");
   const [log, setLog] = useState<LogRow[]>([]);
 
   const modeRef = useRef(mode);
@@ -198,8 +203,36 @@ export function SstLidar({
         setLog((prev) => [row, ...prev.filter((r) => r.m === m)].slice(0, 4));
       };
 
+      /* ── the speed graph ──
+         A rolling window of (time, speed, zone limit), drawn right to left:
+         now at the right edge, the last WINDOW seconds behind it. Speed is a
+         proportion of the open-aisle pace, like the rest of this section — no
+         units, no figures. */
+      const WINDOW = 9, GW = 300, GT = 32, GB = 118;
+      const samples: { t: number; v: number; lim: number }[] = [];
+      const gy = (v: number) => GB - (clamp(v, 0, 1.15) / 1.15) * (GB - GT);
+      const drawGraph = (now: number) => {
+        const spd = spdRef.current, area = areaRef.current, over = overRef.current, clip = clipRef.current;
+        if (!spd || !area || !over || !clip || samples.length < 2) return;
+        const gx = (t: number) => GW - ((now - t) / WINDOW) * GW;
+        let d = "", c = "";
+        samples.forEach((p, i) => {
+          const x = gx(p.t).toFixed(1), y = gy(p.v).toFixed(1), ly = gy(p.lim).toFixed(1);
+          d += (i ? "L" : "M") + x + " " + y;
+          c += (i ? "L" : "M") + x + " " + ly;
+        });
+        const x0 = gx(samples[0].t).toFixed(1), xN = gx(samples[samples.length - 1].t).toFixed(1);
+        spd.setAttribute("d", d);
+        over.setAttribute("d", d);
+        area.setAttribute("d", d + "L" + xN + " " + GB + "L" + x0 + " " + GB + "Z");
+        // The zone limit is not drawn, only used to clip: whatever part of the
+        // trace is above it shows red.
+        clip.setAttribute("d", c + "L" + xN + " 0L" + x0 + " 0Z");
+      };
+
       /** Hand the scene back to the start of whichever answer is now selected. */
       const reset = (m: LidarMode) => {
+        samples.length = 0;
         S.hitDone = false;
         S.over = false;
         trailCount = 0;
@@ -374,6 +407,15 @@ export function SstLidar({
         cam.position.set(look.x + Math.sin(camAng) * dist * 0.5, dist * 0.9, look.z + Math.cos(camAng) * dist * 0.5);
         cam.lookAt(look.x, 0.6, look.z);
 
+        /* speed graph, every frame */
+        if (m === "speed") {
+          const lim = zone ? zone.limit : 1;
+          const last = samples[samples.length - 1];
+          if (!last || S.time - last.t > 1 / 40) samples.push({ t: S.time, v: S.v, lim });
+          while (samples.length && samples[0].t < S.time - WINDOW - 0.5) samples.shift();
+          drawGraph(S.time);
+        }
+
         /* tags, every frame — they ride a moving truck */
         const w = stage.clientWidth, h = stage.clientHeight;
         const place = (t: HTMLElement | null, v: THREE_NS.Vector3, op: number) => {
@@ -408,7 +450,6 @@ export function SstLidar({
           place(zoneTagRefs.current[i], tmp.set((z.x[0] + z.x[1]) / 2, 0.1, (z.z[0] + z.z[1]) / 2), m === "speed" ? 1 : 0),
         );
         place(hitTagRef.current, tmp.set(HIT.x, 0.2, HIT.z - 1.2), m === "impact" && age < 3.5 ? 1 : 0);
-
         /* the read-out, four times a second */
         if ((readT += dt) > 0.25) {
           readT = 0;
@@ -432,7 +473,6 @@ export function SstLidar({
               ? "Over the zone limit — logged with place and driver."
               : "Within the limit for this zone.";
             cls = over ? "alert" : zone ? "warn" : "";
-            setGauge({ val: clamp(S.v / 1.15, 0, 1) * 100, lim: clamp(lim / 1.15, 0, 1), cls });
             if (over && !S.over) pushLog("Overspeed · " + (zone ? zone.name.toLowerCase() + " zone" : "open aisle") + " · Truck 07");
             S.over = over;
             if (zone !== S.lastZone) {
@@ -510,23 +550,14 @@ export function SstLidar({
 
   /* A tab switch hands the scene back to the start of that answer, so each one
      is read from its own beginning. Nothing is set here: the log clears itself
-     (its rows carry their mode) and the gauge only renders under speed, where
-     the next frame fills it. */
+     (its rows carry their mode) and the graph only renders under speed, where
+     the scene's reset has already emptied its samples. */
   useEffect(() => {
     modeRef.current = mode;
     resetRef.current?.(mode);
   }, [mode]);
 
   const copy = LIDAR_COPY[mode];
-  /* The limit marker on the gauge, in the SVG's own 200×110 half-circle. */
-  const la = Math.PI * (1 - gauge.lim);
-  const lim = {
-    x1: 100 + Math.cos(la) * 66,
-    y1: 100 - Math.sin(la) * 66,
-    x2: 100 + Math.cos(la) * 92,
-    y2: 100 - Math.sin(la) * 92,
-  };
-
   const onTabKey = (e: React.KeyboardEvent) => {
     const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (!d) return;
@@ -541,7 +572,7 @@ export function SstLidar({
     <section className="section dark" id="lidar">
       <div className="wrap">
         <Head
-          label="Crash · Speed · Location"
+          label="Location · Speed · Impact Detection"
           top="One LiDAR layer."
           bottom="Three answers."
           intro="The LiDAR sees the space around the truck in 3D, many times a second. From that one picture the truck knows where it is, how fast it’s going — and the moment it touches something it shouldn’t."
@@ -623,16 +654,32 @@ export function SstLidar({
               <p className="lr-sub">{read.sub}</p>
 
               {mode === "speed" && (
-                <div className={"gauge " + gauge.cls}>
-                  <svg viewBox="0 0 200 110" aria-hidden>
-                    <path className="trk" d="M20 100A80 80 0 0 1 180 100" />
-                    <path
-                      className="val"
-                      d="M20 100A80 80 0 0 1 180 100"
-                      pathLength={100}
-                      strokeDasharray={gauge.val.toFixed(1) + " 100"}
-                    />
-                    <line className="lim" x1={lim.x1.toFixed(1)} y1={lim.y1.toFixed(1)} x2={lim.x2.toFixed(1)} y2={lim.y2.toFixed(1)} />
+                <div className={"sgraph " + read.cls}>
+                  <svg viewBox="0 0 300 136" role="img" aria-label="Live graph of the truck's speed against the limit for the zone it is in">
+                    <defs>
+                      <clipPath id={clipId}>
+                        <path ref={clipRef} />
+                      </clipPath>
+                      <linearGradient id={clipId + "g"} x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0" stopColor="#30d158" stopOpacity=".28" />
+                        <stop offset="1" stopColor="#30d158" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    {[32, 60.7, 89.3, 118].map((y) => (
+                      <line key={y} className="grid" x1="0" x2="300" y1={y} y2={y} />
+                    ))}
+                    <path ref={areaRef} fill={`url(#${clipId}g)`} />
+                    <path ref={spdRef} className="spd" />
+                    <path ref={overRef} className="over" clipPath={`url(#${clipId})`} />
+                    <text className="ax" x="2" y="10">
+                      Speed
+                    </text>
+                    <text className="ax" x="2" y="132">
+                      Time
+                    </text>
+                    <text className="ax" x="298" y="132" textAnchor="end">
+                      Now
+                    </text>
                   </svg>
                 </div>
               )}
@@ -660,29 +707,8 @@ export function SstLidar({
           ))}
         </div>
 
-        {/* The rear-facing alarm — a separate device, kept separate. */}
-        <div className="bento rsa-bento">
-          <Reveal className="tile span-5 rsa-shot">
-            <Media src={IMG.rsa} alt="RAMS Reverse Sensor Alarm: blue faceplate with a LiDAR puck and three status lights" label={IMG.rsa} className="contain" tone="light" />
-          </Reveal>
-          <Reveal className="tile span-7" delay={80}>
-            <span className="label">Behind the truck</span>
-            <h3>Reverse Sensor Alarm.</h3>
-            <p className="sub">
-              A LiDAR on the back of the truck measures what’s behind while it reverses, and sounds
-              the beacon before it touches. Three lights on the face show it’s powered, sensing and
-              triggered.
-            </p>
-            <div className="pills" style={{ marginTop: 22 }}>
-              {RSA_PILLS.map((p) => (
-                <span key={p}>{p}</span>
-              ))}
-            </div>
-            <button type="button" className="link" onClick={() => onHw("rsa")}>
-              See it in 3D
-            </button>
-          </Reveal>
-        </div>
+        <p className="note">{LIDAR_NOTE}</p>
+
       </div>
     </section>
   );

@@ -20,7 +20,7 @@ import type { InsideView } from "./GiInside";
  * point in a picture. This is the page's central honesty rule made structural —
  * there is no slot here for a figure to creep into.
  *
- * The accessibility contract is the Omnibox sheet's, unchanged: focus moves in
+ * The accessibility contract is the OmniBox sheet's, unchanged: focus moves in
  * and returns, Tab is trapped, Escape closes, and the page behind is pinned with
  * `position: fixed` rather than `overflow: hidden`, because iOS Safari ignores
  * the latter behind a fixed overlay.
@@ -174,7 +174,7 @@ export function GiSheet({
               See inside
             </button>
             <a className="btn btn-primary" href={sheet.mail}>
-              Become a design partner
+              Tell us what to look at
             </a>
           </div>
         </div>

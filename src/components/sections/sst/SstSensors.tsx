@@ -7,7 +7,7 @@ import { FORMULA, SENSORS, type LidarMode, type SheetKey } from "./sst-data";
 /**
  * 03 — The six sensors.
  *
- * Six cards at equal weight on the Omnibox family grid, three across. Each
+ * Six cards at equal weight on the OmniBox family grid, three across. Each
  * carries the same five blocks — photograph, what it is for, its name, one bold
  * line, three checks — so they compare by eye; there is no hero sensor, because
  * a site fits what it needs.
@@ -47,7 +47,7 @@ export function SstSensors({
         <Head
           label="The stack"
           top="Six sensors."
-          bottom="One truck that knows itself."
+          bottom={"One truck that knows\u00a0itself."}
           intro="Fit what the site needs. Each sensor answers one question; the LiDAR answers three."
         />
 
@@ -127,13 +127,13 @@ export function SstSensors({
 
           <div className="layer-bar">
             <div>
-              <span className="label">Omnibox Motion</span>
+              <span className="label">OmniBox Motion</span>
               <h3>Every sensor. One box on the truck.</h3>
               <p>Decided on the truck, and sent on to the RAMS Digital Twin.</p>
             </div>
             {/* The reference linked a sibling static site; this is the route. */}
             <a className="link" href="/hardware/omnibox">
-              Explore Omnibox
+              Explore OmniBox
             </a>
           </div>
         </div>

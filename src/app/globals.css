@@ -253,3 +253,51 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+
+/* ── /roi-calculator sliders ─────────────────────────────────────────
+   Range inputs are the one control browsers will not let a class style, so
+   they get their own rules here rather than in the component. Two grounds,
+   because the summary panel is dark and everything around it is not. */
+.roi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.12);
+  outline: none;
+  cursor: pointer;
+}
+.roi-range[data-dark] {
+  background: rgba(255, 255, 255, 0.16);
+}
+.roi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ff6a00;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+}
+.roi-range[data-dark]::-webkit-slider-thumb {
+  border-color: #0e0e11;
+}
+.roi-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ff6a00;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+}
+.roi-range[data-dark]::-moz-range-thumb {
+  border-color: #0e0e11;
+}
+.roi-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #ff6a00;
+  outline-offset: 2px;
+}
