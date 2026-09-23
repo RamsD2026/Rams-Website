@@ -88,7 +88,39 @@ export type ServiceSection =
   /** The output pack: a numbered register beside a single callout. */
   | ({ kind: "deliverables"; items: Item[]; callout: Item } & Head)
   /** Questions and answers. */
-  | ({ kind: "faq"; items: Item[] } & Head);
+  | ({ kind: "faq"; items: Item[] } & Head)
+  /**
+   * The inspection-to-certification workflow: one chain, then the
+   * certification decision as two paths. Always the dark band.
+   */
+  | ({
+      kind: "flow";
+      chain: { title: string; body: string }[];
+      decision: string;
+      paths: {
+        tone: "green" | "amber";
+        label: string;
+        lead: string;
+        steps: string[];
+        body: string;
+      }[];
+      footline: string;
+    } & Head)
+  /** The rack area map, and the priority rows under it. */
+  | ({
+      kind: "ragmap";
+      mapTitle: string;
+      rowsLead: string;
+      rows: {
+        tone: "red" | "amber" | "green";
+        title: string;
+        body: string;
+        action: string;
+      }[];
+      closing?: string;
+    } & Head)
+  /** Recognised practices, as chips on a dark card. */
+  | ({ kind: "standards"; items: string[] } & Head);
 
 export type Service = {
   slug: string;
@@ -118,7 +150,7 @@ export type Service = {
     /**
      * The close's secondary button. Defaults to "All services" at /services.
      *
-     * The shell is also what renders the IROS platform page, which has no
+     * The shell is also what renders the IBIS platform page, which has no
      * business sending a reader to the services index — so the destination is
      * data rather than a constant.
      */

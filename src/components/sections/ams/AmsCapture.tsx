@@ -114,7 +114,7 @@ const SOURCES = [
   },
   {
     tag: "Flow",
-    title: "ATOS & IROS",
+    title: "ATOS & IBIS",
     body: "Execution, SLA and inventory performance.",
   },
 ];

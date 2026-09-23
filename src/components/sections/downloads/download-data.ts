@@ -95,14 +95,14 @@ export const RESOURCES: Resource[] = [
     search: "rtss real time safety impact near miss pedestrian zone monitoring",
   },
   {
-    id: "iros",
+    id: "ibis",
     kind: "Product sheet",
-    owner: "RAMS IROS",
-    title: "IROS · Inventory Intelligence",
+    owner: "RAMS IBIS",
+    title: "IBIS · Inventory Intelligence",
     body: "Physical inventory visibility, movement context, dwell analysis, exceptions and storage intelligence.",
     group: SOFTWARE,
     tags: ["Software", "Inventory"],
-    search: "iros inventory pallet dwell exception storage visibility",
+    search: "ibis inventory pallet dwell exception storage visibility",
   },
   {
     id: "imds",

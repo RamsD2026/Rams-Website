@@ -84,7 +84,7 @@ const SITE_OK: [string, string, string][] = [
   ["Operations index", "84.2", AMBER],
   ["Rack safety · IRDS", "03 critical", RED],
   ["MHE utilisation · MEPS", "78%", "#FFFFFF"],
-  ["Inventory dwell · IROS", "12 exceptions", AMBER],
+  ["Inventory dwell · IBIS", "12 exceptions", AMBER],
   ["Open maintenance · IMDS", "08", "#FFFFFF"],
   ["Execution SLA · ATOS", "92%", GREEN],
 ];
@@ -93,7 +93,7 @@ const SITE_CHANGE: [string, string, string][] = [
   ["Operations index", "79.6", RED],
   ["Rack safety · IRDS", "05 critical", RED],
   ["MHE utilisation · MEPS", "71%", AMBER],
-  ["Inventory dwell · IROS", "17 exceptions", RED],
+  ["Inventory dwell · IBIS", "17 exceptions", RED],
   ["Open maintenance · IMDS", "09", "#FFFFFF"],
   ["Execution SLA · ATOS", "86%", AMBER],
 ];

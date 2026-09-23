@@ -134,9 +134,14 @@ export const NAV_CONFIG: NavItemConfig[] = [
             description: "AI Intelligence and Management System",
           },
           {
-            label: "Inventory Intelligence",
-            href: "/platform/iros",
-            description: "IROS — location, movement, dwell, accuracy and storage optimisation",
+            label: "IBIS",
+            href: "/platform/ibis",
+            description: "Inventory Behaviour Intelligence Suite — location, movement, dwell and accuracy",
+          },
+          {
+            label: "IRTS",
+            href: "/platform/irts",
+            description: "Inventory Reconciliation & Tracking Suite — coming soon",
           },
         ],
       },

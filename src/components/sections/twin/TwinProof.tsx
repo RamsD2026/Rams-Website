@@ -60,7 +60,7 @@ const MODULES = [
     href: "/platform/rtss",
   },
   {
-    code: "IROS",
+    code: "IBIS",
     icon: Boxes,
     title: "Inventory visibility",
     body: "Where stock actually is, how it moves, and where it is re-handled.",

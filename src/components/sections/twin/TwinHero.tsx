@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
@@ -15,20 +14,20 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * at page-hero scale, centred subline, two CTAs, the product full width
  * beneath, then the client strip.
  *
- * The one departure is what sits in the product frame. Every other platform
- * page puts a recording there; this page claims a structured model of the
- * facility exists, so the frame holds the model itself, built from the plan's
- * own coordinates in `twin-plan.ts`. It is the product screen, not an
- * illustration of one — and there is no Digital Twin recording to put in its
- * place.
+ * The frame holds RAMS's own Digital Twin recording, as every other platform
+ * hero holds a recording of its product.
+ *
+ * It held `TwinScene` until that recording existed — the model built from
+ * the plan's own coordinates in `twin-plan.ts`, drawn live rather than
+ * filmed. That component and its plan are still on disk, and rendering it
+ * here again is what to do if the video is ever pulled.
+ *
+ * The source file was 127 MB at 4362 × 2160; it is served at 1920 wide,
+ * silent, at 5.5 MB, with a poster frame so the frame is never empty while
+ * it loads.
  */
 
 const LINE = "rgba(255,255,255,0.10)";
-
-const TwinScene = dynamic(() => import("./TwinScene"), {
-  ssr: false,
-  loading: () => <div className="w-full h-full" aria-hidden />,
-});
 
 
 export function TwinHero() {
@@ -176,9 +175,19 @@ export function TwinHero() {
               </span>
             </div>
 
-            <div className="h-[320px] sm:h-[440px] lg:h-[540px]">
-              <TwinScene />
-            </div>
+            {/* RAMS's own Digital Twin recording, in the frame the model
+                used to fill. `TwinScene` is still on disk and still built
+                from `twin-plan.ts` — render it here again to go back. */}
+            <video
+              src="/Product/digital-twin-demo.mp4"
+              poster="/Product/digital-twin-demo.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="block w-full h-auto"
+            />
           </div>
         </motion.div>
 

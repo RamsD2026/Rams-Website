@@ -52,6 +52,14 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // The inventory module was IROS, then IRTS, and is now IBIS — the
+        // Inventory Behaviour Intelligence Suite. IRTS is now a separate
+        // module with its own page, so only the IROS path redirects here.
+        source: "/platform/iros",
+        destination: "/platform/ibis",
+        permanent: true,
+      },
+      {
         // The V2 mega menu spells this one without the noun. The V1 menu, the
         // footer and the route itself use the full slug, so the short form is
         // redirected rather than a second route being added for it.

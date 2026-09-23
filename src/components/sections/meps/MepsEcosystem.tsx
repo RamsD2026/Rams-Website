@@ -35,7 +35,7 @@ const CONNECTIONS = [
   },
   {
     Icon: Boxes,
-    plus: "MEPS + IROS",
+    plus: "MEPS + IBIS",
     title: "Inventory context",
     body: "Inventory priorities connected to physical fleet movement.",
   },

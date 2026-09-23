@@ -1,5 +1,5 @@
 /**
- * IROS — RAMS Inventory Intelligence, from
+ * IBIS — RAMS Inventory Intelligence, from
  * `RAMS_Digital_Inventory_Intelligence_Platform.html`.
  *
  * Plain data, no React: the icons are named and the section components hold
@@ -44,7 +44,7 @@ export const HERO = {
   eyebrow: "RAMS Inventory Intelligence",
   top: "Know what you have.",
   bottom: "Know where it is.",
-  body: "Connect SKU, pallet, batch, quantity, movement and dwell to the exact physical warehouse location. Compare system records with operational reality, surface exceptions and act before a mismatch becomes a search, delay or write-off.",
+  body: "IBIS — the Inventory Behaviour Intelligence Suite — connects SKU, pallet, batch, quantity, movement and dwell to the exact physical warehouse location. Compare system records with operational reality, surface exceptions and act before a mismatch becomes a search, delay or write-off.",
   chips: ["Locate", "Compare", "Act"],
 };
 

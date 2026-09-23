@@ -42,7 +42,7 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  * `AboutPlatform`'s, already shipped on `/company/about` — so the same
  * product says the same thing in both places.
  *
- * ── IROS has no page ────────────────────────────────────────────────
+ * ── IBIS has no page ────────────────────────────────────────────────
  * It is named across the site and has no route under `src/app`, so its card
  * does not link. A link to a 404 is worse than no link, and this is the call
  * `TwinApps` and `AboutPlatform` already made. Add the href when the page
@@ -81,7 +81,7 @@ const MODULES: {
     href: "/platform/rtss",
   },
   {
-    code: "IROS",
+    code: "IBIS",
     name: "Inventory visibility",
     body: "Location, movement, dwell, accuracy and storage optimisation.",
   },

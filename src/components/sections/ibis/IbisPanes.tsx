@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
  * Stage holds a white device screen — so these are light panes, not dark ones.
  *
  * `RdsCapabilities` pins a real screenshot per capability, because IRDS is the
- * one platform on this site with genuine captures in `SHOTS`. There is no IROS
+ * one platform on this site with genuine captures in `SHOTS`. There is no IBIS
  * capture, and `MepsCapabilities` already ruled on that case: "Putting a rack
  * dashboard behind 'Route & travel analytics' would be a lie told with a
  * picture, so each group pins a live pane instead — drawn from data rather

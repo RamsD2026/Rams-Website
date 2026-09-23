@@ -333,7 +333,7 @@ export const MODULES: {
     systems: "WMS · TMS · EHS · Identity systems",
   },
   {
-    name: "IROS",
+    name: "IBIS",
     inbound: ["Item", "Pallet", "Expected location"],
     outbound: ["Movement", "Dwell", "Exception"],
     systems: "WMS · ERP · RFID systems",

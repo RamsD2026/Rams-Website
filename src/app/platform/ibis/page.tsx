@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
 import {
-  IrosCTA,
-  IrosCapabilities,
-  IrosExperience,
-  IrosFAQ,
-  IrosHero,
-  IrosHow,
-  IrosIntegrations,
-  IrosOutcomes,
-  IrosOverview,
-  IrosProblem,
-} from "@/components/sections/iros/Iros";
+  IbisCTA,
+  IbisCapabilities,
+  IbisExperience,
+  IbisFAQ,
+  IbisHero,
+  IbisHow,
+  IbisIntegrations,
+  IbisOutcomes,
+  IbisOverview,
+  IbisProblem,
+} from "@/components/sections/ibis/Ibis";
 
 export const metadata: Metadata = {
-  title: "IROS — Inventory Intelligence | RAMS Digital",
+  title: "IBIS — Inventory Behaviour Intelligence Suite | RAMS Digital",
   description:
     "Connect SKU, pallet, batch, quantity, movement and dwell to the exact physical warehouse location — comparing system records with operational reality and turning exceptions into controlled action.",
 };
 
 /**
- * /platform/iros — from `RAMS_Digital_Inventory_Intelligence_Platform.html`.
+ * /platform/ibis — from `RAMS_Digital_Inventory_Intelligence_Platform.html`.
  *
  * The platform spine, not a section per source heading:
  *
@@ -45,26 +45,26 @@ export const metadata: Metadata = {
  *
 
  * ── Why this module needed a page ──────────────────────────────────
- * IROS was the one module in the Platform menu with none — `AboutPlatform`
+ * IBIS was the one module in the Platform menu with none — `AboutPlatform`
  * lists it beside MEPS, RTSS, IMDS and ATOS and it is the only entry in that
  * array without an `href`. This is not `/solutions/inventory-intelligence`,
  * the solution page, nor `/services/inventory-audit`, the bounded audit
  * assignment; the source's own last question draws that second line and the
  * answer is carried verbatim in the FAQ.
  */
-export default function IrosPlatformPage() {
+export default function IbisPlatformPage() {
   return (
     <>
-      <IrosHero />
-      <IrosProblem />
-      <IrosOverview />
-      <IrosHow />
-      <IrosCapabilities />
-      <IrosExperience />
-      <IrosOutcomes />
-      <IrosIntegrations />
-      <IrosFAQ />
-      <IrosCTA />
+      <IbisHero />
+      <IbisProblem />
+      <IbisOverview />
+      <IbisHow />
+      <IbisCapabilities />
+      <IbisExperience />
+      <IbisOutcomes />
+      <IbisIntegrations />
+      <IbisFAQ />
+      <IbisCTA />
     </>
   );
 }
