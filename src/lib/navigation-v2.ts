@@ -558,20 +558,6 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
         },
       },
       {
-        label: "Operational Assessment",
-        href: "/services/operational-assessment",
-        description: "End-to-end warehouse operational review",
-        featured: {
-          image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&auto=format&fit=crop",
-          imageAlt: "Operational assessment",
-          eyebrow: "Full Review",
-          title: "Operational Assessment",
-          description: "A structured 5-day on-site review covering throughput, accuracy, safety, and cost — with a prioritised improvement roadmap.",
-          cta: "Request Assessment",
-          href: "/services/operational-assessment",
-        },
-      },
-      {
         label: "Deployment & Support",
         href: "/services/deployment-support",
         description: "Implementation, training, and managed support",

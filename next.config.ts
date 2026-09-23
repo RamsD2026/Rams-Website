@@ -24,6 +24,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // The safety and operational assessment page was withdrawn; the
+        // services index is what the path answers with now.
+        source: "/services/operational-assessment",
+        destination: "/services",
+        permanent: true,
+      },
+      {
         // The V2 mega menu spells this one without the noun. The V1 menu, the
         // footer and the route itself use the full slug, so the short form is
         // redirected rather than a second route being added for it.

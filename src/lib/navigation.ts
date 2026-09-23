@@ -247,11 +247,6 @@ export const NAV_CONFIG: NavItemConfig[] = [
             description: "Identify vehicle utilisation and efficiency gaps",
           },
           {
-            label: "Safety and Operational Assessment",
-            href: "/services/operational-assessment",
-            description: "End-to-end warehouse operational review",
-          },
-          {
             label: "Deployment and Support",
             href: "/services/deployment-support",
             description: "Implementation, training, and managed support",
