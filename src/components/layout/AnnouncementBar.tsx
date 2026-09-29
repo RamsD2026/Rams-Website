@@ -107,12 +107,12 @@ export function AnnouncementBar() {
           {/* The site's text-link treatment — orange, underlined on hover —
               rather than the outlined box it carried, whose padding class was
               broken anyway (`hover:border-white/30px-2.5`, a missing space). */}
-          <a
+          <Link
             href="/platform/login"
             className="text-xs text-signal-orange hover:underline underline-offset-4 transition-colors duration-200 font-semibold tracking-wide hidden md:block"
           >
             Platform Login
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Volume2, VolumeX } from "lucide-react";
 
 /**
  * Shared primitives for the RAMS Rack Intelligence (IRDS) page.
@@ -417,6 +419,17 @@ export function ProductVideo({
   tone = "dark",
   /** Off where the frame sits flat on the surface rather than above it. */
   shadow = true,
+  /**
+   * The cut carries a soundtrack and the viewer may turn it on.
+   *
+   * It still starts muted, because no browser will autoplay audible video —
+   * Chrome and Safari both block it and would leave the frame paused on its
+   * poster instead. So the recording runs silent as every other one here
+   * does, and a speaker control sits in the corner for anyone who wants the
+   * sound. Leave this off for footage with no audio worth hearing: an
+   * unmute button over silence is a broken promise.
+   */
+  sound = false,
   className,
 }: {
   src: string;
@@ -424,8 +437,23 @@ export function ProductVideo({
   poster?: string;
   tone?: Tone;
   shadow?: boolean;
+  sound?: boolean;
   className?: string;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  // `muted` is set on the element rather than through JSX: React does not
+  // reflect that attribute onto the DOM node reliably, and the autoplay
+  // policy reads the property, not the attribute.
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+    if (!video.muted) void video.play().catch(() => {});
+  };
+
   return (
     <div
       className={"relative overflow-hidden " + (className ?? "")}
@@ -436,6 +464,7 @@ export function ProductVideo({
     >
       <Chrome path={path} tone={tone} />
       <video
+        ref={videoRef}
         src={src}
         poster={poster}
         autoPlay
@@ -445,6 +474,21 @@ export function ProductVideo({
         preload="metadata"
         className="w-full h-auto block"
       />
+      {sound && (
+        <button
+          type="button"
+          onClick={toggleSound}
+          aria-label={muted ? "Unmute the demo" : "Mute the demo"}
+          aria-pressed={!muted}
+          className="absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center bg-black/55 backdrop-blur border border-white/15 text-white transition-colors duration-200 hover:bg-black/75 outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        >
+          {muted ? (
+            <VolumeX className="w-[18px] h-[18px]" aria-hidden />
+          ) : (
+            <Volume2 className="w-[18px] h-[18px]" aria-hidden />
+          )}
+        </button>
+      )}
     </div>
   );
 }

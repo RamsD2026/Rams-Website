@@ -21,10 +21,15 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *
  * The product here is a **real recording**, not a placeholder: RAMS's own
  * IRDS 2.0 demo, in the shared `ProductVideo` chrome. The 63 MB original is
- * re-encoded silent at 11 MB with a poster frame, so the frame is never
- * empty while it loads.
+ * re-encoded at 33 MB — CRF 20, close enough to the master to be hard to
+ * tell apart — with its soundtrack kept and a poster frame, so the frame is
+ * never empty while it loads.
  *
- * The file is versioned (`demo-5`) rather than overwritten: the CDN caches
+ * It plays muted, which the browser autoplay policy leaves no way around,
+ * and the speaker control in the corner of the frame turns the music on.
+ * That is the `sound` prop on `ProductVideo`.
+ *
+ * The file is versioned (`demo-6`) rather than overwritten: the CDN caches
  * these by path, and a new name is what makes a new cut land immediately.
  *
  * Three stills sat here before it and are all still in `SHOTS`:
@@ -139,9 +144,10 @@ export function RdsHero() {
           className="mt-16 sm:mt-20 max-w-[1180px] mx-auto"
         >
           <ProductVideo
-            src="/Product/irds/demo-5.mp4"
-            poster="/Product/irds/demo-5.jpg"
+            src="/Product/irds/demo-6.mp4"
+            poster="/Product/irds/demo-6.jpg"
             path="app.rams.digital/irds"
+            sound
           />
         </motion.div>
 
