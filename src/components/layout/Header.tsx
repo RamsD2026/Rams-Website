@@ -23,14 +23,33 @@ export function Header() {
      navigation, since the App Router keeps this component mounted across
      routes.
 
-     The read runs in a frame callback rather than in the effect body: the new
-     route's markup is not necessarily committed when the effect fires, and a
-     synchronous setState here would also cascade a second render. */
+     ── Why this watches rather than reads once ─────────────────────────
+     It used to read in a single `requestAnimationFrame` after the pathname
+     changed. That holds on a fresh load, but not on a client-side
+     navigation: the App Router commits the new route's markup a frame or
+     more later, so the query ran against the *old* page — or against
+     nothing — and a light hero was missed. The bar then stayed in hero
+     mode and painted a white logo and white links onto a white page.
+
+     So the check re-runs while the DOM settles: once immediately, again on
+     the next frame, and on any mutation until the route's markup is in.
+     The observer disconnects as soon as it has an answer that matches the
+     committed page, and in any case after a second. */
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
+    const read = () =>
       setLightHero(Boolean(document.querySelector('[data-hero-tone="light"]')));
-    });
-    return () => cancelAnimationFrame(id);
+
+    read();
+    const frame = requestAnimationFrame(read);
+    const observer = new MutationObserver(read);
+    observer.observe(document.body, { childList: true, subtree: true });
+    const stop = setTimeout(() => observer.disconnect(), 1000);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(stop);
+      observer.disconnect();
+    };
   }, [pathname]);
 
   useEffect(() => {

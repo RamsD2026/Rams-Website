@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, ShieldCheck } from "lucide-react";
+import { Globe, Mail, Phone, ShieldCheck, type LucideIcon } from "lucide-react";
 import { RAMSLogo } from "@/components/ui/RAMSLogo";
 
 const LinkedInIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -108,9 +108,12 @@ const LEGAL_NAME = "INODE RAMS BUILT ENV TECH PVT. LTD.";
  * a `mailto:` — a number a reader has to retype by hand is a number that does
  * not get called from a phone.
  */
-const COMPANY: { label: string; lines: { text: string; href?: string }[] }[] = [
+const COMPANY: {
+  label: string;
+  lines: { text: string; href?: string; icon?: LucideIcon }[];
+}[] = [
   {
-    label: "Pune office",
+    label: "Address",
     lines: [
       { text: "Sadanand Business Centre" },
       { text: "5th Floor, Baner, Pune – 411045" },
@@ -118,11 +121,11 @@ const COMPANY: { label: string; lines: { text: string; href?: string }[] }[] = [
     ],
   },
   {
-    label: "Contact",
+    label: "Contact us",
     lines: [
-      { text: "connect@rams.digital", href: "mailto:connect@rams.digital" },
-      { text: "+91 9175870099", href: "tel:+919175870099" },
-      { text: "+91 9028638907", href: "tel:+919028638907" },
+      { text: "connect@rams.digital", href: "mailto:connect@rams.digital", icon: Mail },
+      { text: "+91 9175870099", href: "tel:+919175870099", icon: Phone },
+      { text: "+91 9028638907", href: "tel:+919028638907", icon: Phone },
     ],
   },
 ];
@@ -191,13 +194,25 @@ export function Footer() {
                     {c.label}
                   </h3>
                   <div className="mt-3.5 space-y-1.5">
-                    {c.lines.map((l) =>
-                      l.href ? (
+                    {c.lines.map((l) => {
+                      /* 14px at stroke 1.75 — the size the socials and the
+                         region globe already use in this footer. */
+                      const glyph = l.icon ? (
+                        <l.icon
+                          size={14}
+                          strokeWidth={1.75}
+                          className="shrink-0 text-white/45"
+                          aria-hidden
+                        />
+                      ) : null;
+
+                      return l.href ? (
                         <a
                           key={l.text}
                           href={l.href}
-                          className="block text-sm leading-[1.6] text-white/70 hover:text-white transition-colors duration-200 w-fit"
+                          className="flex items-center gap-2 text-sm leading-[1.6] text-white/70 hover:text-white transition-colors duration-200 w-fit"
                         >
+                          {glyph}
                           {l.text}
                         </a>
                       ) : (
@@ -207,8 +222,8 @@ export function Footer() {
                         >
                           {l.text}
                         </span>
-                      ),
-                    )}
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -308,7 +323,7 @@ export function Footer() {
           {/* Row 1 — copyright + legal links, single baseline */}
           <div className="flex flex-wrap items-center min-h-10 gap-x-6 gap-y-2">
             <span className="text-white/45 text-base leading-6">
-              © 2026 RAMS Global. All rights reserved.
+              © 2026. All Rights Reserved by {LEGAL_NAME}
             </span>
             {LEGAL.map((item) => (
               <Link

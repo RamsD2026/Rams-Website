@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, X, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { Globe, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -14,12 +15,9 @@ const ANNOUNCEMENTS = [
 const LANGUAGES = ["English", "Deutsch", "Français", "日本語", "中文"];
 
 export function AnnouncementBar() {
-  const [visible, setVisible] = useState(true);
   const [announcementIndex] = useState(0);
   const [langOpen, setLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
-
-  if (!visible) return null;
 
   return (
     <div className="relative z-50 h-10 bg-carbon flex items-center">
@@ -96,26 +94,25 @@ export function AnnouncementBar() {
             </AnimatePresence>
           </div>
 
-          <a href="/contact" className="text-xs text-steel/60 hover:text-steel transition-colors font-medium tracking-wide hidden sm:block">
+          {/* Both pointed at routes that do not exist — /contact and
+              /support — and 404ed. Contact is the enquiry page; Support is
+              the FAQ help centre, which is the closest thing the site has
+              until a support portal exists. */}
+          <Link href="/company/contact" className="text-xs text-steel/60 hover:text-steel transition-colors font-medium tracking-wide hidden sm:block">
             Contact
-          </a>
-          <a href="/support" className="text-xs text-steel/60 hover:text-steel transition-colors font-medium tracking-wide hidden sm:block">
+          </Link>
+          <Link href="/resources/faqs" className="text-xs text-steel/60 hover:text-steel transition-colors font-medium tracking-wide hidden sm:block">
             Support
-          </a>
+          </Link>
+          {/* The site's text-link treatment — orange, underlined on hover —
+              rather than the outlined box it carried, whose padding class was
+              broken anyway (`hover:border-white/30px-2.5`, a missing space). */}
           <a
             href="/platform/login"
-            className="text-xs text-steel/75 hover:text-white border border-white/15 hover:border-white/30px-2.5 py-0.5 transition-all duration-200 font-medium tracking-wide hidden md:block"
+            className="text-xs text-signal-orange hover:underline underline-offset-4 transition-colors duration-200 font-semibold tracking-wide hidden md:block"
           >
             Platform Login
           </a>
-
-          <button
-            onClick={() => setVisible(false)}
-            className="text-steel/40 hover:text-steel transition-colors ml-1"
-            aria-label="Dismiss announcement"
-          >
-            <X className="w-3.5 h-3.5" aria-hidden="true" />
-          </button>
         </div>
       </div>
     </div>
