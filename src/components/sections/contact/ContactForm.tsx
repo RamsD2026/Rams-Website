@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { EMAIL, ENQUIRIES } from "./contact-data";
+import { DEFAULT_DIAL, countryByIso } from "./dial-codes";
+import { PhoneField } from "./PhoneField";
 
 /**
  * The enquiry form — the right-hand half of the hero.
@@ -13,12 +15,13 @@ import { EMAIL, ENQUIRIES } from "./contact-data";
  * for one thing.
  *
  * ── It is short on purpose ──────────────────────────────────────────
- * The fields pair off — name with company, email with phone, enquiry type
- * with country — so seven inputs occupy three rows rather than seven. The
- * message box is four rows, not six. "Facility / city" and "Number of sites"
- * are gone: both are useful to the team and neither is needed to start a
- * conversation, and every field on a contact form is a reason not to fill it
- * in. They can be asked in the reply.
+ * The fields pair off — first with last name, company with work email, phone
+ * with enquiry type — so seven inputs occupy three rows rather than seven.
+ * The message box is four rows, not six. "Facility / city", "Number of sites"
+ * and "Country / region" are gone: all are useful to the team and none is
+ * needed to start a conversation, and every field on a contact form is a
+ * reason not to fill it in. They can be asked in the reply — and the dial
+ * code on the phone already says roughly where the enquiry is from.
  *
  * The labels sit at 12px with 6px under them rather than the site's usual
  * 12.5/8, which is the difference between this card fitting beside the copy
@@ -64,35 +67,30 @@ import { EMAIL, ENQUIRIES } from "./contact-data";
  * failure is announced rather than only outlined in red.
  */
 
-const COUNTRIES = [
-  "India",
-  "Australia",
-  "United States",
-  "Ireland",
-  "Middle East",
-  "Other",
-];
-
 const HAIR = "#E0E0E6";
 const MAX_MESSAGE = 1200;
 
+
 type Fields = {
-  name: string;
+  firstName: string;
+  lastName: string;
   company: string;
   email: string;
+  /** ISO code of the phone country; the dial code is derived from it. */
+  iso: string;
   phone: string;
-  country: string;
   enquiry: string;
   message: string;
   consent: boolean;
 };
 
 const EMPTY: Fields = {
-  name: "",
+  firstName: "",
+  lastName: "",
   company: "",
   email: "",
+  iso: DEFAULT_DIAL,
   phone: "",
-  country: "",
   enquiry: "",
   message: "",
   consent: false,
@@ -107,6 +105,25 @@ function labelFor(id: string) {
 
 const field =
   "w-full px-3.5 py-2.5 text-[14px] text-carbon bg-white rounded-lg outline-none transition-shadow duration-200 focus:ring-2 focus:ring-signal-orange/30";
+
+/**
+ * A select carries its own chevron, drawn by the browser hard against the
+ * right edge — it ignores the field's padding, so it sat 14px closer to the
+ * border than every other thing in the form. This turns the native arrow off
+ * and paints our own at `right 14px`, the same inset as the text on the left,
+ * in graphite to match the label colour. `pr-10` keeps a long option from
+ * running under it.
+ */
+const chevron: React.CSSProperties = {
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  backgroundImage:
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2333363A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 14px center",
+  backgroundSize: "16px 16px",
+};
 
 function Label({
   htmlFor,
@@ -153,29 +170,30 @@ export function ContactForm() {
   function send(e: React.FormEvent) {
     e.preventDefault();
     const next: Partial<Record<keyof Fields, string>> = {};
-    if (!f.name.trim()) next.name = "Please enter your name.";
+    if (!f.firstName.trim()) next.firstName = "Please enter your first name.";
+    if (!f.lastName.trim()) next.lastName = "Please enter your last name.";
     if (!EMAIL_OK.test(f.email.trim()))
       next.email = "Please enter a valid email address.";
     if (!f.enquiry) next.enquiry = "Please choose an enquiry type.";
-    if (!f.country) next.country = "Please select a country or region.";
     if (!f.message.trim())
       next.message = "Please add a short description of your requirement.";
     if (!f.consent) next.consent = "Please confirm before continuing.";
     setErrors(next);
     if (Object.keys(next).length) return;
 
+    const fullName = `${f.firstName.trim()} ${f.lastName.trim()}`.trim();
+
     const lines = [
       `Enquiry type: ${labelFor(f.enquiry)}`,
-      `Name: ${f.name.trim()}`,
+      `Name: ${fullName}`,
       f.company.trim() && `Company: ${f.company.trim()}`,
       `Email: ${f.email.trim()}`,
-      f.phone.trim() && `Phone: ${f.phone.trim()}`,
-      `Country / region: ${f.country}`,
+      f.phone.trim() && `Phone: ${countryByIso(f.iso).dial} ${f.phone.trim()}`,
       "",
       f.message.trim(),
     ].filter(Boolean) as string[];
 
-    const subject = `${labelFor(f.enquiry)} enquiry — ${f.name.trim()}`;
+    const subject = `${labelFor(f.enquiry)} enquiry — ${fullName}`;
     window.location.href =
       `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}` +
       `&body=${encodeURIComponent(lines.join("\n"))}`;
@@ -202,20 +220,37 @@ export function ContactForm() {
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
         <div>
-          <Label htmlFor="c-name" required>
-            Full name
+          <Label htmlFor="c-first" required>
+            First name
           </Label>
           <input
-            id="c-name"
+            id="c-first"
             className={field}
-            style={ring("name")}
-            value={f.name}
-            onChange={(e) => set("name", e.target.value)}
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "c-name-err" : undefined}
-            autoComplete="name"
+            style={ring("firstName")}
+            value={f.firstName}
+            onChange={(e) => set("firstName", e.target.value)}
+            aria-invalid={!!errors.firstName}
+            aria-describedby={errors.firstName ? "c-first-err" : undefined}
+            autoComplete="given-name"
           />
-          <Err id="c-name-err" msg={errors.name} />
+          <Err id="c-first-err" msg={errors.firstName} />
+        </div>
+
+        <div>
+          <Label htmlFor="c-last" required>
+            Last name
+          </Label>
+          <input
+            id="c-last"
+            className={field}
+            style={ring("lastName")}
+            value={f.lastName}
+            onChange={(e) => set("lastName", e.target.value)}
+            aria-invalid={!!errors.lastName}
+            aria-describedby={errors.lastName ? "c-last-err" : undefined}
+            autoComplete="family-name"
+          />
+          <Err id="c-last-err" msg={errors.lastName} />
         </div>
 
         <div>
@@ -248,16 +283,18 @@ export function ContactForm() {
           <Err id="c-email-err" msg={errors.email} />
         </div>
 
+        {/* Country picker and number in one shell — closed it shows only the
+            flag and the code so the number has room to be typed; the names
+            live in the open list. See `PhoneField`. */}
         <div>
           <Label htmlFor="c-phone">Phone number</Label>
-          <input
-            id="c-phone"
-            type="tel"
-            className={field}
-            style={ring("phone")}
-            value={f.phone}
-            onChange={(e) => set("phone", e.target.value)}
-            autoComplete="tel"
+          <PhoneField
+            iso={f.iso}
+            onIso={(v) => set("iso", v)}
+            phone={f.phone}
+            onPhone={(v) => set("phone", v)}
+            hair={HAIR}
+            ringStyle={ring("phone")}
           />
         </div>
 
@@ -267,8 +304,8 @@ export function ContactForm() {
           </Label>
           <select
             id="c-enquiry"
-            className={field}
-            style={ring("enquiry")}
+            className={field + " pr-10"}
+            style={{ ...ring("enquiry"), ...chevron }}
             value={f.enquiry}
             onChange={(e) => set("enquiry", e.target.value)}
             aria-invalid={!!errors.enquiry}
@@ -282,29 +319,6 @@ export function ContactForm() {
             ))}
           </select>
           <Err id="c-enquiry-err" msg={errors.enquiry} />
-        </div>
-
-        <div>
-          <Label htmlFor="c-country" required>
-            Country / region
-          </Label>
-          <select
-            id="c-country"
-            className={field}
-            style={ring("country")}
-            value={f.country}
-            onChange={(e) => set("country", e.target.value)}
-            aria-invalid={!!errors.country}
-            aria-describedby={errors.country ? "c-country-err" : undefined}
-          >
-            <option value="">Select</option>
-            {COUNTRIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-          <Err id="c-country-err" msg={errors.country} />
         </div>
 
         <div className="sm:col-span-2">
