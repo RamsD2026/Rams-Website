@@ -71,6 +71,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const results = useMemo(() => searchSite(query), [query]);
@@ -82,6 +83,24 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
     const frame = requestAnimationFrame(() => inputRef.current?.focus());
     return () => cancelAnimationFrame(frame);
   }, []);
+
+  /* Any click outside the panel closes it — the dimmed page did that
+     already, but the header sits above that scrim, so clicking a menu, the
+     logo or the announcement bar left search hanging open behind whatever
+     the click opened.
+
+     The magnifier is the one exception: it is a toggle, and closing here
+     first would let its own handler reopen the panel it just closed. */
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (panelRef.current?.contains(target ?? null)) return;
+      if (target?.closest('button[aria-label="Search this site"]')) return;
+      onClose();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [onClose]);
 
   const go = (entry: SearchEntry) => {
     onClose();
@@ -112,16 +131,22 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-          {/* The page behind, dimmed — the same weight the mega menu uses, and
-              clickable here because a search panel wants an obvious way out. */}
+          {/* The page behind, dimmed — the same weight, and the same
+              `pointer-events-none`, as the mega menu's scrim.
+
+              It used to take the clicks itself. Because it covers the header
+              too, that swallowed every click on the nav and the announcement
+              bar, and worse: clicking the magnifier removed the scrim on
+              pointerdown, so the click that followed landed on the button and
+              reopened the panel it had just closed. Closing is the outside-
+              click effect's job alone now; this only dims. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-carbon/20 z-40"
+            className="fixed inset-0 bg-carbon/20 z-40 pointer-events-none"
             aria-hidden
-            onClick={onClose}
           />
 
           {/* Anchored under the header, not over it: `absolute top-full`
@@ -134,6 +159,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.24, ease: EASE }}
+            ref={panelRef}
             className="absolute top-full left-0 right-0 z-50 bg-white border-t border-steel shadow-[0_16px_48px_-8px_rgba(14,14,15,0.12)]"
             role="dialog"
             aria-modal="false"
@@ -142,23 +168,45 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
           >
             {/* ── the input ─────────────────────────────── */}
             <div className="rams-container">
-              <div className="max-w-[820px] mx-auto flex items-center gap-4 py-6 sm:py-7">
-                <Search
-                  className="w-5 h-5 shrink-0 text-signal-orange"
-                  strokeWidth={2}
-                  aria-hidden
-                />
-                <input
-                  ref={inputRef}
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    setCursor(0);
-                  }}
-                  placeholder="Search products, solutions, services, resources…"
-                  aria-label="Search this site"
-                  className="flex-1 min-w-0 bg-transparent text-[18px] sm:text-[22px] text-carbon tracking-[-0.02em] outline-none placeholder:text-graphite/35"
-                />
+              <div className="max-w-[820px] mx-auto flex items-center gap-3 py-5">
+                {/* A field rather than a bare line of oversized type. At 22px
+                    the placeholder read as a heading — it announced itself
+                    louder than the results underneath it. 15/16px inside a
+                    tinted, rounded field is the shape a search box has
+                    everywhere else, and the whole field lights up on focus
+                    rather than only the caret. */}
+                <div className="flex-1 min-w-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#F6F6F8] border border-[#E8E8ED] transition-colors duration-200 focus-within:bg-white focus-within:border-signal-orange/40">
+                  <Search
+                    className="w-[18px] h-[18px] shrink-0 text-signal-orange"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                  <input
+                    ref={inputRef}
+                    value={query}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setCursor(0);
+                    }}
+                    placeholder="Search products, solutions, services…"
+                    aria-label="Search this site"
+                    className="flex-1 min-w-0 bg-transparent text-[15px] sm:text-[16px] text-carbon outline-none placeholder:text-graphite/40"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery("");
+                        setCursor(0);
+                        inputRef.current?.focus();
+                      }}
+                      aria-label="Clear search"
+                      className="shrink-0 text-[11px] font-mono font-semibold tracking-[0.14em] uppercase text-graphite/40 hover:text-carbon transition-colors duration-150"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
                 {/* A close control rather than an `Esc` chip: the chip named a
                     key, which tells a mouse user what to do with a keyboard
                     and gives them nothing to click. Escape still closes the
