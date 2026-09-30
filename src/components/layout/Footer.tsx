@@ -137,13 +137,18 @@ const SOCIALS = [
   { icon: GitHubIcon, href: "https://github.com/rams", label: "GitHub" },
 ];
 
-const LEGAL = [
-  { label: "Privacy Policy", href: "/legal/privacy" },
-  { label: "Terms of Use", href: "/legal/terms" },
-  { label: "Cookies", href: "/legal/cookies" },
-  { label: "Accessibility", href: "/legal/accessibility" },
-  { label: "Sitemap", href: "/sitemap" },
-];
+/**
+ * Terms of Use, Cookies and Accessibility were listed here and none of the
+ * three routes existed. They are the only dead links on the site with no
+ * honest destination: every other one had a real page under a different
+ * name and now redirects to it, but a terms page cannot be pointed at the
+ * privacy policy and a legal document cannot be invented. A link that 404s
+ * is worse in a legal row than a missing link, so they are out until the
+ * documents exist — at which point they go back with their own routes.
+ *
+ * Sitemap went for the same reason; there is no sitemap page to link to.
+ */
+const LEGAL = [{ label: "Privacy Policy", href: "/legal/privacy" }];
 
 export function Footer() {
   return (

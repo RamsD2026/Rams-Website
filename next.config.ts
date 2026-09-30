@@ -33,6 +33,43 @@ const nextConfig: NextConfig = {
    */
   redirects() {
     return [
+      /* ── Links that pointed at pages that were never built ───────────
+         Forty-four routes in the navigation and the footer returned 404.
+         Where the page the reader wanted already exists under another
+         name — Support is the FAQ help centre, Documentation is Downloads,
+         Blog is Insights — the link now lands on it. 307 rather than 308:
+         these are the site catching up with its own navigation, and the
+         real page may yet be built at the original path.
+
+         The whole of /hardware/* goes to the holding page: nineteen links,
+         no pages, and nothing truthful to send them to instead. */
+      { source: "/contact", destination: "/company/contact", permanent: false },
+      { source: "/get-started", destination: "/company/contact", permanent: false },
+      { source: "/find-your-starting-point", destination: "/solutions", permanent: false },
+      { source: "/sitemap", destination: "/", permanent: false },
+
+      { source: "/resources", destination: "/resources/case-studies", permanent: false },
+      { source: "/resources/support", destination: "/resources/faqs", permanent: false },
+      { source: "/resources/faq", destination: "/resources/faqs", permanent: false },
+      { source: "/resources/docs", destination: "/resources/downloads", permanent: false },
+      { source: "/resources/whitepapers", destination: "/resources/downloads", permanent: false },
+      { source: "/resources/warehouse-ai-report-2026", destination: "/resources/downloads", permanent: false },
+      { source: "/resources/blog", destination: "/resources/insights", permanent: false },
+      { source: "/resources/compliance", destination: "/resources/compliance-guides", permanent: false },
+
+      { source: "/platform", destination: "/platform/overview", permanent: false },
+      { source: "/platform/ai-intelligence", destination: "/platform/ai-operational-intelligence", permanent: false },
+      { source: "/platform/execution-engine", destination: "/platform/overview", permanent: false },
+      { source: "/platform/integrations", destination: "/platform/overview", permanent: false },
+
+      { source: "/solutions/rack-intelligence", destination: "/solutions/rack-safety-intelligence", permanent: false },
+
+      { source: "/company", destination: "/company/about", permanent: false },
+      { source: "/company/leadership", destination: "/company/about", permanent: false },
+      { source: "/company/customers", destination: "/industries", permanent: false },
+
+      { source: "/hardware/:slug+", destination: "/hardware", permanent: false },
+
       {
         // The inventory module was IROS, then IRTS, and is now IBIS — the
         // Inventory Behaviour Intelligence Suite. IRTS is now a separate
