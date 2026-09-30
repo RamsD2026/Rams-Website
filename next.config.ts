@@ -2,6 +2,24 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
+   * Who may load the dev server's own resources.
+   *
+   * Next refuses `/_next/*` requests in development from any origin but
+   * localhost. Open the site on the LAN address instead — to check it on a
+   * phone, or because that is the link that was shared — and the HTML still
+   * renders, but the client bundle and the HMR socket are blocked. The page
+   * therefore never hydrates: menus do not open, search does nothing, the
+   * language control is dead, and anything with an entrance animation stays
+   * at its `initial` opacity, which reads as missing text rather than as a
+   * broken page. Nothing in the console says why unless you are looking at
+   * the dev server's own log.
+   *
+   * This allows the machine's LAN address. It is a development-only setting
+   * and has no effect on the deployed site.
+   */
+  allowedDevOrigins: ["192.168.1.150", "localhost", "127.0.0.1"],
+
+  /**
    * The newsroom was built at `/company/newsroom`, which is where the footer
    * linked it, and moved to `/resources/insights`, which is where both mega
    * menus already pointed. 308 rather than 307: the move is permanent, and a

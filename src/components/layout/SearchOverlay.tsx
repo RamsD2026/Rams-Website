@@ -138,14 +138,16 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
                   aria-label="Search this site"
                   className="flex-1 min-w-0 bg-transparent text-[18px] sm:text-[22px] text-carbon tracking-[-0.02em] outline-none placeholder:text-graphite/35"
                 />
-                <span className="hidden sm:inline-flex items-center gap-1.5 shrink-0 px-2 py-1 rounded-md border border-[#E8E8ED] text-[10.5px] font-mono tracking-[0.1em] uppercase text-graphite/45">
-                  Esc
-                </span>
+                {/* A close control rather than an `Esc` chip: the chip named a
+                    key, which tells a mouse user what to do with a keyboard
+                    and gives them nothing to click. Escape still closes the
+                    panel — that is in `onKeyDown` — it is simply no longer
+                    the only way out. */}
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close search"
-                  className="sm:hidden shrink-0 p-1.5 text-graphite/50 hover:text-carbon transition-colors"
+                  className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-graphite/50 transition-colors duration-200 hover:bg-[#F5F5F7] hover:text-carbon outline-none focus-visible:ring-2 focus-visible:ring-signal-orange/30"
                 >
                   <X className="w-5 h-5" aria-hidden />
                 </button>
