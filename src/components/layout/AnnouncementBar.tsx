@@ -12,7 +12,19 @@ const ANNOUNCEMENTS = [
   "RAMS 2.0 Enterprise Suite — GA Release",
 ];
 
-const LANGUAGES = ["English", "Deutsch", "Français", "日本語", "中文"];
+/**
+ * The code beside each language is the site's own habit: a mono, letter-spaced
+ * micro-label, the same device the eyebrows and group headings use. It also
+ * gives the row a right edge to align to, which a bare list of five words in
+ * five different scripts does not have.
+ */
+const LANGUAGES = [
+  { label: "English", code: "EN" },
+  { label: "Deutsch", code: "DE" },
+  { label: "Français", code: "FR" },
+  { label: "日本語", code: "JA" },
+  { label: "中文", code: "ZH" },
+];
 
 export function AnnouncementBar() {
   const [announcementIndex] = useState(0);
@@ -49,42 +61,85 @@ export function AnnouncementBar() {
               aria-hidden="true"
             />
           </button>
+          {/* The panel was a flat graphite box with square corners and a
+              generic shadow — a browser dropdown that happened to be dark.
+              This is built from the vocabulary the rest of the site uses: the
+              near-black ground the dark sections run on, a hairline border,
+              12px corners and the deep soft shadow the cards carry, a mono
+              caps heading, and orange for the one that is current. */}
           <AnimatePresence>
             {langOpen && (
-              <motion.ul
-                role="listbox"
-                aria-label="Language options"
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.15 }}
-                className="absolute left-0 top-full mt-2 w-40 bg-graphite border border-white/10 rounded-none overflow-hidden shadow-xl z-50"
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4, scale: 0.99 }}
+                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute left-0 top-full mt-2.5 w-[184px] z-50 overflow-hidden"
+                style={{
+                  background: "#0B0B0D",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  borderRadius: 12,
+                  boxShadow:
+                    "0 1px 2px rgba(0,0,0,0.30), 0 24px 48px -20px rgba(0,0,0,0.75)",
+                }}
               >
-                {LANGUAGES.map((lang) => (
-                  <li key={lang}>
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={lang === selectedLang}
-                      onClick={() => {
-                        setSelectedLang(lang);
-                        setLangOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center justify-between gap-2 px-3 py-2 text-xs text-left transition-colors",
-                        lang === selectedLang
-                          ? "text-white bg-white/10"
-                          : "text-steel/70 hover:text-white hover:bg-white/5",
-                      )}
-                    >
-                      {lang}
-                      {lang === selectedLang && (
-                        <Check className="w-3 h-3 shrink-0" aria-hidden="true" />
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </motion.ul>
+                <p
+                  className="px-3.5 pt-3 pb-2 text-[9.5px] font-mono font-bold tracking-[0.20em] uppercase text-white/30"
+                  id="lang-heading"
+                >
+                  Language
+                </p>
+                <div
+                  aria-hidden
+                  className="mx-3.5 h-px"
+                  style={{ background: "rgba(255,255,255,0.08)" }}
+                />
+                <ul
+                  role="listbox"
+                  aria-labelledby="lang-heading"
+                  className="p-1.5"
+                >
+                  {LANGUAGES.map((lang) => {
+                    const current = lang.label === selectedLang;
+                    return (
+                      <li key={lang.code}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={current}
+                          onClick={() => {
+                            setSelectedLang(lang.label);
+                            setLangOpen(false);
+                          }}
+                          className={cn(
+                            "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[12.5px] text-left transition-colors duration-150",
+                            current
+                              ? "text-signal-orange bg-signal-orange/[0.10]"
+                              : "text-white/55 hover:text-white hover:bg-white/[0.06]",
+                          )}
+                        >
+                          <span className="flex-1 truncate">{lang.label}</span>
+                          <span
+                            className={cn(
+                              "font-mono text-[9.5px] font-bold tracking-[0.16em]",
+                              current ? "text-signal-orange/70" : "text-white/25",
+                            )}
+                          >
+                            {lang.code}
+                          </span>
+                          <Check
+                            className={cn(
+                              "w-3 h-3 shrink-0 transition-opacity duration-150",
+                              current ? "opacity-100" : "opacity-0",
+                            )}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
