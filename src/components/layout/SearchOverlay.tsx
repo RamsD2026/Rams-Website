@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CornerDownLeft, Search, X } from "lucide-react";
 import { POPULAR, searchSite, type SearchEntry } from "@/lib/search-index";
+import { SearchTakeover } from "@/components/layout/SearchTakeover";
+import { useSearchVersion } from "@/components/layout/search-version";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 
 /**
@@ -43,8 +45,25 @@ export function SearchOverlay({
   open: boolean;
   onClose: () => void;
 }) {
+  const [version, setVersion] = useSearchVersion();
+
   return (
-    <AnimatePresence>{open && <SearchPanel onClose={onClose} />}</AnimatePresence>
+    <AnimatePresence>
+      {open &&
+        (version === "v2" ? (
+          <SearchTakeover
+            key="v2"
+            onClose={onClose}
+            onSwitchVersion={() => setVersion("v1")}
+          />
+        ) : (
+          <SearchPanel
+            key="v1"
+            onClose={onClose}
+            onSwitchVersion={() => setVersion("v2")}
+          />
+        ))}
+    </AnimatePresence>
   );
 }
 
@@ -52,7 +71,13 @@ export function SearchOverlay({
  * The panel only exists while search is open, so the query and the highlight
  * start empty by virtue of mounting — no effect resets them when it opens.
  */
-function SearchPanel({ onClose }: { onClose: () => void }) {
+function SearchPanel({
+  onClose,
+  onSwitchVersion,
+}: {
+  onClose: () => void;
+  onSwitchVersion: () => void;
+}) {
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -245,9 +270,14 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
                 <span className="hidden sm:inline">↑ ↓ to move</span>
                 <span className="hidden sm:inline">↵ to open</span>
                 <span className="sm:hidden">Tap a result to open</span>
-                <span className="ml-auto font-mono tracking-[0.14em] uppercase">
-                  RAMS Digital
-                </span>
+                <button
+                  type="button"
+                  onClick={onSwitchVersion}
+                  data-search-switch
+                  className="ml-auto font-mono tracking-[0.14em] uppercase text-graphite/45 hover:text-signal-orange transition-colors duration-200"
+                >
+                  Try the full-screen design →
+                </button>
               </div>
             </div>
           </motion.div>
