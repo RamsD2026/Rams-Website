@@ -246,7 +246,7 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
                 {searchOpen && (
                   <motion.span
                     aria-hidden="true"
-                    className="absolute inset-0 bg-signal-orange/15 motion-reduce:opacity-100"
+                    className="absolute inset-0 rounded-full bg-signal-orange/15 motion-reduce:opacity-100"
                     initial={{ opacity: 0.25 }}
                     animate={{ opacity: [0.25, 0.85, 0.25] }}
                     transition={{
