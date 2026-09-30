@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Globe, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +30,19 @@ export function AnnouncementBar() {
   const [announcementIndex] = useState(0);
   const [langOpen, setLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
+  const langRef = useRef<HTMLDivElement>(null);
+
+  /* A click anywhere off the menu closes it. The trigger is excluded: it is
+     a toggle, and closing here first would let its own handler reopen the
+     menu it had just closed. Same arrangement as the search panel. */
+  useEffect(() => {
+    if (!langOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!langRef.current?.contains(e.target as Node)) setLangOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [langOpen]);
 
   return (
     <div className="relative z-50 h-10 bg-carbon flex items-center">
@@ -41,7 +54,7 @@ export function AnnouncementBar() {
             separate language dropdown saying much the same thing. HubSpot
             puts one control here — a globe, the language, a chevron — and
             that is what this is now. The duplicate on the right is gone. */}
-        <div className="relative shrink-0">
+        <div ref={langRef} className="relative shrink-0">
           <button
             onClick={() => setLangOpen(!langOpen)}
             className="flex items-center gap-1.5 text-steel/60 hover:text-steel transition-colors"
