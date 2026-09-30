@@ -227,7 +227,17 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
                         >
                           <span className="flex-1 min-w-0">
                             <span className="flex items-baseline gap-2.5">
-                              <span className="text-[15px] font-semibold tracking-[-0.01em] text-carbon truncate">
+                              {/* Orange on the row under the pointer, as the
+                                  takeover does and as every other hover on
+                                  this site does — the grey fill alone made
+                                  the highlighted row read as disabled rather
+                                  than as the one Enter will open. */}
+                              <span
+                                className={
+                                  "text-[15px] font-semibold tracking-[-0.01em] truncate transition-colors duration-150 " +
+                                  (active ? "text-signal-orange" : "text-carbon")
+                                }
+                              >
                                 {entry.label}
                               </span>
                               <span className="shrink-0 text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/35">

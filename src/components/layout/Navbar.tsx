@@ -231,7 +231,10 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
                 aria-expanded={searchOpen}
                 aria-keyshortcuts="Meta+K Control+K"
                 className={cn(
-                  "relative p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  // Round, not square: the hover fill and the open-state
+                  // pulse are the same shape, and a square swatch behind a
+                  // round glyph reads as a misaligned box on every page.
+                  "relative p-2 rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   searchOpen
                     ? "text-signal-orange focus-visible:ring-signal-orange"
                     : isTransparent
