@@ -57,11 +57,7 @@ export function SearchOverlay({
             onSwitchVersion={() => setVersion("v1")}
           />
         ) : (
-          <SearchPanel
-            key="v1"
-            onClose={onClose}
-            onSwitchVersion={() => setVersion("v2")}
-          />
+          <SearchPanel key="v1" onClose={onClose} />
         ))}
     </AnimatePresence>
   );
@@ -71,13 +67,7 @@ export function SearchOverlay({
  * The panel only exists while search is open, so the query and the highlight
  * start empty by virtue of mounting — no effect resets them when it opens.
  */
-function SearchPanel({
-  onClose,
-  onSwitchVersion,
-}: {
-  onClose: () => void;
-  onSwitchVersion: () => void;
-}) {
+function SearchPanel({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -270,14 +260,16 @@ function SearchPanel({
                 <span className="hidden sm:inline">↑ ↓ to move</span>
                 <span className="hidden sm:inline">↵ to open</span>
                 <span className="sm:hidden">Tap a result to open</span>
-                <button
-                  type="button"
-                  onClick={onSwitchVersion}
-                  data-search-switch
-                  className="ml-auto font-mono tracking-[0.14em] uppercase text-graphite/45 hover:text-signal-orange transition-colors duration-200"
-                >
-                  Try the full-screen design →
-                </button>
+                {/* The link that offered the full-screen design sat here
+                    while the two were being compared. v1 is the chosen
+                    design, so visitors are no longer shown a door to the
+                    other one. `SearchTakeover` and `useSearchVersion` stay in
+                    the tree: setting `rams-search-version` to `v2` in local
+                    storage still brings it up, which is all that is needed to
+                    look at it again. */}
+                <span className="ml-auto font-mono tracking-[0.14em] uppercase">
+                  RAMS Digital
+                </span>
               </div>
             </div>
           </motion.div>
