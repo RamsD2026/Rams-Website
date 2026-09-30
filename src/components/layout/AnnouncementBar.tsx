@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Globe, ChevronDown } from "lucide-react";
+import { Globe, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -23,10 +23,70 @@ export function AnnouncementBar() {
     <div className="relative z-50 h-10 bg-carbon flex items-center">
       <div className="max-w-[1280px] mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4">
 
-        {/* Left — Region */}
-        <div className="hidden sm:flex items-center gap-1.5 text-steel/60 hover:text-steel transition-colors cursor-pointer shrink-0">
-          <Globe className="w-3.5 h-3.5" aria-hidden="true" />
-          <span className="text-xs font-medium tracking-wide uppercase">Global</span>
+        {/* Left — language.
+            This was a globe reading GLOBAL that did nothing at all: it looked
+            like a region switcher, had no menu behind it, and sat opposite a
+            separate language dropdown saying much the same thing. HubSpot
+            puts one control here — a globe, the language, a chevron — and
+            that is what this is now. The duplicate on the right is gone. */}
+        <div className="relative shrink-0">
+          <button
+            onClick={() => setLangOpen(!langOpen)}
+            className="flex items-center gap-1.5 text-steel/60 hover:text-steel transition-colors"
+            aria-expanded={langOpen}
+            aria-haspopup="listbox"
+            aria-label="Select language"
+          >
+            <Globe className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="text-xs font-medium tracking-wide hidden sm:inline">
+              {selectedLang}
+            </span>
+            <ChevronDown
+              className={cn(
+                "w-3 h-3 transition-transform duration-200",
+                langOpen && "rotate-180",
+              )}
+              aria-hidden="true"
+            />
+          </button>
+          <AnimatePresence>
+            {langOpen && (
+              <motion.ul
+                role="listbox"
+                aria-label="Language options"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-0 top-full mt-2 w-40 bg-graphite border border-white/10 rounded-none overflow-hidden shadow-xl z-50"
+              >
+                {LANGUAGES.map((lang) => (
+                  <li key={lang}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={lang === selectedLang}
+                      onClick={() => {
+                        setSelectedLang(lang);
+                        setLangOpen(false);
+                      }}
+                      className={cn(
+                        "w-full flex items-center justify-between gap-2 px-3 py-2 text-xs text-left transition-colors",
+                        lang === selectedLang
+                          ? "text-white bg-white/10"
+                          : "text-steel/70 hover:text-white hover:bg-white/5",
+                      )}
+                    >
+                      {lang}
+                      {lang === selectedLang && (
+                        <Check className="w-3 h-3 shrink-0" aria-hidden="true" />
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Center — Announcement */}
@@ -47,53 +107,6 @@ export function AnnouncementBar() {
 
         {/* Right */}
         <div className="flex items-center gap-4 shrink-0">
-          {/* Language */}
-          <div className="relative">
-            <button
-              onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1 text-xs text-steel/60 hover:text-steel transition-colors font-medium tracking-wide"
-              aria-expanded={langOpen}
-              aria-haspopup="listbox"
-              aria-label="Select language"
-            >
-              {selectedLang}
-              <ChevronDown
-                className={cn("w-3 h-3 transition-transform duration-200", langOpen && "rotate-180")}
-                aria-hidden="true"
-              />
-            </button>
-            <AnimatePresence>
-              {langOpen && (
-                <motion.ul
-                  role="listbox"
-                  aria-label="Language options"
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-full mt-2 w-32 bg-graphite border border-white/10 rounded-none overflow-hidden shadow-xl z-50"
-                >
-                  {LANGUAGES.map((lang) => (
-                    <li
-                      key={lang}
-                      role="option"
-                      aria-selected={lang === selectedLang}
-                      onClick={() => { setSelectedLang(lang); setLangOpen(false); }}
-                      className={cn(
-                        "px-3 py-2 text-xs cursor-pointer transition-colors",
-                        lang === selectedLang
-                          ? "text-white bg-white/10"
-                          : "text-steel/70 hover:text-white hover:bg-white/5"
-                      )}
-                    >
-                      {lang}
-                    </li>
-                  ))}
-                </motion.ul>
-              )}
-            </AnimatePresence>
-          </div>
-
           {/* Both pointed at routes that do not exist — /contact and
               /support — and 404ed. Contact is the enquiry page; Support is
               the FAQ help centre, which is the closest thing the site has

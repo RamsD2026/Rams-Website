@@ -7,6 +7,7 @@ import { Calculator, Menu, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RAMSLogo } from "@/components/ui/RAMSLogo";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
+import { SearchOverlay } from "@/components/layout/SearchOverlay";
 import { MegaMenuPanel } from "@/components/layout/MegaMenuPanel";
 import { MegaMenuV2Panel } from "@/components/layout/MegaMenuV2Panel";
 import { NAV_CONFIG, type NavItemConfig } from "@/lib/navigation";
@@ -79,7 +80,27 @@ function NavLabel({
 export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [navVersion] = useNavVersion();
+
+  /* ⌘K / Ctrl-K opens search from anywhere on the page, which is what anyone
+     who uses a product all day reaches for first. Ignored while the user is
+     typing in a field, so it cannot steal a keystroke from the contact form. */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() !== "k" || !(e.metaKey || e.ctrlKey)) return;
+      const el = document.activeElement;
+      const typing =
+        el instanceof HTMLInputElement ||
+        el instanceof HTMLTextAreaElement ||
+        (el instanceof HTMLElement && el.isContentEditable);
+      if (typing) return;
+      e.preventDefault();
+      setSearchOpen(true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const openTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -205,7 +226,9 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
 
               <button
                 type="button"
-                aria-label="Search"
+                onClick={() => setSearchOpen(true)}
+                aria-label="Search this site"
+                aria-keyshortcuts="Meta+K Control+K"
                 className={cn(
                   "p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   isTransparent
@@ -266,6 +289,7 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
       </div>
 
       <MobileDrawer isOpen={drawerOpen} onClose={closeDrawer} />
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }
