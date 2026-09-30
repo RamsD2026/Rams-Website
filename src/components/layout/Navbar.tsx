@@ -226,17 +226,40 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
 
               <button
                 type="button"
-                onClick={() => setSearchOpen(true)}
+                onClick={() => setSearchOpen(!searchOpen)}
                 aria-label="Search this site"
+                aria-expanded={searchOpen}
                 aria-keyshortcuts="Meta+K Control+K"
                 className={cn(
-                  "p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                  isTransparent
-                    ? "text-white/60 hover:text-white hover:bg-white/10 focus-visible:ring-white"
-                    : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
+                  "relative p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  searchOpen
+                    ? "text-signal-orange focus-visible:ring-signal-orange"
+                    : isTransparent
+                      ? "text-white/60 hover:text-white hover:bg-white/10 focus-visible:ring-white"
+                      : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
                 )}
               >
-                <Search className="w-[18px] h-[18px]" aria-hidden="true" />
+                {/* While the panel is open the icon holds a slow orange
+                    pulse, so the control that opened it stays visible and
+                    obviously on — the same job the underline does for an
+                    open menu. It stops for anyone who asks for less motion. */}
+                {searchOpen && (
+                  <motion.span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-signal-orange/15 motion-reduce:opacity-100"
+                    initial={{ opacity: 0.25 }}
+                    animate={{ opacity: [0.25, 0.85, 0.25] }}
+                    transition={{
+                      duration: 1.6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                )}
+                <Search
+                  className="relative w-[18px] h-[18px]"
+                  aria-hidden="true"
+                />
               </button>
             </div>
 
@@ -286,10 +309,14 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
             />
           )}
         </AnimatePresence>
+
+        {/* Search lives inside this box, not over the page: it opens under
+            the header the way a mega menu does, so the announcement bar and
+            the nav stay visible and usable while it is open. */}
+        <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
 
       <MobileDrawer isOpen={drawerOpen} onClose={closeDrawer} />
-      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

@@ -80,12 +80,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
     // The panel animates in; focusing on the next frame avoids the browser
     // scrolling the page to an element that is still off its final position.
     const frame = requestAnimationFrame(() => inputRef.current?.focus());
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
-    return () => {
-      cancelAnimationFrame(frame);
-      document.body.style.overflow = overflow;
-    };
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const go = (entry: SearchEntry) => {
@@ -116,22 +111,33 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search this site">
+    <>
+          {/* The page behind, dimmed — the same weight the mega menu uses, and
+              clickable here because a search panel wants an obvious way out. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-carbon/55 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-carbon/20 z-40"
+            aria-hidden
             onClick={onClose}
           />
 
+          {/* Anchored under the header, not over it: `absolute top-full`
+              inside the navbar's own relative box, exactly where a mega menu
+              opens. The announcement bar and the nav stay visible and
+              usable — search is another panel the header opens, not a
+              different screen. */}
           <motion.div
-            initial={{ opacity: 0, y: -16 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.28, ease: EASE }}
-            className="relative bg-white"
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.24, ease: EASE }}
+            className="absolute top-full left-0 right-0 z-50 bg-white border-t border-steel shadow-[0_16px_48px_-8px_rgba(14,14,15,0.12)]"
+            role="dialog"
+            aria-modal="false"
+            aria-label="Search this site"
             onKeyDown={onKeyDown}
           >
             {/* ── the input ─────────────────────────────── */}
@@ -273,6 +279,6 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
               </div>
             </div>
           </motion.div>
-    </div>
+    </>
   );
 }
