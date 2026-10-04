@@ -267,21 +267,21 @@ export const NAV_CONFIG: NavItemConfig[] = [
 
   {
     label: "Clients",
-    href: "/industries",
+    href: "/clients",
     layout: "industries",
     groups: [
       {
         title: "Clients by industry",
         links: [
-          { label: "Warehousing and Distribution", href: "/industries#warehousing", description: "Optimise throughput and accuracy" },
-          { label: "Third-Party Logistics (3PL)", href: "/industries#3pl", description: "Multi-client warehouse management" },
-          { label: "E-commerce", href: "/industries#ecommerce", description: "High-velocity order operations" },
-          { label: "Cold Storage", href: "/industries#cold-storage", description: "Temperature-controlled operations" },
-          { label: "Manufacturing", href: "/industries#manufacturing", description: "End-to-end production floor visibility" },
-          { label: "Automotive", href: "/industries#automotive", description: "Parts tracking and JIT compliance" },
-          { label: "FMCG", href: "/industries#fmcg", description: "High-volume fast-moving goods" },
-          { label: "Food and Beverage", href: "/industries#food-beverage", description: "Cold chain and FIFO compliance" },
-          { label: "Pharmaceuticals", href: "/industries#pharmaceuticals", description: "Regulated storage and traceability" },
+          { label: "Warehousing and Distribution", href: "/clients#warehousing", description: "Optimise throughput and accuracy" },
+          { label: "Third-Party Logistics (3PL)", href: "/clients#3pl", description: "Multi-client warehouse management" },
+          { label: "E-commerce", href: "/clients#ecommerce", description: "High-velocity order operations" },
+          { label: "Cold Storage", href: "/clients#cold-storage", description: "Temperature-controlled operations" },
+          { label: "Manufacturing", href: "/clients#manufacturing", description: "End-to-end production floor visibility" },
+          { label: "Automotive", href: "/clients#automotive", description: "Parts tracking and JIT compliance" },
+          { label: "FMCG", href: "/clients#fmcg", description: "High-volume fast-moving goods" },
+          { label: "Food and Beverage", href: "/clients#food-beverage", description: "Cold chain and FIFO compliance" },
+          { label: "Pharmaceuticals", href: "/clients#pharmaceuticals", description: "Regulated storage and traceability" },
         ],
       },
     ],
@@ -291,7 +291,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
       description:
         "See how RAMS adapts to the compliance, safety, and operational demands of your industry.",
       cta: "View Industries",
-      href: "/industries",
+      href: "/clients",
       stat: { value: "9", label: "Industries served" },
     },
   },

@@ -67,7 +67,7 @@ export function Header() {
       /* The bar hides when the *reader* scrolls down — not when the browser
          moves the page.
 
-         Five of the footer's links go to `/industries#<industry>`, and the
+         Five of the footer's links go to `/clients#<industry>`, and the
          page carries `scroll-behavior: smooth`, so arriving there animates
          the jump as a long run of ordinary scroll-down events. The bar read
          that as the reader leaving and hid itself before they had seen it:

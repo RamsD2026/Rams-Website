@@ -576,7 +576,7 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
 
   {
     label: "Industries",
-    href: "/industries",
+    href: "/clients",
     tagline: "Deep sector expertise, purpose-built configurations.",
     sectionFeatured: {
       image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&auto=format&fit=crop",
@@ -585,12 +585,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
       title: "Explore Industry Solutions",
       description: "See how RAMS adapts to the compliance, safety, and operational demands of your industry.",
       cta: "View Industries",
-      href: "/industries",
+      href: "/clients",
     },
     links: [
       {
         label: "Manufacturing",
-        href: "/industries#manufacturing",
+        href: "/clients#manufacturing",
         description: "End-to-end production floor visibility",
         featured: {
           image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&auto=format&fit=crop",
@@ -599,12 +599,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Production Floor Intelligence",
           description: "Real-time visibility from raw material intake to finished goods dispatch — with AI-driven quality and compliance checks throughout.",
           cta: "Explore Manufacturing",
-          href: "/industries#manufacturing",
+          href: "/clients#manufacturing",
         },
       },
       {
         label: "Warehousing & Distribution",
-        href: "/industries#warehousing",
+        href: "/clients#warehousing",
         description: "Optimise throughput and accuracy",
         featured: {
           image: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=800&q=80&auto=format&fit=crop",
@@ -613,12 +613,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Throughput at Scale",
           description: "Maximise pick rates, reduce errors, and keep every SLA green — across single sites and multi-node distribution networks.",
           cta: "Explore Warehousing",
-          href: "/industries#warehousing",
+          href: "/clients#warehousing",
         },
       },
       {
         label: "Food & Beverage",
-        href: "/industries#food-beverage",
+        href: "/clients#food-beverage",
         description: "Cold chain and FIFO compliance",
         featured: {
           image: "https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=800&q=80&auto=format&fit=crop",
@@ -627,12 +627,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Cold Chain Intelligence",
           description: "Continuous temperature monitoring, automated FIFO enforcement, and real-time shelf-life tracking across chilled and frozen environments.",
           cta: "Explore Food & Beverage",
-          href: "/industries#food-beverage",
+          href: "/clients#food-beverage",
         },
       },
       {
         label: "Pharmaceutical",
-        href: "/industries#pharmaceuticals",
+        href: "/clients#pharmaceuticals",
         description: "Regulated storage and traceability",
         featured: {
           image: "https://images.unsplash.com/photo-1642055514517-7b52288890ec?w=800&q=80&auto=format&fit=crop",
@@ -641,12 +641,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Regulated Traceability",
           description: "GMP-compliant storage monitoring, full chain-of-custody tracking, and automated serialisation for pharma and life sciences.",
           cta: "Explore Pharmaceutical",
-          href: "/industries#pharmaceuticals",
+          href: "/clients#pharmaceuticals",
         },
       },
       {
         label: "E-Commerce",
-        href: "/industries#ecommerce",
+        href: "/clients#ecommerce",
         description: "High-velocity order operations",
         featured: {
           image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop",
@@ -655,12 +655,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "High-Velocity Fulfilment",
           description: "AI-optimised pick paths, dynamic slotting, and real-time order orchestration built for same-day and next-day delivery at scale.",
           cta: "Explore E-Commerce",
-          href: "/industries#ecommerce",
+          href: "/clients#ecommerce",
         },
       },
       {
         label: "Logistics & 3PL",
-        href: "/industries#3pl",
+        href: "/clients#3pl",
         description: "Multi-client warehouse management",
         featured: {
           image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&auto=format&fit=crop",
@@ -669,12 +669,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Multi-Client Operations",
           description: "Segregated client views, flexible billing, and unified command across every contract — built for the complexity of 3PL at scale.",
           cta: "Explore Logistics & 3PL",
-          href: "/industries#3pl",
+          href: "/clients#3pl",
         },
       },
       {
         label: "Retail",
-        href: "/industries#ecommerce",
+        href: "/clients#ecommerce",
         description: "Omnichannel fulfilment intelligence",
         featured: {
           image: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=800&q=80&auto=format&fit=crop",
@@ -683,12 +683,12 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "Omnichannel Fulfilment",
           description: "Unified inventory visibility across stores, DCs, and dark stores — enabling accurate, profitable omnichannel fulfilment.",
           cta: "Explore Retail",
-          href: "/industries#ecommerce",
+          href: "/clients#ecommerce",
         },
       },
       {
         label: "Automotive",
-        href: "/industries#automotive",
+        href: "/clients#automotive",
         description: "Parts tracking and JIT compliance",
         featured: {
           image: "https://images.unsplash.com/photo-1567789884554-0b844b597180?w=800&q=80&auto=format&fit=crop",
@@ -697,7 +697,7 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           title: "JIT Parts Intelligence",
           description: "Precise parts tracking and sequencing that keeps production lines running — with zero tolerance for mis-picks or late delivery.",
           cta: "Explore Automotive",
-          href: "/industries#automotive",
+          href: "/clients#automotive",
         },
       },
     ],

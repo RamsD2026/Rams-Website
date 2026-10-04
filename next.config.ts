@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
    * This allows the machine's LAN address. It is a development-only setting
    * and has no effect on the deployed site.
    */
-  allowedDevOrigins: ["192.168.1.150", "localhost", "127.0.0.1"],
+  allowedDevOrigins: ["192.168.1.150", "192.168.1.4", "localhost", "127.0.0.1"],
 
   /**
    * The newsroom was built at `/company/newsroom`, which is where the footer
@@ -43,6 +43,14 @@ const nextConfig: NextConfig = {
 
          The whole of /hardware/* goes to the holding page: nineteen links,
          no pages, and nothing truthful to send them to instead. */
+      /* The Clients page lived at /industries while it carried the industry
+         essays. It carries the customer portfolio now and the menu has said
+         Clients for some time, so the path says Clients too. The fragment
+         survives: a browser reapplies it after the redirect, so
+         /industries#3pl lands on /clients#3pl. */
+      { source: "/industries", destination: "/clients", permanent: true },
+      { source: "/industries/:path*", destination: "/clients", permanent: true },
+
       { source: "/contact", destination: "/company/contact", permanent: false },
       { source: "/get-started", destination: "/company/contact", permanent: false },
       { source: "/find-your-starting-point", destination: "/solutions", permanent: false },
