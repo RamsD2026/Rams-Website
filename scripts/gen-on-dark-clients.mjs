@@ -57,13 +57,12 @@ const SLUGS = [
  *   ipca:               supplied on a white square; white taken to alpha
  *                       (colour-to-alpha, so edges stay smooth) and the black
  *                       "ipca" set in white. The blue is as supplied.
- *   flipkart:           supplied as a WebP with a transparency checkerboard
- *                       painted in. The checker is cut (flood fill inside the
- *                       bag, so its white handle stays); edge pixels are
- *                       rebuilt from the nearest solid colour with a
- *                       projected alpha, so no light fringe is left; the
- *                       wordmark is set in one flat blue, which also clears
- *                       the stock watermark from the letters.
+ *   flipkart:           supplied as an 800px flat-colour PNG with a
+ *                       transparency checkerboard painted in. The checker is
+ *                       cut (flood fill inside the bag, so its white handle
+ *                       stays); edge pixels are rebuilt from the nearest solid
+ *                       colour with a projected alpha, so no light fringe is
+ *                       left; the wordmark is set in its one flat blue.
  *   nestle:             transparent as supplied, colours as is.
  *   dhl:                supplied on a white square, white cut (120 tall).
  *   mahindra-logistics: transparent as supplied; the grey "LOGISTICS" and
