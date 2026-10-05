@@ -61,10 +61,10 @@ export function InvATOS() {
             transition={{ duration: 0.85, ease: EASE }}
             className="text-[36px] sm:text-[54px] lg:text-[68px] font-bold text-carbon leading-[1.05] tracking-[-0.04em]"
           >
-            <span className="block whitespace-nowrap">
+            <span className="block lg:whitespace-nowrap">
               Turn pallet movement history
             </span>
-            <span className="block whitespace-nowrap text-graphite/50">
+            <span className="block lg:whitespace-nowrap text-graphite/50">
               into smarter warehouse decisions.
             </span>
           </motion.h2>

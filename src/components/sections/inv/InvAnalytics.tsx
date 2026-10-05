@@ -63,11 +63,11 @@ export function InvAnalytics() {
             transition={{ duration: 0.85, ease: EASE }}
             className="text-[36px] sm:text-[54px] lg:text-[68px] font-bold leading-[1.05] tracking-[-0.04em]"
           >
-            <span className="block whitespace-nowrap text-white">
+            <span className="block lg:whitespace-nowrap text-white">
               See inventory accuracy, aging
             </span>
             <span
-              className="block whitespace-nowrap"
+              className="block lg:whitespace-nowrap"
               style={{
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 100%)",

@@ -121,7 +121,7 @@ export function InvABC() {
           >
             <span className="text-white">Focus attention</span> <br />
             <span
-              className="whitespace-nowrap"
+              className="lg:whitespace-nowrap"
               style={{
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 100%)",
