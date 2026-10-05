@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Mail, Phone, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Mail, Phone, ShieldCheck, type LucideIcon } from "lucide-react";
 import { RAMSLogo } from "@/components/ui/RAMSLogo";
 
 const LinkedInIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -80,7 +80,6 @@ const COLUMNS: FooterColumn[] = [
       { label: "About", href: "/company/about" },
       { label: "Customers", href: "/company/customers" },
       { label: "Careers", href: "/company/careers" },
-      { label: "Blogs", href: "/resources/insights" },
       { label: "Contact", href: "/company/contact" },
     ],
   },
@@ -90,7 +89,7 @@ const COLUMNS: FooterColumn[] = [
       { label: "Documentation", href: "/resources/docs" },
       { label: "Case Studies", href: "/resources/case-studies" },
       { label: "Whitepapers", href: "/resources/whitepapers" },
-      { label: "Blog", href: "/resources/blog" },
+      { label: "Blogs", href: "/resources/insights" },
       { label: "Support", href: "/resources/support" },
     ],
   },
@@ -325,7 +324,7 @@ export function Footer() {
 
         {/* Bottom footer */}
         <div>
-          {/* Row 1 — copyright + legal links, single baseline */}
+          {/* Copyright + legal links, single baseline */}
           <div className="flex flex-wrap items-center min-h-10 gap-x-6 gap-y-2">
             <span className="text-white/45 text-base leading-6">
               © 2026. All Rights Reserved by {LEGAL_NAME}
@@ -340,16 +339,6 @@ export function Footer() {
               </Link>
             ))}
           </div>
-
-          {/* Row 2 — region */}
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 text-white/45 hover:text-white transition-colors duration-200 mt-4 text-base leading-6"
-            aria-label="Change region"
-          >
-            <Globe size={14} strokeWidth={1.75} />
-            <span>United Kingdom (EN)</span>
-          </button>
         </div>
       </div>
     </footer>

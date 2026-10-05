@@ -63,7 +63,9 @@ const SLUGS = [
  *                       stays); edge pixels are rebuilt from the nearest solid
  *                       colour with a projected alpha, so no light fringe is
  *                       left; the wordmark is set in its one flat blue.
- *   nestle:             transparent as supplied, colours as is.
+ *   nestle:             the grey single-colour mark, supplied on white; the
+ *                       white taken to alpha against its one ink colour, so
+ *                       edges are exact. Reads far better on dark than navy.
  *   dhl:                supplied on a white square, white cut (120 tall).
  *   mahindra-logistics: transparent as supplied; the grey "LOGISTICS" and
  *                       arrow set in white, Mahindra's own dark-ground form
