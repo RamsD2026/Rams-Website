@@ -249,20 +249,24 @@ export function ClientsWall() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.45, ease: EASE }}
-                className="mt-14 sm:mt-16 max-w-[1080px] mx-auto grid grid-cols-4 sm:grid-cols-6 gap-x-8 gap-y-10"
+                className="mt-14 sm:mt-16 max-w-[1200px] mx-auto grid grid-cols-4 sm:grid-cols-6 gap-x-8 sm:gap-x-12 gap-y-10 sm:gap-y-12"
               >
                 {HERO_GRID.map((c) => (
                   <div
                     key={c.name}
                     title={c.name}
-                    className="flex items-center justify-center"
+                    className="flex items-center justify-center h-10"
                   >
+                    {/* The width/height hint and `sizes` ask next/image for a
+                        copy at about 2x the 40px the mark renders at, so the
+                        supplied high-resolution artwork stays sharp. */}
                     <Image
                       src={c.logo as string}
                       alt={c.name}
-                      width={140}
-                      height={56}
-                      className="max-h-7 w-auto object-contain"
+                      width={320}
+                      height={80}
+                      sizes="(min-width: 640px) 180px, 120px"
+                      className="max-h-8 sm:max-h-10 w-auto max-w-full object-contain"
                     />
                   </div>
                 ))}

@@ -46,7 +46,7 @@ const SLUGS = [
  * Marks supplied as high-resolution artwork and placed in
  * `public/clients-on-dark/` by hand, trimmed to their ink box. This script
  * leaves them alone.
- *   bosch:              transparent as supplied, used as is (160 tall).
+ *   bosch:              transparent as supplied, used as is at full resolution.
  *   dhl:                supplied on a white square, white cut (120 tall).
  *   mahindra-logistics: transparent as supplied; the grey "LOGISTICS" and
  *                       arrow set in white, Mahindra's own dark-ground form
