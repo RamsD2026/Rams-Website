@@ -266,7 +266,7 @@ export const NAV_CONFIG: NavItemConfig[] = [
   },
 
   {
-    label: "Clients",
+    label: "Industries",
     href: "/clients",
     layout: "industries",
     groups: [

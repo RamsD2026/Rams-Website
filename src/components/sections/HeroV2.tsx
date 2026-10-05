@@ -20,29 +20,31 @@ function reveal(delay: number) {
   };
 }
 
-const BASE = "https://www.rams.digital/assets/rack-audit";
-
+/* White-on-transparent marks from `public/clients-dark/` (see
+   `scripts/gen-dark-clients.mjs`). The remote rams.digital SVGs these
+   replaced were raster logos on a baked-in white card, and the CSS
+   silhouette filter turned that card into a solid white tile. Maersk is
+   not in RAMS's logo pack, so it is not on the strip. */
 const CLIENTS = [
-  { name: "Bosch",         logo: `${BASE}/bosch.svg` },
-  { name: "Maersk",        logo: `${BASE}/maersk.svg` },
-  { name: "Coca-Cola",     logo: `${BASE}/Coca-Cola_logo logo.svg` },
-  { name: "Volvo",         logo: `${BASE}/volvo.svg` },
-  { name: "ABB",           logo: `${BASE}/abb.svg` },
-  { name: "Continental",   logo: `${BASE}/continental.svg` },
-  { name: "Siemens",       logo: `${BASE}/logo2.svg` },
-  { name: "Caterpillar",   logo: `${BASE}/Caterpillar-Logo.svg` },
-  { name: "JCB",           logo: `${BASE}/JCB1.svg` },
-  { name: "Nestlé",        logo: `${BASE}/Nestle.svg` },
-  { name: "Flipkart",      logo: `${BASE}/Flipkart1.svg` },
-  { name: "Saint-Gobain",  logo: `${BASE}/saintgobain.svg` },
-  { name: "Ferrero",       logo: `${BASE}/Ferrero1.svg` },
-  { name: "Grundfos",      logo: `${BASE}/grundfos.svg` },
-  { name: "Rhenus",        logo: `${BASE}/rhenus.svg` },
-  { name: "GKN",           logo: `${BASE}/GKN1.svg` },
-  { name: "Garrett",       logo: `${BASE}/Garrett1.svg` },
-  { name: "Aditya Birla",  logo: `${BASE}/adityabirla.svg` },
-  { name: "Exide",         logo: `${BASE}/exide.svg` },
-  { name: "GMR",           logo: `${BASE}/GMR1.svg` },
+  { name: "Bosch",        logo: "/clients-dark/bosch.png" },
+  { name: "Coca-Cola",    logo: "/clients-dark/coca-cola.png" },
+  { name: "Volvo",        logo: "/clients-dark/volvo.png" },
+  { name: "ABB",          logo: "/clients-dark/abb.png" },
+  { name: "Continental",  logo: "/clients-dark/continental.png" },
+  { name: "Siemens",      logo: "/clients-dark/siemens.png" },
+  { name: "Caterpillar",  logo: "/clients-dark/caterpillar.png" },
+  { name: "JCB",          logo: "/clients-dark/jcb.png" },
+  { name: "Nestlé",       logo: "/clients-dark/nestle.png" },
+  { name: "Flipkart",     logo: "/clients-dark/flipkart.png" },
+  { name: "Saint-Gobain", logo: "/clients-dark/saint-gobain.png" },
+  { name: "Ferrero",      logo: "/clients-dark/ferrero.png" },
+  { name: "Grundfos",     logo: "/clients-dark/grundfos.png" },
+  { name: "Rhenus",       logo: "/clients-dark/rhenus-logistics.png" },
+  { name: "GKN",          logo: "/clients-dark/gkn.png" },
+  { name: "Garrett",      logo: "/clients-dark/garrett.png" },
+  { name: "Aditya Birla", logo: "/clients-dark/aditya-birla.png" },
+  { name: "Exide",        logo: "/clients-dark/exide.png" },
+  { name: "GMR",          logo: "/clients-dark/gmr.png" },
 ];
 
 const TRACK = [...CLIENTS, ...CLIENTS];
@@ -178,7 +180,7 @@ export function HeroV2() {
                   <img
                     src={client.logo}
                     alt={client.name}
-                    className="h-5 w-auto max-w-[90px] object-contain brightness-0 invert opacity-30 hover:opacity-60 transition-opacity duration-300"
+                    className="h-5 w-auto max-w-[90px] object-contain opacity-60 hover:opacity-100 transition-opacity duration-300"
                     loading="lazy"
                   />
                 </div>
