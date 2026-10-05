@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
-  useInView,
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
@@ -39,17 +38,6 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  * `clip={false}` on the section: an ancestor with `overflow: hidden` disables
  * `position: sticky` inside it, so the pinned column would just scroll away.
- *
- * ── Below lg ────────────────────────────────────────────────────────
- * There is no room for two columns, so the frame goes after the section's
- * body text and pins to the top of the screen, with the eight layers
- * scrolling up beneath it. The layer is picked by whichever one crosses the
- * middle of the screen (`useInView` on a thin band), not by progress over
- * the track: the pinned frame takes the top third, so a progress mapping
- * would switch layers while their text was still under it. The pin is
- * scoped to the mobile track, so once layer 08 has scrolled through it
- * lets go and the page scrolls on as normal. It pins at the very top
- * because the site header slides away while the reader scrolls down.
  */
 
 const HAIR = "#E8E8ED";
@@ -122,8 +110,6 @@ const LAYERS: Layer[] = [
 
 /** The stage the mockup sits on. */
 const STAGE_RATIO = "5 / 4";
-/** Shorter on a phone, so the pinned frame leaves room for the text. */
-const STAGE_RATIO_MOBILE = "16 / 11";
 
 /**
  * The stage.
@@ -137,18 +123,12 @@ const STAGE_RATIO_MOBILE = "16 / 11";
  * reference's magenta — signal-orange is the only accent this site has, and a
  * white product screen reads cleanly on a dark ground.
  */
-function Stage({
-  children,
-  ratio = STAGE_RATIO,
-}: {
-  children: React.ReactNode;
-  ratio?: string;
-}) {
+function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="relative w-full overflow-hidden"
       style={{
-        aspectRatio: ratio,
+        aspectRatio: STAGE_RATIO,
         borderRadius: 24,
         background:
           "radial-gradient(95% 85% at 18% 12%, rgba(255,106,0,0.34) 0%, transparent 58%)," +
@@ -219,114 +199,9 @@ function PendingShot() {
   );
 }
 
-/** One layer's copy, dimmed unless it is the current one. */
-function LayerCopy({ l, now }: { l: Layer; now: boolean }) {
-  return (
-    <motion.div
-      initial={false}
-      animate={{ opacity: now ? 1 : 0.36 }}
-      transition={{ duration: 0.45, ease: EASE }}
-    >
-      <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-signal-orange tabular-nums">
-        {l.n}
-      </span>
-      <h3 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] leading-[1.15] text-carbon">
-        {l.title}
-      </h3>
-      <p className="mt-2 text-[15px] sm:text-[17px] italic text-graphite/50">
-        {l.q}
-      </p>
-      <p className="mt-4 text-[14px] leading-[1.65] text-graphite/65 max-w-[46ch]">
-        {l.body}
-      </p>
-    </motion.div>
-  );
-}
-
-/**
- * The frame for the current layer. A dissolve: both frames are stacked in the
- * same box and cross-fade — `mode="wait"` would empty the box between them,
- * which reads as a flash.
- */
-function LayerScreen({ layer, ratio }: { layer: Layer; ratio?: string }) {
-  return (
-    <Stage ratio={ratio}>
-      <AnimatePresence>
-        <motion.div
-          key={layer.n}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.015 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: "easeInOut" }}
-        >
-          {layer.shot ? <Shot shot={layer.shot} /> : <PendingShot />}
-        </motion.div>
-      </AnimatePresence>
-    </Stage>
-  );
-}
-
-/** "Layer 03 / 08" and the eight-segment progress bar. */
-function LayerProgress({ at, className }: { at: number; className?: string }) {
-  return (
-    <div className={`flex items-center gap-4 ${className ?? ""}`}>
-      <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums shrink-0">
-        Layer {LAYERS[at].n} / 08
-      </span>
-      <span className="flex items-center gap-1.5 flex-1">
-        {LAYERS.map((l, n) => (
-          <span
-            key={l.n}
-            className="h-[3px] flex-1 rounded-full transition-colors duration-500"
-            style={{
-              background:
-                n === at
-                  ? "#FF6A00"
-                  : n < at
-                    ? "rgba(255,106,0,0.32)"
-                    : HAIR,
-            }}
-          />
-        ))}
-      </span>
-    </div>
-  );
-}
-
-/** A layer in the mobile track; reports itself when it crosses mid-screen. */
-function MobileLayer({
-  l,
-  n,
-  now,
-  onActive,
-}: {
-  l: Layer;
-  n: number;
-  now: boolean;
-  onActive: (n: number) => void;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  /* A thin band just below the middle of the screen — under the pinned
-     frame, where the reader's eye is. */
-  const inView = useInView(ref, { margin: "-52% 0px -42% 0px" });
-
-  useEffect(() => {
-    if (inView) onActive(n);
-  }, [inView, n, onActive]);
-
-  return (
-    <div ref={ref} className="py-8 min-h-[38vh] flex flex-col justify-center">
-      <LayerCopy l={l} now={now} />
-    </div>
-  );
-}
-
 export function TwinLayers() {
   const track = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState(0);
-  const [mobileAt, setMobileAt] = useState(0);
-  const onMobileActive = useCallback((n: number) => setMobileAt(n), []);
 
   const { scrollYProgress } = useScroll({
     target: track,
@@ -339,6 +214,8 @@ export function TwinLayers() {
     );
   });
 
+  const layer = LAYERS[at];
+
   return (
     <Section surface="offWhite" id="layers" clip={false}>
       <SectionHeader
@@ -350,45 +227,84 @@ export function TwinLayers() {
         body="A 3D model answers the first two. Everything after that is what makes it a twin."
       />
 
-      {/* Below lg: the frame pinned above the eight, scrolling. */}
-      <div className="lg:hidden">
-        <div className="sticky top-3 z-10 -mx-2 px-2 pt-2 pb-4 bg-[#F5F5F7]">
-          <LayerScreen layer={LAYERS[mobileAt]} ratio={STAGE_RATIO_MOBILE} />
-          <LayerProgress at={mobileAt} className="mt-4" />
-        </div>
-        <div className="flex flex-col">
-          {LAYERS.map((l, n) => (
-            <MobileLayer
-              key={l.n}
-              l={l}
-              n={n}
-              now={n === mobileAt}
-              onActive={onMobileActive}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* lg and up: the eight on the left, the frame pinned on the right. */}
       <div
         ref={track}
-        className="hidden lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16"
+        className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-10 lg:gap-16"
       >
+        {/* the eight, scrolling */}
         <div className="flex flex-col">
-          {LAYERS.map((l, n) => (
-            <div
-              key={l.n}
-              className="py-8 lg:min-h-[44vh] flex flex-col justify-center"
-            >
-              <LayerCopy l={l} now={n === at} />
-            </div>
-          ))}
+          {LAYERS.map((l, n) => {
+            const now = n === at;
+            return (
+              <div
+                key={l.n}
+                className="py-8 lg:min-h-[44vh] flex flex-col justify-center"
+              >
+                <motion.div
+                  initial={false}
+                  animate={{ opacity: now ? 1 : 0.36 }}
+                  transition={{ duration: 0.45, ease: EASE }}
+                >
+                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-signal-orange tabular-nums">
+                    {l.n}
+                  </span>
+                  <h3 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] leading-[1.15] text-carbon">
+                    {l.title}
+                  </h3>
+                  <p className="mt-2 text-[15px] sm:text-[17px] italic text-graphite/50">
+                    {l.q}
+                  </p>
+                  <p className="mt-4 text-[14px] leading-[1.65] text-graphite/65 max-w-[46ch]">
+                    {l.body}
+                  </p>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
 
-        <div>
+        {/* the pinned screen */}
+        <div className="hidden lg:block">
           <div className="sticky top-28">
-            <LayerScreen layer={LAYERS[at]} />
-            <LayerProgress at={at} className="mt-6" />
+            {/* A dissolve. Both frames are stacked in the same box and
+                cross-fade — `mode="wait"` would empty the box between them,
+                which reads as a flash. */}
+            <Stage>
+              <AnimatePresence>
+                <motion.div
+                  key={layer.n}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0, scale: 1.015 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                >
+                  {layer.shot ? <Shot shot={layer.shot} /> : <PendingShot />}
+                </motion.div>
+              </AnimatePresence>
+            </Stage>
+
+            <div className="mt-6 flex items-center gap-4">
+              <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums shrink-0">
+                Layer {layer.n} / 08
+              </span>
+              <span className="flex items-center gap-1.5 flex-1">
+                {LAYERS.map((l, n) => (
+                  <span
+                    key={l.n}
+                    className="h-[3px] flex-1 rounded-full transition-colors duration-500"
+                    style={{
+                      background:
+                        n === at
+                          ? "#FF6A00"
+                          : n < at
+                            ? "rgba(255,106,0,0.32)"
+                            : HAIR,
+                    }}
+                  />
+                ))}
+              </span>
+            </div>
           </div>
         </div>
       </div>
