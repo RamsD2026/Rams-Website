@@ -39,6 +39,48 @@ function NavLabel({
   onMouseLeave: () => void;
   onFocus: () => void;
 }) {
+  const className = cn(
+    "relative flex flex-col items-center py-1 px-1 text-xs font-normal tracking-[0.14em] uppercase font-mono transition-colors duration-200",
+    "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-none",
+    heroMode
+      ? isActive
+        ? "text-white focus-visible:ring-white"
+        : "text-white/80 hover:text-white focus-visible:ring-white"
+      : isActive
+        ? "text-signal-orange focus-visible:ring-signal-orange"
+        : menuOpen
+          ? "text-carbon hover:text-carbon focus-visible:ring-carbon"
+          : "text-graphite hover:text-carbon focus-visible:ring-carbon"
+  );
+
+  const underline = (
+    <motion.span
+      className={cn(
+        "absolute bottom-0 left-0 h-[2px] rounded-none",
+        heroMode ? "bg-white" : "bg-signal-orange"
+      )}
+      animate={isActive ? { width: "100%", opacity: 1 } : { width: "0%", opacity: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      aria-hidden="true"
+    />
+  );
+
+  if (item.direct) {
+    return (
+      <li>
+        <Link
+          href={item.href}
+          onMouseEnter={onMouseEnter}
+          onFocus={onFocus}
+          className={className}
+        >
+          {item.label}
+          {underline}
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <li>
       <button
@@ -48,30 +90,10 @@ function NavLabel({
         onFocus={onFocus}
         aria-expanded={isActive}
         aria-haspopup="true"
-        className={cn(
-          "relative flex flex-col items-center py-1 px-1 text-xs font-normal tracking-[0.14em] uppercase font-mono transition-colors duration-200",
-          "outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-none",
-          heroMode
-            ? isActive
-              ? "text-white focus-visible:ring-white"
-              : "text-white/80 hover:text-white focus-visible:ring-white"
-            : isActive
-              ? "text-signal-orange focus-visible:ring-signal-orange"
-              : menuOpen
-                ? "text-carbon hover:text-carbon focus-visible:ring-carbon"
-                : "text-graphite hover:text-carbon focus-visible:ring-carbon"
-        )}
+        className={className}
       >
         {item.label}
-        <motion.span
-          className={cn(
-            "absolute bottom-0 left-0 h-[2px] rounded-none",
-            heroMode ? "bg-white" : "bg-signal-orange"
-          )}
-          animate={isActive ? { width: "100%", opacity: 1 } : { width: "0%", opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          aria-hidden="true"
-        />
+        {underline}
       </button>
     </li>
   );
@@ -198,9 +220,9 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
                   isActive={activeMenu === item.label}
                   heroMode={isTransparent}
                   menuOpen={activeMenu !== null}
-                  onMouseEnter={() => scheduleOpen(item.label)}
+                  onMouseEnter={() => (item.direct ? closeMenu() : scheduleOpen(item.label))}
                   onMouseLeave={scheduleClose}
-                  onFocus={() => setActiveMenu(item.label)}
+                  onFocus={() => (item.direct ? closeMenu() : setActiveMenu(item.label))}
                 />
               ))}
             </ul>

@@ -133,30 +133,31 @@ export const SECTORS = [
  * The twelve marks in the hero grid — six across, two rows.
  *
  * This is the set from the clients document, in its order. They read from
- * `/clients`, the colour artwork, so the companies keep their own colours
- * rather than the white knockouts the moving strip uses.
+ * `/clients-on-dark`, the colour artwork reversed for this dark hero, so the
+ * companies keep their own colours rather than the white knockouts the
+ * moving strip uses.
  *
- * DHL, Bosch and KD Supply Chain were supplied on an opaque white ground —
- * fine in a white cell, a white rectangle on this hero. Their white was
- * knocked out by flood-filling inward from the border, so interior whites
- * survive (the circle in Bosch, the block behind DHL), which is the same
- * treatment `src/data/clients.ts` describes for the rest of the pack.
+ * The `/clients` originals keep every white enclosed by the mark, which
+ * showed here as white patches (Bosch's circle, IPCA's letters, Supreme
+ * Petrochem's roundel). `scripts/gen-on-dark-clients.mjs` cuts those whites,
+ * turns black and grey ink white and lifts colours too dark for the ground.
+ * Add a mark here and add its slug to that script.
  *
  * Ekart stands in as Flipkart: the portfolio lists Instakart Services, the
  * Flipkart entity, and there is no Ekart mark in the asset pack. Swap it the
  * moment one exists.
  */
 export const HERO_GRID: Client[] = [
-  { name: "Mahindra Logistics", logo: "/clients/mahindra-logistics.png" },
-  { name: "DHL", logo: "/clients/dhl.png" },
-  { name: "Bosch", logo: "/clients/bosch.png" },
-  { name: "Ferrero", logo: "/clients/ferrero.png" },
-  { name: "IPCA Laboratories", logo: "/clients/ipca.png" },
-  { name: "Flipkart", logo: "/clients/flipkart.png" },
-  { name: "LM Windpower", logo: "/clients/lm-wind-power.png" },
-  { name: "Exide", logo: "/clients/exide.png" },
-  { name: "KD Supply Chain", logo: "/clients/kd-supply-chain.png" },
-  { name: "Continental", logo: "/clients/continental.png" },
-  { name: "Nestlé", logo: "/clients/nestle.png" },
-  { name: "Supreme Petrochem", logo: "/clients/supreme-petrochem.png" },
+  { name: "Mahindra Logistics", logo: "/clients-on-dark/mahindra-logistics.png" },
+  { name: "DHL", logo: "/clients-on-dark/dhl.png" },
+  { name: "Bosch", logo: "/clients-on-dark/bosch.png" },
+  { name: "Ferrero", logo: "/clients-on-dark/ferrero.png" },
+  { name: "IPCA Laboratories", logo: "/clients-on-dark/ipca.png" },
+  { name: "Flipkart", logo: "/clients-on-dark/flipkart.png" },
+  { name: "LM Windpower", logo: "/clients-on-dark/lm-wind-power.png" },
+  { name: "Exide", logo: "/clients-on-dark/exide.png" },
+  { name: "KD Supply Chain", logo: "/clients-on-dark/kd-supply-chain.png" },
+  { name: "Continental", logo: "/clients-on-dark/continental.png" },
+  { name: "Nestlé", logo: "/clients-on-dark/nestle.png" },
+  { name: "Supreme Petrochem", logo: "/clients-on-dark/supreme-petrochem.png" },
 ];

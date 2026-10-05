@@ -26,6 +26,8 @@ export interface NavItemConfig {
   groups: NavGroup[];
   featured: FeaturedCard;
   layout?: "standard" | "hardware" | "industries" | "resources";
+  /** A plain link to `href`: no mega menu on hover, and the drawer links straight to it. */
+  direct?: boolean;
 }
 
 export const NAV_CONFIG: NavItemConfig[] = [
@@ -266,8 +268,9 @@ export const NAV_CONFIG: NavItemConfig[] = [
   },
 
   {
-    label: "Industries",
+    label: "Clients",
     href: "/clients",
+    direct: true,
     layout: "industries",
     groups: [
       {

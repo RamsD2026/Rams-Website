@@ -81,6 +81,24 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               <ul role="list">
                 {NAV_CONFIG.map((item, i) => {
                   const isOpenItem = expanded === item.label;
+                  if (item.direct) {
+                    return (
+                      <motion.li
+                        key={item.label}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.2 }}
+                      >
+                        <Link
+                          href={item.href}
+                          onClick={close}
+                          className="flex items-center w-full px-6 py-4 text-left text-base font-semibold text-carbon hover:text-signal-orange hover:bg-off-white transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      </motion.li>
+                    );
+                  }
                   return (
                     <motion.li
                       key={item.label}
