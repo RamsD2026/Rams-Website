@@ -60,6 +60,12 @@ export function Header() {
   }, [pathname]);
 
   useEffect(() => {
+    /* A device with no hover — a phone or tablet — has no mouse to bring the
+       bar back from mid-page, so there a short scroll up reveals it. */
+    const noHover = window.matchMedia("(hover: none)");
+    /* Where the current upward run began, or null while scrolling down. */
+    const upFrom = { current: null as number | null };
+
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 40);
@@ -85,8 +91,14 @@ export function Header() {
       } else if (y > lastY.current) {
         // Scrolling down — hide
         setVisible(false);
+        upFrom.current = null;
+      } else if (y < lastY.current && noHover.matches) {
+        // Scrolling up on touch — show once the run passes 10px, so a
+        // finger's wobble does not flicker the bar
+        upFrom.current ??= lastY.current;
+        if (upFrom.current - y > 10) setVisible(true);
       }
-      // Scrolling up → do nothing; mouse proximity handles reveal
+      // Scrolling up with a mouse → do nothing; mouse proximity handles reveal
 
       lastY.current = y;
     };
