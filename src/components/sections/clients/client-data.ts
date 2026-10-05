@@ -154,7 +154,7 @@ export const HERO_GRID: Client[] = [
   { name: "Ferrero", logo: "/clients-on-dark/ferrero.png" },
   { name: "IPCA Laboratories", logo: "/clients-on-dark/ipca.png" },
   { name: "Flipkart", logo: "/clients-on-dark/flipkart.png" },
-  { name: "LM Windpower", logo: "/clients-on-dark/lm-wind-power.png" },
+  { name: "LM Windpower", logo: "/clients-on-dark/lm-wind-power.svg" },
   { name: "Exide", logo: "/clients-on-dark/exide.png" },
   { name: "KD Supply Chain", logo: "/clients-on-dark/kd-supply-chain.png" },
   { name: "Continental", logo: "/clients-on-dark/continental.png" },

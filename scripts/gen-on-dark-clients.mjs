@@ -44,15 +44,29 @@ const SLUGS = [
 
 /**
  * Marks supplied as high-resolution artwork and placed in
- * `public/clients-on-dark/` by hand, trimmed to their ink box. This script
- * leaves them alone.
- *   bosch:              transparent as supplied, used as is at full resolution.
+ * `public/clients-on-dark/` by hand, trimmed to their ink box and capped at
+ * 1200 wide (the grid serves them unoptimised). This script leaves them alone.
+ *   bosch:              transparent as supplied, colours as is.
+ *   ferrero:            transparent as supplied, colours as is.
+ *   lm-wind-power:      supplied as vector artwork, served as lm-wind-power.svg.
+ *   exide:              transparent as supplied, colours as is.
+ *   kd-supply-chain:    transparent as supplied (the KDL mark), colours as is.
+ *   continental:        transparent as supplied, colours as is.
+ *   supreme-petrochem:  transparent as supplied; the white disc behind "SPL"
+ *                       is part of the roundel and is kept.
+ *   ipca:               supplied on a white square; white taken to alpha
+ *                       (colour-to-alpha, so edges stay smooth) and the black
+ *                       "ipca" set in white. The blue is as supplied.
+ *   flipkart:           supplied as a WebP with a transparency checkerboard
+ *                       painted in; the checker cut (flood fill inside the
+ *                       bag, so its white handle stays), colours as supplied.
+ *   nestle:             transparent as supplied, colours as is.
  *   dhl:                supplied on a white square, white cut (120 tall).
  *   mahindra-logistics: transparent as supplied; the grey "LOGISTICS" and
  *                       arrow set in white, Mahindra's own dark-ground form
  *                       (160 tall).
  */
-const SUPPLIED = new Set(["bosch", "dhl", "mahindra-logistics"]);
+const SUPPLIED = new Set(["bosch", "dhl", "mahindra-logistics", "ferrero", "lm-wind-power", "exide", "kd-supply-chain", "continental", "supreme-petrochem", "ipca", "flipkart", "nestle"]);
 
 const luma = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 const sat = (r, g, b) => {

@@ -257,15 +257,17 @@ export function ClientsWall() {
                     title={c.name}
                     className="flex items-center justify-center h-10"
                   >
-                    {/* The width/height hint and `sizes` ask next/image for a
-                        copy at about 2x the 40px the mark renders at, so the
-                        supplied high-resolution artwork stays sharp. */}
+                    {/* Served as the PNG itself, not through the optimiser:
+                        its lossy WebP stores colour at reduced resolution,
+                        which washed out the thin, saturated reds and blues of
+                        these marks. The files are capped at 1200 wide, still
+                        several times the 40px they render at. */}
                     <Image
                       src={c.logo as string}
                       alt={c.name}
                       width={320}
                       height={80}
-                      sizes="(min-width: 640px) 180px, 120px"
+                      unoptimized
                       className="max-h-8 sm:max-h-10 w-auto max-w-full object-contain"
                     />
                   </div>
