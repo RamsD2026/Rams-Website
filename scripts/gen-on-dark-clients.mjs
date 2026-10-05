@@ -58,8 +58,12 @@ const SLUGS = [
  *                       (colour-to-alpha, so edges stay smooth) and the black
  *                       "ipca" set in white. The blue is as supplied.
  *   flipkart:           supplied as a WebP with a transparency checkerboard
- *                       painted in; the checker cut (flood fill inside the
- *                       bag, so its white handle stays), colours as supplied.
+ *                       painted in. The checker is cut (flood fill inside the
+ *                       bag, so its white handle stays); edge pixels are
+ *                       rebuilt from the nearest solid colour with a
+ *                       projected alpha, so no light fringe is left; the
+ *                       wordmark is set in one flat blue, which also clears
+ *                       the stock watermark from the letters.
  *   nestle:             transparent as supplied, colours as is.
  *   dhl:                supplied on a white square, white cut (120 tall).
  *   mahindra-logistics: transparent as supplied; the grey "LOGISTICS" and
