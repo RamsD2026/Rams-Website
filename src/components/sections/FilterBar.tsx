@@ -1,6 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * The filter bar: tabs on the left, search on the right.
@@ -50,6 +51,7 @@ export function FilterBar({
   onQuery,
   placeholder = "Search…",
   stacked = false,
+  slide = false,
 }: {
   /** Includes the "all" option — the caller decides what it is called. */
   tabs: string[];
@@ -66,8 +68,50 @@ export function FilterBar({
    * tab set too long to share a row with the search. Opt-in.
    */
   stacked?: boolean;
+  /**
+   * Below lg, keep the track on one row that slides sideways, edge to edge of
+   * the screen, like the category bar of a shopping app, instead of wrapping
+   * into a tall block. The chosen tab is scrolled to the centre by
+   * `useRailFollow`. From lg nothing changes. Opt-in.
+   */
+  slide?: boolean;
 }) {
   const searchable = query !== undefined && onQuery !== undefined;
+  const rail = useRailFollow<HTMLDivElement>(Math.max(0, tabs.indexOf(active)));
+
+  const list = (
+    <div
+      role="tablist"
+      aria-label={label}
+      className={
+        (slide
+          ? "flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 lg:inline-flex lg:w-auto lg:flex-wrap lg:justify-center "
+          : "inline-flex flex-wrap justify-center items-center self-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 ") +
+        (stacked ? "" : "lg:justify-start lg:self-auto")
+      }
+    >
+      {tabs.map((t) => {
+        const now = t === active;
+        return (
+          <button
+            key={t}
+            type="button"
+            role="tab"
+            aria-selected={now}
+            onClick={() => onTab(t)}
+            className={
+              "shrink-0 py-2.5 px-4 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap " +
+              (now
+                ? "bg-carbon text-white"
+                : "text-graphite hover:text-signal-orange")
+            }
+          >
+            {t}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div
@@ -77,35 +121,18 @@ export function FilterBar({
           : "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       }
     >
-      <div
-        role="tablist"
-        aria-label={label}
-        className={
-          "inline-flex flex-wrap justify-center items-center self-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 " +
-          (stacked ? "" : "lg:justify-start lg:self-auto")
-        }
-      >
-        {tabs.map((t) => {
-          const now = t === active;
-          return (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              aria-selected={now}
-              onClick={() => onTab(t)}
-              className={
-                "py-2.5 px-4 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap " +
-                (now
-                  ? "bg-carbon text-white"
-                  : "text-graphite hover:text-signal-orange")
-              }
-            >
-              {t}
-            </button>
-          );
-        })}
-      </div>
+      {slide ? (
+        /* Full-bleed: the negative margin takes the row to the screen edges
+           and the padding puts its start back in line with the page. */
+        <div
+          ref={rail}
+          className="w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar lg:w-auto lg:mx-0 lg:px-0 lg:overflow-visible"
+        >
+          {list}
+        </div>
+      ) : (
+        list
+      )}
 
       {searchable && (
         <div
