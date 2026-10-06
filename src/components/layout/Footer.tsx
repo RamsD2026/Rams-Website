@@ -65,22 +65,24 @@ const COLUMNS: FooterColumn[] = [
     ],
   },
   {
-    title: "Industries",
+    title: "Services",
     links: [
+      { label: "Rack Inspection", href: "/services/rack-inspection" },
+      { label: "Structural Verification", href: "/services/structural-verification" },
+      { label: "Inventory Audit", href: "/services/inventory-audit" },
+      { label: "MHE Productivity", href: "/services/mhe-productivity-assessment" },
+      { label: "Deployment & Support", href: "/services/deployment-support" },
+    ],
+  },
+  {
+    title: "Clients",
+    links: [
+      { label: "All Clients", href: "/clients" },
       { label: "3PL & Logistics", href: "/clients#3pl" },
       { label: "Retail & E-commerce", href: "/clients#ecommerce" },
       { label: "Manufacturing", href: "/clients#manufacturing" },
       { label: "Cold Chain", href: "/clients#cold-storage" },
       { label: "Automotive", href: "/clients#automotive" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "/company/about" },
-      { label: "Customers", href: "/company/customers" },
-      { label: "Careers", href: "/company/careers" },
-      { label: "Contact", href: "/company/contact" },
     ],
   },
   {
@@ -91,6 +93,15 @@ const COLUMNS: FooterColumn[] = [
       { label: "Whitepapers", href: "/resources/whitepapers" },
       { label: "Blogs", href: "/resources/insights" },
       { label: "Support", href: "/resources/support" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/company/about" },
+      { label: "Customers", href: "/company/customers" },
+      { label: "Careers", href: "/company/careers" },
+      { label: "Contact", href: "/company/contact" },
     ],
   },
 ];
@@ -235,7 +246,7 @@ export function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="lg:col-span-9 grid grid-cols-2 sm:grid-cols-3 gap-x-14 gap-y-12">
+          <div className="lg:col-span-9 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-14 gap-y-12">
             {COLUMNS.map((col) => (
               <div key={col.title}>
                 <h3 className="text-sm font-semibold text-white tracking-[0.01em] leading-none">
