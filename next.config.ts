@@ -74,7 +74,6 @@ const nextConfig: NextConfig = {
 
       { source: "/company", destination: "/company/about", permanent: false },
       { source: "/company/leadership", destination: "/company/about", permanent: false },
-      { source: "/company/customers", destination: "/industries", permanent: false },
 
       { source: "/hardware/:slug+", destination: "/hardware", permanent: false },
 
