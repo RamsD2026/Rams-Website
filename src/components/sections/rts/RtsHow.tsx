@@ -12,6 +12,7 @@ import {
 } from "./RtsPanels";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 04 — How it works.
@@ -111,6 +112,7 @@ export function RtsHow() {
   }, []);
 
   const { t, i } = clock;
+  const rail = useRailFollow(i);
   const p = Math.min(1, (t - clock.anchor) / STEP_TICKS);
   const step = STEPS[i];
 
@@ -133,7 +135,7 @@ export function RtsHow() {
           equal columns those sit at 1/10 and 9/10, so it is inset 10% each
           side. Only the current step is filled; completed steps keep an
           orange outline. */}
-      <div className="relative mb-10 sm:mb-12 overflow-x-auto">
+      <div ref={rail} className="relative mb-10 sm:mb-12 overflow-x-auto">
         <div className="relative min-w-[560px] lg:min-w-0 pt-1">
           <span
             aria-hidden

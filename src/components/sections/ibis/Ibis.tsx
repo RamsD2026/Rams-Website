@@ -59,6 +59,7 @@ import {
   useTick,
 } from "./IbisWidgets";
 import { CLOSE, FAQS, HERO, NOTES, OUTCOMES, PROBLEM } from "./ibis-data";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * IBIS — the platform page, composed the way the platform pages are composed.
@@ -535,6 +536,7 @@ export function IbisHow() {
   }, []);
 
   const { i } = clock;
+  const rail = useRailFollow(i);
   const p = Math.min(1, (clock.t - clock.anchor) / STEP_TICKS);
   const step = STEPS[i];
 
@@ -556,7 +558,7 @@ export function IbisHow() {
           edge: with six equal columns those sit at 1/12 and 11/12, so the line
           is inset by 8.33% each side. Only the current step is filled;
           completed steps keep an orange outline. */}
-      <div className="relative mb-10 sm:mb-12 overflow-x-auto">
+      <div ref={rail} className="relative mb-10 sm:mb-12 overflow-x-auto">
         <div className="relative min-w-[560px] lg:min-w-0 pt-1">
           <span
             aria-hidden

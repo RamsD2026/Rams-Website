@@ -13,6 +13,7 @@ import {
 } from "./AmsPanels";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 04 — How it works.
@@ -135,6 +136,7 @@ export function AmsHow() {
   }, []);
 
   const { t, i } = clock;
+  const rail = useRailFollow(i);
   const p = Math.min(1, (t - clock.anchor) / STEP_TICKS);
   const step = STEPS[i];
 
@@ -153,7 +155,7 @@ export function AmsHow() {
       />
 
       {/* ── the rail ────────────────────────────────────── */}
-      <div className="relative mb-10 sm:mb-12 overflow-x-auto">
+      <div ref={rail} className="relative mb-10 sm:mb-12 overflow-x-auto">
         <div className="relative min-w-[660px] lg:min-w-0 pt-1">
           <span
             aria-hidden

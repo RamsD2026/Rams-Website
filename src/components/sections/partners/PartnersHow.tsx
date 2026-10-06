@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 08 — How it works.
@@ -96,6 +97,7 @@ const DWELL_MS = 3600;
 export function PartnersHow() {
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
+  const rail = useRailFollow(i);
   const [held, setHeld] = useState(false);
   const [nudge, setNudge] = useState(0);
 
@@ -125,6 +127,7 @@ export function PartnersHow() {
       />
 
       <div
+        ref={rail}
         className="overflow-x-auto"
         onMouseEnter={() => setHeld(true)}
         onMouseLeave={() => setHeld(false)}
