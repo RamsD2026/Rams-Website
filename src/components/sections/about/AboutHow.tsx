@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Frame, Gauge, LineChart, Network, Tag, Workflow } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 06 — How RAMS works.
@@ -115,6 +116,7 @@ export function AboutHow() {
   const [i, setI] = useState(0);
   const [held, setHeld] = useState(false);
   const [nudge, setNudge] = useState(0);
+  const rail = useRailFollow<HTMLDivElement>(i);
 
   useEffect(() => {
     if (reduce || held) return;
@@ -142,6 +144,7 @@ export function AboutHow() {
       />
 
       <div
+        ref={rail}
         className="overflow-x-auto"
         onMouseEnter={() => setHeld(true)}
         onMouseLeave={() => setHeld(false)}

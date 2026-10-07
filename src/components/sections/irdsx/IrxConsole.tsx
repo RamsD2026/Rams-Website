@@ -20,6 +20,7 @@ import {
 } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { EASE } from "./irdsx-shared";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 04 — IRDS Console. The web platform.
@@ -121,6 +122,9 @@ export function IrxConsole() {
   const [at, setAt] = useState(0);
   const [nudge, setNudge] = useState(0);
   const m = MODULES[at];
+  /* Below lg the module nav is a sideways row; keep the current module in
+     view as the console advances. A column at lg, so it does nothing there. */
+  const rail = useRailFollow<HTMLDivElement>(at);
 
   useEffect(() => {
     const id = setInterval(
@@ -188,6 +192,7 @@ export function IrxConsole() {
         <div className="grid grid-cols-1 lg:grid-cols-[214px_minmax(0,1fr)]">
           {/* the module nav */}
           <div
+            ref={rail}
             className="p-3 lg:border-r flex lg:flex-col gap-1 overflow-x-auto"
             style={{ borderColor: LINE, background: "#0A0A0D" }}
           >
