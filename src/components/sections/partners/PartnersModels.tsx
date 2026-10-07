@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * 03 — Partnership models.
@@ -149,6 +150,7 @@ const HAIR = "#E8E8ED";
 export function PartnersModels() {
   const [at, setAt] = useState(0);
   const m = MODELS[at];
+  const rail = useRailFollow<HTMLDivElement>(at);
 
   return (
     <Section surface="white" id="models">
@@ -165,12 +167,20 @@ export function PartnersModels() {
       {/* the tabs — the home page's segmented pill, value for value: a
           #F2F2F2 track at 1.5 padding, segments at 13px medium on a full
           radius, the active one filled carbon and the rest going orange on
-          hover. Four equal segments, so `flex-1`. */}
-      <div className="flex justify-center">
+          hover. Four equal segments from sm, so `flex-1`.
+
+          Below sm the four wrapped two by two into a tall block. There the
+          track stays on one row that slides sideways edge to edge, like the
+          filter bars on the resource pages, and the chosen tab is scrolled
+          to the centre by `useRailFollow`. */}
+      <div
+        ref={rail}
+        className="w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar sm:w-auto sm:mx-0 sm:px-0 sm:overflow-visible sm:flex sm:justify-center"
+      >
         <div
           role="tablist"
           aria-label="Partnership models"
-          className="inline-flex flex-wrap sm:flex-nowrap items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 w-full max-w-[720px]"
+          className="flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 sm:inline-flex sm:w-full sm:max-w-[720px]"
         >
           {MODELS.map((x, i) => {
             const now = i === at;
@@ -182,7 +192,7 @@ export function PartnersModels() {
                 aria-selected={now}
                 onClick={() => setAt(i)}
                 className={
-                  "flex-1 basis-[calc(50%-2px)] sm:basis-auto py-2.5 px-3 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap text-center " +
+                  "shrink-0 sm:shrink sm:flex-1 py-2.5 px-4 sm:px-3 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap text-center " +
                   (now
                     ? "bg-carbon text-white"
                     : "text-graphite hover:text-signal-orange")
