@@ -27,11 +27,12 @@ import { FEATURED, type Featured } from "./webinar-data";
  * screens and a wall on large ones.
  *
  * The frame keeps its size and the copy is fitted to it. A 4:3 frame on a
- * phone is about 230px tall, and at 26px with its line of body copy a
- * three-line heading needed more than that, so the copy rose past the top
- * edge and was cropped. On a phone the heading is 20px, the body line is
- * dropped and the button sits closer, which leaves room above the heading;
- * at `sm` the heading is 30px. From `lg` nothing changes.
+ * phone is about 230px tall; a three-line 26px heading over a three- or
+ * four-line body needed far more, so the copy rose past the top edge and the
+ * heading was cropped. On a phone the heading is 20px, the body is clamped
+ * to two lines, and the padding, gaps and button are a step tighter — about
+ * 200px of copy, leaving clear room above it. At `sm` the heading is 30px
+ * and the body runs in full. From `lg` nothing changes.
  *
  * ── Three revisions to get here ─────────────────────────────────────
  * Two pale boxes side by side, then a full dark band, then a white section
@@ -99,7 +100,7 @@ function Card({ item }: { item: Featured }) {
         }}
       />
 
-      <div className="absolute inset-x-0 bottom-0 p-7 sm:p-9 lg:p-11 text-white">
+      <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9 lg:p-11 text-white">
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/90"
           style={{
@@ -124,15 +125,15 @@ function Card({ item }: { item: Featured }) {
           {item.pill}
         </span>
 
-        <h3 className="mt-4 text-[20px] sm:text-[30px] lg:text-[40px] font-bold tracking-[-0.04em] leading-[1.08] max-w-[680px]">
+        <h3 className="mt-5 sm:mt-4 text-[20px] sm:text-[30px] lg:text-[40px] font-bold tracking-[-0.04em] leading-[1.08] max-w-[680px]">
           {item.title}
         </h3>
 
-        <p className="hidden sm:block mt-3 text-[13.5px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[560px]">
+        <p className="mt-2 sm:mt-3 text-[12.5px] sm:text-[15px] text-white/60 leading-[1.5] sm:leading-[1.55] line-clamp-2 sm:line-clamp-none max-w-[560px]">
           {item.body}
         </p>
 
-        <span className="mt-4 sm:mt-6 inline-flex items-center gap-2 bg-white text-carbon text-[13.5px] font-semibold px-5 py-3 rounded-full transition-all duration-200 group-hover:bg-signal-orange group-hover:text-white">
+        <span className="mt-3 sm:mt-6 inline-flex items-center gap-2 bg-white text-carbon text-[12.5px] sm:text-[13.5px] font-semibold px-4 sm:px-5 py-2.5 sm:py-3 rounded-full transition-all duration-200 group-hover:bg-signal-orange group-hover:text-white">
           {item.cta}
           <ArrowUpRight className="w-4 h-4" aria-hidden />
         </span>
