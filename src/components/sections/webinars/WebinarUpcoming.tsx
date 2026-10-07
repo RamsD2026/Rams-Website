@@ -22,14 +22,16 @@ import { FEATURED, type Featured } from "./webinar-data";
  * copy, a button. Nothing sits in the upper half, which is what keeps a
  * cinematic card from becoming a poster with text scattered over it.
  *
- * At `lg` the card is a 21:9 frame with the copy pinned to its bottom.
+ * The ratio widens with the viewport — 4:3 on a phone, 16:9 at `sm`, 21:9 at
+ * `lg` — so the picture stays a picture rather than a letterbox on small
+ * screens and a wall on large ones.
  *
- * Below `lg` it is not a fixed ratio. A 4:3 frame on a phone is about 230px
- * tall and the copy — pill, a two- or three-line heading, a line, a button —
- * needs more than that, so pinned to the bottom it rose past the top edge and
- * the heading was cropped. There the copy sits in flow under a generous top
- * padding, the card grows to fit it with the photograph showing above, and
- * every card on the shelf stretches to the tallest.
+ * The frame keeps its size and the copy is fitted to it. A 4:3 frame on a
+ * phone is about 230px tall, and at 26px with its line of body copy a
+ * three-line heading needed more than that, so the copy rose past the top
+ * edge and was cropped. On a phone the heading is 20px, the body line is
+ * dropped and the button sits closer, which leaves room above the heading;
+ * at `sm` the heading is 30px. From `lg` nothing changes.
  *
  * ── Three revisions to get here ─────────────────────────────────────
  * Two pale boxes side by side, then a full dark band, then a white section
@@ -75,7 +77,7 @@ function Card({ item }: { item: Featured }) {
   return (
     <a
       href={item.href}
-      className="group relative flex flex-col justify-end w-full h-full overflow-hidden min-h-[300px] sm:min-h-[360px] lg:block lg:h-auto lg:min-h-0 lg:aspect-[21/9]"
+      className="group relative block w-full overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]"
       style={{ borderRadius: 20, background: "#08080A" }}
     >
       <Image
@@ -97,7 +99,7 @@ function Card({ item }: { item: Featured }) {
         }}
       />
 
-      <div className="relative px-7 pb-7 pt-28 sm:px-9 sm:pb-9 sm:pt-36 lg:absolute lg:inset-x-0 lg:bottom-0 lg:p-11 text-white">
+      <div className="absolute inset-x-0 bottom-0 p-7 sm:p-9 lg:p-11 text-white">
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/90"
           style={{
@@ -122,15 +124,15 @@ function Card({ item }: { item: Featured }) {
           {item.pill}
         </span>
 
-        <h3 className="mt-4 text-[26px] sm:text-[34px] lg:text-[40px] font-bold tracking-[-0.04em] leading-[1.08] max-w-[680px]">
+        <h3 className="mt-4 text-[20px] sm:text-[30px] lg:text-[40px] font-bold tracking-[-0.04em] leading-[1.08] max-w-[680px]">
           {item.title}
         </h3>
 
-        <p className="mt-3 text-[13.5px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[560px]">
+        <p className="hidden sm:block mt-3 text-[13.5px] sm:text-[15px] text-white/60 leading-[1.55] max-w-[560px]">
           {item.body}
         </p>
 
-        <span className="mt-6 inline-flex items-center gap-2 bg-white text-carbon text-[13.5px] font-semibold px-5 py-3 rounded-full transition-all duration-200 group-hover:bg-signal-orange group-hover:text-white">
+        <span className="mt-4 sm:mt-6 inline-flex items-center gap-2 bg-white text-carbon text-[13.5px] font-semibold px-5 py-3 rounded-full transition-all duration-200 group-hover:bg-signal-orange group-hover:text-white">
           {item.cta}
           <ArrowUpRight className="w-4 h-4" aria-hidden />
         </span>
