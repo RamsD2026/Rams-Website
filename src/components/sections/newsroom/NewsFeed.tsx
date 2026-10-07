@@ -190,6 +190,7 @@ export function NewsFeed() {
         query={q}
         onQuery={setQ}
         placeholder="Search the blog…"
+        slide
       />
 
       <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-14 lg:gap-y-16 items-start">

@@ -234,6 +234,7 @@ export function DownloadLibrary() {
           query={q}
           onQuery={setQ}
           placeholder="Search documents…"
+          slide
         />
 
         <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">

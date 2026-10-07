@@ -85,7 +85,8 @@ export function FilterBar({
       aria-label={label}
       className={
         (slide
-          ? "flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 lg:inline-flex lg:w-auto lg:flex-wrap lg:justify-center "
+          ? "flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 lg:inline-flex lg:w-auto lg:flex-wrap " +
+            (stacked ? "lg:justify-center " : "")
           : "inline-flex flex-wrap justify-center items-center self-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 ") +
         (stacked ? "" : "lg:justify-start lg:self-auto")
       }

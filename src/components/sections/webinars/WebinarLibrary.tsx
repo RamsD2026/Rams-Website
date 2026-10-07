@@ -185,6 +185,7 @@ export function WebinarLibrary() {
         query={q}
         onQuery={setQ}
         placeholder="Search recordings…"
+        slide
       />
 
       <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
