@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useRailFollow } from "@/lib/use-rail-follow";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Check, X, Pause, Play } from "lucide-react";
 import Link from "next/link";
@@ -209,6 +210,9 @@ function Modal({ tab, onClose }: { tab: Tab; onClose: () => void }) {
 
 export function EcosystemSection() {
   const [activeId, setActiveId] = useState<TabId>("engineering");
+  const rail = useRailFollow<HTMLDivElement>(
+    Math.max(0, TABS.findIndex((t) => t.id === activeId)),
+  );
   const [modalTab, setModalTab] = useState<Tab | null>(null);
   const [videoPaused, setVideoPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -256,9 +260,16 @@ export function EcosystemSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45, delay: 0.15 }}
-          className="flex justify-center mb-12 sm:mb-16"
+          className="sm:flex sm:justify-center mb-12 sm:mb-16"
         >
-          <div className="inline-flex items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 w-full max-w-[700px]">
+          {/* Below sm the pill stays on one row that slides sideways, edge to
+              edge; the chosen tab is scrolled to the centre. From sm the
+              equal segments are unchanged. */}
+          <div
+            ref={rail}
+            className="-mx-4 px-4 overflow-x-auto no-scrollbar sm:mx-0 sm:px-0 sm:overflow-visible sm:w-full sm:flex sm:justify-center"
+          >
+          <div className="flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 sm:inline-flex sm:w-full sm:max-w-[700px]">
             {TABS.map((tab) => {
               const isActive = tab.id === activeId;
               return (
@@ -266,7 +277,7 @@ export function EcosystemSection() {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveId(tab.id as TabId)}
-                  className={`flex-1 py-2.5 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap text-center ${
+                  className={`shrink-0 px-4 sm:shrink sm:px-0 sm:flex-1 py-2.5 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap text-center ${
                     isActive
                       ? "bg-carbon text-white"
                       : "text-graphite hover:text-signal-orange"
@@ -276,6 +287,7 @@ export function EcosystemSection() {
                 </button>
               );
             })}
+          </div>
           </div>
         </motion.div>
 
