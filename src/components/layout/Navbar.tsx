@@ -288,21 +288,57 @@ export function Navbar({ scrolled, heroMode = false }: NavbarProps) {
               </button>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              ref={menuButtonRef}
-              onClick={() => setDrawerOpen(true)}
-              className={cn(
-                "lg:hidden p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                isTransparent
-                  ? "text-white/75 hover:text-white hover:bg-white/10 focus-visible:ring-white"
-                  : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
-              )}
-              aria-label="Open navigation menu"
-              aria-expanded={drawerOpen}
-            >
-              <Menu className="w-6 h-6" aria-hidden="true" />
-            </button>
+            {/* Mobile — the calculator and search as icons, then the menu.
+                The desktop pill does not fit beside the logo on a phone, but
+                the tools themselves are wanted at any point in a visit there
+                too, so they keep a place in the bar rather than going into
+                the drawer only. */}
+            <div className="lg:hidden flex items-center gap-1 shrink-0">
+              <Link
+                href="/roi-calculator"
+                aria-label="ROI calculator"
+                className={cn(
+                  "inline-flex items-center justify-center w-9 h-9 rounded-full",
+                  "bg-signal-orange text-white transition-colors duration-200 hover:bg-signal-orange-hover",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  isTransparent ? "focus-visible:ring-white" : "focus-visible:ring-carbon"
+                )}
+              >
+                <Calculator className="w-[17px] h-[17px]" aria-hidden="true" />
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setSearchOpen(!searchOpen)}
+                aria-label="Search this site"
+                aria-expanded={searchOpen}
+                className={cn(
+                  "p-2 rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  searchOpen
+                    ? "text-signal-orange focus-visible:ring-signal-orange"
+                    : isTransparent
+                      ? "text-white/75 hover:text-white hover:bg-white/10 focus-visible:ring-white"
+                      : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
+                )}
+              >
+                <Search className="w-[20px] h-[20px]" aria-hidden="true" />
+              </button>
+
+              <button
+                ref={menuButtonRef}
+                onClick={() => setDrawerOpen(true)}
+                className={cn(
+                  "p-2 rounded-none transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  isTransparent
+                    ? "text-white/75 hover:text-white hover:bg-white/10 focus-visible:ring-white"
+                    : "text-graphite hover:text-carbon hover:bg-off-white focus-visible:ring-carbon"
+                )}
+                aria-label="Open navigation menu"
+                aria-expanded={drawerOpen}
+              >
+                <Menu className="w-6 h-6" aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </nav>
 
