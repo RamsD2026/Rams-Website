@@ -43,6 +43,14 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    title: "Platform",
+    items: [
+      { id: "platform-modules", label: "Platform modules" },
+      { id: "edge-hardware", label: "Edge & hardware" },
+      { id: "standards", label: "Standards & classification" },
+    ],
+  },
+  {
     title: "Reference",
     items: [
       { id: "api-concepts", label: "API concepts" },
@@ -350,6 +358,185 @@ export const MODULES: {
     outbound: ["Task status", "Cross-module insight"],
     systems: "ERP · WMS · BI · Workflow platforms",
   },
+];
+
+/* ── Platform: modules, hardware, standards ───────────────────────────
+ *
+ * Added after the source document, and written only from what the rest of
+ * this site already states on its rendered pages — the platform pages
+ * (`twin/`, `rds/`, `irdsx/`, `meps/`, `rts/`, `imd/`, `ibis/`, `atos/`,
+ * `ams/`), the services data, the certifications register and the nav.
+ *
+ * Deliberately left out, because the site does not support them: the
+ * homepage camera spec sheet (`TechnologySystems` `defaultSpecs` is a
+ * placeholder template applied to every card), latency figures such as
+ * "< 50 ms" (marketing and illustration only), named vendor connectors
+ * beyond SAP, numeric RAG thresholds and a fixed inspection interval —
+ * the site states none of those, so neither does this.
+ */
+
+export const TWIN_LAYERS: { n: string; name: string; q: string }[] = [
+  { n: "01", name: "Spatial", q: "Where is it?" },
+  { n: "02", name: "Asset", q: "What is it?" },
+  { n: "03", name: "Time", q: "How has it changed?" },
+  { n: "04", name: "Condition", q: "What condition is it in?" },
+  { n: "05", name: "Operation", q: "How is it being used?" },
+  { n: "06", name: "Simulation", q: "What if we change it?" },
+  { n: "07", name: "Live", q: "What is happening now?" },
+  { n: "08", name: "Intelligence", q: "What does it mean next?" },
+];
+
+export const PLATFORM_MODULES: {
+  code: string;
+  name: string;
+  href: string;
+  body: string;
+  captures: string;
+  produces: string;
+}[] = [
+  {
+    code: "Twin",
+    name: "Digital Twin",
+    href: "/platform/digital-twin",
+    body: "A persistent digital representation of the facility and everything operating inside it. Every RAMS application reads from the twin and writes back to it.",
+    captures: "Survey, DWG or point cloud · assets, locations, zones and relationships",
+    produces: "Stable identity and context for every asset, event and record",
+  },
+  {
+    code: "IRDS",
+    name: "Integrated Rack Diagnostic Suite",
+    href: "/platform/irds",
+    body: "A persistent rack safety layer on the Digital Twin — connecting assets, inspections, risk, evidence, maintenance, procurement and verification.",
+    captures: "Rack registry · configured checklists · measurements · photo evidence",
+    produces: "RAG-classified findings · corrective actions · verified closure · trends",
+  },
+  {
+    code: "MEPS",
+    name: "MHE Efficiency and Productivity System",
+    href: "/platform/meps",
+    body: "Measures how the MHE fleet works, mapped into the twin's zones and classified into productive, travel, waiting, idle, charging and offline activity.",
+    captures: "LiDAR indoor position · operator session · pallet detection · movement and time",
+    produces: "Productivity · efficiency · basic safety (speed flags)",
+  },
+  {
+    code: "RTSS",
+    name: "Real-Time Safety System",
+    href: "/platform/rtss",
+    body: "Receives supported sensor, vehicle, vision and system events, places them in operational context, alerts the right people and carries each significant event through review, action and learning.",
+    captures: "Impact · driver behaviour · proximity · zone and speed · operator authentication",
+    produces: "Contextual alerts · actions through to closure",
+  },
+  {
+    code: "IMDS",
+    name: "Integrated MHE Diagnostic System",
+    href: "/platform/imds",
+    body: "Decision support for MHE condition and maintenance — validated asset by asset, recommend first and automate later.",
+    captures: "MHE telematics · fault codes · battery state · RFID · CCTV · maintenance history",
+    produces: "Machine health score · predicted needs · condition-based plan",
+  },
+  {
+    code: "IBIS",
+    name: "Inventory Behaviour Intelligence Suite",
+    href: "/platform/ibis",
+    body: "Links SKU, pallet, batch, quantity, movement and dwell to an exact location, compares the record with reality and turns exceptions into action. Neither source is silently overwritten.",
+    captures: "Master, stock and transaction data · barcode, QR, RFID, vision or drone capture where validated",
+    produces: "Location-linked exceptions · tasks · ABC and ageing insight",
+  },
+  {
+    code: "ATOS",
+    name: "Automated Task Orchestration System",
+    href: "/platform/ai-operational-intelligence",
+    body: "Takes demand from business systems and teams, converts it into structured tasks, applies priorities and dependencies, matches resources and updates the plan when conditions change.",
+    captures: "WMS, ERP, TMS, sensor and manual demand",
+    produces: "Structured, prioritised tasks · a new plan version when conditions change",
+  },
+  {
+    code: "AIMS",
+    name: "AI Intelligence and Management System",
+    href: "/platform/security",
+    body: "Sits at the top of the platform and aggregates every deployed product across sites into normalised, comparable metrics. High-impact decisions stay human.",
+    captures: "RTSS · IRDS · MEPS and IMDS · ATOS and IBIS",
+    produces: "Cross-module, multi-site priorities and management decisions",
+  },
+];
+
+export const EDGE_CHAIN: { step: string; body: string }[] = [
+  { step: "Sensor", body: "Physical signal" },
+  { step: "Edge processor", body: "OmniBox or customer edge — process near the event" },
+  { step: "Twin context", body: "Asset + place + time" },
+  { step: "Cloud / history", body: "Persistent record" },
+  { step: "Action", body: "Operational response" },
+];
+
+export const HARDWARE: { family: string; items: string[]; role: string }[] = [
+  {
+    family: "AI Vision",
+    items: ["Pro — wide-area", "Ultra — high-fidelity", "Max — critical-zone"],
+    role: "Tracks people, pallets and MHE as objects; feeds safety events to RTSS and evidence to IRDS.",
+  },
+  {
+    family: "OmniBox",
+    items: ["Edge — on-rack inference", "AI — neural compute", "Motion — kinematic sensing", "Core — central orchestration"],
+    role: "Edge processing on site: mounted on a rack upright, runs the models locally and stays offline-tolerant, so the floor keeps working when the link does not.",
+  },
+  {
+    family: "Location",
+    items: ["LiDAR", "Wi-Fi", "Bluetooth", "UWB"],
+    role: "Indoor position, route, speed, zone and dwell for MEPS — no GPS dependency.",
+  },
+  {
+    family: "Sensor stack",
+    items: ["Access control", "Crash / impact", "Speed", "Location", "Pallet detection", "Battery management"],
+    role: "Impact, tilt, load and vehicle signals for RTSS, MEPS and IMDS.",
+  },
+  {
+    family: "Guided inspection",
+    items: ["AirScan — drone rack scanning", "Floor Scan"],
+    role: "Automated capture for rack and floor checks.",
+  },
+];
+
+export const PROTOCOLS: { name: string; body: string }[] = [
+  { name: "MQTT", body: "Sensors" },
+  { name: "OPC-UA", body: "Machines" },
+  { name: "Modbus", body: "PLCs" },
+  { name: "BACnet", body: "Building" },
+];
+
+export const RACK_STANDARDS = [
+  "EN 15635",
+  "EN 15512",
+  "EN 15620",
+  "EN 15629",
+  "AS 4084.1 / 4084.2",
+  "RMI / ANSI MH16.1",
+  "SEMA practices",
+  "Local requirements",
+];
+
+export const RAG: { tone: "red" | "amber" | "green"; label: string; body: string }[] = [
+  {
+    tone: "red",
+    label: "Red",
+    body: "Priority finding requiring immediate review and action. Unload and isolate, and replace the damaged element before a verified return to use.",
+  },
+  {
+    tone: "amber",
+    label: "Amber",
+    body: "Planned attention. Plan repair or replacement within the defined window.",
+  },
+  {
+    tone: "green",
+    label: "Green",
+    body: "No identified priority condition. Monitor, and review at the next planned inspection cycle.",
+  },
+];
+
+export const STRUCTURAL_TESTS: { code: string; name: string }[] = [
+  { code: "G1", name: "Plumbness" },
+  { code: "G2", name: "Rack run straightness" },
+  { code: "G3", name: "System lateral sway" },
+  { code: "G4", name: "Floor flatness" },
 ];
 
 /* ── 08 Security ──────────────────────────────────────────────────── */

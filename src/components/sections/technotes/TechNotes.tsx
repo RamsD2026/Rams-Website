@@ -23,6 +23,14 @@ import {
   MODULES,
   PHASES,
   PRODUCERS,
+  PLATFORM_MODULES,
+  TWIN_LAYERS,
+  EDGE_CHAIN,
+  HARDWARE,
+  PROTOCOLS,
+  RACK_STANDARDS,
+  RAG,
+  STRUCTURAL_TESTS,
   RESOURCES,
   RESPONSE,
   SAFEGUARDS,
@@ -413,6 +421,229 @@ export function TechNotes() {
                   </li>
                 ))}
               </ol>
+            </Section>
+
+            {/* ── Platform modules ──────────────────────── */}
+            <Section>
+              <H
+                id="platform-modules"
+                eyebrow="Platform modules"
+                title="One twin, modular applications on top."
+              />
+              <P>
+                Every RAMS application reads from the Digital Twin and writes
+                back to it, so a finding, an event or a task is always tied to
+                an asset, a place and a time. Start with one module and add
+                others on the same record.
+              </P>
+
+              <p className="mt-8 text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
+                The 8D framework · what the twin answers
+              </p>
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {TWIN_LAYERS.map((l) => (
+                  <div
+                    key={l.n}
+                    className="px-3.5 py-3 rounded-lg"
+                    style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                  >
+                    <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] text-signal-orange tabular-nums">
+                      {l.n}
+                    </p>
+                    <p className="mt-1.5 text-[13px] font-semibold text-white">
+                      {l.name}
+                    </p>
+                    <p className="mt-0.5 text-[11.5px] leading-[1.45] text-white/40">
+                      {l.q}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 space-y-3">
+                {PLATFORM_MODULES.map((m) => (
+                  <Card key={m.code}>
+                    <div className="flex items-baseline justify-between gap-4 flex-wrap">
+                      <p className="text-[14px] font-semibold text-white">
+                        <span className="text-signal-orange">{m.code}</span>
+                        {m.code !== m.name && (
+                          <span className="text-white/45 font-medium"> · {m.name}</span>
+                        )}
+                      </p>
+                      <Link
+                        href={m.href}
+                        className="inline-flex items-center gap-1 text-[12px] font-semibold text-white/45 hover:text-signal-orange transition-colors"
+                      >
+                        Module page
+                        <ArrowUpRight className="w-3.5 h-3.5" aria-hidden />
+                      </Link>
+                    </div>
+                    <p className="mt-2 text-[13px] leading-[1.65] text-white/50 max-w-[640px]">
+                      {m.body}
+                    </p>
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {[
+                        ["Captures", m.captures],
+                        ["Produces", m.produces],
+                      ].map(([k, v]) => (
+                        <div key={k}>
+                          <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
+                            {k}
+                          </p>
+                          <p className="mt-1.5 text-[12.5px] leading-[1.55] text-white/55">
+                            {v}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            {/* ── Edge & hardware ───────────────────────── */}
+            <Section>
+              <H
+                id="edge-hardware"
+                eyebrow="Edge & hardware"
+                title="Open at the sensor layer, intelligent at the edge."
+              />
+              <P>
+                Signals are processed near the event and then placed in twin
+                context, so a response does not wait on a round trip. Use RAMS
+                sensors, your own, or both — RAMS hardware is not required,
+                subject to integration review.
+              </P>
+
+              <div className="mt-7 flex flex-wrap items-stretch gap-2">
+                {EDGE_CHAIN.map((c, i) => (
+                  <div key={c.step} className="flex items-center gap-2">
+                    <div
+                      className="px-3.5 py-2.5 rounded-lg"
+                      style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                    >
+                      <p className="text-[12.5px] font-semibold text-white">{c.step}</p>
+                      <p className="mt-0.5 text-[11px] text-white/40">{c.body}</p>
+                    </div>
+                    {i < EDGE_CHAIN.length - 1 && (
+                      <ArrowRight className="w-3.5 h-3.5 text-signal-orange shrink-0" aria-hidden />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {HARDWARE.map((h) => (
+                  <Card key={h.family}>
+                    <p className="text-[14px] font-semibold text-signal-orange">
+                      {h.family}
+                    </p>
+                    <p className="mt-2 text-[12.5px] leading-[1.6] text-white/55">
+                      {h.items.join(" · ")}
+                    </p>
+                    <p className="mt-3 text-[12.5px] leading-[1.6] text-white/40">
+                      {h.role}
+                    </p>
+                  </Card>
+                ))}
+                <Card>
+                  <p className="text-[14px] font-semibold text-signal-orange">
+                    Open protocols
+                  </p>
+                  <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
+                    {PROTOCOLS.map((p) => (
+                      <p key={p.name} className="text-[12.5px] text-white/55">
+                        <span className="font-mono text-white/80">{p.name}</span>
+                        <span className="text-white/35"> · {p.body}</span>
+                      </p>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+
+              <p className="mt-5 text-[12.5px] leading-[1.7] text-white/35 max-w-[660px]">
+                Detection, latency, coverage and supported devices depend on the
+                selected hardware, site conditions, validated integrations and
+                configured rules. Datasheets are available on request.
+              </p>
+            </Section>
+
+            {/* ── Standards & classification ────────────── */}
+            <Section>
+              <H
+                id="standards"
+                eyebrow="Standards & classification"
+                title="Inspection against recognised standards."
+              />
+              <P>
+                Rack inspection and verification are aligned with the standards
+                below. Findings are classified Red, Amber or Green — and the
+                configured criteria, not colour alone, govern the action.
+              </P>
+
+              <div className="mt-7 flex flex-wrap gap-2">
+                {RACK_STANDARDS.map((s) => (
+                  <span
+                    key={s}
+                    className="px-3 py-1.5 rounded-full text-[12px] font-mono text-white/70"
+                    style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-8 space-y-3">
+                {RAG.map((r) => {
+                  const c =
+                    r.tone === "red" ? "#FF6C6C" : r.tone === "amber" ? "#FFBE47" : "#54DE91";
+                  return (
+                    <Card key={r.label}>
+                      <div className="flex items-start gap-3">
+                        <span
+                          aria-hidden
+                          className="mt-1 w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ background: c }}
+                        />
+                        <div>
+                          <p className="text-[14px] font-semibold" style={{ color: c }}>
+                            {r.label}
+                          </p>
+                          <p className="mt-1 text-[13px] leading-[1.65] text-white/50">
+                            {r.body}
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              <p className="mt-8 text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
+                Structural testing · from the G1–G5 test set
+              </p>
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {STRUCTURAL_TESTS.map((t) => (
+                  <div
+                    key={t.code}
+                    className="px-3.5 py-3 rounded-lg"
+                    style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                  >
+                    <p className="text-[11px] font-mono font-bold text-signal-orange">{t.code}</p>
+                    <p className="mt-1 text-[12.5px] leading-[1.4] text-white/70">{t.name}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-5 text-[12.5px] leading-[1.7] text-white/35 max-w-[660px]">
+                Inspection frequency is set by the programme — immediate
+                reporting, regular site checks and periodic expert inspection,
+                annual or risk-based. Thresholds are configured per site. See the{" "}
+                <Link href="/resources/compliance-guides" className="text-white/60 underline underline-offset-2 hover:text-signal-orange">
+                  compliance guides
+                </Link>{" "}
+                for standards and terms.
+              </p>
             </Section>
 
             {/* ── 04 API concepts ───────────────────────── */}
