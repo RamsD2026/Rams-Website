@@ -96,19 +96,54 @@ function P({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * A card on the notes' dark ground. A soft top-down gradient rather than a
+ * flat 3% fill, so it reads as a surface; on hover it lifts 2px and its
+ * hairline warms to orange. `tint` swaps the gradient and edge for a status
+ * colour (the RAG cards).
+ */
 function Card({
   children,
   className,
+  tint,
 }: {
   children: React.ReactNode;
   className?: string;
+  tint?: string;
 }) {
   return (
     <div
-      className={"p-5 rounded-xl " + (className ?? "")}
-      style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+      className={
+        "group/card relative p-5 sm:p-6 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 " +
+        "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] hover:shadow-[inset_0_0_0_1px_rgba(255,106,0,0.35),0_18px_40px_-24px_rgba(255,106,0,0.35)] " +
+        (className ?? "")
+      }
+      style={{
+        background: tint
+          ? `linear-gradient(180deg, ${tint}1F 0%, ${tint}08 100%)`
+          : "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%)",
+      }}
     >
       {children}
+    </div>
+  );
+}
+
+/** A small numbered tile — the twin layers and the structural tests. */
+function Tile({ n, title, sub }: { n: string; title: string; sub?: string }) {
+  return (
+    <div
+      className="px-4 py-3.5 rounded-xl transition-colors duration-300 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] hover:shadow-[inset_0_0_0_1px_rgba(255,106,0,0.35)]"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%)",
+      }}
+    >
+      <p className="text-[18px] font-bold tracking-[-0.02em] text-signal-orange tabular-nums leading-none">
+        {n}
+      </p>
+      <p className="mt-2.5 text-[13px] font-semibold text-white leading-[1.3]">{title}</p>
+      {sub && <p className="mt-1 text-[11.5px] leading-[1.45] text-white/40">{sub}</p>}
     </div>
   );
 }
@@ -440,57 +475,56 @@ export function TechNotes() {
               <p className="mt-8 text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
                 The 8D framework · what the twin answers
               </p>
-              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {TWIN_LAYERS.map((l) => (
-                  <div
-                    key={l.n}
-                    className="px-3.5 py-3 rounded-lg"
-                    style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-                  >
-                    <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] text-signal-orange tabular-nums">
-                      {l.n}
-                    </p>
-                    <p className="mt-1.5 text-[13px] font-semibold text-white">
-                      {l.name}
-                    </p>
-                    <p className="mt-0.5 text-[11.5px] leading-[1.45] text-white/40">
-                      {l.q}
-                    </p>
-                  </div>
+                  <Tile key={l.n} n={l.n} title={l.name} sub={l.q} />
                 ))}
               </div>
 
-              <div className="mt-8 space-y-3">
+              <div className="mt-8 space-y-4">
                 {PLATFORM_MODULES.map((m) => (
                   <Card key={m.code}>
-                    <div className="flex items-baseline justify-between gap-4 flex-wrap">
-                      <p className="text-[14px] font-semibold text-white">
-                        <span className="text-signal-orange">{m.code}</span>
-                        {m.code !== m.name && (
-                          <span className="text-white/45 font-medium"> · {m.name}</span>
-                        )}
-                      </p>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <span
+                          className="inline-flex px-2.5 py-1 rounded-md text-[10.5px] font-mono font-bold tracking-[0.14em] uppercase text-signal-orange"
+                          style={{
+                            background: "rgba(255,106,0,0.12)",
+                            boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.28)",
+                          }}
+                        >
+                          {m.code}
+                        </span>
+                        <p className="mt-3 text-[16px] font-semibold tracking-[-0.01em] text-white leading-[1.3]">
+                          {m.name}
+                        </p>
+                      </div>
                       <Link
                         href={m.href}
-                        className="inline-flex items-center gap-1 text-[12px] font-semibold text-white/45 hover:text-signal-orange transition-colors"
+                        aria-label={`${m.name} — module page`}
+                        className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full text-white/55 transition-all duration-300 hover:text-white hover:bg-signal-orange group-hover/card:text-signal-orange"
+                        style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.12)" }}
                       >
-                        Module page
-                        <ArrowUpRight className="w-3.5 h-3.5" aria-hidden />
+                        <ArrowUpRight className="w-4 h-4" aria-hidden />
                       </Link>
                     </div>
-                    <p className="mt-2 text-[13px] leading-[1.65] text-white/50 max-w-[640px]">
+                    <p className="mt-3 text-[13.5px] leading-[1.7] text-white/55 max-w-[640px]">
                       {m.body}
                     </p>
-                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {[
                         ["Captures", m.captures],
                         ["Produces", m.produces],
                       ].map(([k, v]) => (
-                        <div key={k}>
-                          <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
+                        <div
+                          key={k}
+                          className="px-4 py-3 rounded-xl"
+                          style={{ background: "rgba(0,0,0,0.22)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                        >
+                          <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/35">
                             {k}
                           </p>
-                          <p className="mt-1.5 text-[12.5px] leading-[1.55] text-white/55">
+                          <p className="mt-1.5 text-[12.5px] leading-[1.6] text-white/70">
                             {v}
                           </p>
                         </div>
@@ -535,27 +569,41 @@ export function TechNotes() {
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {HARDWARE.map((h) => (
                   <Card key={h.family}>
-                    <p className="text-[14px] font-semibold text-signal-orange">
+                    <p className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.01em] text-white">
+                      <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
                       {h.family}
                     </p>
-                    <p className="mt-2 text-[12.5px] leading-[1.6] text-white/55">
-                      {h.items.join(" · ")}
-                    </p>
-                    <p className="mt-3 text-[12.5px] leading-[1.6] text-white/40">
+                    <div className="mt-3.5 flex flex-wrap gap-1.5">
+                      {h.items.map((it) => (
+                        <span
+                          key={it}
+                          className="px-2.5 py-1 rounded-full text-[11.5px] text-white/70"
+                          style={{ background: "rgba(255,255,255,0.05)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                        >
+                          {it}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-4 text-[12.5px] leading-[1.65] text-white/45">
                       {h.role}
                     </p>
                   </Card>
                 ))}
                 <Card>
-                  <p className="text-[14px] font-semibold text-signal-orange">
+                  <p className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.01em] text-white">
+                    <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
                     Open protocols
                   </p>
-                  <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
+                  <div className="mt-3.5 grid grid-cols-2 gap-2">
                     {PROTOCOLS.map((p) => (
-                      <p key={p.name} className="text-[12.5px] text-white/55">
-                        <span className="font-mono text-white/80">{p.name}</span>
-                        <span className="text-white/35"> · {p.body}</span>
-                      </p>
+                      <div
+                        key={p.name}
+                        className="px-3 py-2.5 rounded-lg"
+                        style={{ background: "rgba(0,0,0,0.22)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                      >
+                        <p className="text-[12.5px] font-mono font-semibold text-white/85">{p.name}</p>
+                        <p className="mt-0.5 text-[11px] text-white/40">{p.body}</p>
+                      </div>
                     ))}
                   </div>
                 </Card>
@@ -598,22 +646,22 @@ export function TechNotes() {
                   const c =
                     r.tone === "red" ? "#FF6C6C" : r.tone === "amber" ? "#FFBE47" : "#54DE91";
                   return (
-                    <Card key={r.label}>
-                      <div className="flex items-start gap-3">
-                        <span
-                          aria-hidden
-                          className="mt-1 w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ background: c }}
-                        />
-                        <div>
-                          <p className="text-[14px] font-semibold" style={{ color: c }}>
-                            {r.label}
-                          </p>
-                          <p className="mt-1 text-[13px] leading-[1.65] text-white/50">
-                            {r.body}
-                          </p>
-                        </div>
-                      </div>
+                    <Card key={r.label} tint={c} className="overflow-hidden pl-6 sm:pl-7">
+                      <span
+                        aria-hidden
+                        className="absolute left-0 top-0 bottom-0 w-[3px]"
+                        style={{ background: c }}
+                      />
+                      <p
+                        className="inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.16em] uppercase"
+                        style={{ color: c }}
+                      >
+                        <span aria-hidden className="w-2 h-2 rounded-full" style={{ background: c }} />
+                        {r.label}
+                      </p>
+                      <p className="mt-2 text-[13.5px] leading-[1.7] text-white/65">
+                        {r.body}
+                      </p>
                     </Card>
                   );
                 })}
@@ -622,16 +670,9 @@ export function TechNotes() {
               <p className="mt-8 text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/25">
                 Structural testing · from the G1–G5 test set
               </p>
-              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {STRUCTURAL_TESTS.map((t) => (
-                  <div
-                    key={t.code}
-                    className="px-3.5 py-3 rounded-lg"
-                    style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-                  >
-                    <p className="text-[11px] font-mono font-bold text-signal-orange">{t.code}</p>
-                    <p className="mt-1 text-[12.5px] leading-[1.4] text-white/70">{t.name}</p>
-                  </div>
+                  <Tile key={t.code} n={t.code} title={t.name} />
                 ))}
               </div>
 
