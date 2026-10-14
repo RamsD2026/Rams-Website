@@ -1,27 +1,51 @@
 import type { Metadata } from "next";
-import { CareersComingSoon } from "@/components/sections/careers/CareersComingSoon";
+import { CareersIntro } from "@/components/sections/careers/CareersIntro";
+import {
+  CareersBuild,
+  CareersClose,
+  CareersFAQ,
+  CareersHiring,
+  CareersHowWeWork,
+  CareersTalent,
+  CareersTeams,
+  CareersWhy,
+} from "@/components/sections/careers/CareersSections";
 
 export const metadata: Metadata = {
   title: "Careers | RAMS Digital",
   description:
-    "Careers at RAMS Digital. Roles are on their way.",
+    "Build technology that changes what happens on the ground. Explore career areas at RAMS Digital and share your profile with the team.",
 };
 
 /**
- * /company/careers — a holding page.
+ * /company/careers.
  *
- * The footer has linked Careers since it was written and the route returned a
- * 404, which is worse than an honest holding page: a dead link in a footer
- * reads as a broken site rather than as a page that is not ready.
+ * Built from RAMS's `RAMS_Digital_Careers.html` (Downloads/07-09), in the
+ * section order of DXC's careers page: a hero with a search, career areas to
+ * explore, a talent-network band, about-the-company content, how hiring
+ * works, an FAQ and a close. It replaces the `CareersComingSoon` holding
+ * page, which is kept for reuse.
  *
- * One section, full viewport, and no header of its own — see
- * `CareersComingSoon` for the eclipse. The page is dark and does not set
- * `data-hero-tone="light"`, so the navbar keeps its default transparent
- * treatment over it, which is what every other dark hero on the site does.
+ * There are no job listings. The source lists career areas, not vacancies,
+ * and says so; the page keeps that note and sends every application to
+ * connect@rams.digital. See `careers-data` before adding anything that looks
+ * like an opening.
  *
- * The source document for the real careers page is in `Downloads/07-09`
- * (`RAMS_Digital_Careers.html`) when the roles exist.
+ * The hero is dark and does not set `data-hero-tone="light"`, so the navbar
+ * keeps its transparent treatment over it like every other dark hero.
  */
 export default function CareersPage() {
-  return <CareersComingSoon />;
+  return (
+    <>
+      <CareersIntro />
+      <CareersTalent />
+      <CareersWhy />
+      <CareersTeams />
+      <CareersBuild />
+      <CareersHowWeWork />
+      <CareersHiring />
+      <CareersFAQ />
+      <CareersClose />
+    </>
+  );
 }
