@@ -17,6 +17,9 @@
  */
 
 export const CAREERS_EMAIL = "connect@rams.digital";
+
+/** Window event the page's bands fire to open a general application. */
+export const APPLY_EVENT = "rams:careers-apply";
 export const PROFILE_MAILTO = `mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent("Career Opportunity at RAMS Digital")}`;
 export const OPENINGS_MAILTO = `mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent("Current Openings at RAMS Digital")}`;
 

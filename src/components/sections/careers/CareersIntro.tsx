@@ -1,57 +1,97 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, Search, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Bookmark,
+  BookmarkCheck,
+  Search,
+  X,
+} from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
-import {
-  CAREERS_EMAIL,
-  FAMILIES,
-  GROUPS,
-  HERO_CHIPS,
-  type GroupId,
-} from "./careers-data";
+import { FilterBar } from "@/components/sections/FilterBar";
+import { APPLY_EVENT, CAREERS_EMAIL, FAMILIES, GROUPS, HERO_CHIPS, type GroupId } from "./careers-data";
+import { listedJobs, type Job } from "./jobs-data";
+import { useSavedJobs } from "./career-store";
+import { ApplyDialog, JobDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs";
 
 /**
- * The careers hero and the career-area explorer, in one component because
- * the hero's search drives the explorer below it.
+ * The top of the careers page — hero, open roles and career areas — as one
+ * client component, because the three share state: the hero search filters
+ * the job board, and a career area can send you to its roles.
  *
- * DXC's careers page opens on a job search over a photograph and follows it
- * with categories to explore. RAMS has career areas rather than live
- * vacancies (see `careers-data`), so the search here filters those areas —
- * title, description and skills — and the categories are four photo tiles,
- * each filtering the nine family cards to its own set. Submitting the hero
- * search scrolls to the results.
+ * ── After DXC's careers page ────────────────────────────────────────
+ * DXC opens on a job search and lists roles you can save or apply to; the
+ * application offers autofill from a résumé, a manual form, the last
+ * application and LinkedIn. All of that is here (`CareerDialogs`), built from
+ * the site's own parts: the hero follows the site's dark heroes, the board's
+ * filter is the shared `FilterBar` (with `slide`, so it is one swipeable row
+ * on a phone), and the dialogs use `CaseModal`'s shell.
  *
- * The hero is dark and does not declare `data-hero-tone="light"`, so the
- * navbar keeps its transparent treatment over it like every dark hero.
+ * ── Roles are real or they are absent ───────────────────────────────
+ * The board reads `listedJobs()` (see `jobs-data`). With no real openings it
+ * says so and offers the talent network — a general application through the
+ * same apply flow — rather than inventing vacancies.
  */
 
 const HAIR = "#E8E8ED";
+const ALL = "All roles";
 
 export function CareersIntro() {
+  const jobs = useMemo(() => listedJobs(), []);
+  const { saved, toggle, isSaved } = useSavedJobs();
+
   const [q, setQ] = useState("");
+  const [team, setTeam] = useState(ALL);
+  const [savedOnly, setSavedOnly] = useState(false);
   const [group, setGroup] = useState<GroupId | null>(null);
+  const [open, setOpen] = useState<Job | null>(null);
+  const [applying, setApplying] = useState<{ job: Job | null } | null>(null);
 
-  const shown = useMemo(() => {
+  /* The bands further down the page (`CareersSections`) open a general
+     application through this one flow rather than a mailto of their own. */
+  useEffect(() => {
+    const open = () => setApplying({ job: null });
+    window.addEventListener(APPLY_EVENT, open);
+    return () => window.removeEventListener(APPLY_EVENT, open);
+  }, []);
+
+  const teams = useMemo(() => {
+    const present = FAMILIES.filter((f) => jobs.some((j) => j.family === f.code));
+    return [ALL, ...present.map((f) => f.title)];
+  }, [jobs]);
+
+  const shownJobs = useMemo(() => {
     const term = q.trim().toLowerCase();
-    return FAMILIES.filter((f) => {
-      if (group && f.group !== group) return false;
+    return jobs.filter((j) => {
+      if (savedOnly && !saved.includes(j.id)) return false;
+      if (team !== ALL && familyTitle(j.family) !== team) return false;
       if (!term) return true;
-      return (
-        f.title.toLowerCase().includes(term) ||
-        f.body.toLowerCase().includes(term) ||
-        f.tags.some((t) => t.toLowerCase().includes(term))
-      );
+      return [j.title, j.summary, j.location, j.type, j.mode, familyTitle(j.family), ...j.requirements]
+        .join(" ")
+        .toLowerCase()
+        .includes(term);
     });
-  }, [q, group]);
+  }, [jobs, q, team, savedOnly, saved]);
 
-  const toAreas = () =>
-    document.getElementById("areas")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const shownFamilies = FAMILIES.filter((f) => !group || f.group === group);
 
-  const activeGroup = GROUPS.find((g) => g.id === group);
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const seeRoles = (title: string) => {
+    setTeam(title);
+    setSavedOnly(false);
+    setQ("");
+    scrollTo("jobs");
+  };
+
+  const hasJobs = jobs.length > 0;
 
   return (
     <>
@@ -74,20 +114,17 @@ export function CareersIntro() {
 
         <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-20 sm:pb-24">
           <div className="max-w-[920px] mx-auto text-center">
-            <motion.span
+            <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.04]"
+              transition={{ duration: 0.55, ease: EASE }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur"
             >
-              <span className="relative flex w-2 h-2" aria-hidden>
-                <span className="absolute inset-0 rounded-full bg-[#2BCB74] opacity-60 animate-ping" />
-                <span className="relative w-2 h-2 rounded-full bg-[#2BCB74]" />
-              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
               <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/70">
-                Careers · Talent network open
+                Careers at RAMS Digital
               </span>
-            </motion.span>
+            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 22 }}
@@ -110,15 +147,16 @@ export function CareersIntro() {
               and other physical environments.
             </motion.p>
 
-            {/* the search — over career areas, not job listings */}
+            {/* job search */}
             <motion.form
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
               onSubmit={(e) => {
                 e.preventDefault();
-                setGroup(null);
-                toAreas();
+                setTeam(ALL);
+                setSavedOnly(false);
+                scrollTo("jobs");
               }}
               role="search"
               className="mt-9 mx-auto max-w-[620px] flex items-center gap-2 p-1.5 rounded-full bg-white/[0.06] border border-white/12 focus-within:border-signal-orange/70 transition-colors"
@@ -128,15 +166,15 @@ export function CareersIntro() {
                 type="search"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search career areas — e.g. data, inspection, design"
-                aria-label="Search career areas"
+                placeholder="Search roles, teams or skills"
+                aria-label="Search roles"
                 className="flex-1 min-w-0 bg-transparent py-2.5 text-[14px] text-white placeholder:text-white/35 outline-none"
               />
               <button
                 type="submit"
                 className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover"
               >
-                <span className="hidden sm:inline">Search areas</span>
+                <span className="hidden sm:inline">Find roles</span>
                 <span className="sm:hidden">Search</span>
               </button>
             </motion.form>
@@ -157,31 +195,232 @@ export function CareersIntro() {
               ))}
             </motion.div>
 
-            <button
-              type="button"
-              onClick={toAreas}
-              className="mt-10 inline-flex items-center gap-2 text-[13px] font-semibold text-white/60 hover:text-white transition-colors"
-            >
-              Explore career areas
-              <ArrowDown className="w-4 h-4" aria-hidden />
-            </button>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+              <button
+                type="button"
+                onClick={() => scrollTo("jobs")}
+                className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                {hasJobs ? `View ${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}` : "View open roles"}
+                <ArrowDown className="w-4 h-4" aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={() => setApplying({ job: null })}
+                className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                Join the talent network
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── explore ──────────────────────────────────── */}
-      <Section surface="white" id="areas">
+      {/* ── open roles ───────────────────────────────── */}
+      <Section surface="white" id="jobs">
+        <SectionHeader
+          eyebrow="Open roles"
+          top="Find your role"
+          bottom="On the ground floor."
+          size="compact"
+          width="wide"
+          body="Search and filter current openings, save the ones you like, and apply in a few minutes."
+          className="!mb-10 sm:!mb-12"
+        />
+
+        {hasJobs && (
+          <>
+            <FilterBar
+              tabs={teams}
+              active={team}
+              onTab={(t) => {
+                setTeam(t);
+                setSavedOnly(false);
+              }}
+              label="Filter roles by team"
+              query={q}
+              onQuery={setQ}
+              placeholder="Search roles…"
+              slide
+            />
+
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-[13px] text-graphite/60">
+                Showing <span className="font-semibold text-carbon">{shownJobs.length}</span> of{" "}
+                {jobs.length} {jobs.length === 1 ? "role" : "roles"}
+              </p>
+              <button
+                type="button"
+                onClick={() => setSavedOnly((v) => !v)}
+                aria-pressed={savedOnly}
+                className={
+                  "inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold transition-colors " +
+                  (savedOnly ? "bg-carbon text-white" : "bg-[#F2F2F2] text-carbon hover:bg-[#E8E8ED]")
+                }
+              >
+                <BookmarkCheck className="w-4 h-4" aria-hidden />
+                Saved jobs ({saved.filter((id) => jobs.some((j) => j.id === id)).length})
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <AnimatePresence mode="popLayout">
+                {shownJobs.map((j) => {
+                  const on = isSaved(j.id);
+                  return (
+                    <motion.article
+                      key={j.id}
+                      layout
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.35, ease: EASE }}
+                      className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white transition-all duration-300 hover:shadow-[0_22px_44px_-30px_rgba(14,14,15,0.35)]"
+                      style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setOpen(j)}
+                        className="flex-1 min-w-0 text-left"
+                      >
+                        <span className="flex flex-wrap items-center gap-2">
+                          <span
+                            className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange px-2.5 py-1 rounded-full"
+                            style={{ background: "rgba(255,106,0,0.08)" }}
+                          >
+                            {familyTitle(j.family)}
+                          </span>
+                          {j.sample && (
+                            <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/55 px-2.5 py-1 rounded-full bg-[#F2F2F2]">
+                              Sample
+                            </span>
+                          )}
+                          <span className="text-[12px] text-graphite/45">
+                            Posted {postedLabel(j.posted)}
+                          </span>
+                        </span>
+                        <span className="mt-2.5 block text-[18px] sm:text-[19px] font-bold tracking-[-0.02em] text-carbon leading-[1.3] group-hover:text-signal-orange transition-colors">
+                          {j.title}
+                        </span>
+                        <span className="mt-2 block">
+                          <JobMeta job={j} />
+                        </span>
+                      </button>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => toggle(j.id)}
+                          aria-pressed={on}
+                          aria-label={on ? `Remove ${j.title} from saved jobs` : `Save ${j.title}`}
+                          className="flex items-center justify-center w-11 h-11 rounded-full transition-colors hover:bg-[#F2F2F2]"
+                          style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                        >
+                          {on ? (
+                            <BookmarkCheck className="w-[18px] h-[18px] text-signal-orange" aria-hidden />
+                          ) : (
+                            <Bookmark className="w-[18px] h-[18px] text-carbon" aria-hidden />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setOpen(j)}
+                          className="hidden sm:inline-flex items-center px-5 h-11 rounded-full text-[13.5px] font-semibold text-carbon hover:bg-[#F2F2F2] transition-colors"
+                          style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                        >
+                          View role
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setApplying({ job: j })}
+                          className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover"
+                        >
+                          Apply
+                          <ArrowRight className="w-4 h-4" aria-hidden />
+                        </button>
+                      </div>
+                    </motion.article>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
+
+            {shownJobs.length === 0 && (
+              <div className="py-14 text-center">
+                <p className="text-[15px] font-semibold text-carbon">
+                  {savedOnly ? "You have not saved any roles yet." : "No roles match that search."}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQ("");
+                    setTeam(ALL);
+                    setSavedOnly(false);
+                  }}
+                  className="mt-3 text-[13.5px] font-semibold text-signal-orange hover:underline underline-offset-2"
+                >
+                  Show all roles
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {!hasJobs && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="max-w-[820px] mx-auto text-center p-8 sm:p-12 rounded-3xl bg-[#F5F5F7]"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/60" style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2BCB74]" aria-hidden />
+              Talent network open
+            </span>
+            <h3 className="mt-5 text-[24px] sm:text-[30px] font-bold tracking-[-0.03em] text-carbon leading-[1.2]">
+              No open roles right now.
+            </h3>
+            <p className="mt-3 mx-auto max-w-[560px] text-[15px] leading-[1.65] text-graphite/65">
+              New openings appear here as the team grows. Share your profile
+              now and we will be in touch when there is a fit — or explore the
+              career areas we hire for below.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setApplying({ job: null })}
+                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-full transition-colors hover:bg-signal-orange-hover"
+              >
+                Join the talent network
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollTo("areas")}
+                className="inline-flex items-center gap-2 text-carbon text-[14px] font-semibold px-6 py-3 rounded-full bg-white hover:bg-[#ECECEF] transition-colors"
+                style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+              >
+                Explore career areas
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </Section>
+
+      {/* ── career areas ─────────────────────────────── */}
+      <Section surface="offWhite" id="areas">
         <SectionHeader
           eyebrow="Career areas"
           top="Find where your craft"
           bottom="Meets the physical world."
           size="compact"
           width="wide"
-          body="Explore the kinds of work RAMS needs as the platform, field network and customer base grow."
+          body="The kinds of work RAMS needs as the platform, field network and customer base grow."
           className="!mb-10 sm:!mb-12"
         />
 
-        {/* the four category tiles */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {GROUPS.map((g) => {
             const on = group === g.id;
@@ -193,8 +432,8 @@ export function CareersIntro() {
                 onClick={() => setGroup(on ? null : g.id)}
                 aria-pressed={on}
                 className={
-                  "group relative overflow-hidden rounded-2xl text-left aspect-[4/5] sm:aspect-[4/3] lg:aspect-[3/4] outline-none transition-shadow duration-300 focus-visible:ring-2 focus-visible:ring-signal-orange " +
-                  (on ? "ring-2 ring-signal-orange ring-offset-2" : "")
+                  "group relative overflow-hidden rounded-2xl text-left aspect-[4/5] sm:aspect-[4/3] lg:aspect-[3/4] outline-none focus-visible:ring-2 focus-visible:ring-signal-orange " +
+                  (on ? "ring-2 ring-signal-orange ring-offset-2 ring-offset-[#F5F5F7]" : "")
                 }
                 style={{ background: "#0E0E10" }}
               >
@@ -229,106 +468,113 @@ export function CareersIntro() {
           })}
         </div>
 
-        {/* the result bar */}
-        <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[13px] text-graphite/60">
-            Showing <span className="font-semibold text-carbon">{shown.length}</span> of{" "}
-            {FAMILIES.length} career areas
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {activeGroup && (
-              <button
-                type="button"
-                onClick={() => setGroup(null)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium bg-carbon text-white"
-              >
-                {activeGroup.title}
-                <X className="w-3.5 h-3.5" aria-hidden />
-              </button>
-            )}
-            {q.trim() && (
-              <button
-                type="button"
-                onClick={() => setQ("")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium bg-[#F2F2F2] text-carbon"
-              >
-                “{q.trim()}”
-                <X className="w-3.5 h-3.5" aria-hidden />
-              </button>
-            )}
+        {group && (
+          <div className="mt-8 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setGroup(null)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium bg-carbon text-white"
+            >
+              {GROUPS.find((g) => g.id === group)?.title}
+              <X className="w-3.5 h-3.5" aria-hidden />
+            </button>
           </div>
-        </div>
+        )}
 
-        {/* the family cards */}
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className={(group ? "mt-4" : "mt-10 sm:mt-12") + " grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"}>
           <AnimatePresence mode="popLayout">
-            {shown.map((f) => (
-              <motion.article
-                key={f.code}
-                layout
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4, ease: EASE }}
-                className="group flex flex-col p-6 rounded-2xl bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-28px_rgba(14,14,15,0.35)]"
-                style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-              >
-                <span
-                  className="self-start inline-flex px-2.5 py-1 rounded-md text-[10.5px] font-mono font-bold tracking-[0.14em] text-signal-orange"
-                  style={{ background: "rgba(255,106,0,0.08)" }}
+            {shownFamilies.map((f) => {
+              const roles = jobs.filter((j) => j.family === f.code).length;
+              return (
+                <motion.article
+                  key={f.code}
+                  layout
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                  className="group flex flex-col p-6 rounded-2xl bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-28px_rgba(14,14,15,0.35)]"
+                  style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
                 >
-                  {f.code}
-                </span>
-                <h3 className="mt-4 text-[19px] font-bold tracking-[-0.02em] text-carbon leading-[1.25]">
-                  {f.title}
-                </h3>
-                <p className="mt-2.5 text-[14px] leading-[1.65] text-graphite/65 flex-1">
-                  {f.body}
-                </p>
-                <div className="mt-5 flex flex-wrap gap-1.5">
-                  {f.tags.map((t) => (
+                  <div className="flex items-center justify-between gap-3">
                     <span
-                      key={t}
-                      className="px-2.5 py-1 rounded-full text-[11.5px] font-medium text-graphite bg-[#F5F5F7]"
+                      className="inline-flex px-2.5 py-1 rounded-md text-[10.5px] font-mono font-bold tracking-[0.14em] text-signal-orange"
+                      style={{ background: "rgba(255,106,0,0.08)" }}
                     >
-                      {t}
+                      {f.code}
                     </span>
-                  ))}
-                </div>
-                <a
-                  href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent(`Career interest — ${f.title}`)}`}
-                  className="mt-6 inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors"
-                >
-                  Ask about this area
-                  <ArrowUpRight className="w-4 h-4" aria-hidden />
-                </a>
-              </motion.article>
-            ))}
+                    {roles > 0 && (
+                      <span className="text-[11.5px] font-semibold text-[#1E9E5A]">
+                        {roles} open {roles === 1 ? "role" : "roles"}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="mt-4 text-[19px] font-bold tracking-[-0.02em] text-carbon leading-[1.25]">
+                    {f.title}
+                  </h3>
+                  <p className="mt-2.5 text-[14px] leading-[1.65] text-graphite/65 flex-1">{f.body}</p>
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {f.tags.map((t) => (
+                      <span key={t} className="px-2.5 py-1 rounded-full text-[11.5px] font-medium text-graphite bg-[#F5F5F7]">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  {roles > 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => seeRoles(f.title)}
+                      className="mt-6 self-start inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors"
+                    >
+                      See open roles
+                      <ArrowRight className="w-4 h-4" aria-hidden />
+                    </button>
+                  ) : (
+                    <a
+                      href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent(`Career interest — ${f.title}`)}`}
+                      className="mt-6 self-start inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors"
+                    >
+                      Ask about this area
+                      <ArrowUpRight className="w-4 h-4" aria-hidden />
+                    </a>
+                  )}
+                </motion.article>
+              );
+            })}
           </AnimatePresence>
         </div>
 
-        {shown.length === 0 && (
-          <p className="py-14 text-center text-[14.5px] leading-[1.7] text-graphite/55">
-            No career area matches that search. Try another word, or{" "}
-            <button
-              type="button"
-              onClick={() => {
-                setQ("");
-                setGroup(null);
-              }}
-              className="font-semibold text-carbon underline underline-offset-2 hover:text-signal-orange"
-            >
-              show all areas
-            </button>
-            .
-          </p>
-        )}
-
         <p className="mt-10 text-center text-[12.5px] leading-[1.65] text-graphite/45 max-w-[760px] mx-auto">
           These are career areas, not a guarantee that every role is currently
-          open. Share your profile with the team to check current opportunities.
+          open. Open roles are listed above.
         </p>
       </Section>
+
+      {/* ── dialogs ──────────────────────────────────── */}
+      <AnimatePresence>
+        {open && !applying && (
+          <JobDialog
+            key={`job-${open.id}`}
+            job={open}
+            saved={isSaved(open.id)}
+            onSave={() => toggle(open.id)}
+            onApply={() => setApplying({ job: open })}
+            onClose={() => setOpen(null)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {applying && (
+          <ApplyDialog
+            key={`apply-${applying.job?.id ?? "general"}`}
+            job={applying.job}
+            onClose={() => {
+              setApplying(null);
+              setOpen(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

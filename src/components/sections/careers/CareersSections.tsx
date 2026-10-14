@@ -13,10 +13,9 @@ import {
   LOOP,
   MISSION,
   MODULE_CHIPS,
-  OPENINGS_MAILTO,
+  APPLY_EVENT,
   OUTCOMES,
   PRINCIPLES,
-  PROFILE_MAILTO,
   STACK,
   TODAY,
   TOWARD,
@@ -40,25 +39,28 @@ const reveal = (i = 0) => ({
   transition: { duration: 0.6, delay: i * 0.06, ease: EASE },
 });
 
-function PrimaryCTA({ href, children }: { href: string; children: React.ReactNode }) {
+/** Opens the general application in `CareersIntro`'s apply flow. */
+function ShareProfile() {
   return (
-    <a
-      href={href}
-      className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-full transition-colors hover:bg-signal-orange-hover"
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new Event(APPLY_EVENT))}
+      className="inline-flex items-center justify-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-full transition-colors hover:bg-signal-orange-hover"
     >
-      {children}
+      Share your profile
       <ArrowRight className="w-4 h-4" aria-hidden />
-    </a>
+    </button>
   );
 }
 
-function GhostCTA({ href, children }: { href: string; children: React.ReactNode }) {
+function ViewRoles() {
   return (
     <a
-      href={href}
-      className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3 rounded-full border border-white/15 transition-colors hover:bg-white/[0.06]"
+      href="#jobs"
+      className="inline-flex items-center justify-center gap-2 text-white text-[14px] font-semibold px-6 py-3 rounded-full border border-white/15 transition-colors hover:bg-white/[0.06]"
     >
-      {children}
+      View open roles
+      <ArrowUpRight className="w-4 h-4" aria-hidden />
     </a>
   );
 }
@@ -91,8 +93,8 @@ export function CareersTalent() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3 lg:flex-col lg:items-stretch">
-          <PrimaryCTA href={PROFILE_MAILTO}>Share your profile</PrimaryCTA>
-          <GhostCTA href={OPENINGS_MAILTO}>Ask about current openings</GhostCTA>
+          <ShareProfile />
+          <ViewRoles />
         </div>
       </motion.div>
     </Section>
@@ -490,11 +492,8 @@ export function CareersClose() {
           problem together.
         </motion.p>
         <motion.div {...reveal(3)} className="mt-9 flex flex-wrap justify-center gap-3">
-          <PrimaryCTA href={PROFILE_MAILTO}>Share your profile</PrimaryCTA>
-          <GhostCTA href={OPENINGS_MAILTO}>
-            Ask about current openings
-            <ArrowUpRight className="w-4 h-4" aria-hidden />
-          </GhostCTA>
+          <ShareProfile />
+          <ViewRoles />
         </motion.div>
         <p className="mt-10 text-[12px] leading-[1.6] text-white/30">
           Role availability and employment terms are confirmed during the hiring process.
