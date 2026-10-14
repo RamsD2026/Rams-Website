@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, ShieldAlert } from "lucide-react";
 import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
 import { EMAIL, PHONE_1, tel } from "@/components/sections/contact/contact-data";
@@ -25,7 +25,7 @@ import {
   PRODUCERS,
   PLATFORM_MODULES,
   TWIN_LAYERS,
-  EDGE_CHAIN,
+  EDGE_STAGES,
   HARDWARE,
   PROTOCOLS,
   RACK_STANDARDS,
@@ -160,6 +160,152 @@ function Section({ children }: { children: React.ReactNode }) {
     >
       {children}
     </motion.section>
+  );
+}
+
+/* ── the edge pipeline ────────────────────────────────────────────── */
+
+/**
+ * "Open at the sensor layer, intelligent at the edge" as one vertical
+ * pipeline: five numbered stages on an orange spine, with each hardware
+ * family drawn inside the stage it serves and the open protocols as the
+ * hand-off between sensor and edge. A soft glow runs down the spine to show
+ * the direction of travel; it holds still under reduced motion. One column
+ * at every width, so a phone reads it the same way.
+ */
+function EdgePipeline() {
+  const reduce = useReducedMotion();
+  const family = (name: string) => HARDWARE.find((h) => h.family === name);
+
+  return (
+    <div className="relative mt-9">
+      {/* the spine */}
+      <span
+        aria-hidden
+        className="absolute left-[15px] top-4 bottom-4 w-px"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,106,0,0.55) 0%, rgba(255,106,0,0.18) 100%)",
+        }}
+      />
+      {!reduce && (
+        <motion.span
+          aria-hidden
+          className="absolute left-[14px] w-[3px] h-20 rounded-full"
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 0%, #FF6A00 50%, transparent 100%)",
+            boxShadow: "0 0 12px rgba(255,106,0,0.7)",
+          }}
+          initial={{ top: "0%" }}
+          animate={{ top: ["0%", "90%"] }}
+          transition={{ duration: 5, ease: "linear", repeat: Infinity, repeatDelay: 0.4 }}
+        />
+      )}
+
+      <ol className="space-y-8">
+        {EDGE_STAGES.map((s) => (
+          <li key={s.n} className="relative pl-12 sm:pl-14">
+            {/* the node */}
+            <span
+              aria-hidden
+              className="absolute left-0 top-0 flex items-center justify-center w-8 h-8 rounded-full text-[11px] font-mono font-bold text-signal-orange tabular-nums"
+              style={{
+                background: SURFACE.ink,
+                boxShadow:
+                  "inset 0 0 0 1.5px rgba(255,106,0,0.7), 0 0 0 4px rgba(255,106,0,0.08)",
+              }}
+            >
+              {s.n}
+            </span>
+
+            <p className="pt-1 text-[16px] font-semibold tracking-[-0.01em] text-white leading-[1.3]">
+              {s.step}
+            </p>
+            <p className="mt-1.5 text-[13.5px] leading-[1.7] text-white/55 max-w-[600px]">
+              {s.body}
+            </p>
+
+            {s.chips && (
+              <div className="mt-3.5 flex flex-wrap gap-1.5">
+                {s.chips.map((c) => (
+                  <span
+                    key={c}
+                    className="px-3 py-1 rounded-full text-[11.5px] font-medium text-white/75"
+                    style={{ background: "rgba(255,255,255,0.05)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {s.families && (
+              <div
+                className={
+                  "mt-4 grid gap-3 " +
+                  (s.families.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1")
+                }
+              >
+                {s.families.map((name) => {
+                  const h = family(name);
+                  if (!h) return null;
+                  return (
+                    <Card key={h.family} className="!p-4 sm:!p-5">
+                      <p className="flex items-center gap-2 text-[14px] font-semibold text-white">
+                        <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
+                        {h.family}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {h.items.map((it) => (
+                          <span
+                            key={it}
+                            className="px-2.5 py-1 rounded-full text-[11px] text-white/70"
+                            style={{ background: "rgba(255,255,255,0.05)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                          >
+                            {it}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="mt-3 text-[12px] leading-[1.6] text-white/45">{h.role}</p>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+
+            {s.aside && (
+              <p
+                className="mt-3 inline-flex px-3.5 py-2 rounded-lg text-[12.5px] font-medium text-white/70"
+                style={{ boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.35)", background: "rgba(255,106,0,0.06)" }}
+              >
+                {s.aside}
+              </p>
+            )}
+
+            {/* the hand-off from sensor to edge */}
+            {s.n === "01" && (
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <span className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/30 mr-1">
+                  Connects via
+                </span>
+                {PROTOCOLS.map((p) => (
+                  <span
+                    key={p.name}
+                    className="px-2.5 py-1 rounded-md text-[11.5px] text-white/45"
+                    style={{ background: "rgba(0,0,0,0.25)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                  >
+                    <span className="font-mono font-semibold text-white/85">{p.name}</span>
+                    {" · "}
+                    {p.body}
+                  </span>
+                ))}
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -549,65 +695,7 @@ export function TechNotes() {
                 subject to integration review.
               </P>
 
-              <div className="mt-7 flex flex-wrap items-stretch gap-2">
-                {EDGE_CHAIN.map((c, i) => (
-                  <div key={c.step} className="flex items-center gap-2">
-                    <div
-                      className="px-3.5 py-2.5 rounded-lg"
-                      style={{ background: CARD, boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-                    >
-                      <p className="text-[12.5px] font-semibold text-white">{c.step}</p>
-                      <p className="mt-0.5 text-[11px] text-white/40">{c.body}</p>
-                    </div>
-                    {i < EDGE_CHAIN.length - 1 && (
-                      <ArrowRight className="w-3.5 h-3.5 text-signal-orange shrink-0" aria-hidden />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {HARDWARE.map((h) => (
-                  <Card key={h.family}>
-                    <p className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.01em] text-white">
-                      <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
-                      {h.family}
-                    </p>
-                    <div className="mt-3.5 flex flex-wrap gap-1.5">
-                      {h.items.map((it) => (
-                        <span
-                          key={it}
-                          className="px-2.5 py-1 rounded-full text-[11.5px] text-white/70"
-                          style={{ background: "rgba(255,255,255,0.05)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-                        >
-                          {it}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="mt-4 text-[12.5px] leading-[1.65] text-white/45">
-                      {h.role}
-                    </p>
-                  </Card>
-                ))}
-                <Card>
-                  <p className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.01em] text-white">
-                    <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
-                    Open protocols
-                  </p>
-                  <div className="mt-3.5 grid grid-cols-2 gap-2">
-                    {PROTOCOLS.map((p) => (
-                      <div
-                        key={p.name}
-                        className="px-3 py-2.5 rounded-lg"
-                        style={{ background: "rgba(0,0,0,0.22)", boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-                      >
-                        <p className="text-[12.5px] font-mono font-semibold text-white/85">{p.name}</p>
-                        <p className="mt-0.5 text-[11px] text-white/40">{p.body}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </div>
+              <EdgePipeline />
 
               <p className="mt-5 text-[12.5px] leading-[1.7] text-white/35 max-w-[660px]">
                 Detection, latency, coverage and supported devices depend on the

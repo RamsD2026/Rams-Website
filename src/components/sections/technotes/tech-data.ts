@@ -460,12 +460,51 @@ export const PLATFORM_MODULES: {
   },
 ];
 
-export const EDGE_CHAIN: { step: string; body: string }[] = [
-  { step: "Sensor", body: "Physical signal" },
-  { step: "Edge processor", body: "OmniBox or customer edge — process near the event" },
-  { step: "Twin context", body: "Asset + place + time" },
-  { step: "Cloud / history", body: "Persistent record" },
-  { step: "Action", body: "Operational response" },
+/**
+ * The edge chain as five stages, with the hardware placed in the stage it
+ * belongs to rather than listed beside the chain. `families` name entries in
+ * `HARDWARE`; `chips` are short labels for the stages that hold no hardware.
+ * The chain itself is `twin/TwinIntegrations`'s: sensor → edge processor →
+ * twin context → cloud/history → action.
+ */
+export const EDGE_STAGES: {
+  n: string;
+  step: string;
+  body: string;
+  families?: string[];
+  chips?: string[];
+  aside?: string;
+}[] = [
+  {
+    n: "01",
+    step: "Sensor",
+    body: "The physical signal — captured by RAMS hardware, your own devices, or both.",
+    families: ["AI Vision", "Location", "Sensor stack", "Guided inspection"],
+    aside: "Use our sensors. Use yours. Or use both.",
+  },
+  {
+    n: "02",
+    step: "Edge processor",
+    body: "Processed near the event, on OmniBox or a customer edge. Offline-tolerant, so the floor keeps working when the link does not.",
+    families: ["OmniBox"],
+  },
+  {
+    n: "03",
+    step: "Twin context",
+    body: "Every signal resolves to an asset, a place and a time in the Digital Twin.",
+    chips: ["Asset", "Place", "Time"],
+  },
+  {
+    n: "04",
+    step: "Cloud / history",
+    body: "A persistent record — every change kept as history.",
+  },
+  {
+    n: "05",
+    step: "Action",
+    body: "An operational response, carried through to closure.",
+    chips: ["Alerts", "Tasks", "Work orders"],
+  },
 ];
 
 export const HARDWARE: { family: string; items: string[]; role: string }[] = [
