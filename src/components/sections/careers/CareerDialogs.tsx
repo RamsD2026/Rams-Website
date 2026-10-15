@@ -6,8 +6,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Bookmark,
-  BookmarkCheck,
   Check,
   FileText,
   History,
@@ -30,11 +28,12 @@ import {
 import { CAREERS_EMAIL } from "./careers-data";
 
 /**
- * The careers page's two dialogs — a role's details, and the application.
+ * The careers application dialog. (A role's details have their own page,
+ * /company/careers/jobs/[id] — see JobPage.)
  *
- * Both sit on the shell `CaseModal` uses (portal, blurred scrim, white
- * 20px-radius panel, round close button, Escape and scroll lock), so a job
- * opens the way a case study does elsewhere on the site.
+ * It sits on the shell `CaseModal` uses (portal, blurred scrim, white
+ * 20px-radius panel, round close button, Escape and scroll lock), so it opens
+ * the way a case study does elsewhere on the site.
  *
  * ── The application offers four ways in, after DXC's ────────────────
  *   Autofill with résumé — the PDF is read in the browser (`resume-parse`)
@@ -144,102 +143,6 @@ export function JobMeta({ job, dark = false }: { job: Job; dark?: boolean }) {
       <span>{job.mode}</span>
       {job.experience && <span>{job.experience}</span>}
     </div>
-  );
-}
-
-/* ── the role ─────────────────────────────────────────────────────── */
-
-function List({ title, items }: { title: string; items?: string[] }) {
-  if (!items || !items.length) return null;
-  return (
-    <div className="mt-8">
-      <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-graphite/45">
-        {title}
-      </p>
-      <ul className="mt-3 space-y-2.5">
-        {items.map((it) => (
-          <li key={it} className="flex items-start gap-3 text-[14.5px] leading-[1.6] text-graphite/75">
-            <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-signal-orange shrink-0" aria-hidden />
-            {it}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export function JobDialog({
-  job,
-  saved,
-  onSave,
-  onApply,
-  onClose,
-}: {
-  job: Job;
-  saved: boolean;
-  onSave: () => void;
-  onApply: () => void;
-  onClose: () => void;
-}) {
-  return (
-    <Shell label={job.title} onClose={onClose}>
-      <div className="p-7 sm:p-10">
-        <div className="flex items-center gap-2.5 flex-wrap pr-10">
-          <span
-            className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(255,106,0,0.08)" }}
-          >
-            {familyTitle(job.family)}
-          </span>
-          {job.sample && (
-            <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/55 px-2.5 py-1 rounded-full bg-[#F2F2F2]">
-              Sample role
-            </span>
-          )}
-          <span className="text-[12px] text-graphite/45">Posted {postedLabel(job.posted)}</span>
-        </div>
-
-        <h2 className="mt-5 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] text-carbon leading-[1.15]">
-          {job.title}
-        </h2>
-        <div className="mt-3">
-          <JobMeta job={job} />
-        </div>
-        <p className="mt-6 text-[15.5px] leading-[1.7] text-graphite/70">{job.summary}</p>
-
-        <List title="What you will do" items={job.responsibilities} />
-        <List title="What you bring" items={job.requirements} />
-        <List title="Nice to have" items={job.niceToHave} />
-      </div>
-
-      <div
-        className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 px-7 sm:px-10 py-4 bg-white/95 backdrop-blur"
-        style={{ borderTop: `1px solid ${HAIR}` }}
-      >
-        <button
-          type="button"
-          onClick={onSave}
-          aria-pressed={saved}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-semibold text-carbon transition-colors hover:bg-[#F2F2F2]"
-          style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
-        >
-          {saved ? (
-            <BookmarkCheck className="w-4 h-4 text-signal-orange" aria-hidden />
-          ) : (
-            <Bookmark className="w-4 h-4" aria-hidden />
-          )}
-          {saved ? "Saved" : "Save job"}
-        </button>
-        <button
-          type="button"
-          onClick={onApply}
-          className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-full transition-colors hover:bg-signal-orange-hover"
-        >
-          Apply for this role
-          <ArrowRight className="w-4 h-4" aria-hidden />
-        </button>
-      </div>
-    </Shell>
   );
 }
 

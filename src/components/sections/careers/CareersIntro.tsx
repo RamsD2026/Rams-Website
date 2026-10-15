@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDown,
@@ -19,7 +20,7 @@ import { FilterBar } from "@/components/sections/FilterBar";
 import { APPLY_EVENT, CAREERS_EMAIL, FAMILIES, GROUPS, HERO_CHIPS, type GroupId } from "./careers-data";
 import { listedJobs, type Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
-import { ApplyDialog, JobDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs";
+import { ApplyDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs";
 
 /**
  * The top of the careers page — hero, open roles and career areas — as one
@@ -51,7 +52,6 @@ export function CareersIntro() {
   const [team, setTeam] = useState(ALL);
   const [savedOnly, setSavedOnly] = useState(false);
   const [group, setGroup] = useState<GroupId | null>(null);
-  const [open, setOpen] = useState<Job | null>(null);
   const [applying, setApplying] = useState<{ job: Job | null } | null>(null);
 
   /* The bands further down the page (`CareersSections`) open a general
@@ -299,9 +299,8 @@ export function CareersIntro() {
                       className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white transition-all duration-300 hover:shadow-[0_22px_44px_-30px_rgba(14,14,15,0.35)]"
                       style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
                     >
-                      <button
-                        type="button"
-                        onClick={() => setOpen(j)}
+                      <Link
+                        href={`/company/careers/jobs/${j.id}`}
                         className="flex-1 min-w-0 text-left"
                       >
                         <span className="flex flex-wrap items-center gap-2">
@@ -329,7 +328,7 @@ export function CareersIntro() {
                         <span className="mt-3 block text-[14px] leading-[1.6] text-graphite/65 line-clamp-2 max-w-[720px]">
                           {j.summary}
                         </span>
-                      </button>
+                      </Link>
 
                       <div className="flex items-center gap-2 shrink-0">
                         <button
@@ -346,14 +345,13 @@ export function CareersIntro() {
                             <Bookmark className="w-[18px] h-[18px] text-carbon" aria-hidden />
                           )}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => setOpen(j)}
+                        <Link
+                          href={`/company/careers/jobs/${j.id}`}
                           className="hidden sm:inline-flex items-center px-5 h-11 rounded-full text-[13.5px] font-semibold text-carbon hover:bg-[#F2F2F2] transition-colors"
                           style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
                         >
                           View role
-                        </button>
+                        </Link>
                         <button
                           type="button"
                           onClick={() => setApplying({ job: j })}
@@ -585,26 +583,11 @@ export function CareersIntro() {
 
       {/* ── dialogs ──────────────────────────────────── */}
       <AnimatePresence>
-        {open && !applying && (
-          <JobDialog
-            key={`job-${open.id}`}
-            job={open}
-            saved={isSaved(open.id)}
-            onSave={() => toggle(open.id)}
-            onApply={() => setApplying({ job: open })}
-            onClose={() => setOpen(null)}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
         {applying && (
           <ApplyDialog
             key={`apply-${applying.job?.id ?? "general"}`}
             job={applying.job}
-            onClose={() => {
-              setApplying(null);
-              setOpen(null);
-            }}
+            onClose={() => setApplying(null)}
           />
         )}
       </AnimatePresence>
