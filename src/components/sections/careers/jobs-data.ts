@@ -7,12 +7,17 @@
  * empty and the board says "No open roles right now" until a role is added
  * here — one object per opening, in the shape below.
  *
- * `SAMPLE_JOBS` exist only so the board, filters, save and apply flow can be
- * tried before real roles exist. They are labelled "Sample" in the UI and are
- * shown ONLY on a Vercel *preview* build (`NEXT_PUBLIC_VERCEL_ENV` is
- * "preview" — every push to `main` gets one) or when the build sets
- * `NEXT_PUBLIC_SHOW_SAMPLE_JOBS=true`. Production (`master`) never shows them.
- * With real roles in `JOBS`, samples are ignored entirely.
+ * ── Until then, the board shows labelled samples ────────────────────
+ * By the site owner's decision, while `JOBS` is empty the board shows
+ * `SAMPLE_JOBS` on every build, including production, so the page can be
+ * seen working. They are never presented as vacancies: every card and job
+ * page carries a "Sample" tag, the board opens with a banner saying they are
+ * example roles and not open vacancies, their apply action is "Join the
+ * talent network" (a general application, not an application to the role),
+ * and their job pages are noindex.
+ *
+ * The moment one real role is added to `JOBS`, the samples, the banner and
+ * the talent-network substitution all disappear.
  */
 
 /** A career-family code from `careers-data` (`FAMILIES`). */
@@ -212,13 +217,9 @@ const SAMPLE_JOBS: Job[] = [
   },
 ];
 
-/** The roles the board shows: real ones, or samples only where enabled. */
+/** The roles the board shows: real ones, or the labelled samples while there are none. */
 export function listedJobs(): Job[] {
-  if (JOBS.length > 0) return JOBS;
-  const samples =
-    process.env.NEXT_PUBLIC_SHOW_SAMPLE_JOBS === "true" ||
-    process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
-  return samples ? SAMPLE_JOBS : [];
+  return JOBS.length > 0 ? JOBS : SAMPLE_JOBS;
 }
 
 /** One listed role by id, or undefined. */

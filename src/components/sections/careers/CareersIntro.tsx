@@ -93,6 +93,9 @@ export function CareersIntro() {
   };
 
   const hasJobs = jobs.length > 0;
+  /* Only the labelled sample roles are listed (see jobs-data): the board
+     carries a banner, and their apply action is a general application. */
+  const sampleMode = hasJobs && jobs.every((j) => j.sample);
 
   return (
     <>
@@ -163,7 +166,9 @@ export function CareersIntro() {
                 onClick={() => scrollTo("jobs")}
                 className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
               >
-                {hasJobs ? `View ${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}` : "View open roles"}
+                {hasJobs
+                  ? `View ${jobs.length} ${sampleMode ? "sample" : "open"} ${jobs.length === 1 ? "role" : "roles"}`
+                  : "View open roles"}
                 <ArrowDown className="w-4 h-4" aria-hidden />
               </button>
               <button
@@ -251,6 +256,25 @@ export function CareersIntro() {
 
         {hasJobs && (
           <>
+            {sampleMode && (
+              <div
+                role="note"
+                className="mb-8 flex flex-col sm:flex-row sm:items-center gap-4 px-5 sm:px-6 py-4 rounded-2xl"
+                style={{ background: "#FFF6EC", boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.28)" }}
+              >
+                <p className="flex-1 text-[14px] leading-[1.6] text-carbon">
+                  <span className="font-bold">These are example roles to preview the careers page.</span>{" "}
+                  They are not open vacancies. To be considered for future roles, join the talent network.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setApplying({ job: null })}
+                  className="shrink-0 inline-flex items-center justify-center gap-2 bg-signal-orange text-white text-[13.5px] font-semibold px-5 py-2.5 rounded-full transition-colors hover:bg-signal-orange-hover"
+                >
+                  Join the talent network
+                </button>
+              </div>
+            )}
             <FilterBar
               tabs={teams}
               active={team}
@@ -354,10 +378,10 @@ export function CareersIntro() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => setApplying({ job: j })}
+                          onClick={() => setApplying({ job: j.sample ? null : j })}
                           className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover"
                         >
-                          Apply
+                          {j.sample ? "Join talent network" : "Apply"}
                           <ArrowRight className="w-4 h-4" aria-hidden />
                         </button>
                       </div>

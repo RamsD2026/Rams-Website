@@ -34,7 +34,9 @@ import { ApplyDialog, familyTitle, postedLabel } from "./CareerDialogs";
  *
  * Apply opens the same `ApplyDialog` the board uses (résumé autofill, manual,
  * last application, LinkedIn soon); Save is the same device-local list.
- * Sample roles keep their "Sample" tag here — see `jobs-data`.
+ * Sample roles (see `jobs-data`) keep their "Sample" tag, open with a notice
+ * that they are not vacancies, and every apply action becomes "Join the
+ * talent network" — a general application, not one to the role.
  */
 
 const HAIR = "#E8E8ED";
@@ -76,6 +78,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
   const [applying, setApplying] = useState(false);
   const [copied, setCopied] = useState(false);
   const saved = isSaved(job.id);
+  const applyLabel = job.sample ? "Join the talent network" : "Apply for this role";
 
   const copyLink = async () => {
     try {
@@ -151,6 +154,18 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
             <span className="text-white/70 truncate max-w-[60vw]">{job.title}</span>
           </nav>
 
+          {job.sample && (
+            <p
+              role="note"
+              className="mt-6 max-w-[760px] px-4 py-3 rounded-xl text-[13.5px] leading-[1.55] text-white/80"
+              style={{ background: "rgba(255,106,0,0.10)", boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.30)" }}
+            >
+              <span className="font-semibold text-white">Sample role.</span> This is an
+              example to preview the careers page, not an open vacancy. To be considered
+              for future roles, join the talent network.
+            </p>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -195,7 +210,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
                 onClick={() => setApplying(true)}
                 className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
               >
-                Apply for this role
+                {applyLabel}
                 <ArrowRight className="w-4 h-4" aria-hidden />
               </button>
               {saveButton(true)}
@@ -277,7 +292,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
                   onClick={() => setApplying(true)}
                   className="w-full inline-flex items-center justify-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
                 >
-                  Apply for this role
+                  {applyLabel}
                   <ArrowRight className="w-4 h-4" aria-hidden />
                 </button>
                 {saveButton()}
@@ -358,13 +373,15 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
           onClick={() => setApplying(true)}
           className="shrink-0 inline-flex items-center gap-1.5 bg-signal-orange text-white text-[13.5px] font-semibold px-5 py-3 rounded-full transition-colors hover:bg-signal-orange-hover"
         >
-          Apply
+          {job.sample ? "Join network" : "Apply"}
           <ArrowRight className="w-4 h-4" aria-hidden />
         </button>
       </div>
 
       <AnimatePresence>
-        {applying && <ApplyDialog job={job} onClose={() => setApplying(false)} />}
+        {applying && (
+          <ApplyDialog job={job.sample ? null : job} onClose={() => setApplying(false)} />
+        )}
       </AnimatePresence>
     </>
   );

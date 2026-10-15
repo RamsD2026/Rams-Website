@@ -7,12 +7,11 @@ import { getJob, listedJobs } from "@/components/sections/careers/jobs-data";
  * /company/careers/jobs/[id] — one role's page.
  *
  * Built at build time for every listed role (`listedJobs()`), and nothing
- * else: `dynamicParams = false` makes any other id a 404. On production with
- * no real roles that means every job URL is a 404, which is correct; on a
- * preview build the sample roles get pages (see `jobs-data`).
+ * else: `dynamicParams = false` makes any other id a 404. While there are no
+ * real roles, the listed roles are the labelled samples (see `jobs-data`).
  *
- * Sample roles are marked noindex so a preview never teaches a search engine
- * a vacancy that does not exist.
+ * Sample roles are marked noindex so a search engine is never taught a
+ * vacancy that does not exist.
  */
 
 export const dynamicParams = false;
