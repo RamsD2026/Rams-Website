@@ -337,13 +337,14 @@ export function EcosystemSection() {
                 </button>
               </div>
 
-              {/* Right — clean dark video card */}
+              {/* Right — clean dark video card.
+                  460px tall on phones and from xl, as designed. On tablets
+                  (sm to xl) it takes the clip's own 16:9 shape instead: at
+                  1024–1279 it was stretched to the text column and nearly
+                  square, cutting away about 40% of the widescreen video. */}
               <div
-                className="relative overflow-hidden bg-carbon"
-                style={{
-                  borderRadius: "16px",
-                  minHeight: "460px",
-                }}
+                className="relative overflow-hidden bg-carbon min-h-[460px] sm:min-h-0 sm:aspect-video lg:self-center xl:aspect-auto xl:min-h-[460px] xl:self-stretch"
+                style={{ borderRadius: "16px" }}
               >
                 {/* Subtle dot grid */}
                 <div

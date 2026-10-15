@@ -106,7 +106,7 @@ export function VideoPlayer({
         </button>
 
         <div
-          className="w-full overflow-hidden"
+          className="w-full overflow-hidden max-h-[70svh] xl:max-h-none"
           style={{
             aspectRatio: "16 / 9",
             background: "#08080A",

@@ -78,7 +78,7 @@ function Twin() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.9, ease: EASE }}
-        className="absolute right-4 bottom-4 w-[186px] hidden sm:block text-left"
+        className="absolute right-4 bottom-4 w-[186px] hidden md:block text-left"
         style={{
           borderRadius: 10,
           background: "rgba(10,12,14,0.92)",
@@ -150,7 +150,7 @@ export function MepsHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.14, ease: EASE }}
-            className="mt-8 sm:mt-10 text-[56px] sm:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
+            className="mt-8 sm:mt-10 text-[56px] sm:text-[64px] md:text-[84px] lg:text-[112px] font-bold leading-[1.06] tracking-[-0.045em]"
           >
             <span className="block text-white">Make Every MHE</span>
             <span className="block text-white">

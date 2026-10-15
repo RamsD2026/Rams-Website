@@ -198,10 +198,11 @@ export function PlatformReveal() {
             className="w-[92vw] max-w-[1400px] overflow-hidden relative"
             style={{ scale: windowScale, opacity: windowOpacity, borderRadius: "12px" }}
           >
-            <SeamlessVideo
-              className="w-full object-cover block"
-              style={{ height: "82vh" } as React.CSSProperties}
-            />
+            {/* 82vh tall from xl, as designed. Between md and xl the frame
+                takes the clip's own 16:9 shape (capped at 82vh) instead: on a
+                portrait tablet a fixed 82vh frame was nearly square and cut
+                away about half of each widescreen clip. */}
+            <SeamlessVideo className="w-full object-cover block aspect-video max-h-[82vh] xl:aspect-auto xl:h-[82vh] xl:max-h-none" />
             {/* Bottom ambient glow */}
             <div
               aria-hidden="true"

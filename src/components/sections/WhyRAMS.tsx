@@ -404,9 +404,16 @@ export function WhyRAMS() {
                     boxShadow: `0 8px 60px 0 rgba(14,14,15,0.08), 0 1px 4px 0 rgba(14,14,15,0.04), inset 0 0 0 1px ${activeFeature.accent}33, inset 0 0 60px ${activeFeature.accent}12`,
                   }}
                   transition={{ duration: 0.5, ease: easeOut }}
-                  className="relative w-full"
+                  className="relative w-full mx-auto"
                   style={{
                     aspectRatio: "4 / 3",
+                    /* Never taller than the sticky box it sits in. On a short
+                       landscape tablet the 4:3 frame was taller than the space
+                       under the sticky header, so its top slid beneath it and
+                       its foot fell off the screen. Capping the width at the
+                       box height × 4/3 keeps the whole frame in view; on a
+                       tall screen the cap is never reached. */
+                    maxWidth: `calc((100vh - ${headerH}px - 32px) * 4 / 3)`,
                     borderRadius: 12,
                     border: "1px solid #E8E8E8",
                     overflow: "hidden",
