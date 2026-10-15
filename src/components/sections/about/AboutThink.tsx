@@ -136,6 +136,11 @@ export function AboutThink() {
   const card =
     width > 0 ? (width - GAP * (visible - 1)) / (visible + PEEK) : 560;
   const step = card + GAP;
+  // Two-up at tablet widths leaves ~270–330px cards; a fixed 560 makes tall
+  // slivers. Cap to 1.35× the width — ≥1024 cards are ≥445px, so stay 560;
+  // phones (one-up) keep 560 as before.
+  const cardH =
+    visible === 2 ? Math.min(CARD_H, Math.round(card * 1.35)) : CARD_H;
   const last = Math.max(0, PRINCIPLES.length - visible);
 
   // Clamped on read rather than in an effect: when the viewport narrows to one
@@ -170,7 +175,7 @@ export function AboutThink() {
         >
           {PRINCIPLES.map((p, i) => (
             <div key={p.n} style={{ width: card, flexShrink: 0 }}>
-              <Card principle={p} index={i} reduce={!!reduce} h={CARD_H} />
+              <Card principle={p} index={i} reduce={!!reduce} h={cardH} />
             </div>
           ))}
         </motion.div>

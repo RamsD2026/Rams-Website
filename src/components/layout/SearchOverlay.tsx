@@ -321,9 +321,9 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
             <div className="h-px bg-[#E8E8ED]" />
             <div className="rams-container">
               <div className="max-w-[820px] mx-auto py-3 flex items-center gap-5 text-[11px] text-graphite/40">
-                <span className="hidden sm:inline">↑ ↓ to move</span>
-                <span className="hidden sm:inline">↵ to open</span>
-                <span className="sm:hidden">Tap a result to open</span>
+                <span className="hidden lg:inline">↑ ↓ to move</span>
+                <span className="hidden lg:inline">↵ to open</span>
+                <span className="lg:hidden">Tap a result to open</span>
                 {/* The link that offered the full-screen design sat here
                     while the two were being compared. v1 is the chosen
                     design, so visitors are no longer shown a door to the

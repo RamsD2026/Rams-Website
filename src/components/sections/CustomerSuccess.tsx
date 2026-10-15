@@ -319,12 +319,8 @@ function CaseStudyModal({ story, onClose }: { story: Story; onClose: () => void 
                 {facts.map((f, i) => (
                   <div
                     key={f.label}
-                    className="py-6"
-                    style={{
-                      borderLeft: i > 0 ? "1px solid #E5E5EA" : "none",
-                      paddingLeft: i > 0 ? 24 : 0,
-                      paddingRight: 16,
-                    }}
+                    // 2 cols below sm, so only the right-hand column takes a divider
+                    className={`py-6 pr-4 border-[#E5E5EA]${i % 2 === 1 ? " border-l pl-6" : ""}${i > 0 ? " sm:border-l sm:pl-6" : ""}`}
                   >
                     <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-carbon/50">
                       {f.label}

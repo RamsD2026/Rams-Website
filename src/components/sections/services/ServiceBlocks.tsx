@@ -242,7 +242,7 @@ function AreaMap({ title }: { title: string }) {
 
         <div className="mt-5 overflow-x-auto no-scrollbar">
           <div
-            className="grid gap-2.5 min-w-[560px]"
+            className="grid gap-1.5 sm:gap-2.5 min-w-0 sm:min-w-[560px]"
             style={{ gridTemplateColumns: `repeat(${MAP_COLS}, minmax(0,1fr))` }}
             aria-hidden
           >

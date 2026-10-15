@@ -255,8 +255,8 @@ function FlipCard({ item, onOpenModal }: { item: Item; onOpenModal: (item: Item)
 
   return (
     <div
-      className="relative w-full"
-      style={{ perspective: "1600px", aspectRatio: "3 / 5" }}
+      className="relative w-full aspect-[4/5] sm:aspect-[3/5]"
+      style={{ perspective: "1600px" }}
       onMouseEnter={() => setFlipped(true)}
       onMouseLeave={() => setFlipped(false)}
     >

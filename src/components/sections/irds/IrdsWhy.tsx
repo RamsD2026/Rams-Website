@@ -103,7 +103,7 @@ export function IrdsWhy() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-10px)]">
           {AUDIENCES.map((aud, i) => (
             <motion.article
               key={aud.title}

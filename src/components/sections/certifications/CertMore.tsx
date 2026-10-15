@@ -407,7 +407,7 @@ export function CertDataFlow() {
           centred, so from its right edge (50% + 24px) to the next tile's left
           edge is the column width plus the 24px gap, less the 48px tile. */}
       <div className="relative overflow-x-auto">
-        <div className="relative min-w-[640px] lg:min-w-0">
+        <div className="relative min-w-[640px] sm:min-w-0">
           <div className="relative grid grid-cols-4 gap-6">
             {DATAFLOW.map((d, i) => (
               <motion.div
@@ -740,9 +740,11 @@ export function CertRecovery() {
         {RECOVERY.map(([title, body], i) => (
           <div
             key={title}
-            className="flex flex-col p-7 sm:p-9"
-            style={
-              i === 0 ? undefined : { borderLeft: `1px solid ${CERT_LINE}` }
+            className={
+              "flex flex-col p-7 sm:p-9" +
+              (i === 0
+                ? ""
+                : " border-t md:border-t-0 md:border-l border-[#E8E8ED]")
             }
           >
             <CertTile icon={RECOVERY_ICONS[i] ?? Activity} />
@@ -784,7 +786,8 @@ export function CertPath() {
               "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.14) 12%, rgba(255,255,255,0.14) 88%, transparent 100%)",
           }}
         />
-        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 sm:gap-6">
+        {/* Five steps two-up leaves a lone fifth: centre it at one column's width. */}
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 sm:gap-6 sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-12px)]">
           {PATH.map(([title, body], i) => (
             <motion.div
               key={title}

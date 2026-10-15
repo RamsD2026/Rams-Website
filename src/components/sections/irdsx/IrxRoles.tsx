@@ -126,7 +126,7 @@ export function IrxRoles() {
           body="Each one acts on the same record from a different side — captures it, judges it, fixes it, verifies it or reads it."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-8px)]">
           {ROLES.map((r, i) => (
             <motion.article
               key={r.k}

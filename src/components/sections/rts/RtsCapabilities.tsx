@@ -154,7 +154,7 @@ export function RtsCapabilities() {
         className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-10 lg:gap-16"
       >
         {/* the six, scrolling */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full max-w-[640px] mx-auto lg:max-w-none lg:mx-0">
           {GROUPS.map((x, n) => {
             const now = n === at;
             return (
@@ -163,6 +163,8 @@ export function RtsCapabilities() {
                 className="py-8 lg:min-h-[44vh] flex flex-col justify-center"
               >
                 <motion.div
+                  // framer writes inline opacity; the pinned pane is lg-only, so undim below lg
+                  className="max-lg:opacity-100!"
                   initial={false}
                   animate={{ opacity: now ? 1 : 0.36 }}
                   transition={{ duration: 0.45, ease: EASE }}

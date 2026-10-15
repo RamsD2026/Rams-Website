@@ -360,16 +360,16 @@ export function CareersHiring() {
         className="!mb-10 sm:!mb-12"
       />
 
-      <ol className="relative grid grid-cols-1 sm:grid-cols-5 gap-4">
-        <span aria-hidden className="hidden sm:block absolute top-5 left-[10%] right-[10%] h-px bg-signal-orange/30" />
+      <ol className="relative grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <span aria-hidden className="hidden lg:block absolute top-5 left-[10%] right-[10%] h-px bg-signal-orange/30" />
         {JOURNEY.map((j, i) => (
-          <motion.li key={j.title} {...reveal(i)} className="relative flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
+          <motion.li key={j.title} {...reveal(i)} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
             <span className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full bg-carbon text-white text-[13px] font-bold tabular-nums shrink-0">
               {i + 1}
             </span>
             <div>
-              <h3 className="sm:mt-4 text-[16px] font-bold tracking-[-0.02em] text-carbon">{j.title}</h3>
-              <p className="mt-1.5 text-[13.5px] leading-[1.6] text-graphite/60 sm:max-w-[200px]">{j.body}</p>
+              <h3 className="lg:mt-4 text-[16px] font-bold tracking-[-0.02em] text-carbon">{j.title}</h3>
+              <p className="mt-1.5 text-[13.5px] leading-[1.6] text-graphite/60 lg:max-w-[200px]">{j.body}</p>
             </div>
           </motion.li>
         ))}

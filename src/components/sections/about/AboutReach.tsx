@@ -240,7 +240,7 @@ export function AboutReach() {
           boxed. The label is small and orange, the value carries the weight,
           and one hairline separates the pair — which is the whole structure
           the two boxes were drawing four edges each to imply. */}
-      <div className="mt-9 sm:mt-10 flex flex-col sm:flex-row items-center justify-center">
+      <div className="mt-9 sm:mt-10 flex flex-col lg:flex-row items-center justify-center">
         {FACTS.map((f, i) => (
           <div
             key={f.label}
@@ -249,16 +249,16 @@ export function AboutReach() {
                an inline border cannot be made to change at a breakpoint, and
                a left border on a full-width column reads as a stray mark. */
             className={
-              "flex flex-col items-center text-center px-6 sm:px-12 lg:px-16 py-6 sm:py-0 " +
+              "flex flex-col items-center text-center px-6 lg:px-16 py-6 lg:py-0 " +
               (i > 0
-                ? "w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-[#E8E8ED]"
+                ? "w-full lg:w-auto border-t lg:border-t-0 lg:border-l border-[#E8E8ED]"
                 : "")
             }
           >
             <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange">
               {f.label}
             </span>
-            <span className="mt-3.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] text-carbon leading-[1.35] sm:whitespace-nowrap">
+            <span className="mt-3.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] text-carbon leading-[1.35] lg:whitespace-nowrap">
               {f.value}
             </span>
           </div>

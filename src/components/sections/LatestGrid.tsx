@@ -320,7 +320,7 @@ function Lead({ item }: { item: LatestItem }) {
       className="lg:col-span-3 lg:row-span-2"
     >
       <Tile item={item} className="flex flex-col">
-        <Plate className="w-full h-[200px] sm:h-[240px] lg:h-auto lg:flex-1 lg:min-h-[120px]">
+        <Plate className="w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-auto lg:flex-1 lg:min-h-[120px]">
           {item.cover}
         </Plate>
 

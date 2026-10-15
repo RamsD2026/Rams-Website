@@ -265,6 +265,28 @@ export function ComplianceGuides() {
             </p>
           </div>
 
+          {/* Below lg the TOC rail is hidden, so the sections get a jump list. */}
+          <nav aria-label="On this page" className="lg:hidden mt-8">
+            <p className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-white/30">
+              On this page
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {TOC.map((t) => (
+                <a
+                  key={t.id}
+                  href={"#" + t.id}
+                  className="text-[12.5px] text-white/70 hover:text-white rounded-full px-3 py-1.5 transition-colors duration-200"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)",
+                  }}
+                >
+                  {t.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+
           <div className="mt-14">
             {/* ── 01 How to use this ────────────────────── */}
             <Section>

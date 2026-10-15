@@ -119,7 +119,7 @@ export function WexReprioritisation() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-[1240px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1 gap-4 max-w-[1240px] mx-auto">
           {STEPS.map((s, i) => (
             <motion.article
               key={s.n}

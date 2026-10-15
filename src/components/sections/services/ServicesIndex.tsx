@@ -107,7 +107,7 @@ export function ServicesIndex() {
       <Section surface="offWhite" id="services">
         <SectionHeader
           eyebrow="What we deliver"
-          top="Six services,"
+          top="Five services,"
           bottom="One way of working."
           size="compact"
           width="wide"
@@ -115,7 +115,7 @@ export function ServicesIndex() {
           className="!mb-10 sm:!mb-12"
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-10px)]">
           {SERVICES.map((s, i) => (
             <motion.div
               key={s.slug}

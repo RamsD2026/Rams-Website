@@ -132,7 +132,7 @@ export function PartnersHow() {
         onMouseEnter={() => setHeld(true)}
         onMouseLeave={() => setHeld(false)}
       >
-        <div className="relative min-w-[760px] lg:min-w-0 pt-1">
+        <div className="relative min-w-[760px] md:min-w-0 pt-1">
           {/* the track, behind the nodes */}
           <span
             aria-hidden

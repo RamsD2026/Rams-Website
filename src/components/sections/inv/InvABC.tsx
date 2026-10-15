@@ -178,11 +178,11 @@ export function InvABC() {
                 style={{ background: c.swatch.accent }}
               />
 
-              <div className="flex flex-col flex-1 p-8 sm:p-10">
+              <div className="flex flex-col flex-1 p-8 sm:p-10 md:p-6 lg:p-10">
                 {/* Letter + tier label */}
                 <div className="flex items-center gap-4 mb-8">
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center font-extrabold text-[28px] shrink-0"
+                    className="w-16 h-16 md:w-12 md:h-12 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center font-extrabold text-[28px] md:text-[22px] lg:text-[28px] shrink-0"
                     style={{
                       background: c.swatch.bg,
                       color: c.swatch.fg,

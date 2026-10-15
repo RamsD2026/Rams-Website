@@ -89,7 +89,7 @@ export function AboutHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-8 sm:mt-10 text-[46px] sm:text-[72px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-carbon"
+            className="mt-8 sm:mt-10 text-[46px] sm:text-[48px] md:text-[56px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-carbon"
           >
             {/* Two lines, and they stay two. Each is its own block so the
                 break is explicit rather than left to the measure. */}

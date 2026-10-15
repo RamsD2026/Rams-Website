@@ -257,7 +257,7 @@ export function IbisHero() {
             }}
           >
             <div
-              className="relative rounded-[18px] overflow-hidden min-h-[600px] sm:min-h-0 sm:aspect-[16/10]"
+              className="relative rounded-[18px] overflow-hidden min-h-[680px] sm:min-h-[540px] lg:min-h-0 lg:aspect-[16/10]"
               style={{
                 background: "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
                 borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -893,7 +893,7 @@ export function IbisCapabilities() {
         ref={track}
         className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-10 lg:gap-16"
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full max-w-[640px] mx-auto lg:max-w-none lg:mx-0">
           {GROUPS.map((x, n) => {
             const now = n === at;
             return (
@@ -902,6 +902,8 @@ export function IbisCapabilities() {
                 className="py-8 lg:min-h-[44vh] flex flex-col justify-center"
               >
                 <motion.div
+                  // framer writes inline opacity; the pinned pane is lg-only, so undim below lg
+                  className="max-lg:opacity-100!"
                   initial={false}
                   animate={{ opacity: now ? 1 : 0.36 }}
                   transition={{ duration: 0.45, ease: EASE }}

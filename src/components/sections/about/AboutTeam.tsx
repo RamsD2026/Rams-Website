@@ -202,7 +202,7 @@ export function AboutTeam() {
         body="RAMS is built by people who understand structures, sites, operations, data and software — and know that none of them works alone."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {DISCIPLINES.map((d, i) => (
           <motion.div
             key={d.id}

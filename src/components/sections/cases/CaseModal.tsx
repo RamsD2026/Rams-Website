@@ -102,16 +102,14 @@ export function CaseModal({
 
         <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <div
-            className="relative w-full min-h-[220px] sm:min-h-full"
-            style={{ aspectRatio: "3 / 4" }}
+            className="relative w-full min-h-[220px] sm:min-h-full aspect-[16/10] sm:aspect-[3/4]"
           >
             <Image
               src={study.img}
               alt={study.alt}
               fill
               sizes="(max-width: 640px) 92vw, 350px"
-              className="object-cover"
-              style={{ borderRadius: "20px 0 0 20px" }}
+              className="object-cover rounded-t-[20px] sm:rounded-none sm:rounded-l-[20px]"
             />
           </div>
 

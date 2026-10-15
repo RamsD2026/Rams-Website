@@ -152,7 +152,7 @@ function Pair({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-10 max-w-[960px] mx-auto">
       {items.map((it, i) => (
-        <div key={it.title} className="md:flex md:justify-center">
+        <div key={it.title} className="flex justify-center">
           <Topic item={it} icon={icons[i]} i={i} />
         </div>
       ))}

@@ -235,7 +235,7 @@ export function MepsCalculator({ tone = "dark" }: { tone?: Tone } = {}) {
         width="wide"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* ── your operation ──────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

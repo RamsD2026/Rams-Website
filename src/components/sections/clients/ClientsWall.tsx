@@ -329,7 +329,7 @@ export function ClientsWall() {
           className="!mb-8 sm:!mb-10"
         />
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-[#E8E8ED] border border-[#E8E8ED]">
+        <div className="grid grid-cols-2 min-[500px]:grid-cols-3 lg:grid-cols-5 gap-px bg-[#E8E8ED] border border-[#E8E8ED]">
           {CLIENTS.map((c) => (
             <div
               key={c.name}

@@ -112,7 +112,7 @@ export function IrdsFeaturePanels() {
                   delay: 0.05 + i * 0.1,
                   ease: EASE,
                 }}
-                className="relative flex flex-col p-8 sm:p-9 overflow-hidden"
+                className="relative flex flex-col p-8 sm:p-9 md:p-6 lg:p-9 overflow-hidden"
                 style={{
                   minHeight: 420,
                   borderRadius: 24,
@@ -146,7 +146,7 @@ export function IrdsFeaturePanels() {
                 </div>
 
                 <h3
-                  className="text-[24px] sm:text-[26px] font-bold leading-[1.15] tracking-[-0.02em]"
+                  className="text-[24px] sm:text-[26px] md:text-[21px] lg:text-[26px] font-bold leading-[1.15] tracking-[-0.02em]"
                   style={{ color: isOrange ? "#111" : "#FFF" }}
                 >
                   {p.title}

@@ -188,7 +188,7 @@ export function WebinarLibrary() {
         slide
       />
 
-      <div className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="mt-12 sm:mt-14 grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-3 gap-5">
         <AnimatePresence mode="popLayout">
           {list.map((r, i) => (
             <motion.div

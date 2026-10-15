@@ -219,7 +219,7 @@ export function FaqKit() {
       <div
         role="tablist"
         aria-label="Solutions"
-        className="flex gap-2 overflow-x-auto no-scrollbar justify-start lg:justify-center pb-1"
+        className="flex gap-2 overflow-x-auto no-scrollbar justify-start sm:flex-wrap sm:justify-center sm:overflow-visible lg:justify-center pb-1"
       >
         {KITS.map((k, i) => {
           const on = i === active;

@@ -286,6 +286,18 @@ function surfacesFor(sections: ServiceSection[]): SurfaceKey[] {
 
 const isDark = (s: SurfaceKey) => s === "ink";
 
+/* Tablet (sm–lg) 2-col grids: centre an odd last card at one column's
+   width instead of leaving it alone on the left. The calc subtracts half
+   the grid's column gap. Literal strings so Tailwind can see them. */
+const LONE_8 =
+  " sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-8px)]";
+const LONE_10 =
+  " sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-10px)]";
+const LONE_6 =
+  " sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-6px)]";
+const LONE_12 =
+  " sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2 sm:max-lg:[&>*:last-child:nth-child(odd)]:mx-auto sm:max-lg:[&>*:last-child:nth-child(odd)]:w-[calc(50%-12px)]";
+
 /* ── shared card ──────────────────────────────────────────────────── */
 
 function cardStyle(dark: boolean): React.CSSProperties {
@@ -557,7 +569,8 @@ function Problem({
       <div
         className={
           "grid grid-cols-1 sm:grid-cols-2 gap-5 " +
-          (block.items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5")
+          (block.items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5") +
+          (block.items.length % 2 ? LONE_10 : "")
         }
       >
         {block.items.map((it, i) => {
@@ -745,7 +758,8 @@ function Tiles({
       <div
         className={
           "grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[1120px] mx-auto " +
-          (block.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3")
+          (block.items.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3") +
+          (block.items.length % 2 ? LONE_6 : "")
         }
       >
         {block.items.map((it, i) => {
@@ -826,7 +840,13 @@ function Grid({
       {block.tiles ? (
         <Tiles block={block} dark={dark} ground={ground} />
       ) : (
-        <div className={"grid grid-cols-1 gap-4 " + cols}>
+        <div
+          className={
+            "grid grid-cols-1 gap-4 " +
+            cols +
+            (block.items.length % 2 ? LONE_8 : "")
+          }
+        >
           {block.items.map((it, i) => (
             <Reveal key={it.title} i={i}>
               <div
@@ -997,8 +1017,16 @@ function Process({
   block: Extract<ServiceSection, { kind: "process" }>;
 }) {
   const n = block.steps.length;
+  // Seven steps run 4 + 3 on desktop: an 8-track grid with every step two
+  // tracks wide, the fifth starting on track 2 so the last three sit centred.
   const cols =
-    n === 5 ? "lg:grid-cols-5" : n === 4 ? "lg:grid-cols-4" : "lg:grid-cols-6";
+    (n === 5
+      ? "lg:grid-cols-5"
+      : n === 4
+        ? "lg:grid-cols-4"
+        : n === 7
+          ? "lg:grid-cols-8 lg:[&>*]:col-span-2 lg:[&>*:nth-child(5)]:col-start-2"
+          : "lg:grid-cols-6") + (n % 2 ? LONE_12 : "");
 
   return (
     <>

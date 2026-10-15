@@ -73,14 +73,14 @@ export function InvWorkflow() {
           {/* Continuous flow line — desktop */}
           <div
             aria-hidden
-            className="hidden md:block absolute left-0 right-0 top-[46px] h-px"
+            className="hidden lg:block absolute left-0 right-0 top-[46px] h-px"
             style={{
               background:
                 "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.08) 88%, transparent 100%)",
             }}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1 gap-10 sm:gap-8">
             {STEPS.map((s, i) => (
               <motion.div
                 key={s.n}

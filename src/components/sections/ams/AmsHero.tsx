@@ -140,9 +140,11 @@ function ControlTower() {
         {KPIS.map(([k, v, tint], i) => (
           <div
             key={k}
-            className="flex-1 min-w-[150px] px-5 py-4 text-left"
+            // 2x2 below sm: tile 2 drops its edge border, row 2 gets a top rule
+            className={`basis-1/2 grow min-w-0 sm:basis-0 sm:min-w-[150px] px-5 py-4 text-left${i === 1 ? " max-sm:border-r-0!" : ""}${i > 1 ? " max-sm:border-t" : ""}`}
             style={{
               borderRight: i < KPIS.length - 1 ? `1px solid ${LINE}` : "none",
+              borderTopColor: LINE,
             }}
           >
             <p className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/35">
