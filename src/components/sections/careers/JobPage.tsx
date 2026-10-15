@@ -248,7 +248,11 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
               </p>
               <ol className="mt-6 space-y-4">
                 {JOURNEY.map((j, i) => (
-                  <li key={j.title} className="flex items-start gap-4">
+                  <li key={j.title} className="relative flex items-start gap-4">
+                    {/* joins this step to the next, from under its circle across the gap */}
+                    {i < JOURNEY.length - 1 && (
+                      <span aria-hidden className="absolute left-4 top-8 -bottom-4 w-[2px] -translate-x-1/2 bg-signal-orange" />
+                    )}
                     <span className="flex items-center justify-center w-8 h-8 rounded-full bg-signal-orange text-white text-[12px] font-bold tabular-nums shrink-0">
                       {i + 1}
                     </span>
