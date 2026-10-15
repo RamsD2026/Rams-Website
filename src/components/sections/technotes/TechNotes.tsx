@@ -388,7 +388,7 @@ export function TechNotes() {
       >
         <TechSidebar nav={NAV} active={active} label="Technical notes" />
 
-        <main className="min-w-0 max-w-[760px]">
+        <main className="min-w-0 w-full max-w-[760px] mx-auto lg:mx-0">
           {/* the title block */}
           <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-signal-orange">
             Integration &amp; API documentation

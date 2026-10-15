@@ -302,20 +302,20 @@ export function EcosystemSection() {
               transition={{ duration: 0.25, ease: "easeOut" }}
               className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-10 lg:gap-16 items-stretch pt-8 sm:pt-10"
             >
-              {/* Left */}
-              <div className="flex flex-col justify-center">
+              {/* Left — centred on tablets (sm to lg), under the centred tabs; phones and desktop left-aligned */}
+              <div className="flex flex-col justify-center items-start text-left sm:items-center sm:text-center lg:items-start lg:text-left">
                 <p className="text-[20px] font-bold tracking-[0.04em] uppercase text-signal-orange mb-4">
                   {active.eyebrow}
                 </p>
                 <h3 className="text-[28px] sm:text-[36px] lg:text-[44px] font-bold text-carbon leading-[1.08] mb-4" style={{ letterSpacing: "-0.02em" }}>
                   {active.headline}
                 </h3>
-                <p className="text-[14px] sm:text-[15px] text-graphite-alt leading-relaxed mb-7 max-w-[380px]">
+                <p className="text-[14px] sm:text-[15px] text-graphite-alt leading-relaxed mb-7 max-w-[380px] sm:mx-auto lg:mx-0">
                   {active.description}
                 </p>
 
                 {/* Includes */}
-                <div className="flex flex-col gap-3 mb-8">
+                <div className="flex flex-col gap-3 mb-8 text-left">
                   {active.includes.map((item) => (
                     <span key={item} className="flex items-center gap-3 text-[13px] font-medium text-carbon">
                       <span className="w-5 h-5 rounded-full bg-signal-orange flex items-center justify-center shrink-0">
@@ -330,7 +330,7 @@ export function EcosystemSection() {
                 <button
                   type="button"
                   onClick={() => setModalTab(active)}
-                  className="group self-start inline-flex items-center gap-2 bg-carbon hover:bg-signal-orange text-white text-[13px] font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
+                  className="group self-start sm:self-center lg:self-start inline-flex items-center gap-2 bg-carbon hover:bg-signal-orange text-white text-[13px] font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
                 >
                   Explore {active.label}
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />

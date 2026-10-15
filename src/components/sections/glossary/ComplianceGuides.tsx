@@ -225,7 +225,7 @@ export function ComplianceGuides() {
       >
         <TechSidebar nav={NAV} active={active} label="Compliance guides" />
 
-        <main className="min-w-0 max-w-[760px]">
+        <main className="min-w-0 w-full max-w-[760px] mx-auto lg:mx-0">
           <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-signal-orange">
             Industry compliance glossary
           </p>

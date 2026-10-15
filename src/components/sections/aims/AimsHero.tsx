@@ -385,7 +385,7 @@ export function AimsHero() {
           }}
         >
           <div
-            className="relative rounded-[18px] overflow-hidden min-h-[620px] sm:min-h-0 sm:aspect-[16/10]"
+            className="relative rounded-[18px] overflow-hidden min-h-[620px] lg:min-h-min lg:aspect-[16/10]"
             style={{
               background: "linear-gradient(180deg, #0A0F14 0%, #06090C 100%)",
               border: "1px solid rgba(255,255,255,0.06)",
