@@ -364,6 +364,11 @@ export function CareersHiring() {
         <span aria-hidden className="hidden lg:block absolute top-5 left-[10%] right-[10%] h-[2px] bg-signal-orange" />
         {JOURNEY.map((j, i) => (
           <motion.li key={j.title} {...reveal(i)} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
+            {/* below lg the steps stack, so each joins the next with a
+                vertical line from under its circle across the row gap */}
+            {i < JOURNEY.length - 1 && (
+              <span aria-hidden className="lg:hidden absolute left-5 top-10 -bottom-4 w-[2px] -translate-x-1/2 bg-signal-orange" />
+            )}
             <span className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full bg-signal-orange text-white text-[13px] font-bold tabular-nums shrink-0">
               {i + 1}
             </span>
