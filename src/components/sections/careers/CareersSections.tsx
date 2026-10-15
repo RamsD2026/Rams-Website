@@ -361,7 +361,7 @@ export function CareersHiring() {
       />
 
       <ol className="relative grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <span aria-hidden className="hidden lg:block absolute top-5 left-[10%] right-[10%] h-px bg-signal-orange/30" />
+        <span aria-hidden className="hidden lg:block absolute top-5 left-[10%] right-[10%] h-[2px] bg-signal-orange" />
         {JOURNEY.map((j, i) => (
           <motion.li key={j.title} {...reveal(i)} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
             <span className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full bg-signal-orange text-white text-[13px] font-bold tabular-nums shrink-0">
