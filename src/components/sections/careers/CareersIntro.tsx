@@ -44,8 +44,8 @@ import { ApplyDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs"
 const HAIR = "#E8E8ED";
 const ALL = "ALL";
 
-/* The board's team tabs use short names with a count, so the set fits one
-   line on desktop (the full family titles wrapped the pill onto two). The
+/* The board's team tabs use short names with a count badge, so the set
+   fits one line on desktop (the full family titles wrapped the pill onto two). The
    full title still shows on each job card. */
 const SHORT: Record<FamilyCode, string> = {
   PD: "Product",
@@ -77,20 +77,26 @@ export function CareersIntro() {
     return () => window.removeEventListener(APPLY_EVENT, open);
   }, []);
 
-  /* [code, tab label] for "All" and every team with at least one role. */
+  /* [code, tab label, role count] for "All" and every team with a role.
+     The count is drawn by FilterBar as a small round badge. */
   const teams = useMemo(() => {
     const present = FAMILIES.filter((f) => jobs.some((j) => j.family === f.code));
     return [
-      [ALL, `All roles ${jobs.length}`] as const,
+      [ALL, "All roles", jobs.length] as const,
       ...present.map(
         (f) =>
           [
             f.code as FamilyCode,
-            `${SHORT[f.code as FamilyCode]} ${jobs.filter((j) => j.family === f.code).length}`,
+            SHORT[f.code as FamilyCode],
+            jobs.filter((j) => j.family === f.code).length,
           ] as const,
       ),
     ];
   }, [jobs]);
+  const teamCounts = useMemo(
+    () => Object.fromEntries(teams.map(([, label, n]) => [label, n])),
+    [teams],
+  );
   const tabLabel = (code: string) => teams.find(([c]) => c === code)?.[1] ?? teams[0][1];
 
   const shownJobs = useMemo(() => {
@@ -313,6 +319,7 @@ export function CareersIntro() {
               onQuery={setQ}
               placeholder="Search roles…"
               slide
+              counts={teamCounts}
             />
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">

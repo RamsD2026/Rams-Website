@@ -53,6 +53,7 @@ export function FilterBar({
   placeholder = "Search…",
   stacked = false,
   slide = false,
+  counts,
 }: {
   /** Includes the "all" option — the caller decides what it is called. */
   tabs: string[];
@@ -76,6 +77,12 @@ export function FilterBar({
    * `useRailFollow`. From lg nothing changes. Opt-in.
    */
   slide?: boolean;
+  /**
+   * A count per tab, keyed by the tab's label, drawn as a small round badge
+   * after it — white on the grey track, faint white on the active tab. Tabs
+   * without an entry show no badge. Opt-in.
+   */
+  counts?: Record<string, number>;
 }) {
   const searchable = query !== undefined && onQuery !== undefined;
   const rail = useRailFollow<HTMLDivElement>(Math.max(0, tabs.indexOf(active)));
@@ -102,13 +109,23 @@ export function FilterBar({
             aria-selected={now}
             onClick={() => onTab(t)}
             className={
-              "shrink-0 py-2.5 px-4 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap " +
+              "shrink-0 inline-flex items-center gap-2 py-2.5 px-4 text-[13px] font-medium transition-all duration-200 rounded-full whitespace-nowrap " +
               (now
                 ? "bg-carbon text-white"
                 : "text-graphite hover:text-signal-orange")
             }
           >
             {t}
+            {counts?.[t] !== undefined && (
+              <span
+                className={
+                  "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[11px] font-semibold tabular-nums leading-none transition-colors duration-200 " +
+                  (now ? "bg-white/20 text-white" : "bg-white text-graphite/70")
+                }
+              >
+                {counts[t]}
+              </span>
+            )}
           </button>
         );
       })}
