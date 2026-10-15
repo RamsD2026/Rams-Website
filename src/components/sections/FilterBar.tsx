@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
@@ -35,7 +35,8 @@ import { useRailFollow } from "@/lib/use-rail-follow";
  * submit and no `<form>` — an Enter key that reloads the page would lose the
  * tab you were on.
  *
- * `type="search"` gives the browser its own clear affordance. The focus ring
+ * `type="search"`, with the browser's own clear button hidden (Chrome draws
+ * it blue) and a grey ✕ drawn in its place while there is a query. The focus ring
  * is an inset orange box-shadow rather than an outline, so it follows the
  * pill's radius instead of drawing a rectangle around it.
  */
@@ -153,8 +154,20 @@ export function FilterBar({
             onChange={(e) => onQuery(e.target.value)}
             placeholder={placeholder}
             aria-label={placeholder}
-            className="w-full bg-transparent pl-11 pr-4 py-3 text-[13px] text-carbon placeholder:text-graphite/40 outline-none rounded-full focus:shadow-[inset_0_0_0_1.5px_#FF6A00]"
+            className="w-full bg-transparent pl-11 pr-10 py-3 text-[13px] text-carbon placeholder:text-graphite/40 outline-none rounded-full focus:shadow-[inset_0_0_0_1.5px_#FF6A00] [&::-webkit-search-cancel-button]:appearance-none"
           />
+          {/* The browser's clear button is blue in Chrome; this grey one
+              matches the field. */}
+          {query && (
+            <button
+              type="button"
+              onClick={() => onQuery("")}
+              aria-label="Clear search"
+              className="absolute right-2.5 flex items-center justify-center w-6 h-6 rounded-full text-graphite/45 hover:text-carbon hover:bg-[#F2F2F2] transition-colors"
+            >
+              <X className="w-3.5 h-3.5" aria-hidden />
+            </button>
+          )}
         </div>
       )}
     </div>

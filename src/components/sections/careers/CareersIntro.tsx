@@ -9,6 +9,7 @@ import {
   ArrowUpRight,
   Bookmark,
   BookmarkCheck,
+  Check,
   Search,
   X,
 } from "lucide-react";
@@ -147,11 +148,39 @@ export function CareersIntro() {
               and other physical environments.
             </motion.p>
 
-            {/* job search */}
+            {/* The hero's two actions, as the company pages draw them (About,
+                Clients): an orange primary and an outlined secondary, 6×3 on
+                an `rounded-lg`. */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.26, ease: EASE }}
+              className="mt-9 flex items-center justify-center gap-3 flex-wrap"
+            >
+              <button
+                type="button"
+                onClick={() => scrollTo("jobs")}
+                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
+              >
+                {hasJobs ? `View ${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}` : "View open roles"}
+                <ArrowDown className="w-4 h-4" aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={() => setApplying({ job: null })}
+                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3 rounded-lg border border-white/15 transition-colors duration-200 hover:bg-white/[0.06]"
+              >
+                Join the talent network
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </button>
+            </motion.div>
+
+            {/* job search. The browser's own clear button is hidden (it draws
+                a blue ✕ in Chrome) and a grey one is drawn instead. */}
             <motion.form
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
+              transition={{ duration: 0.6, delay: 0.34, ease: EASE }}
               onSubmit={(e) => {
                 e.preventDefault();
                 setTeam(ALL);
@@ -159,7 +188,7 @@ export function CareersIntro() {
                 scrollTo("jobs");
               }}
               role="search"
-              className="mt-9 mx-auto max-w-[620px] flex items-center gap-2 p-1.5 rounded-full bg-white/[0.06] border border-white/12 focus-within:border-signal-orange/70 transition-colors"
+              className="mt-8 mx-auto max-w-[620px] flex items-center gap-2 p-1.5 rounded-full bg-white/[0.06] border border-white/12 focus-within:border-signal-orange/70 transition-colors"
             >
               <Search className="ml-3.5 w-4 h-4 text-white/40 shrink-0" aria-hidden />
               <input
@@ -168,8 +197,18 @@ export function CareersIntro() {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search roles, teams or skills"
                 aria-label="Search roles"
-                className="flex-1 min-w-0 bg-transparent py-2.5 text-[14px] text-white placeholder:text-white/35 outline-none"
+                className="flex-1 min-w-0 bg-transparent py-2.5 text-[14px] text-white placeholder:text-white/35 outline-none [&::-webkit-search-cancel-button]:appearance-none"
               />
+              {q && (
+                <button
+                  type="button"
+                  onClick={() => setQ("")}
+                  aria-label="Clear search"
+                  className="shrink-0 flex items-center justify-center w-7 h-7 rounded-full text-white/45 hover:text-white/80 hover:bg-white/10 transition-colors"
+                >
+                  <X className="w-4 h-4" aria-hidden />
+                </button>
+              )}
               <button
                 type="submit"
                 className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover"
@@ -182,8 +221,8 @@ export function CareersIntro() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-7 flex flex-wrap justify-center gap-2"
+              transition={{ duration: 0.6, delay: 0.42 }}
+              className="mt-6 flex flex-wrap justify-center gap-2"
             >
               {HERO_CHIPS.map((c) => (
                 <span
@@ -194,25 +233,6 @@ export function CareersIntro() {
                 </span>
               ))}
             </motion.div>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              <button
-                type="button"
-                onClick={() => scrollTo("jobs")}
-                className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-white/70 hover:text-white transition-colors"
-              >
-                {hasJobs ? `View ${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}` : "View open roles"}
-                <ArrowDown className="w-4 h-4" aria-hidden />
-              </button>
-              <button
-                type="button"
-                onClick={() => setApplying({ job: null })}
-                className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-white/70 hover:text-white transition-colors"
-              >
-                Join the talent network
-                <ArrowRight className="w-4 h-4" aria-hidden />
-              </button>
-            </div>
           </div>
         </div>
       </section>
@@ -305,6 +325,9 @@ export function CareersIntro() {
                         </span>
                         <span className="mt-2 block">
                           <JobMeta job={j} />
+                        </span>
+                        <span className="mt-3 block text-[14px] leading-[1.6] text-graphite/65 line-clamp-2 max-w-[720px]">
+                          {j.summary}
                         </span>
                       </button>
 
@@ -431,12 +454,22 @@ export function CareersIntro() {
                 type="button"
                 onClick={() => setGroup(on ? null : g.id)}
                 aria-pressed={on}
+                /* No orange ring on the chosen tile — it read as a stray
+                   border. While a filter is on, the other tiles dim and the
+                   chosen one carries a "Selected" tag; keyboard focus still
+                   shows its own outline. */
                 className={
-                  "group relative overflow-hidden rounded-2xl text-left aspect-[4/5] sm:aspect-[4/3] lg:aspect-[3/4] outline-none focus-visible:ring-2 focus-visible:ring-signal-orange " +
-                  (on ? "ring-2 ring-signal-orange ring-offset-2 ring-offset-[#F5F5F7]" : "")
+                  "group relative overflow-hidden rounded-2xl text-left aspect-[4/5] sm:aspect-[4/3] lg:aspect-[3/4] outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-opacity duration-300 " +
+                  (group && !on ? "opacity-45 hover:opacity-80" : "opacity-100")
                 }
                 style={{ background: "#0E0E10" }}
               >
+                {on && (
+                  <span className="absolute top-3 right-3 z-[1] inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-signal-orange text-white text-[10.5px] font-mono font-bold tracking-[0.12em] uppercase">
+                    <Check className="w-3 h-3" aria-hidden />
+                    Selected
+                  </span>
+                )}
                 <Image
                   src={g.img}
                   alt={g.alt}

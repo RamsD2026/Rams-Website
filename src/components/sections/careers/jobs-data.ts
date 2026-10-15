@@ -9,9 +9,10 @@
  *
  * `SAMPLE_JOBS` exist only so the board, filters, save and apply flow can be
  * tried before real roles exist. They are labelled "Sample" in the UI and are
- * shown ONLY when the build has `NEXT_PUBLIC_SHOW_SAMPLE_JOBS=true` (set it
- * for a preview environment, never for production). With real roles in
- * `JOBS`, samples are ignored entirely.
+ * shown ONLY on a Vercel *preview* build (`NEXT_PUBLIC_VERCEL_ENV` is
+ * "preview" — every push to `main` gets one) or when the build sets
+ * `NEXT_PUBLIC_SHOW_SAMPLE_JOBS=true`. Production (`master`) never shows them.
+ * With real roles in `JOBS`, samples are ignored entirely.
  */
 
 /** A career-family code from `careers-data` (`FAMILIES`). */
@@ -136,5 +137,8 @@ const SAMPLE_JOBS: Job[] = [
 /** The roles the board shows: real ones, or samples only where enabled. */
 export function listedJobs(): Job[] {
   if (JOBS.length > 0) return JOBS;
-  return process.env.NEXT_PUBLIC_SHOW_SAMPLE_JOBS === "true" ? SAMPLE_JOBS : [];
+  const samples =
+    process.env.NEXT_PUBLIC_SHOW_SAMPLE_JOBS === "true" ||
+    process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
+  return samples ? SAMPLE_JOBS : [];
 }
