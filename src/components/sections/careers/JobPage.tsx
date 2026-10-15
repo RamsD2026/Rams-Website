@@ -249,7 +249,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
               <ol className="mt-6 space-y-4">
                 {JOURNEY.map((j, i) => (
                   <li key={j.title} className="flex items-start gap-4">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-carbon text-white text-[12px] font-bold tabular-nums shrink-0">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-signal-orange text-white text-[12px] font-bold tabular-nums shrink-0">
                       {i + 1}
                     </span>
                     <div>
