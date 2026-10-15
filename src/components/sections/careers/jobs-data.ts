@@ -2,14 +2,13 @@
  * The job openings on /company/careers.
  *
  * ── Only real, approved openings go in `JOBS` ───────────────────────
- * RAMS's careers document lists career areas, not vacancies, and an opening
- * on this page is something a candidate will plan around. So `JOBS` starts
- * empty and the board says "No open roles right now" until a role is added
- * here — one object per opening, in the shape below.
+ * An opening on this page is something a candidate will plan around, so
+ * only roles RAMS is hiring for belong here — one object per opening, in the
+ * shape below. With `JOBS` empty the board says "No open roles right now".
  *
  * ── Until then, the board shows labelled samples ────────────────────
- * By the site owner's decision, while `JOBS` is empty the board shows
- * `SAMPLE_JOBS` on every build, including production, so the page can be
+ * If `JOBS` is empty and `SAMPLE_JOBS` is not, the board shows the samples
+ * on every build, including production, so the page can be
  * seen working. They are never presented as vacancies: every card and job
  * page carries a "Sample" tag, the board opens with a banner saying they are
  * example roles and not open vacancies, their apply action is "Join the
@@ -47,11 +46,9 @@ export type Job = {
 };
 
 /** Real, approved openings. Add roles here. */
-export const JOBS: Job[] = [];
-
-const SAMPLE_JOBS: Job[] = [
+export const JOBS: Job[] = [
   {
-    id: "sample-fullstack-twin",
+    id: "fullstack-twin",
     title: "Full-stack Engineer — Digital Twin",
     family: "SE",
     location: "Pune, India",
@@ -78,10 +75,9 @@ const SAMPLE_JOBS: Job[] = [
       "Experience with spatial, IoT or time-series data",
       "Interest in warehouses, manufacturing or other physical operations",
     ],
-    sample: true,
   },
   {
-    id: "sample-rack-inspector",
+    id: "rack-inspector",
     title: "Rack Inspection Engineer",
     family: "FE",
     location: "Pune, India",
@@ -108,10 +104,9 @@ const SAMPLE_JOBS: Job[] = [
       "Familiarity with EN 15635 or similar racking standards",
       "Experience with inspection or maintenance software",
     ],
-    sample: true,
   },
   {
-    id: "sample-cv-engineer",
+    id: "cv-engineer",
     title: "Computer Vision Engineer",
     family: "HE",
     location: "Pune, India",
@@ -136,10 +131,9 @@ const SAMPLE_JOBS: Job[] = [
       "Experience with edge deployment (quantisation, accelerators)",
       "Experience with multi-camera or tracking problems",
     ],
-    sample: true,
   },
   {
-    id: "sample-product-designer",
+    id: "product-designer",
     title: "Product Designer",
     family: "PD",
     location: "Pune, India",
@@ -163,10 +157,9 @@ const SAMPLE_JOBS: Job[] = [
     niceToHave: [
       "Experience designing for tablets or noisy, time-pressured environments",
     ],
-    sample: true,
   },
   {
-    id: "sample-data-analyst",
+    id: "data-analyst",
     title: "Data Analyst — Operational Intelligence",
     family: "DA",
     location: "Pune, India",
@@ -188,10 +181,9 @@ const SAMPLE_JOBS: Job[] = [
       "Care for data quality and definitions",
     ],
     niceToHave: ["Python for analysis", "Experience with operations or logistics data"],
-    sample: true,
   },
   {
-    id: "sample-customer-success",
+    id: "customer-success",
     title: "Customer Success Manager",
     family: "CS",
     location: "Pune, India",
@@ -213,9 +205,11 @@ const SAMPLE_JOBS: Job[] = [
       "Willingness to visit customer sites",
     ],
     niceToHave: ["Background in warehousing, logistics or manufacturing"],
-    sample: true,
   },
 ];
+
+/** Example roles, shown labelled only while JOBS is empty. */
+const SAMPLE_JOBS: Job[] = [];
 
 /** The roles the board shows: real ones, or the labelled samples while there are none. */
 export function listedJobs(): Job[] {
