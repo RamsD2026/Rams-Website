@@ -58,16 +58,33 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center overflow-hidden pt-[104px] sm:pt-[120px] pb-20"
+      className="relative min-h-screen flex items-center overflow-hidden pt-[104px] sm:pt-[120px] pb-20 bg-[#0B0B0C]"
     >
+      {/* On a portrait tablet the section is tall and narrow, so a cover-fit
+          widescreen video was scaled up and cut hard at the sides. There it
+          shows whole instead — full width, its own 16:9, fading into the dark
+          ground below. "Portrait tablet" is portrait, 500–1023px wide and no
+          narrower than 3:5, which leaves phones (≈9:19) on the cover fit. */}
+      <style>{`
+        .hero-bg-video { height: 150%; margin-top: -5%; }
+        @media (orientation: portrait) and (min-width: 500px) and (max-width: 1023px) and (min-aspect-ratio: 3/5) {
+          .hero-bg-video {
+            height: auto;
+            margin-top: 0;
+            aspect-ratio: 16 / 9;
+            -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+          }
+        }
+      `}</style>
+
       {/* ── Video with parallax ── */}
       <motion.div
         style={{ scale: videoScale, y: videoY }}
         className="absolute inset-0 w-full h-full origin-center"
       >
         <video
-          className="w-full object-cover"
-          style={{ height: "150%", marginTop: "-5%" }}
+          className="hero-bg-video w-full object-cover"
           src="/download.mp4"
           autoPlay muted loop playsInline
           aria-hidden="true"

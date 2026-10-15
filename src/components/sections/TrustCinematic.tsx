@@ -30,6 +30,24 @@ export function TrustCinematic() {
       className="relative w-full overflow-hidden bg-black"
       style={{ minHeight: "min(100vh, 720px)" }}
     >
+      {/* Portrait tablets: the whole 16:9 video, full width and vertically
+          centred, fading out top and bottom into the black ground, instead of
+          a cover fit that cropped its sides. Same "portrait tablet" test as
+          the home hero; phones keep the cover fit. */}
+      <style>{`
+        @media (orientation: portrait) and (min-width: 500px) and (max-width: 1023px) and (min-aspect-ratio: 3/5) {
+          .trust-bg-video {
+            inset: auto 0 auto 0;
+            top: 50%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            transform: translateY(-50%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+          }
+        }
+      `}</style>
+
       {/* Video */}
       <motion.div
         className="absolute inset-0"
@@ -41,7 +59,7 @@ export function TrustCinematic() {
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="trust-bg-video absolute inset-0 w-full h-full object-cover"
         >
           <source src="/download.mp4" type="video/mp4" />
         </video>
