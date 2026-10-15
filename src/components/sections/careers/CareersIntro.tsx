@@ -18,7 +18,7 @@ import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { FilterBar } from "@/components/sections/FilterBar";
 import { APPLY_EVENT, CAREERS_EMAIL, FAMILIES, GROUPS, HERO_CHIPS, type GroupId } from "./careers-data";
-import { listedJobs, type Job } from "./jobs-data";
+import { listedJobs, type FamilyCode, type Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
 import { ApplyDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs";
 
@@ -42,14 +42,29 @@ import { ApplyDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs"
  */
 
 const HAIR = "#E8E8ED";
-const ALL = "All roles";
+const ALL = "ALL";
+
+/* The board's team tabs use short names with a count, so the set fits one
+   line on desktop (the full family titles wrapped the pill onto two). The
+   full title still shows on each job card. */
+const SHORT: Record<FamilyCode, string> = {
+  PD: "Product",
+  SE: "Software",
+  DA: "Data & AI",
+  HE: "Hardware",
+  FE: "Field",
+  CS: "Customer",
+  GP: "Growth",
+  MB: "Marketing",
+  OP: "Operations",
+};
 
 export function CareersIntro() {
   const jobs = useMemo(() => listedJobs(), []);
   const { saved, toggle, isSaved } = useSavedJobs();
 
   const [q, setQ] = useState("");
-  const [team, setTeam] = useState(ALL);
+  const [team, setTeam] = useState<FamilyCode | typeof ALL>(ALL);
   const [savedOnly, setSavedOnly] = useState(false);
   const [group, setGroup] = useState<GroupId | null>(null);
   const [applying, setApplying] = useState<{ job: Job | null } | null>(null);
@@ -62,16 +77,27 @@ export function CareersIntro() {
     return () => window.removeEventListener(APPLY_EVENT, open);
   }, []);
 
+  /* [code, tab label] for "All" and every team with at least one role. */
   const teams = useMemo(() => {
     const present = FAMILIES.filter((f) => jobs.some((j) => j.family === f.code));
-    return [ALL, ...present.map((f) => f.title)];
+    return [
+      [ALL, `All roles ${jobs.length}`] as const,
+      ...present.map(
+        (f) =>
+          [
+            f.code as FamilyCode,
+            `${SHORT[f.code as FamilyCode]} ${jobs.filter((j) => j.family === f.code).length}`,
+          ] as const,
+      ),
+    ];
   }, [jobs]);
+  const tabLabel = (code: string) => teams.find(([c]) => c === code)?.[1] ?? teams[0][1];
 
   const shownJobs = useMemo(() => {
     const term = q.trim().toLowerCase();
     return jobs.filter((j) => {
       if (savedOnly && !saved.includes(j.id)) return false;
-      if (team !== ALL && familyTitle(j.family) !== team) return false;
+      if (team !== ALL && j.family !== team) return false;
       if (!term) return true;
       return [j.title, j.summary, j.location, j.type, j.mode, familyTitle(j.family), ...j.requirements]
         .join(" ")
@@ -85,8 +111,8 @@ export function CareersIntro() {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  const seeRoles = (title: string) => {
-    setTeam(title);
+  const seeRoles = (code: FamilyCode) => {
+    setTeam(code);
     setSavedOnly(false);
     setQ("");
     scrollTo("jobs");
@@ -276,10 +302,10 @@ export function CareersIntro() {
               </div>
             )}
             <FilterBar
-              tabs={teams}
-              active={team}
+              tabs={teams.map(([, label]) => label)}
+              active={tabLabel(team)}
               onTab={(t) => {
-                setTeam(t);
+                setTeam(teams.find(([, label]) => label === t)?.[0] ?? ALL);
                 setSavedOnly(false);
               }}
               label="Filter roles by team"
@@ -578,7 +604,7 @@ export function CareersIntro() {
                   {roles > 0 ? (
                     <button
                       type="button"
-                      onClick={() => seeRoles(f.title)}
+                      onClick={() => seeRoles(f.code as FamilyCode)}
                       className="mt-6 self-start inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors"
                     >
                       See open roles
