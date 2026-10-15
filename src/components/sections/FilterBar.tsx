@@ -73,8 +73,10 @@ export function FilterBar({
   /**
    * Below lg, keep the track on one row that slides sideways, edge to edge of
    * the screen, like the category bar of a shopping app, instead of wrapping
-   * into a tall block. The chosen tab is scrolled to the centre by
-   * `useRailFollow`. From lg nothing changes. Opt-in.
+   * into a tall block. From lg it stays one row too, sliding inside its own
+   * column whenever the tabs and the search do not fit side by side (e.g. at
+   * 1024px). The chosen tab is scrolled to the centre by `useRailFollow`.
+   * Opt-in.
    */
   slide?: boolean;
   /**
@@ -93,10 +95,10 @@ export function FilterBar({
       aria-label={label}
       className={
         (slide
-          ? "flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 lg:inline-flex lg:w-auto lg:flex-wrap " +
-            (stacked ? "lg:justify-center " : "")
+          ? "flex w-max mx-auto items-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 " +
+            (stacked ? "" : "lg:mx-0 ")
           : "inline-flex flex-wrap justify-center items-center self-center bg-[#F2F2F2] rounded-full p-1.5 gap-0.5 ") +
-        (stacked ? "" : "lg:justify-start lg:self-auto")
+        (slide || stacked ? "" : "lg:justify-start lg:self-auto")
       }
     >
       {tabs.map((t) => {
@@ -145,7 +147,10 @@ export function FilterBar({
            and the padding puts its start back in line with the page. */
         <div
           ref={rail}
-          className="w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar lg:w-auto lg:mx-0 lg:px-0 lg:overflow-visible"
+          className={
+            "w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar lg:mx-0 lg:px-0 " +
+            (stacked ? "lg:w-full" : "lg:w-auto lg:min-w-0")
+          }
         >
           {list}
         </div>
@@ -157,7 +162,7 @@ export function FilterBar({
         <div
           className={
             "relative flex items-center w-full max-w-[300px] self-center bg-white rounded-full " +
-            (stacked ? "" : "lg:self-auto lg:w-[280px]")
+            (stacked ? "" : "lg:self-auto lg:w-[280px] lg:shrink-0")
           }
           style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
         >
