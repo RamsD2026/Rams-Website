@@ -148,9 +148,10 @@ export function CareersIntro() {
               and other physical environments.
             </motion.p>
 
-            {/* The hero's two actions, as the company pages draw them (About,
-                Clients): an orange primary and an outlined secondary, 6×3 on
-                an `rounded-lg`. */}
+            {/* The hero's two actions, drawn exactly as the solution heroes
+                draw theirs: an orange pill primary with an arrow, and an
+                outlined pill secondary with no icon. Pills, like every other
+                button on this page and the navbar's ROI calculator. */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -160,7 +161,7 @@ export function CareersIntro() {
               <button
                 type="button"
                 onClick={() => scrollTo("jobs")}
-                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
+                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
               >
                 {hasJobs ? `View ${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}` : "View open roles"}
                 <ArrowDown className="w-4 h-4" aria-hidden />
@@ -168,10 +169,9 @@ export function CareersIntro() {
               <button
                 type="button"
                 onClick={() => setApplying({ job: null })}
-                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3 rounded-lg border border-white/15 transition-colors duration-200 hover:bg-white/[0.06]"
+                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 transition-all duration-200 hover:bg-white/[0.06]"
               >
                 Join the talent network
-                <ArrowRight className="w-4 h-4" aria-hidden />
               </button>
             </motion.div>
 
