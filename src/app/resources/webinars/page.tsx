@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { WebinarHero } from "@/components/sections/webinars/WebinarHero";
 import { WebinarUpcoming } from "@/components/sections/webinars/WebinarUpcoming";
-import { WebinarLibrary } from "@/components/sections/webinars/WebinarLibrary";
-import { WebinarTracks } from "@/components/sections/webinars/WebinarTracks";
-import { WebinarFAQ } from "@/components/sections/webinars/WebinarFAQ";
-import { WebinarCTA } from "@/components/sections/webinars/WebinarCTA";
 
 export const metadata: Metadata = {
   title: "Webinars & Recordings | RAMS Digital",
@@ -14,6 +10,11 @@ export const metadata: Metadata = {
 
 /**
  * /resources/webinars — the programme.
+ *
+ * Current version (2026-10-16): Hero and Upcoming only. On-demand learning
+ * (Library), Learning tracks, Common questions (FAQ) and the Talk-to-an-
+ * expert close were removed at the owner's request; their components are
+ * kept in sections/webinars, and the full page is commit 269821d.
  *
  *   01 Hero        light     the claim, the tiles, and the client strip
  *   02 Featured    white     three cards on a shelf, one at a time, auto-running
@@ -88,10 +89,6 @@ export default function WebinarsPage() {
     <>
       <WebinarHero />
       <WebinarUpcoming />
-      <WebinarLibrary />
-      <WebinarTracks />
-      <WebinarFAQ />
-      <WebinarCTA />
     </>
   );
 }

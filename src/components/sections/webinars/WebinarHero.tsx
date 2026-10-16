@@ -146,13 +146,6 @@ export function WebinarHero() {
               View the upcoming session
               <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
-            <Link
-              href="#recordings"
-              className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3.5 rounded-full transition-colors duration-200 hover:bg-[#F5F5F7]"
-              style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}
-            >
-              Browse recordings
-            </Link>
           </motion.div>
 
           {/* the source's five topic words, as one line rather than as a
