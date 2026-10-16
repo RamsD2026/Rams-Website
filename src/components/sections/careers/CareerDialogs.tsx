@@ -51,8 +51,14 @@ import { CAREERS_EMAIL } from "./careers-data";
 
 const HAIR = "#E8E8ED";
 
-export function familyTitle(code: string) {
+export function familyTitle(code?: string) {
+  if (!code) return "";
   return FAMILIES.find((f) => f.code === code)?.title ?? code;
+}
+
+/** The label a role is filed under: its stated department, else its family. */
+export function jobLabel(job: { department?: string; family?: string }) {
+  return job.department ?? familyTitle(job.family);
 }
 
 export function postedLabel(iso: string) {
@@ -135,12 +141,14 @@ export function JobMeta({ job, dark = false }: { job: Job; dark?: boolean }) {
   const c = dark ? "text-white/55" : "text-graphite/60";
   return (
     <div className={`flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] ${c}`}>
-      <span className="inline-flex items-center gap-1.5">
-        <MapPin className="w-3.5 h-3.5" aria-hidden />
-        {job.location}
-      </span>
-      <span>{job.type}</span>
-      <span>{job.mode}</span>
+      {job.location && (
+        <span className="inline-flex items-center gap-1.5">
+          <MapPin className="w-3.5 h-3.5" aria-hidden />
+          {job.location}
+        </span>
+      )}
+      {job.type && <span>{job.type}</span>}
+      {job.mode && <span>{job.mode}</span>}
       {job.experience && <span>{job.experience}</span>}
     </div>
   );

@@ -142,7 +142,8 @@ export function FilterBar({
           : "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       }
     >
-      {slide ? (
+      {/* A single tab filters nothing, so it is not drawn. */}
+      {tabs.length < 2 ? null : slide ? (
         /* Full-bleed: the negative margin takes the row to the screen edges
            and the padding puts its start back in line with the page. */
         <div

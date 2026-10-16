@@ -20,7 +20,7 @@ import { FilterBar } from "@/components/sections/FilterBar";
 import { APPLY_EVENT, CAREERS_EMAIL, FAMILIES, GROUPS, HERO_CHIPS, type GroupId } from "./careers-data";
 import { listedJobs, type FamilyCode, type Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
-import { ApplyDialog, JobMeta, familyTitle, postedLabel } from "./CareerDialogs";
+import { ApplyDialog, JobMeta, jobLabel, postedLabel } from "./CareerDialogs";
 
 /**
  * The top of the careers page — hero, open roles and career areas — as one
@@ -105,7 +105,7 @@ export function CareersIntro() {
       if (savedOnly && !saved.includes(j.id)) return false;
       if (team !== ALL && j.family !== team) return false;
       if (!term) return true;
-      return [j.title, j.summary, j.location, j.type, j.mode, familyTitle(j.family), ...j.requirements]
+      return [j.title, j.summary, j.location, j.type, j.mode, jobLabel(j), ...j.requirements]
         .join(" ")
         .toLowerCase()
         .includes(term);
@@ -361,20 +361,24 @@ export function CareersIntro() {
                         className="flex-1 min-w-0 text-left"
                       >
                         <span className="flex flex-wrap items-center gap-2">
-                          <span
-                            className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange px-2.5 py-1 rounded-full"
-                            style={{ background: "rgba(255,106,0,0.08)" }}
-                          >
-                            {familyTitle(j.family)}
-                          </span>
+                          {jobLabel(j) && (
+                            <span
+                              className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange px-2.5 py-1 rounded-full"
+                              style={{ background: "rgba(255,106,0,0.08)" }}
+                            >
+                              {jobLabel(j)}
+                            </span>
+                          )}
                           {j.sample && (
                             <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/55 px-2.5 py-1 rounded-full bg-[#F2F2F2]">
                               Sample
                             </span>
                           )}
-                          <span className="text-[12px] text-graphite/45">
-                            Posted {postedLabel(j.posted)}
-                          </span>
+                          {j.posted && (
+                            <span className="text-[12px] text-graphite/45">
+                              Posted {postedLabel(j.posted)}
+                            </span>
+                          )}
                         </span>
                         <span className="mt-2.5 block text-[18px] sm:text-[19px] font-bold tracking-[-0.02em] text-carbon leading-[1.3] group-hover:text-signal-orange transition-colors">
                           {j.title}

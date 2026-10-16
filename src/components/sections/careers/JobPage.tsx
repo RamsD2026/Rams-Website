@@ -20,7 +20,7 @@ import { EASE } from "@/components/sections/rackiq/rackiq-shared";
 import { JOURNEY } from "./careers-data";
 import type { Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
-import { ApplyDialog, familyTitle, postedLabel } from "./CareerDialogs";
+import { ApplyDialog, jobLabel, postedLabel } from "./CareerDialogs";
 
 /**
  * A role's own page — /company/careers/jobs/[id].
@@ -90,11 +90,14 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
     }
   };
 
+  /* Only what the job description states: a fact it leaves out is not shown. */
   const facts: { icon: React.ReactNode; label: string; value: string }[] = [
-    { icon: <Users className="w-4 h-4" aria-hidden />, label: "Team", value: familyTitle(job.family) },
-    { icon: <MapPin className="w-4 h-4" aria-hidden />, label: "Location", value: job.location },
-    { icon: <Briefcase className="w-4 h-4" aria-hidden />, label: "Job type", value: job.type },
-    { icon: <Clock className="w-4 h-4" aria-hidden />, label: "Work mode", value: job.mode },
+    ...(jobLabel(job)
+      ? [{ icon: <Users className="w-4 h-4" aria-hidden />, label: job.department ? "Department" : "Team", value: jobLabel(job) }]
+      : []),
+    ...(job.location ? [{ icon: <MapPin className="w-4 h-4" aria-hidden />, label: "Location", value: job.location }] : []),
+    ...(job.type ? [{ icon: <Briefcase className="w-4 h-4" aria-hidden />, label: "Job type", value: job.type }] : []),
+    ...(job.mode ? [{ icon: <Clock className="w-4 h-4" aria-hidden />, label: "Work mode", value: job.mode }] : []),
     ...(job.experience
       ? [{ icon: <Check className="w-4 h-4" aria-hidden />, label: "Experience", value: job.experience }]
       : []),
@@ -103,7 +106,9 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
       label: d.label,
       value: d.value,
     })),
-    { icon: <CalendarDays className="w-4 h-4" aria-hidden />, label: "Posted", value: postedLabel(job.posted) },
+    ...(job.posted
+      ? [{ icon: <CalendarDays className="w-4 h-4" aria-hidden />, label: "Posted", value: postedLabel(job.posted) }]
+      : []),
   ];
 
   const saveButton = (dark = false) => (
@@ -178,12 +183,14 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
             className="mt-8 max-w-[860px]"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span
-                className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange px-3 py-1.5 rounded-full"
-                style={{ background: "rgba(255,106,0,0.12)", boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.28)" }}
-              >
-                {familyTitle(job.family)}
-              </span>
+              {jobLabel(job) && (
+                <span
+                  className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange px-3 py-1.5 rounded-full"
+                  style={{ background: "rgba(255,106,0,0.12)", boxShadow: "inset 0 0 0 1px rgba(255,106,0,0.28)" }}
+                >
+                  {jobLabel(job)}
+                </span>
+              )}
               {job.sample && (
                 <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-white/60 px-3 py-1.5 rounded-full border border-white/12">
                   Sample role
@@ -230,7 +237,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
           <div className="min-w-0 max-w-[760px]">
             <motion.section {...reveal()}>
               <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
-                About the role
+                {job.headings?.about ?? "About the role"}
               </h2>
               {(job.about ?? [job.summary]).map((p) => (
                 <p key={p} className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{p}</p>
@@ -238,13 +245,13 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
             </motion.section>
 
             <div className="mt-10">
-              <Block title="What you will do" items={job.responsibilities} />
-              <Block title="What you bring" items={job.requirements} />
-              <Block title="Nice to have" items={job.niceToHave} />
+              <Block title={job.headings?.responsibilities ?? "What you will do"} items={job.responsibilities} />
+              <Block title={job.headings?.requirements ?? "What you bring"} items={job.requirements} />
+              <Block title={job.headings?.niceToHave ?? "Nice to have"} items={job.niceToHave} />
               {job.tools && job.tools.length > 0 && (
                 <motion.section {...reveal()} className="pt-10">
                   <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
-                    Tools you will use
+                    {job.headings?.tools ?? "Tools"}
                   </h2>
                   <ul className="mt-5 flex flex-wrap gap-2">
                     {job.tools.map((t) => (
@@ -267,7 +274,9 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
                     <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
                       {sec.title}
                     </h2>
-                    <p className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{sec.body}</p>
+                    {sec.body?.map((p) => (
+                      <p key={p} className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{p}</p>
+                    ))}
                   </motion.section>
                 ),
               )}
@@ -379,15 +388,19 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
                     className="group flex flex-col h-full p-6 rounded-2xl bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-28px_rgba(14,14,15,0.35)]"
                     style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
                   >
-                    <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
-                      {familyTitle(o.family)}
-                    </span>
+                    {jobLabel(o) && (
+                      <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
+                        {jobLabel(o)}
+                      </span>
+                    )}
                     <span className="mt-3 text-[17px] font-bold tracking-[-0.02em] text-carbon leading-[1.3] group-hover:text-signal-orange transition-colors">
                       {o.title}
                     </span>
-                    <span className="mt-2 text-[13px] text-graphite/55">
-                      {o.location} · {o.type} · {o.mode}
-                    </span>
+                    {[o.location, o.type, o.mode].some(Boolean) && (
+                      <span className="mt-2 text-[13px] text-graphite/55">
+                        {[o.location, o.type, o.mode].filter(Boolean).join(" · ")}
+                      </span>
+                    )}
                     <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors">
                       View role
                       <ArrowRight className="w-4 h-4" aria-hidden />
@@ -407,7 +420,7 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
       >
         <div className="min-w-0 flex-1">
           <p className="truncate text-[13.5px] font-bold text-carbon">{job.title}</p>
-          <p className="truncate text-[12px] text-graphite/55">{job.location}</p>
+          {job.location && <p className="truncate text-[12px] text-graphite/55">{job.location}</p>}
         </div>
         <button
           type="button"
