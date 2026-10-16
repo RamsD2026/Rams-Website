@@ -311,17 +311,14 @@ export function Footer() {
                 SOC 2 · Type I
               </span>
             </div>
-            {/* The AICPA SOC mark has a white margin around its circle;
-                drawn at 106px inside an 88px clip, the circle fills the
-                frame like the two SOC 2 badges. */}
+            {/* The SOC 2 Type II mark, shown exactly as supplied — whole,
+                not cropped, at the other badges' 88px. */}
             <div className="flex flex-col items-center gap-2.5">
-              <span className="w-[88px] h-[88px] rounded-full flex items-center justify-center overflow-hidden">
-                <img
-                  src="/Product/aicpa-soc.png"
-                  alt="AICPA SOC 2 Type II"
-                  className="w-[106px] h-[106px] max-w-none object-contain block"
-                />
-              </span>
+              <img
+                src="/Product/aicpa-soc.png"
+                alt="AICPA SOC 2 Type II"
+                className="w-[88px] h-[88px] object-contain block"
+              />
               <span className="text-white/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
                 SOC 2 · Type II
               </span>
