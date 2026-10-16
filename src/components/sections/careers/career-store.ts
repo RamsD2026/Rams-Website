@@ -10,7 +10,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
  * storage can be unavailable (private windows, blocked site data) and the page
  * must still work without it: saving simply does not persist then.
  *
- * The résumé file is never stored. "Use my last application" refills the
+ * The resume file is never stored. "Use my last application" refills the
  * text fields; the candidate attaches the file again.
  */
 

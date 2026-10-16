@@ -29,7 +29,7 @@ import { ApplyDialog, JobMeta, jobLabel, postedLabel } from "./CareerDialogs";
  *
  * ── After DXC's careers page ────────────────────────────────────────
  * DXC opens on a job search and lists roles you can save or apply to; the
- * application offers autofill from a résumé, a manual form, the last
+ * application offers autofill from a resume, a manual form, the last
  * application and LinkedIn. All of that is here (`CareerDialogs`), built from
  * the site's own parts: the hero follows the site's dark heroes, the board's
  * filter is the shared `FilterBar` (with `slide`, so it is one swipeable row

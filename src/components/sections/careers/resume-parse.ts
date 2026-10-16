@@ -1,11 +1,11 @@
 /**
- * "Autofill with résumé": read a PDF résumé in the browser and pull out the
+ * "Autofill with resume": read a PDF resume in the browser and pull out the
  * contact fields a form needs.
  *
  * The file never leaves the device for this — pdf.js extracts the text
  * locally, and the fields are found with plain patterns. It is a convenience,
  * not a parser: anything it gets wrong the candidate corrects in the form, and
- * the résumé itself is still attached to the application as the record.
+ * the resume itself is still attached to the application as the record.
  *
  * pdf.js is imported only when this runs, and its worker is served from
  * `public/vendor/pdf.worker.min.mjs` — copied from `node_modules/pdfjs-dist`.

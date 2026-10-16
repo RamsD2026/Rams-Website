@@ -31,7 +31,7 @@ import { ApplyDialog, jobLabel, postedLabel } from "./CareerDialogs";
  * roles. On a phone the summary card is not sticky, so a bar pinned to the
  * bottom of the screen carries Apply instead.
  *
- * Apply opens the same `ApplyDialog` the board uses (résumé autofill, manual,
+ * Apply opens the same `ApplyDialog` the board uses (resume autofill, manual,
  * last application, LinkedIn soon); Save is the same device-local list.
  * Sample roles (see `jobs-data`) keep their "Sample" tag, open with a notice
  * that they are not vacancies, and every apply action becomes "Join the

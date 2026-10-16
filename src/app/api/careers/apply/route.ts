@@ -1,6 +1,6 @@
 /**
  * POST /api/careers/apply — receives a job application from the careers page
- * and emails it, résumé attached, to the careers inbox through Resend.
+ * and emails it, resume attached, to the careers inbox through Resend.
  *
  * ── Configuration (Vercel → Project → Settings → Environment Variables) ──
  *   RESEND_API_KEY      required. A Resend API key.
@@ -69,13 +69,13 @@ export async function POST(request: Request) {
 
   const resume = form.get("resume");
   if (!(resume instanceof File) || resume.size === 0) {
-    return Response.json({ ok: false, error: "Please attach your résumé." }, { status: 400 });
+    return Response.json({ ok: false, error: "Please attach your resume." }, { status: 400 });
   }
   if (resume.size > MAX_BYTES) {
-    return Response.json({ ok: false, error: "Résumé must be 4 MB or smaller." }, { status: 413 });
+    return Response.json({ ok: false, error: "Resume must be 4 MB or smaller." }, { status: 413 });
   }
   if (!TYPES.includes(resume.type) && !EXT.test(resume.name)) {
-    return Response.json({ ok: false, error: "Résumé must be a PDF or Word document." }, { status: 415 });
+    return Response.json({ ok: false, error: "Resume must be a PDF or Word document." }, { status: 415 });
   }
 
   const key = process.env.RESEND_API_KEY;
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
       ${rows.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#666">${esc(k)}</td><td style="padding:4px 0">${esc(v)}</td></tr>`).join("")}
     </table>
     ${d.note ? `<p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap"><b>Note</b><br>${esc(d.note)}</p>` : ""}
-    <p style="font-family:sans-serif;font-size:12px;color:#888">Sent from the careers page at rams.digital. Résumé attached.</p>`;
+    <p style="font-family:sans-serif;font-size:12px;color:#888">Sent from the careers page at rams.digital. Resume attached.</p>`;
 
   const safeName = resume.name.replace(/[^\w.\- ]+/g, "_").slice(0, 120) || "resume.pdf";
   const content = Buffer.from(await resume.arrayBuffer()).toString("base64");

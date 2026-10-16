@@ -36,11 +36,11 @@ import { CAREERS_EMAIL } from "./careers-data";
  * the way a case study does elsewhere on the site.
  *
  * ── The application offers four ways in, after DXC's ────────────────
- *   Autofill with résumé — the PDF is read in the browser (`resume-parse`)
+ *   Autofill with resume — the PDF is read in the browser (`resume-parse`)
  *                          to fill the contact fields; it is attached too.
  *   Apply manually       — the empty form.
  *   Use my last application — the previous application's text fields, from
- *                          this device (`career-store`); the résumé is
+ *                          this device (`career-store`); the resume is
  *                          attached again.
  *   Apply with LinkedIn  — shown, disabled, "Coming soon": it needs a
  *                          LinkedIn app registered by RAMS.
@@ -159,7 +159,7 @@ export function JobMeta({ job, dark = false }: { job: Job; dark?: boolean }) {
 type Method = "resume" | "manual" | "last" | "linkedin";
 
 const METHOD_LABEL: Record<Method, string> = {
-  resume: "Autofill with résumé",
+  resume: "Autofill with resume",
   manual: "Apply manually",
   last: "Use my last application",
   linkedin: "Apply with LinkedIn",
@@ -224,11 +224,11 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
   const accept = (f: File | null | undefined): f is File => {
     if (!f) return false;
     if (f.size > 4 * 1024 * 1024) {
-      setError("Résumé must be 4 MB or smaller.");
+      setError("Resume must be 4 MB or smaller.");
       return false;
     }
     if (!/\.(pdf|docx?)$/i.test(f.name)) {
-      setError("Résumé must be a PDF or Word document.");
+      setError("Resume must be a PDF or Word document.");
       return false;
     }
     setError("");
@@ -240,7 +240,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
     setFile(f);
     setMethod("resume");
     if (!/\.pdf$/i.test(f.name)) {
-      setNotice("Autofill reads PDF files. Your Word résumé is attached — please complete the details.");
+      setNotice("Autofill reads PDF files. Your Word resume is attached — please complete the details.");
       setStep("form");
       return;
     }
@@ -260,11 +260,11 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
       }));
       setNotice(
         found
-          ? "We filled in what we could find in your résumé. Please check every field."
-          : "We could not read details from this résumé, but it is attached. Please complete the form.",
+          ? "We filled in what we could find in your resume. Please check every field."
+          : "We could not read details from this resume, but it is attached. Please complete the form.",
       );
     } catch {
-      setNotice("We could not read this résumé, but it is attached. Please complete the form.");
+      setNotice("We could not read this resume, but it is attached. Please complete the form.");
     } finally {
       setBusy("");
       setStep("form");
@@ -281,7 +281,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
       details.linkedin && `LinkedIn: ${details.linkedin}`,
       details.portfolio && `Portfolio: ${details.portfolio}`,
       details.note && `\n${details.note}`,
-      "\n(Please attach your résumé to this email.)",
+      "\n(Please attach your resume to this email.)",
     ]
       .filter(Boolean)
       .join("\n");
@@ -291,7 +291,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) {
-      setError("Please attach your résumé.");
+      setError("Please attach your resume.");
       return;
     }
     if (!consent) {
@@ -340,7 +340,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
     {
       id: "resume",
       icon: <Sparkles className="w-5 h-5" aria-hidden />,
-      title: "Autofill with résumé",
+      title: "Autofill with resume",
       body: "Upload a PDF and we fill in your details. It stays attached to your application.",
       onPick: () => {},
     },
@@ -348,7 +348,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
       id: "manual",
       icon: <PenLine className="w-5 h-5" aria-hidden />,
       title: "Apply manually",
-      body: "Fill in your details yourself and attach your résumé.",
+      body: "Fill in your details yourself and attach your resume.",
       onPick: () => {
         setMethod("manual");
         setNotice("");
@@ -360,14 +360,14 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
       icon: <History className="w-5 h-5" aria-hidden />,
       title: "Use my last application",
       body: last
-        ? `Start from your previous details (${last.firstName} ${last.lastName}). Attach your résumé again.`
+        ? `Start from your previous details (${last.firstName} ${last.lastName}). Attach your resume again.`
         : "Available after you apply once from this device.",
       disabled: !last,
       onPick: () => {
         if (!last) return;
         setDetails({ ...last, note: "" });
         setMethod("last");
-        setNotice("We filled in your last application's details. Please check them and attach your résumé.");
+        setNotice("We filled in your last application's details. Please check them and attach your resume.");
         setStep("form");
       },
     },
@@ -429,11 +429,11 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
                     )}
                     <span className="mt-4 block text-[15px] font-bold tracking-[-0.01em] text-carbon">{o.title}</span>
                     <span className="mt-1.5 block text-[13px] leading-[1.55] text-graphite/60">
-                      {parsing ? "Reading your résumé…" : o.body}
+                      {parsing ? "Reading your resume…" : o.body}
                     </span>
                   </>
                 );
-                /* The résumé option is a label around its file input, so a
+                /* The resume option is a label around its file input, so a
                    click opens the picker without reaching for a ref. */
                 return o.id === "resume" ? (
                   <label key={o.id} className={cls} style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}>
@@ -485,10 +485,10 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
               <Field label="Portfolio or work samples" name="portfolio" type="url" value={details.portfolio} onChange={set} wide />
             </div>
 
-            {/* résumé */}
+            {/* resume */}
             <div className="mt-5">
               <span className="text-[12px] font-semibold text-carbon">
-                Résumé <span className="text-signal-orange">*</span>
+                Resume <span className="text-signal-orange">*</span>
               </span>
               <label
                 className="mt-1.5 w-full flex items-center gap-3 rounded-xl px-4 py-3.5 text-left bg-[#F7F7F9] hover:bg-[#F2F2F4] transition-colors cursor-pointer focus-within:shadow-[inset_0_0_0_1.5px_#FF6A00]"
@@ -510,7 +510,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
                 )}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[14px] font-medium text-carbon">
-                    {file ? file.name : "Attach your résumé"}
+                    {file ? file.name : "Attach your resume"}
                   </span>
                   <span className="block text-[12px] text-graphite/50">
                     {file ? "Click to replace" : "PDF or Word, up to 4 MB"}
@@ -544,7 +544,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
                 className="mt-0.5 w-4 h-4 accent-[#FF6A00] shrink-0"
               />
               <span>
-                I agree that RAMS Digital may use these details and my résumé to
+                I agree that RAMS Digital may use these details and my resume to
                 consider my application, as described in the{" "}
                 <Link href="/legal/privacy" target="_blank" className="font-semibold text-carbon underline underline-offset-2">
                   privacy policy
@@ -562,7 +562,7 @@ export function ApplyDialog({ job, onClose }: { job: Job | null; onClose: () => 
                     <a href={mailtoFallback()} className="font-semibold underline underline-offset-2">
                       Send it by email instead
                     </a>{" "}
-                    — your details are filled in; attach your résumé.
+                    — your details are filled in; attach your resume.
                   </>
                 )}
               </div>
