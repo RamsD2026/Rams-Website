@@ -195,7 +195,7 @@ export function WebinarUpcoming() {
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-6 lg:gap-12 items-end mb-10 sm:mb-12">
         <div className="max-w-[760px]">
           <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-signal-orange">
-            Live &amp; featured
+            Upcoming webinars
           </p>
 
           <h2 className="mt-4 text-[36px] sm:text-[54px] lg:text-[68px] font-bold tracking-[-0.04em] leading-[1.04]">

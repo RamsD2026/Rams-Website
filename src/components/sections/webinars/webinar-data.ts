@@ -271,16 +271,17 @@ export const TRACKS: { title: string; body: string; href: string }[] = [
  * There is one dated live session in the source and there is no second one.
  * Two more invented dates would be the worst kind of placeholder — a webinar
  * page advertising sessions nobody has scheduled — so the other two cards are
- * recordings, and each card says which it is: a LIVE pill with the date, or a
- * RECORDING pill with the running time.
+ * planned sessions with no date: an UPCOMING · DATE TO BE ANNOUNCED pill and a
+ * "Notify me" email, while the live card carries its date and registers.
  *
  * Give this a second and third live session and they take the second and
  * third slots; the type already handles both.
  */
 export type Featured = {
   id: string;
-  /** "live" carries a date and registers; "recording" carries a length. */
-  kind: "live" | "recording";
+  /** "live" carries a date and registers; "soon" is planned with no date
+      yet and asks to be notified. */
+  kind: "live" | "soon";
   pill: string;
   title: string;
   body: string;
@@ -290,21 +291,21 @@ export type Featured = {
   alt: string;
 };
 
-const REC = (id: string, cta: string): Featured => {
+const SOON = (id: string): Featured => {
   const r = RECORDINGS.find((x) => x.id === id);
   if (!r) throw new Error("no recording: " + id);
   return {
     id: r.id,
-    kind: "recording",
-    pill: `Recording · ${r.minutes} min`,
+    kind: "soon",
+    pill: "Upcoming · Date to be announced",
     title: r.title,
     body: r.body,
-    cta,
+    cta: "Notify me",
     href: ask(
-      `Webinar recording - ${r.title}`,
+      `Webinar notification - ${r.title}`,
       `Hello RAMS Digital,
 
-Please send me the recording of "${r.title}".
+Please let me know when "${r.title}" is scheduled.
 
 Name:
 Company:
@@ -329,6 +330,6 @@ export const FEATURED: Featured[] = [
     img: UPCOMING.img,
     alt: UPCOMING.alt,
   },
-  REC("rack-programme", "Request the recording"),
-  REC("people-forklifts", "Request the recording"),
+  SOON("rack-programme"),
+  SOON("people-forklifts"),
 ];
