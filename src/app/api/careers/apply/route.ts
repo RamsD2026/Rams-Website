@@ -7,7 +7,7 @@
  *   CAREERS_FROM_EMAIL  required. A sender on a domain verified in Resend,
  *                       e.g. "RAMS Careers <careers@rams.digital>".
  *   CAREERS_TO_EMAIL    optional. Where applications go; defaults to
- *                       connect@rams.digital, the address the site publishes.
+ *                       hr@rams.digital, the careers address the site publishes.
  *
  * Without the two required values the route answers 503 with
  * `fallback: "mailto"`, and the page offers the candidate a ready-made email
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
 
   const key = process.env.RESEND_API_KEY;
   const from = process.env.CAREERS_FROM_EMAIL;
-  const to = process.env.CAREERS_TO_EMAIL || "connect@rams.digital";
+  const to = process.env.CAREERS_TO_EMAIL || "hr@rams.digital";
   if (!key || !from) {
     return Response.json(
       { ok: false, fallback: "mailto", error: "Online applications are not switched on yet." },

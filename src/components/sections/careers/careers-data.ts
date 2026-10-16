@@ -5,7 +5,7 @@
  * The source is explicit and every page that reads this keeps it so: "These
  * are career areas, not a guarantee that every role is currently open."
  * There are no job listings here and none should be invented. Applying is a
- * profile sent to connect@rams.digital, with the two subjects the source uses.
+ * profile sent to hr@rams.digital, with the two subjects the source uses.
  *
  * The layout borrows its order from DXC's careers page — a hero with a
  * search, categories to explore, a talent-network band, an "about us" row —
@@ -16,7 +16,7 @@
  * module's earlier name. The site calls it IBIS, so this does too.
  */
 
-export const CAREERS_EMAIL = "connect@rams.digital";
+export const CAREERS_EMAIL = "hr@rams.digital";
 
 /** Window event the page's bands fire to open a general application. */
 export const APPLY_EVENT = "rams:careers-apply";

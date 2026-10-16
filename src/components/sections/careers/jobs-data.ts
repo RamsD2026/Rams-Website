@@ -71,11 +71,13 @@ export type Job = {
 /** Real, approved openings. Add roles here. */
 export const JOBS: Job[] = [
   /* Every value below is taken word for word from RAMS's job description
-     documents. Fields a document does not state are left out, and the page
-     hides them — do not fill them in. */
+     documents, except the BDE and IoT locations, which the owner supplied.
+     Fields neither states are left out, and the page hides them — do not
+     fill them in. */
   {
     id: "business-development-executive",
     title: "Business Development Executive",
+    location: "Pune",
     experience: "2 - 4 years",
     summary:
       "We are looking for an experienced and result-oriented Business Development Executive to drive end to end B2B business development across India.",
@@ -227,6 +229,7 @@ export const JOBS: Job[] = [
   {
     id: "iot-installation-technician",
     title: "IoT Installation Technician",
+    location: "Pune, Chennai, Delhi",
     experience: "1–3 years",
     summary:
       "We are looking for an IoT Installation Technician to join our IoT Implementation team.",
