@@ -98,6 +98,11 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
     ...(job.experience
       ? [{ icon: <Check className="w-4 h-4" aria-hidden />, label: "Experience", value: job.experience }]
       : []),
+    ...(job.details ?? []).map((d) => ({
+      icon: <Check className="w-4 h-4" aria-hidden />,
+      label: d.label,
+      value: d.value,
+    })),
     { icon: <CalendarDays className="w-4 h-4" aria-hidden />, label: "Posted", value: postedLabel(job.posted) },
   ];
 
@@ -227,13 +232,45 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
               <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
                 About the role
               </h2>
-              <p className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{job.summary}</p>
+              {(job.about ?? [job.summary]).map((p) => (
+                <p key={p} className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{p}</p>
+              ))}
             </motion.section>
 
             <div className="mt-10">
               <Block title="What you will do" items={job.responsibilities} />
               <Block title="What you bring" items={job.requirements} />
               <Block title="Nice to have" items={job.niceToHave} />
+              {job.tools && job.tools.length > 0 && (
+                <motion.section {...reveal()} className="pt-10">
+                  <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
+                    Tools you will use
+                  </h2>
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {job.tools.map((t) => (
+                      <li
+                        key={t}
+                        className="px-3.5 py-1.5 rounded-full text-[13px] font-medium text-carbon bg-[#F5F5F7]"
+                        style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+                      >
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.section>
+              )}
+              {job.sections?.map((sec) =>
+                sec.items ? (
+                  <Block key={sec.title} title={sec.title} items={sec.items} />
+                ) : (
+                  <motion.section key={sec.title} {...reveal()} className="pt-10">
+                    <h2 className="text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
+                      {sec.title}
+                    </h2>
+                    <p className="mt-4 text-[16px] leading-[1.75] text-graphite/75">{sec.body}</p>
+                  </motion.section>
+                ),
+              )}
             </div>
 
             {/* how hiring works — the careers page's candidate journey */}
