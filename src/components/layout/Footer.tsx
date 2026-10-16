@@ -311,6 +311,21 @@ export function Footer() {
                 SOC 2 · Type I
               </span>
             </div>
+            {/* The AICPA SOC mark has a white margin around its circle;
+                drawn at 106px inside an 88px clip, the circle fills the
+                frame like the two SOC 2 badges. */}
+            <div className="flex flex-col items-center gap-2.5">
+              <span className="w-[88px] h-[88px] rounded-full flex items-center justify-center overflow-hidden">
+                <img
+                  src="/Product/aicpa-soc.png"
+                  alt="AICPA SOC for Service Organizations"
+                  className="w-[106px] h-[106px] max-w-none object-contain block"
+                />
+              </span>
+              <span className="text-white/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
+                AICPA SOC
+              </span>
+            </div>
             {/* The ISO mark is square artwork on white, with its lettering
                 running to the corners — cropped to a circle like the SOC
                 badges it would lose "27001:2022". So the circle is white and
