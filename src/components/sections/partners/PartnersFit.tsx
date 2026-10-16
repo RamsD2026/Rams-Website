@@ -124,8 +124,8 @@ export function PartnersFit() {
         ))}
       </div>
 
-      {/* One call to action for the reader who found their type above. Same
-          shape as the hero's primary button; it goes where the page's other
+      {/* One call to action for the reader who found their type above. Pill-shaped
+          like the close's buttons; it goes where the page's other
           apply buttons go. */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -136,7 +136,7 @@ export function PartnersFit() {
       >
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
+          className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-full transition-colors duration-200 hover:bg-signal-orange-hover"
         >
           Partner with RAMS
           <ArrowUpRight className="w-4 h-4" aria-hidden />
