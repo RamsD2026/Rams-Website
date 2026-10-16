@@ -318,12 +318,12 @@ export function Footer() {
               <span className="w-[88px] h-[88px] rounded-full flex items-center justify-center overflow-hidden">
                 <img
                   src="/Product/aicpa-soc.png"
-                  alt="AICPA SOC for Service Organizations"
+                  alt="AICPA SOC 2 Type II"
                   className="w-[106px] h-[106px] max-w-none object-contain block"
                 />
               </span>
               <span className="text-white/45 text-[10.5px] tracking-[0.14em] font-semibold uppercase">
-                AICPA SOC
+                SOC 2 · Type II
               </span>
             </div>
             {/* The ISO mark is square artwork on white, with its lettering
