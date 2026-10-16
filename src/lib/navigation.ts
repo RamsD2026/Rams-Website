@@ -307,7 +307,6 @@ export const NAV_CONFIG: NavItemConfig[] = [
       {
         title: "Learn",
         links: [
-          { label: "Case Studies", href: "/resources/case-studies", description: "Real-world customer outcomes" },
           { label: "Blogs", href: "/resources/insights", description: "Articles on rack safety, standards and operations" },
           { label: "Videos", href: "/resources/videos", description: "Product demos and walkthroughs" },
           { label: "Webinars", href: "/resources/webinars", description: "Live sessions and recordings" },
@@ -316,8 +315,6 @@ export const NAV_CONFIG: NavItemConfig[] = [
       {
         title: "Reference",
         links: [
-          { label: "Technical Notes", href: "/resources/technical-notes", description: "Integration and API documentation" },
-          { label: "Downloads", href: "/resources/downloads", description: "White papers, datasheets, brochures and specs" },
           { label: "Glossary (Industry Compliance Guides)", href: "/resources/compliance-guides", description: "SEMA, FEM, OSHA reference guides" },
           { label: "Frequently Asked Questions (FAQs)", href: "/resources/faqs", description: "Answers to common questions" },
         ],

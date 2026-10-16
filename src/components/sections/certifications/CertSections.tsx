@@ -641,13 +641,6 @@ export function CertCTA() {
             Schedule a security review
             <ArrowUpRight className="w-4 h-4" aria-hidden />
           </a>
-          <Link
-            href="/resources/technical-notes"
-            className="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-white hover:text-carbon"
-            style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.18)" }}
-          >
-            Technical notes
-          </Link>
           <a
             href={`mailto:${EMAIL}`}
             className="inline-flex items-center gap-2 text-white/70 text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:text-white hover:bg-white/[0.06]"

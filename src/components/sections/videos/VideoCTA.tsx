@@ -95,13 +95,6 @@ export function VideoCTA() {
           >
             See the platform
           </Link>
-          <Link
-            href="/resources/case-studies"
-            className="inline-flex items-center gap-2 text-white/70 text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:text-white hover:bg-white/[0.06]"
-            style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.12)" }}
-          >
-            Read the case studies
-          </Link>
         </motion.div>
       </div>
     </section>

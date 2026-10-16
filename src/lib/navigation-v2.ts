@@ -718,20 +718,6 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
     },
     links: [
       {
-        label: "Case Studies",
-        href: "/resources/case-studies",
-        description: "Real-world customer outcomes",
-        featured: {
-          image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&auto=format&fit=crop",
-          imageAlt: "Customer case study",
-          eyebrow: "Customer Stories",
-          title: "Case Studies",
-          description: "See how leading warehouse operators use RAMS to reduce incidents, cut costs, and accelerate throughput.",
-          cta: "View Case Studies",
-          href: "/resources/case-studies",
-        },
-      },
-      {
         label: "Insights",
         href: "/resources/insights",
         description: "Expert warehouse intelligence articles",
@@ -774,20 +760,6 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
         },
       },
       {
-        label: "Technical Notes",
-        href: "/resources/technical-notes",
-        description: "Integration and API documentation",
-        featured: {
-          image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&q=80&auto=format&fit=crop",
-          imageAlt: "Technical documentation",
-          eyebrow: "Developer Docs",
-          title: "Technical Notes",
-          description: "API references, integration guides, SDK documentation, and architecture notes for technical teams.",
-          cta: "View Technical Notes",
-          href: "/resources/technical-notes",
-        },
-      },
-      {
         label: "Compliance Guides",
         href: "/resources/compliance",
         description: "SEMA, FEM, OSHA reference guides",
@@ -799,20 +771,6 @@ export const NAV_CONFIG_V2: NavItemV2[] = [
           description: "Practical reference guides for SEMA, FEM, OSHA, and EN 15635 rack safety standards — updated for 2026.",
           cta: "View Compliance Guides",
           href: "/resources/compliance",
-        },
-      },
-      {
-        label: "Downloads",
-        href: "/resources/downloads",
-        description: "Datasheets, brochures, and specs",
-        featured: {
-          image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop",
-          imageAlt: "Downloads library",
-          eyebrow: "Asset Library",
-          title: "Downloads",
-          description: "Hardware datasheets, solution brochures, integration specs, and compliance certificates — all in one place.",
-          cta: "Browse Downloads",
-          href: "/resources/downloads",
         },
       },
       {

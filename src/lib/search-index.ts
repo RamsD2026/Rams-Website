@@ -99,7 +99,7 @@ export const POPULAR_HREFS = [
   "/platform/irds",
   "/platform/digital-twin",
   "/solutions/rack-safety-intelligence",
-  "/resources/case-studies",
+  "/resources/insights",
   "/roi-calculator",
   "/company/contact",
 ];

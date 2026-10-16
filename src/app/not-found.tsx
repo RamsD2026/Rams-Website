@@ -40,8 +40,8 @@ const ROUTES = [
   },
   {
     label: "Resources",
-    href: "/resources/case-studies",
-    body: "Case studies, blogs, webinars, downloads and the help centre.",
+    href: "/resources/insights",
+    body: "Blogs, webinars, videos and the help centre.",
   },
 ];
 

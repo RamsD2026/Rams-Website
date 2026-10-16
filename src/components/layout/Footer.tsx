@@ -88,11 +88,11 @@ const COLUMNS: FooterColumn[] = [
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: "/resources/docs" },
-      { label: "Case Studies", href: "/resources/case-studies" },
-      { label: "Whitepapers", href: "/resources/whitepapers" },
       { label: "Blogs", href: "/resources/insights" },
-      { label: "Support", href: "/resources/support" },
+      { label: "Videos", href: "/resources/videos" },
+      { label: "Webinars", href: "/resources/webinars" },
+      { label: "Compliance Guides", href: "/resources/compliance-guides" },
+      { label: "FAQs", href: "/resources/faqs" },
     ],
   },
   {

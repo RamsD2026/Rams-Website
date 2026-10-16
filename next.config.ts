@@ -56,12 +56,12 @@ const nextConfig: NextConfig = {
       { source: "/find-your-starting-point", destination: "/solutions", permanent: false },
       { source: "/sitemap", destination: "/", permanent: false },
 
-      { source: "/resources", destination: "/resources/case-studies", permanent: false },
+      { source: "/resources", destination: "/resources/insights", permanent: false },
       { source: "/resources/support", destination: "/resources/faqs", permanent: false },
       { source: "/resources/faq", destination: "/resources/faqs", permanent: false },
-      { source: "/resources/docs", destination: "/resources/downloads", permanent: false },
-      { source: "/resources/whitepapers", destination: "/resources/downloads", permanent: false },
-      { source: "/resources/warehouse-ai-report-2026", destination: "/resources/downloads", permanent: false },
+      { source: "/resources/docs", destination: "/resources/insights", permanent: false },
+      { source: "/resources/whitepapers", destination: "/resources/insights", permanent: false },
+      { source: "/resources/warehouse-ai-report-2026", destination: "/resources/insights", permanent: false },
       { source: "/resources/blog", destination: "/resources/insights", permanent: false },
       { source: "/resources/compliance", destination: "/resources/compliance-guides", permanent: false },
 

@@ -523,12 +523,6 @@ export function ClientsWall() {
               Talk to RAMS
               <ArrowUpRight className="w-4 h-4" aria-hidden />
             </Link>
-            <Link
-              href="/resources/case-studies"
-              className="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-full border border-white/15 transition-colors duration-200 hover:bg-white/[0.06]"
-            >
-              Read the case studies
-            </Link>
           </div>
         </div>
       </section>
