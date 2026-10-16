@@ -311,8 +311,8 @@ export function Footer() {
                 SOC 2 · Type I
               </span>
             </div>
-            {/* The SOC 2 Type II mark, shown exactly as supplied — whole,
-                not cropped, at the other badges' 88px. */}
+            {/* The SOC 2 Type II mark, trimmed to its circle (no TM), so at
+                the other badges' 88px it is the same size as them. */}
             <div className="flex flex-col items-center gap-2.5">
               <img
                 src="/Product/aicpa-soc.png"
