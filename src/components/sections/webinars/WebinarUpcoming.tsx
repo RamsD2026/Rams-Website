@@ -111,16 +111,7 @@ function Card({ item }: { item: Featured }) {
           }}
         >
           {live && (
-            <span
-              aria-hidden
-              className="wbnr-dot"
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 999,
-                background: "#FF6A00",
-              }}
-            />
+            <span aria-hidden className="wbnr-dot" />
           )}
           {item.pill}
         </span>
@@ -176,18 +167,24 @@ export function WebinarUpcoming() {
   return (
     <Section surface="white" id="upcoming" padding="tight">
       <style>{`
-        .wbnr-dot { position: relative; display: inline-flex; }
-        .wbnr-dot::after {
+        /* A solid dot with a soft filled halo growing out from behind it.
+           The halo was a 1.5px outline the size of the dot, so at the start
+           of each pulse the two edges sat on top of each other. */
+        .wbnr-dot {
+          position: relative; flex-shrink: 0;
+          width: 7px; height: 7px; border-radius: 999px; background: #FF6A00;
+        }
+        .wbnr-dot::before {
           content: ""; position: absolute; inset: 0; border-radius: 999px;
-          border: 1.5px solid rgba(255,106,0,0.75);
-          animation: wbnr-pulse 2.6s ease-out infinite;
+          background: #FF6A00; z-index: -1;
+          animation: wbnr-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
         @keyframes wbnr-pulse {
-          0%   { transform: scale(1);   opacity: 0.75; }
-          100% { transform: scale(3.4); opacity: 0; }
+          0%   { transform: scale(1);   opacity: 0.55; }
+          80%, 100% { transform: scale(2.6); opacity: 0; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .wbnr-dot::after { animation: none; opacity: 0; }
+          .wbnr-dot::before { animation: none; opacity: 0; }
         }
       `}</style>
 
