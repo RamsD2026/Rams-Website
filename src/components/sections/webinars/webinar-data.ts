@@ -321,12 +321,26 @@ Thank you.`,
 export const FEATURED: Featured[] = [
   {
     id: "live",
-    kind: "live",
-    pill: `Live · ${UPCOMING.day} ${UPCOMING.month} · ${UPCOMING.time}`,
+    /* 17 Sep 2026 has passed and no new date is set, so this one is
+       announced like the others. Put kind "live", the dated pill and
+       "Register for the webinar" + UPCOMING.href back once it has a date. */
+    kind: "soon",
+    pill: "Upcoming · Date to be announced",
     title: UPCOMING.title,
     body: UPCOMING.subtitle,
-    cta: "Register for the webinar",
-    href: UPCOMING.href,
+    cta: "Notify me",
+    href: ask(
+      `Webinar notification - ${UPCOMING.title}`,
+      `Hello RAMS Digital,
+
+Please let me know when "${UPCOMING.title}" is scheduled.
+
+Name:
+Company:
+Email:
+
+Thank you.`,
+    ),
     img: UPCOMING.img,
     alt: UPCOMING.alt,
   },
