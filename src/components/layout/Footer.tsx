@@ -33,14 +33,19 @@ type FooterColumn = {
   links: { label: string; href: string }[];
 };
 
+/* The footer's links, as the owner's reference sets them out. Case Studies,
+   Technical Notes, Downloads and Certifications and Security are in that
+   reference too but are left out while those pages are hidden — add them back
+   in the reference's places when the pages return. */
 const COLUMNS: FooterColumn[] = [
   {
     title: "Solutions",
     links: [
-      { label: "Rack Intelligence", href: "/solutions/rack-intelligence" },
-      { label: "MHE Intelligence", href: "/solutions/mhe-intelligence" },
+      { label: "Rack Safety and Intelligence", href: "/solutions/rack-safety-intelligence" },
+      { label: "MHE Safety and Productivity", href: "/solutions/mhe-intelligence" },
       { label: "Inventory Intelligence", href: "/solutions/inventory-intelligence" },
       { label: "Warehouse Execution", href: "/solutions/warehouse-execution" },
+      { label: "MHE Diagnostics and Maintenance", href: "/solutions/mhe-diagnostics" },
       { label: "Management Intelligence", href: "/solutions/management-intelligence" },
     ],
   },
@@ -48,60 +53,48 @@ const COLUMNS: FooterColumn[] = [
     title: "Platform",
     links: [
       { label: "Digital Twin", href: "/platform/digital-twin" },
-      { label: "AI Operational Intelligence", href: "/platform/ai-operational-intelligence" },
-      { label: "Execution Engine", href: "/platform/execution-engine" },
-      { label: "Integrations", href: "/platform/integrations" },
-      { label: "Security", href: "/platform/security" },
+      { label: "IRDS", href: "/platform/irds" },
+      { label: "MEPS", href: "/platform/meps" },
+      { label: "RTSS", href: "/platform/rtss" },
+      { label: "IMDS", href: "/platform/imds" },
+      { label: "ATOS", href: "/platform/ai-operational-intelligence" },
     ],
   },
   {
     title: "Hardware",
     links: [
-      { label: "AI Cameras", href: "/hardware/ai-cameras" },
-      { label: "OmniBox Edge", href: "/hardware/omnibox-edge" },
-      { label: "OmniBox AI", href: "/hardware/omnibox-ai" },
-      { label: "LiDAR", href: "/hardware/lidar" },
-      { label: "Driver Monitoring", href: "/hardware/driver-monitoring" },
+      { label: "AI Vision Camera", href: "/hardware/ai-vision" },
+      { label: "OmniBox", href: "/hardware/omnibox" },
+      { label: "Location Intelligence", href: "/hardware/rtls" },
+      { label: "Sensor Stack", href: "/hardware/sensor-stack" },
+      { label: "Guided Inspection", href: "/hardware/guided-inspection" },
     ],
   },
   {
     title: "Services",
     links: [
-      { label: "Rack Inspection", href: "/services/rack-inspection" },
+      { label: "Rack Inspection Services", href: "/services/rack-inspection" },
       { label: "Structural Verification", href: "/services/structural-verification" },
-      { label: "Inventory Audit", href: "/services/inventory-audit" },
-      { label: "MHE Productivity", href: "/services/mhe-productivity-assessment" },
-      { label: "Deployment & Support", href: "/services/deployment-support" },
+      { label: "Inventory Reconciliation and Audit", href: "/services/inventory-audit" },
+      { label: "MHE Productivity Assessment", href: "/services/mhe-productivity-assessment" },
+      { label: "Deployment and Support", href: "/services/deployment-support" },
     ],
   },
   {
-    title: "Clients",
+    title: "Company",
     links: [
-      { label: "All Clients", href: "/clients" },
-      { label: "3PL & Logistics", href: "/clients#3pl" },
-      { label: "Retail & E-commerce", href: "/clients#ecommerce" },
-      { label: "Manufacturing", href: "/clients#manufacturing" },
-      { label: "Cold Chain", href: "/clients#cold-storage" },
-      { label: "Automotive", href: "/clients#automotive" },
+      { label: "About RAMS", href: "/company/about" },
+      { label: "Clients", href: "/clients" },
+      { label: "Careers", href: "/company/careers" },
+      { label: "Partners", href: "/company/partners" },
+      { label: "Contact Us", href: "/company/contact" },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "Blogs", href: "/resources/insights" },
-      { label: "Videos", href: "/resources/videos" },
-      { label: "Webinars", href: "/resources/webinars" },
-      { label: "Compliance Guides", href: "/resources/compliance-guides" },
       { label: "FAQs", href: "/resources/faqs" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "/company/about" },
-      { label: "Partners", href: "/company/partners" },
-      { label: "Careers", href: "/company/careers" },
-      { label: "Contact", href: "/company/contact" },
     ],
   },
 ];
