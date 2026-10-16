@@ -432,13 +432,6 @@ export function LegalPolicy() {
                   {p}
                 </p>
               ))}
-              {clause.id === "security" && (
-                <div className="mt-5">
-                  <More
-                    link={["Certifications & Security", "/company/certifications"]}
-                  />
-                </div>
-              )}
             </motion.article>
           </AnimatePresence>
 

@@ -61,7 +61,7 @@ export const HUB_TOP: [HubItem, HubItem] = [
 export const HUB_CENTRE: HubItem = {
   title: "Security and assurance",
   body: "The standards, assurance evidence and security practices that support RAMS Digital, and what to ask for during diligence.",
-  link: ["Visit Certifications & Security", "/company/certifications"],
+  link: ["Request the trust pack", `mailto:${EMAIL}?subject=RAMS%20Digital%20trust%20pack`],
 };
 
 export const HUB_BOTTOM: [HubItem, HubItem] = [

@@ -340,9 +340,6 @@ export const NAV_CONFIG: NavItemConfig[] = [
         title: "Who We Are",
         links: [
           { label: "About RAMS", href: "/company/about", description: "Our mission and story" },
-          { label: "Leadership", href: "/company/leadership", description: "Meet the executive team" },
-          { label: "Customers", href: "/company/customers", description: "Who trusts RAMS globally" },
-          { label: "Certifications and Security", href: "/company/certifications", description: "Standards, accreditations, and security posture" },
           { label: "Partners", href: "/company/partners", description: "Technology and channel partners" },
           { label: "Careers", href: "/company/careers", description: "Join the RAMS team" },
           { label: "Contact Us", href: "/company/contact", description: "Get in touch with our team" },
