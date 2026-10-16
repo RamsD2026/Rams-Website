@@ -17,7 +17,6 @@ import {
   Users,
 } from "lucide-react";
 import { EASE } from "@/components/sections/rackiq/rackiq-shared";
-import { JOURNEY } from "./careers-data";
 import type { Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
 import { ApplyDialog, jobLabel, postedLabel } from "./CareerDialogs";
@@ -282,38 +281,9 @@ export function JobPage({ job, others }: { job: Job; others: Job[] }) {
               )}
             </div>
 
-            {/* how hiring works — the careers page's candidate journey */}
-            <motion.section
-              {...reveal()}
-              className="mt-12 p-7 sm:p-8 rounded-2xl bg-[#F5F5F7]"
-            >
-              <h2 className="text-[20px] font-bold tracking-[-0.02em] text-carbon">How we hire</h2>
-              <p className="mt-2 text-[14px] leading-[1.6] text-graphite/60">
-                The sequence may vary by role, but you should understand the work,
-                team and expectations before a decision.
-              </p>
-              <ol className="mt-6 space-y-4">
-                {JOURNEY.map((j, i) => (
-                  <li key={j.title} className="relative flex items-start gap-4">
-                    {/* joins this step to the next, from under its circle across the gap */}
-                    {i < JOURNEY.length - 1 && (
-                      <span aria-hidden className="absolute left-4 top-8 -bottom-4 w-[2px] -translate-x-1/2 bg-signal-orange" />
-                    )}
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-signal-orange text-white text-[12px] font-bold tabular-nums shrink-0">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <p className="text-[15px] font-bold text-carbon">{j.title}</p>
-                      <p className="mt-0.5 text-[13.5px] leading-[1.6] text-graphite/60">{j.body}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </motion.section>
-
-            <p className="mt-8 text-[12.5px] leading-[1.65] text-graphite/45">
-              Role availability and employment terms are confirmed during the hiring process.
-            </p>
+            {/* The role page shows only what the job description says: the
+                site-wide "How we hire" steps and the availability note were
+                removed at the owner's request (restore from 08cb5b0). */}
           </div>
 
           {/* the sticky summary */}
