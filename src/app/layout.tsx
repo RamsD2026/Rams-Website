@@ -39,7 +39,7 @@ const robotoMono = localFont({
   src: "./fonts/RobotoMono-latin.woff2",
   weight: "300 500",
   style: "normal",
-  variable: "--font-mono",
+  variable: "--font-roboto-mono",
   display: "swap",
 });
 
