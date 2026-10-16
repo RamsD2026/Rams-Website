@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
+  ArrowUpRight,
   Boxes,
   Building2,
   Cpu,
@@ -121,6 +123,25 @@ export function PartnersFit() {
           </motion.div>
         ))}
       </div>
+
+      {/* One call to action for the reader who found their type above. Same
+          shape as the hero's primary button; it goes where the page's other
+          apply buttons go. */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className="mt-14 sm:mt-16 flex justify-center"
+      >
+        <Link
+          href="/contact"
+          className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
+        >
+          Partner with RAMS
+          <ArrowUpRight className="w-4 h-4" aria-hidden />
+        </Link>
+      </motion.div>
     </Section>
   );
 }
