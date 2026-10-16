@@ -128,7 +128,7 @@ export function WebinarHero() {
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
             className="mt-6 text-[14px] sm:text-[16px] text-graphite/65 leading-[1.6] max-w-[880px] mx-auto"
           >
-            Live sessions and expert recordings on rack safety, MHE operations,
+            Live expert sessions on rack safety, MHE operations,
             physical visibility and the decisions that keep warehouses safe,
             productive and controlled.
           </motion.p>

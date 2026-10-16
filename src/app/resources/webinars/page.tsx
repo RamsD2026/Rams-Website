@@ -3,9 +3,9 @@ import { WebinarHero } from "@/components/sections/webinars/WebinarHero";
 import { WebinarUpcoming } from "@/components/sections/webinars/WebinarUpcoming";
 
 export const metadata: Metadata = {
-  title: "Webinars & Recordings | RAMS Digital",
+  title: "Webinars | RAMS Digital",
   description:
-    "Live sessions and expert recordings on rack safety, MHE operations, physical visibility and the decisions that keep warehouses safe, productive and controlled.",
+    "Live expert sessions on rack safety, MHE operations, physical visibility and the decisions that keep warehouses safe, productive and controlled.",
 };
 
 /**
