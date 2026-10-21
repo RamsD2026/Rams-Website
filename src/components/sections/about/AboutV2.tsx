@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: step tiles, and story + statement
- *   Vision   offWhite header, an animated stepper across, the stage's
- *                     photograph under it and the two paragraphs beneath
+ *   Vision   offWhite header; left, an animated stepper across and the two
+ *                     paragraphs; right, the stage's photograph
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -265,8 +265,8 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: an animated stepper across the top, the stage's photograph
-   under it, and the two paragraphs beneath.
+/* Our Vision: on the left an animated stepper across with the two
+   paragraphs below it, on the right the stage's photograph.
 
    The stepper advances on its own after a 4.5s dwell. While it waits, the
    rail from the current stage to the next fills orange, so the delay is
@@ -364,10 +364,12 @@ export function AboutV2Vision() {
       </div>
 
       <div
-        className="max-w-[1080px] mx-auto"
+        className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
+        {/* left — the stepper across, the paragraphs below it */}
+        <div className="lg:col-span-6">
         {/* the stepper, across: each node's rail to the next fills orange
             while it waits, full once passed. Five fit a phone's width. */}
         <ol role="tablist" aria-label="Stages toward autonomous operations" className="grid grid-cols-5">
@@ -451,10 +453,27 @@ export function AboutV2Vision() {
           })}
         </ol>
 
-        {/* the stage's photograph, then the two paragraphs */}
-        <motion.div {...reveal(1)} className="mt-8 sm:mt-10">
+          <div className="mt-10 sm:mt-12 space-y-5">
+            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+              RAMS helps facilities augment existing assets with sensors, edge
+              processors, AI and connected intelligence—improving Safety,
+              Productivity, Efficiency and Visibility without requiring
+              wholesale replacement.
+            </p>
+            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+              As operations mature, mixed fleets, machines, AGVs and robots can
+              progress from manual to connected, assisted and, where
+              technically suitable, autonomous operation. RAMS provides one
+              OEM-agnostic operating platform while retaining the flexibility
+              for manual control.
+            </p>
+          </div>
+        </div>
+
+        {/* right — the stage's photograph */}
+        <motion.div {...reveal(1)} className="lg:col-span-6">
           <div
-            className="relative overflow-hidden aspect-[4/3] sm:aspect-[16/9]"
+            className="relative overflow-hidden aspect-[4/3]"
             style={{ borderRadius: 28, background: "#0E0E10" }}
           >
             <AnimatePresence mode="sync">
@@ -470,7 +489,7 @@ export function AboutV2Vision() {
                   src={stage.img}
                   alt={stage.alt}
                   fill
-                  sizes="(max-width: 1080px) 100vw, 1080px"
+                  sizes="(max-width: 1024px) 100vw, 620px"
                   className="object-cover"
                   style={{
                     objectPosition: stage.pos ?? "50% 50%",
@@ -508,21 +527,6 @@ export function AboutV2Vision() {
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-              RAMS helps facilities augment existing assets with sensors, edge
-              processors, AI and connected intelligence—improving Safety,
-              Productivity, Efficiency and Visibility without requiring
-              wholesale replacement.
-            </p>
-            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-              As operations mature, mixed fleets, machines, AGVs and robots can
-              progress from manual to connected, assisted and, where
-              technically suitable, autonomous operation. RAMS provides one
-              OEM-agnostic operating platform while retaining the flexibility
-              for manual control.
-            </p>
-          </div>
         </motion.div>
       </div>
 
