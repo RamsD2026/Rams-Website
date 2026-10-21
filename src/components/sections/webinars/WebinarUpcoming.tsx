@@ -120,9 +120,11 @@ function Card({ item }: { item: Featured }) {
           {item.title}
         </h3>
 
-        <p className="mt-2 sm:mt-3 text-[12.5px] sm:text-[15px] text-white/60 leading-[1.5] sm:leading-[1.55] line-clamp-2 sm:line-clamp-none max-w-[560px]">
-          {item.body}
-        </p>
+        {item.body && (
+          <p className="mt-2 sm:mt-3 text-[12.5px] sm:text-[15px] text-white/60 leading-[1.5] sm:leading-[1.55] line-clamp-2 sm:line-clamp-none max-w-[560px]">
+            {item.body}
+          </p>
+        )}
 
         <span className="mt-3 sm:mt-6 inline-flex items-center gap-2 bg-white text-carbon text-[12.5px] sm:text-[13.5px] font-semibold px-4 sm:px-5 py-2.5 sm:py-3 rounded-full transition-all duration-200 group-hover:bg-signal-orange group-hover:text-white">
           {item.cta}
@@ -271,6 +273,39 @@ export function WebinarUpcoming() {
           })}
         </div>
       </div>
+
+      {/* The whole series at a glance. A row brings its card into view. */}
+      <ol className="mt-12 sm:mt-14 rounded-2xl overflow-hidden" style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}>
+        {FEATURED.map((f, i) => {
+          const active = i === index;
+          return (
+            <li key={f.id} className={i > 0 ? "border-t border-[#E8E8ED]" : ""}>
+              <button
+                type="button"
+                onClick={() => {
+                  setManual(true);
+                  setIndex(i);
+                }}
+                aria-current={active ? "true" : undefined}
+                className={
+                  "w-full grid grid-cols-1 sm:grid-cols-[120px_minmax(0,1fr)_auto] items-start sm:items-center gap-1.5 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 text-left transition-colors duration-200 " +
+                  (active ? "bg-[#FFF6EC]" : "bg-white hover:bg-[#F5F5F7]")
+                }
+              >
+                <span className="text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
+                  {f.month}
+                </span>
+                <span className="text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-carbon leading-[1.35]">
+                  {f.title}
+                </span>
+                <span className="text-[13px] text-graphite/60 sm:text-right whitespace-nowrap">
+                  {f.pill}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
     </Section>
   );
 }

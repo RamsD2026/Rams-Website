@@ -266,24 +266,23 @@ export const TRACKS: { title: string; body: string; href: string }[] = [
 /* ── the three on the shelf under the hero ────────────────────────── */
 
 /**
- * What the featured carousel shows.
+ * What the "Upcoming webinars" carousel shows: the owner's 2026–27 series,
+ * in the owner's order and words. Titles, dates, times and speakers are as
+ * supplied; a time or speaker the schedule does not give is left out.
  *
- * There is one dated live session in the source and there is no second one.
- * Two more invented dates would be the worst kind of placeholder — a webinar
- * page advertising sessions nobody has scheduled — so the other two cards are
- * planned sessions with no date: an UPCOMING · DATE TO BE ANNOUNCED pill and a
- * "Notify me" email, while the live card carries its date and registers.
- *
- * Give this a second and third live session and they take the second and
- * third slots; the type already handles both.
+ * The pictures are the page's existing webinar photographs, matched to each
+ * session's subject.
  */
 export type Featured = {
   id: string;
-  /** "live" carries a date and registers; "soon" is planned with no date
-      yet and asks to be notified. */
-  kind: "live" | "soon";
+  /** "live" adds the pulsing dot; every session in the series is "scheduled". */
+  kind: "live" | "scheduled";
+  /** The month the session falls in, as the schedule names it. */
+  month: string;
+  /** Date (and time, where given) for the pill. */
   pill: string;
   title: string;
+  /** Speakers, where the schedule names them. */
   body: string;
   cta: string;
   href: string;
@@ -291,59 +290,83 @@ export type Featured = {
   alt: string;
 };
 
-const SOON = (id: string): Featured => {
-  const r = RECORDINGS.find((x) => x.id === id);
-  if (!r) throw new Error("no recording: " + id);
-  return {
-    id: r.id,
-    kind: "soon",
-    pill: "Upcoming · Date to be announced",
-    title: r.title,
-    body: r.body,
-    cta: "Notify me",
-    href: ask(
-      `Webinar notification - ${r.title}`,
-      `Hello RAMS Digital,
+const SESSION = (s: {
+  id: string;
+  month: string;
+  title: string;
+  when: string;
+  speakers?: string;
+  img: string;
+  alt: string;
+}): Featured => ({
+  id: s.id,
+  kind: "scheduled",
+  month: s.month,
+  pill: s.when,
+  title: s.title,
+  body: s.speakers ?? "",
+  cta: "Register",
+  href: ask(
+    `Webinar Registration - ${s.title}`,
+    `Hello RAMS Digital,
 
-Please let me know when "${r.title}" is scheduled.
+I would like to register for "${s.title}" on ${s.when}.
 
 Name:
 Company:
+Designation:
 Email:
+Phone:
 
 Thank you.`,
-    ),
-    img: r.img,
-    alt: r.alt,
-  };
-};
+  ),
+  img: s.img,
+  alt: s.alt,
+});
 
 export const FEATURED: Featured[] = [
-  {
-    id: "live",
-    /* 17 Sep 2026 has passed and no new date is set, so this one is
-       announced like the others. Put kind "live", the dated pill and
-       "Register for the webinar" + UPCOMING.href back once it has a date. */
-    kind: "soon",
-    pill: "Upcoming · Date to be announced",
-    title: UPCOMING.title,
-    body: UPCOMING.subtitle,
-    cta: "Notify me",
-    href: ask(
-      `Webinar notification - ${UPCOMING.title}`,
-      `Hello RAMS Digital,
-
-Please let me know when "${UPCOMING.title}" is scheduled.
-
-Name:
-Company:
-Email:
-
-Thank you.`,
-    ),
-    img: UPCOMING.img,
-    alt: UPCOMING.alt,
-  },
-  SOON("rack-programme"),
-  SOON("people-forklifts"),
+  SESSION({
+    id: "nov-2026",
+    month: "November",
+    title: "What We See Inside Warehouses: Lessons from Real Rack Inspections",
+    when: "Wed, 25th Nov 2026 · 11am IST",
+    speakers: "Darren Whyte, Greeba and Sean",
+    img: "/webinars/identify-damage.webp",
+    alt: "Gloved hands examining a bent steel rack upright under a torch beam in a dark warehouse aisle.",
+  }),
+  SESSION({
+    id: "dec-2026",
+    month: "December",
+    title: "Your Racking Was Designed to Be Safe. What Changed?",
+    when: "Wed, 23rd Dec 2026 · 11am IST",
+    img: "/webinars/load-capacity.webp",
+    alt: "Looking up a very tall loaded pallet racking bay, wrapped pallets on several beam levels.",
+  }),
+  SESSION({
+    id: "jan-2027",
+    month: "January",
+    title: "From Inspection to Closure: Building an Effective Rack Safety Program",
+    when: "Thu, 28th Jan 2027",
+    speakers: "Greeba and Sean",
+    img: "/webinars/rack-programme.webp",
+    alt: "A clean, undamaged blue steel rack upright bolted to a warehouse floor, tall racking receding into a dark aisle.",
+  }),
+  SESSION({
+    id: "feb-2027",
+    month: "February",
+    title: "Forklifts vs Racks: Preventing Warehouse Impacts",
+    when: "Wed, 24th Feb 2027",
+    speakers: "Godrej Rentrust",
+    img: "/webinars/people-forklifts.webp",
+    alt: "A worker in a hi-vis vest crossing a warehouse traffic aisle as a forklift approaches in the blurred background.",
+  }),
+  SESSION({
+    id: "mar-2027",
+    month: "March",
+    title: "Beyond Annual Inspections: Moving Towards Continuous Rack Safety",
+    when: "Wed, 17th March 2027",
+    speakers: "MAB",
+    img: "/webinars/upcoming.webp",
+    alt: "A safety manager with a tablet standing at the end of a tall pallet racking aisle, looking up at the uprights.",
+  }),
 ];
