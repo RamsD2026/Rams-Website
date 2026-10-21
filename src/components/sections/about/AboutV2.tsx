@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Bot, Cable, Cpu, Hand, Handshake } from "lucide-react";
@@ -16,8 +15,8 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    white    heading left / story right, the four stages as the old
- *                     story's picture cards, and the closing line as a quote
+ *   Story    white    heading left / story right, the four stages on a quiet
+ *                     hairline track, and the closing line as a quote
  *   Vision   offWhite SectionHeader, the two paragraphs side by side, the five
  *                     stages as an icon track, the closing lines in a dark panel
  *   Close    dark     the site's unified close (Partners, platform pages)
@@ -147,31 +146,9 @@ export function AboutV2Hero() {
 
 /* ── our story ────────────────────────────────────────────────────── */
 
-/* The four stages as the old story's picture cards — the same four
-   photographs (/about/story), in the same order: field engineering, asset
-   identity, live sensing, the operations desk. */
-const STORY_STAGES = [
-  {
-    title: "Engineering",
-    img: "/about/story/field.webp",
-    alt: "An engineer in a high-visibility vest crouched at the base of a warehouse racking frame, examining a bent steel upright",
-  },
-  {
-    title: "Technology",
-    img: "/about/story/identity.webp",
-    alt: "A gloved hand holding a rugged scanner up to an asset label fixed to a racking upright",
-  },
-  {
-    title: "Physical Intelligence",
-    img: "/about/story/live.webp",
-    alt: "A sensor unit and camera mounted high on a warehouse column, with a forklift crossing an aisle below",
-  },
-  {
-    title: "Execution",
-    img: "/about/story/platform.webp",
-    alt: "Two operations staff at a warehouse-floor control desk, the racking visible through the glass behind them",
-  },
-];
+/* The four stages, set quietly: a hairline track with a dot at each stage,
+   the number and the name under it — no boxes, no pictures. */
+const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
 
 export function AboutV2Story() {
   return (
@@ -204,42 +181,34 @@ export function AboutV2Story() {
       </div>
 
       {/* the four stages */}
-      <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {STORY_STAGES.map((s, i) => (
-          <motion.article
-            key={s.title}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-            className="group relative flex flex-col overflow-hidden bg-white transition-transform duration-300 hover:-translate-y-1"
-            style={{ borderRadius: 14, border: "1px solid #E8E8ED" }}
+      <ol className="mt-14 sm:mt-20 grid grid-cols-1 sm:grid-cols-4">
+        {STORY_STAGES.map((t, i) => (
+          <motion.li
+            key={t}
+            {...reveal(i)}
+            className="relative pl-7 pb-8 sm:pl-0 sm:pb-0 sm:pt-8 sm:pr-6 border-l sm:border-l-0 sm:border-t border-[#E4E4E9] last:pb-0"
           >
-            <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4 / 3" }}>
-              <Image
-                src={s.img}
-                alt={s.alt}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 293px"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-            </div>
-            <div className="flex items-center justify-between gap-3 p-5 sm:p-6">
-              <div>
-                <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-1.5 text-[18px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.2]">
-                  {s.title}
-                </h3>
-              </div>
-              {i < STORY_STAGES.length - 1 && (
-                <ArrowRight className="hidden lg:block w-5 h-5 text-graphite/25 shrink-0" aria-hidden />
-              )}
-            </div>
-          </motion.article>
+            <span
+              aria-hidden
+              className={
+                "absolute -left-[5px] top-0 sm:left-0 sm:-top-[5px] w-[9px] h-[9px] rounded-full " +
+                (i === STORY_STAGES.length - 1 ? "bg-signal-orange" : "bg-white")
+              }
+              style={
+                i === STORY_STAGES.length - 1
+                  ? undefined
+                  : { boxShadow: "inset 0 0 0 1.5px #FF6A00" }
+              }
+            />
+            <span className="block -mt-1 sm:mt-0 text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+              0{i + 1}
+            </span>
+            <span className="mt-2 block text-[18px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.25]">
+              {t}
+            </span>
+          </motion.li>
         ))}
-      </div>
+      </ol>
 
       {/* the line the section ends on */}
       <motion.blockquote
