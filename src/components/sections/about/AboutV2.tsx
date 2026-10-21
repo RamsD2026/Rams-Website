@@ -368,9 +368,16 @@ export function AboutV2Vision() {
           right the stepper and the photograph as one unit — the only thing
           that moves. */}
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        {/* left — the paragraphs, then the closing line */}
+        {/* left — the statement, then the paragraphs */}
         <motion.div {...reveal()} className="lg:col-span-5">
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+          <p className="text-[20px] sm:text-[23px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
+            Different OEMs. Different Machines.{" "}
+            <span className="text-signal-orange">One Operating Platform.</span>
+          </p>
+          <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+            Augment. Automate. Evolve.
+          </p>
+          <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS helps facilities augment existing assets with sensors, edge
             processors, AI and connected intelligence—improving Safety,
             Productivity, Efficiency and Visibility without requiring
@@ -382,13 +389,6 @@ export function AboutV2Vision() {
             suitable, autonomous operation. RAMS provides one OEM-agnostic
             operating platform while retaining the flexibility for manual
             control.
-          </p>
-          <p className="mt-9 text-[20px] sm:text-[23px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
-            Different OEMs. Different Machines.{" "}
-            <span className="text-signal-orange">One Operating Platform.</span>
-          </p>
-          <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-            Augment. Automate. Evolve.
           </p>
         </motion.div>
 
