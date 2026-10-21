@@ -108,9 +108,18 @@ export function AboutV2Hero() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.29, ease: EASE }}
-            className="mt-6 text-[15px] sm:text-[16px] font-bold tracking-[-0.01em] text-carbon"
+            className="mt-7 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-[15px] sm:text-[17px] font-bold tracking-[-0.01em]"
           >
-            Sense. Understand. Decide. Execute. Improve.
+            {/* The five verbs as a sequence: a small orange dot between each,
+                and the last two — the action — in orange. */}
+            {["Sense.", "Understand.", "Decide.", "Execute.", "Improve."].map((w, i) => (
+              <span key={w} className="inline-flex items-center gap-x-3 sm:gap-x-4">
+                {i > 0 && (
+                  <span aria-hidden className="w-1 h-1 rounded-full bg-signal-orange/60" />
+                )}
+                <span className={i >= 3 ? "text-signal-orange" : "text-carbon"}>{w}</span>
+              </span>
+            ))}
           </motion.p>
 
           <motion.div
