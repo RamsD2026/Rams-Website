@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: step tiles, and story + statement
- *   Vision   offWhite header, then an animated stepper left, and the stage's
- *                     photograph with the two paragraphs right
+ *   Vision   offWhite header, an animated stepper across, the stage's
+ *                     photograph under it and the two paragraphs beneath
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -265,8 +265,8 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: an animated stepper on the left, the stage's photograph and
-   the two paragraphs on the right.
+/* Our Vision: an animated stepper across the top, the stage's photograph
+   under it, and the two paragraphs beneath.
 
    The stepper advances on its own after a 4.5s dwell. While it waits, the
    rail from the current stage to the next fills orange, so the delay is
@@ -364,18 +364,13 @@ export function AboutV2Vision() {
       </div>
 
       <div
-        className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
+        className="max-w-[1080px] mx-auto"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {/* left — the stepper */}
-        <motion.ol
-          {...reveal()}
-          role="tablist"
-          aria-label="Stages toward autonomous operations"
-          className="lg:col-span-4 p-7 sm:p-8"
-          style={{ borderRadius: 28, border: "1px solid #E4E4E9" }}
-        >
+        {/* the stepper, across: each node's rail to the next fills orange
+            while it waits, full once passed. Five fit a phone's width. */}
+        <ol role="tablist" aria-label="Stages toward autonomous operations" className="grid grid-cols-5">
           {VISION_STAGES.map((s, i) => {
             const on = i === active;
             const done = i < active;
@@ -383,21 +378,22 @@ export function AboutV2Vision() {
             return (
               <motion.li
                 key={s.title}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5, delay: 0.15 + i * 0.12, ease: EASE }}
-                className={"relative " + (last ? "" : "pb-7")}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: EASE }}
+                className="relative flex justify-center"
               >
-                {/* the rail to the next stage: full when passed, filling
-                    while this stage waits, empty ahead */}
                 {!last && (
-                  <span aria-hidden className="absolute left-5 top-11 bottom-1 w-[2px] -translate-x-1/2 bg-[#E4E4E9] overflow-hidden rounded-full">
+                  <span
+                    aria-hidden
+                    className="absolute top-5 sm:top-6 left-[calc(50%+26px)] right-[calc(-50%+26px)] sm:left-[calc(50%+32px)] sm:right-[calc(-50%+32px)] h-[2px] -translate-y-1/2 bg-[#E4E4E9] overflow-hidden rounded-full"
+                  >
                     <motion.span
                       key={`${i}-${active}-${running}`}
-                      className="absolute inset-x-0 top-0 bg-signal-orange"
-                      initial={{ height: done ? "100%" : "0%" }}
-                      animate={{ height: done ? "100%" : on && running ? "100%" : "0%" }}
+                      className="absolute inset-y-0 left-0 bg-signal-orange"
+                      initial={{ width: done ? "100%" : "0%" }}
+                      animate={{ width: done ? "100%" : on && running ? "100%" : "0%" }}
                       transition={{ duration: on && running ? VISION_MS / 1000 : 0, ease: "linear" }}
                     />
                   </span>
@@ -410,9 +406,9 @@ export function AboutV2Vision() {
                     setManual(true);
                     setActive(i);
                   }}
-                  className="group relative w-full flex items-center gap-4 text-left"
+                  className="group relative flex flex-col items-center gap-2.5 sm:gap-3 text-center"
                 >
-                  <span className="relative flex items-center justify-center w-10 h-10 shrink-0">
+                  <span className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12">
                     {on && !reduce && (
                       <motion.span
                         aria-hidden
@@ -424,7 +420,7 @@ export function AboutV2Vision() {
                     )}
                     <span
                       className={
-                        "relative flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-300 " +
+                        "relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-colors duration-300 " +
                         (on
                           ? "bg-signal-orange text-white"
                           : done
@@ -433,16 +429,16 @@ export function AboutV2Vision() {
                       }
                       style={on || done ? undefined : { boxShadow: "inset 0 0 0 1.5px #E0E0E6" }}
                     >
-                      <s.Icon className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden />
+                      <s.Icon className="w-[18px] h-[18px] sm:w-5 sm:h-5" strokeWidth={2} aria-hidden />
                     </span>
                   </span>
                   <span>
-                    <span className="block text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                    <span className="hidden sm:block text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
                       0{i + 1}
                     </span>
                     <span
                       className={
-                        "block mt-0.5 text-[17px] sm:text-[19px] font-semibold tracking-[-0.02em] transition-colors duration-300 " +
+                        "block sm:mt-0.5 text-[11px] sm:text-[16px] font-semibold tracking-[-0.01em] transition-colors duration-300 " +
                         (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
                       }
                     >
@@ -453,10 +449,10 @@ export function AboutV2Vision() {
               </motion.li>
             );
           })}
-        </motion.ol>
+        </ol>
 
-        {/* right — the stage's photograph, then the two paragraphs */}
-        <motion.div {...reveal(1)} className="lg:col-span-8">
+        {/* the stage's photograph, then the two paragraphs */}
+        <motion.div {...reveal(1)} className="mt-8 sm:mt-10">
           <div
             className="relative overflow-hidden aspect-[4/3] sm:aspect-[16/9]"
             style={{ borderRadius: 28, background: "#0E0E10" }}
@@ -474,7 +470,7 @@ export function AboutV2Vision() {
                   src={stage.img}
                   alt={stage.alt}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 820px"
+                  sizes="(max-width: 1080px) 100vw, 1080px"
                   className="object-cover"
                   style={{
                     objectPosition: stage.pos ?? "50% 50%",
