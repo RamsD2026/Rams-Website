@@ -135,7 +135,7 @@ export function AboutV2Hero() {
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <Link
-                href="/book-a-demo"
+                href="/company/contact"
                 className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
               >
                 Request a Demo
