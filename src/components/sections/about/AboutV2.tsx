@@ -15,8 +15,8 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    white    one centred column: heading, paragraphs, the stages
- *                     as one small line, then the closing line
+ *   Story    white    the MHE page's How it works layout: header, then the
+ *                     four stages as numbered circles, then the closing line
  *   Vision   offWhite the same reading order
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
@@ -188,43 +188,128 @@ function Stages({ items }: { items: string[] }) {
 const PARA =
   "text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65 text-center";
 
+/* Our Story in the MHE page's "How it works" layout (`MheWorkflow`): the
+   default-size centred header, then the stages as numbered circles with the
+   orange glow on a faint track. The reference gives each stage a name only,
+   so the circles carry no body copy. */
+const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
+
 export function AboutV2Story() {
   return (
-    <Section surface="white" id="story">
-      <SectionHeader
-        eyebrow="Our Story"
-        top="We started with"
-        bottom="the built environment."
-        size="compact"
-        className="!mb-10 sm:!mb-12"
-      />
+    <section id="story" className="bg-white pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
+      <div className="rams-container">
+        <div className="max-w-[900px] mx-auto text-center mb-20 sm:mb-24">
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.5 }}
+            className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
+          >
+            Our Story
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.85, ease: EASE }}
+            className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold text-carbon leading-[1.0] tracking-[-0.04em]"
+          >
+            We started with <br />
+            <span className="text-graphite/50">the built environment.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+            className="mt-6 text-[14px] sm:text-[15px] text-graphite/65 leading-[1.55] max-w-[880px] mx-auto"
+          >
+            RAMS grew from years of working closely with physical
+            infrastructure—understanding structures, facilities, assets and how
+            real environments behave over time.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
+            className="mt-4 text-[14px] sm:text-[15px] text-graphite/65 leading-[1.55] max-w-[880px] mx-auto"
+          >
+            That engineering foundation evolved into Digital Twins, software,
+            IoT, edge intelligence and AI. Today, we build the connected
+            intelligence and execution layer that helps physical operations
+            become clearer, safer and continuously better.
+          </motion.p>
+        </div>
 
-      <div className="max-w-[720px] mx-auto">
-        <motion.p {...reveal()} className={PARA}>
-          RAMS grew from years of working closely with physical
-          infrastructure—understanding structures, facilities, assets and how
-          real environments behave over time.
-        </motion.p>
-        <motion.p {...reveal(1)} className={"mt-5 " + PARA}>
-          That engineering foundation evolved into Digital Twins, software, IoT,
-          edge intelligence and AI. Today, we build the connected intelligence
-          and execution layer that helps physical operations become clearer,
-          safer and continuously better.
-        </motion.p>
+        <div className="relative max-w-[1040px] mx-auto">
+          <div
+            aria-hidden
+            className="hidden lg:block absolute left-0 right-0 top-[46px] h-px"
+            style={{
+              background:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.08) 88%, transparent 100%)",
+            }}
+          />
 
-        <motion.div {...reveal(2)} className="mt-10">
-          <Stages items={["Engineering", "Technology", "Physical Intelligence", "Execution"]} />
-        </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-6">
+            {STORY_STAGES.map((t, i) => (
+              <motion.div
+                key={t}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+                className="relative flex flex-col items-center text-center px-3"
+              >
+                <div className="relative mb-8">
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 rounded-full blur-2xl opacity-70"
+                    style={{
+                      background:
+                        "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)",
+                    }}
+                  />
+                  <div
+                    className="relative w-[92px] h-[92px] rounded-full flex items-center justify-center font-mono font-bold text-[18px] tracking-[0.02em] bg-white"
+                    style={{
+                      border: "1px solid #EBEBEF",
+                      color: "#0E0E0F",
+                      boxShadow:
+                        "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        background: "linear-gradient(135deg, #FF6A00 0%, #FF8A3C 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      0{i + 1}
+                    </span>
+                  </div>
+                </div>
+                <h3 className="text-[22px] sm:text-[26px] font-bold text-carbon tracking-[-0.025em] leading-[1.15]">
+                  {t}
+                </h3>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
         <motion.p
-          {...reveal(3)}
-          className="mt-12 sm:mt-14 text-center text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon"
+          {...reveal()}
+          className="mt-20 sm:mt-24 max-w-[760px] mx-auto text-center text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon"
         >
           We understood the physical world first. Then we started building
           intelligence around it.
         </motion.p>
       </div>
-    </Section>
+    </section>
   );
 }
 
