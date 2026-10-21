@@ -279,6 +279,8 @@ export type Featured = {
   kind: "live" | "scheduled";
   /** The month the session falls in, as the schedule names it. */
   month: string;
+  /** Run by the RAMS team, or with a guest speaker — per the owner. */
+  host: "internal" | "guest";
   /** Date (and time, where given) for the pill. */
   pill: string;
   title: string;
@@ -293,6 +295,7 @@ export type Featured = {
 const SESSION = (s: {
   id: string;
   month: string;
+  host: "internal" | "guest";
   title: string;
   when: string;
   speakers?: string;
@@ -302,6 +305,7 @@ const SESSION = (s: {
   id: s.id,
   kind: "scheduled",
   month: s.month,
+  host: s.host,
   pill: s.when,
   title: s.title,
   body: s.speakers ?? "",
@@ -327,6 +331,7 @@ Thank you.`,
 export const FEATURED: Featured[] = [
   SESSION({
     id: "nov-2026",
+    host: "guest",
     month: "November",
     title: "What We See Inside Warehouses: Lessons from Real Rack Inspections",
     when: "Wed, 25th Nov 2026 · 11am IST",
@@ -336,6 +341,7 @@ export const FEATURED: Featured[] = [
   }),
   SESSION({
     id: "dec-2026",
+    host: "internal",
     month: "December",
     title: "Your Racking Was Designed to Be Safe. What Changed?",
     when: "Wed, 23rd Dec 2026 · 11am IST",
@@ -344,6 +350,7 @@ export const FEATURED: Featured[] = [
   }),
   SESSION({
     id: "jan-2027",
+    host: "guest",
     month: "January",
     title: "From Inspection to Closure: Building an Effective Rack Safety Program",
     when: "Thu, 28th Jan 2027",
@@ -353,6 +360,7 @@ export const FEATURED: Featured[] = [
   }),
   SESSION({
     id: "feb-2027",
+    host: "guest",
     month: "February",
     title: "Forklifts vs Racks: Preventing Warehouse Impacts",
     when: "Wed, 24th Feb 2027",
@@ -362,6 +370,7 @@ export const FEATURED: Featured[] = [
   }),
   SESSION({
     id: "mar-2027",
+    host: "guest",
     month: "March",
     title: "Beyond Annual Inspections: Moving Towards Continuous Rack Safety",
     when: "Wed, 17th March 2027",

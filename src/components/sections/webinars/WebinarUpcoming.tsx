@@ -72,6 +72,34 @@ const GAP = 20;
 const PEEK = 0.12;
 const AUTOPLAY_MS = 6000;
 
+/** "RAMS session" or "Guest session". Guest sessions carry the orange. */
+function HostTag({ host, onDark = false }: { host: Featured["host"]; onDark?: boolean }) {
+  const guest = host === "guest";
+  return (
+    <span
+      className={
+        "inline-flex items-center px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase rounded-full whitespace-nowrap " +
+        (guest
+          ? "bg-signal-orange text-white"
+          : onDark
+            ? "text-white/90"
+            : "text-carbon bg-[#F2F2F2]")
+      }
+      style={
+        !guest && onDark
+          ? {
+              background: "rgba(255,255,255,0.13)",
+              backdropFilter: "blur(6px)",
+              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.20)",
+            }
+          : undefined
+      }
+    >
+      {guest ? "Guest session" : "RAMS session"}
+    </span>
+  );
+}
+
 function Card({ item }: { item: Featured }) {
   const live = item.kind === "live";
 
@@ -101,20 +129,23 @@ function Card({ item }: { item: Featured }) {
       />
 
       <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9 lg:p-11 text-white">
-        <span
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/90"
-          style={{
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.13)",
-            backdropFilter: "blur(6px)",
-            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.20)",
-          }}
-        >
-          {live && (
-            <span aria-hidden className="wbnr-dot" />
-          )}
-          {item.pill}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase text-white/90"
+            style={{
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.13)",
+              backdropFilter: "blur(6px)",
+              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.20)",
+            }}
+          >
+            {live && (
+              <span aria-hidden className="wbnr-dot" />
+            )}
+            {item.pill}
+          </span>
+          <HostTag host={item.host} onDark />
+        </div>
 
         <h3 className="mt-5 sm:mt-4 text-[20px] sm:text-[30px] lg:text-[40px] font-bold tracking-[-0.04em] leading-[1.08] max-w-[680px]">
           {item.title}
@@ -288,12 +319,15 @@ export function WebinarUpcoming() {
                 }}
                 aria-current={active ? "true" : undefined}
                 className={
-                  "w-full grid grid-cols-1 sm:grid-cols-[120px_minmax(0,1fr)_auto] items-start sm:items-center gap-1.5 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 text-left transition-colors duration-200 " +
+                  "w-full grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)_auto] items-start sm:items-center gap-1.5 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 text-left transition-colors duration-200 " +
                   (active ? "bg-[#FFF6EC]" : "bg-white hover:bg-[#F5F5F7]")
                 }
               >
-                <span className="text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
-                  {f.month}
+                <span className="flex sm:flex-col items-center sm:items-start gap-2">
+                  <span className="text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
+                    {f.month}
+                  </span>
+                  <HostTag host={f.host} />
                 </span>
                 <span className="text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-carbon leading-[1.35]">
                   {f.title}
