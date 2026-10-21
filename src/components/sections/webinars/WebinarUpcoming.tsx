@@ -317,7 +317,7 @@ export function WebinarUpcoming() {
         {FEATURED.map((f) => (
           <li
             key={f.id}
-            className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#ECECEF] transition-all duration-300 hover:-translate-y-0.5 hover:border-signal-orange/30 hover:shadow-[0_22px_44px_-28px_rgba(14,14,15,0.30)]"
+            className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#ECECEF] transition-all duration-300 hover:-translate-y-0.5 hover:border-signal-orange/20 hover:shadow-[0_14px_32px_-22px_rgba(14,14,15,0.14)]"
           >
             <div className="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
               {/* date tile */}
