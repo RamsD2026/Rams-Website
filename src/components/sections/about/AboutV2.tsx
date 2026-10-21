@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Bot, Cable, Cpu, Hand, Handshake } from "lucide-react";
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { ClientStrip } from "@/components/sections/ClientStrip";
 
 /**
  * /company/about — current version (2026-10-21).
@@ -139,6 +140,18 @@ export function AboutV2Hero() {
             </div>
           </motion.div>
         </div>
+
+        {/* the client strip under the buttons, as on the previous About hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1, ease: EASE }}
+          className="relative z-[1]"
+        >
+          <div className="mt-4 sm:mt-6">
+            <ClientStrip />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
