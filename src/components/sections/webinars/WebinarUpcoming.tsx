@@ -313,18 +313,16 @@ export function WebinarUpcoming() {
       <h3 className="mt-16 sm:mt-20 text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
         Upcoming webinar schedule
       </h3>
-      <ol className="mt-6 space-y-3">
+      <ol className="mt-6 space-y-5">
         {FEATURED.map((f) => (
           <li
             key={f.id}
-            className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white transition-shadow duration-300 hover:shadow-[0_22px_44px_-30px_rgba(14,14,15,0.35)]"
-            style={{ boxShadow: "inset 0 0 0 1px #F0F0F3" }}
+            className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#ECECEF] transition-all duration-300 hover:-translate-y-0.5 hover:border-signal-orange/30 hover:shadow-[0_22px_44px_-28px_rgba(14,14,15,0.30)]"
           >
             <div className="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
               {/* date tile */}
               <div
-                className="flex flex-col items-center justify-center w-[72px] h-[80px] rounded-xl shrink-0 text-center"
-                style={{ background: "#F5F5F7" }}
+                className="flex flex-col items-center justify-center w-[72px] h-[80px] rounded-xl shrink-0 text-center bg-[#F5F5F7] transition-colors duration-300 group-hover:bg-[#FFF3E8]"
               >
                 <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/50">
                   {f.date.weekday}
@@ -339,7 +337,7 @@ export function WebinarUpcoming() {
 
               <div className="min-w-0">
                 <HostTag host={f.host} />
-                <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3]">
+                <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3] transition-colors duration-200 group-hover:text-signal-orange">
                   {f.title}
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13.5px] text-graphite/65">
