@@ -305,40 +305,55 @@ export function WebinarUpcoming() {
         </div>
       </div>
 
-      {/* The whole series at a glance. A row brings its card into view. */}
-      <ol className="mt-12 sm:mt-14 rounded-2xl overflow-hidden" style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}>
-        {FEATURED.map((f, i) => {
-          const active = i === index;
-          return (
-            <li key={f.id} className={i > 0 ? "border-t border-[#E8E8ED]" : ""}>
-              <button
-                type="button"
-                onClick={() => {
-                  setManual(true);
-                  setIndex(i);
-                }}
-                aria-current={active ? "true" : undefined}
-                className={
-                  "w-full grid grid-cols-1 sm:grid-cols-[150px_minmax(0,1fr)_auto] items-start sm:items-center gap-1.5 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 text-left transition-colors duration-200 " +
-                  (active ? "bg-[#FFF6EC]" : "bg-white hover:bg-[#F5F5F7]")
-                }
+      {/* The whole series, in the careers board's card: date tile, tag,
+          title, then time and speakers, and the action on the right. */}
+      <h3 className="mt-16 sm:mt-20 text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
+        All sessions
+      </h3>
+      <ol className="mt-6 space-y-3">
+        {FEATURED.map((f) => (
+          <li
+            key={f.id}
+            className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white transition-shadow duration-300 hover:shadow-[0_22px_44px_-30px_rgba(14,14,15,0.35)]"
+            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+          >
+            <div className="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
+              {/* date tile */}
+              <div
+                className="flex flex-col items-center justify-center w-[72px] h-[80px] rounded-xl shrink-0 text-center"
+                style={{ background: "#F5F5F7" }}
               >
-                <span className="flex sm:flex-col items-center sm:items-start gap-2">
-                  <span className="text-[11px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange">
-                    {f.month}
-                  </span>
-                  <HostTag host={f.host} />
+                <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/50">
+                  {f.date.weekday}
                 </span>
-                <span className="text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-carbon leading-[1.35]">
+                <span className="mt-0.5 text-[26px] font-bold tracking-[-0.03em] leading-none text-carbon tabular-nums">
+                  {f.date.day}
+                </span>
+                <span className="mt-1 text-[11px] font-semibold text-graphite/60">
+                  {f.date.month} {f.date.year}
+                </span>
+              </div>
+
+              <div className="min-w-0">
+                <HostTag host={f.host} />
+                <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3]">
                   {f.title}
-                </span>
-                <span className="text-[13px] text-graphite/60 sm:text-right whitespace-nowrap">
-                  {f.pill}
-                </span>
-              </button>
-            </li>
-          );
-        })}
+                </p>
+                <p className="mt-1.5 text-[13.5px] text-graphite/60">
+                  {[f.time, f.body].filter(Boolean).join(" · ")}
+                </p>
+              </div>
+            </div>
+
+            <a
+              href={f.href}
+              className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover shrink-0"
+            >
+              {f.cta}
+              <ArrowUpRight className="w-4 h-4" aria-hidden />
+            </a>
+          </li>
+        ))}
       </ol>
     </Section>
   );

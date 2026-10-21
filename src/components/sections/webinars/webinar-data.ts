@@ -281,8 +281,11 @@ export type Featured = {
   month: string;
   /** Run by the RAMS team, or with a guest speaker — per the owner. */
   host: "internal" | "guest";
-  /** Date (and time, where given) for the pill. */
+  /** Date and time for the pill. */
   pill: string;
+  /** The same date in parts, for the schedule's date tile. */
+  date: { weekday: string; day: string; month: string; year: string };
+  time: string;
   title: string;
   /** Speakers, where the schedule names them. */
   body: string;
@@ -290,6 +293,17 @@ export type Featured = {
   href: string;
   img: string;
   alt: string;
+};
+
+/* "Wed, 25th Nov 2026 · 11am IST" → its parts, so the date is written once. */
+const parts = (when: string) => {
+  const [date, time = ""] = when.split(" · ");
+  const [weekday, rest] = date.split(", ");
+  const [dayth, month, year] = rest.split(" ");
+  return {
+    date: { weekday, day: dayth.replace(/\D/g, ""), month: month.slice(0, 3), year },
+    time,
+  };
 };
 
 const SESSION = (s: {
@@ -307,6 +321,7 @@ const SESSION = (s: {
   month: s.month,
   host: s.host,
   pill: s.when,
+  ...parts(s.when),
   title: s.title,
   body: s.speakers ?? "",
   cta: "Register",
@@ -353,7 +368,7 @@ export const FEATURED: Featured[] = [
     host: "guest",
     month: "January",
     title: "From Inspection to Closure: Building an Effective Rack Safety Program",
-    when: "Thu, 28th Jan 2027",
+    when: "Thu, 28th Jan 2027 · 11am IST",
     speakers: "Greeba and Sean",
     img: "/webinars/rack-programme.webp",
     alt: "A clean, undamaged blue steel rack upright bolted to a warehouse floor, tall racking receding into a dark aisle.",
@@ -363,7 +378,7 @@ export const FEATURED: Featured[] = [
     host: "guest",
     month: "February",
     title: "Forklifts vs Racks: Preventing Warehouse Impacts",
-    when: "Wed, 24th Feb 2027",
+    when: "Wed, 24th Feb 2027 · 11am IST",
     speakers: "Godrej Rentrust",
     img: "/webinars/people-forklifts.webp",
     alt: "A worker in a hi-vis vest crossing a warehouse traffic aisle as a forklift approaches in the blurred background.",
@@ -373,7 +388,7 @@ export const FEATURED: Featured[] = [
     host: "guest",
     month: "March",
     title: "Beyond Annual Inspections: Moving Towards Continuous Rack Safety",
-    when: "Wed, 17th March 2027",
+    when: "Wed, 17th March 2027 · 11am IST",
     speakers: "MAB",
     img: "/webinars/upcoming.webp",
     alt: "A safety manager with a tablet standing at the end of a tall pallet racking aisle, looking up at the uprights.",
