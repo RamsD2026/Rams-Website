@@ -176,7 +176,7 @@ const STORY_STAGES = [
 const BOX: React.CSSProperties = {
   borderRadius: 28,
   border: "1px solid #E8E8ED",
-  background: "#FBFBFC",
+  background: "transparent",
   boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 24px 60px -36px rgba(0,0,0,0.12)",
 };
 
