@@ -1,15 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import {
-  BigLine,
-  EASE,
-  Flow,
-  SURFACE,
-  Section,
-} from "@/components/sections/rackiq/rackiq-shared";
+import { ArrowRight, ArrowUpRight, Bot, Cable, Cpu, Hand, Handshake } from "lucide-react";
+import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 
 /**
@@ -21,9 +16,11 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    white   `SectionHeader` compact, then `Flow` and `BigLine`
- *   Vision   offWhite the same, centred
- *   Close    dark    the site's unified close (Partners, platform pages)
+ *   Story    white    heading left / story right, the four stages as the old
+ *                     story's picture cards, and the closing line as a quote
+ *   Vision   offWhite SectionHeader, the two paragraphs side by side, the five
+ *                     stages as an icon track, the closing lines in a dark panel
+ *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
  * in this folder.
@@ -150,44 +147,125 @@ export function AboutV2Hero() {
 
 /* ── our story ────────────────────────────────────────────────────── */
 
+/* The four stages as the old story's picture cards — the same four
+   photographs (/about/story), in the same order: field engineering, asset
+   identity, live sensing, the operations desk. */
+const STORY_STAGES = [
+  {
+    title: "Engineering",
+    img: "/about/story/field.webp",
+    alt: "An engineer in a high-visibility vest crouched at the base of a warehouse racking frame, examining a bent steel upright",
+  },
+  {
+    title: "Technology",
+    img: "/about/story/identity.webp",
+    alt: "A gloved hand holding a rugged scanner up to an asset label fixed to a racking upright",
+  },
+  {
+    title: "Physical Intelligence",
+    img: "/about/story/live.webp",
+    alt: "A sensor unit and camera mounted high on a warehouse column, with a forklift crossing an aisle below",
+  },
+  {
+    title: "Execution",
+    img: "/about/story/platform.webp",
+    alt: "Two operations staff at a warehouse-floor control desk, the racking visible through the glass behind them",
+  },
+];
+
 export function AboutV2Story() {
   return (
     <Section surface="white" id="story">
-      <SectionHeader
-        eyebrow="Our Story"
-        top="We started with"
-        bottom="the built environment."
-        size="compact"
-        width="wide"
-        body="RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time."
-        className="!mb-8 sm:!mb-10"
-      />
+      {/* heading left, the story right */}
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-8 lg:gap-20 items-end">
+        <motion.div {...reveal()}>
+          <p className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+            Our Story
+          </p>
+          <h2 className="mt-5 text-[36px] sm:text-[54px] lg:text-[60px] font-bold tracking-[-0.04em] leading-[1.05] text-carbon">
+            We started with
+            <br />
+            <span className="text-graphite/50">the built environment.</span>
+          </h2>
+        </motion.div>
+        <div>
+          <motion.p {...reveal(1)} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+            RAMS grew from years of working closely with physical
+            infrastructure—understanding structures, facilities, assets and how
+            real environments behave over time.
+          </motion.p>
+          <motion.p {...reveal(2)} className="mt-4 text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+            That engineering foundation evolved into Digital Twins, software,
+            IoT, edge intelligence and AI. Today, we build the connected
+            intelligence and execution layer that helps physical operations
+            become clearer, safer and continuously better.
+          </motion.p>
+        </div>
+      </div>
 
-      <motion.p
+      {/* the four stages */}
+      <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {STORY_STAGES.map((s, i) => (
+          <motion.article
+            key={s.title}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+            className="group relative flex flex-col overflow-hidden bg-white transition-transform duration-300 hover:-translate-y-1"
+            style={{ borderRadius: 14, border: "1px solid #E8E8ED" }}
+          >
+            <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4 / 3" }}>
+              <Image
+                src={s.img}
+                alt={s.alt}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 293px"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div className="flex items-center justify-between gap-3 p-5 sm:p-6">
+              <div>
+                <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
+                  0{i + 1}
+                </span>
+                <h3 className="mt-1.5 text-[18px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.2]">
+                  {s.title}
+                </h3>
+              </div>
+              {i < STORY_STAGES.length - 1 && (
+                <ArrowRight className="hidden lg:block w-5 h-5 text-graphite/25 shrink-0" aria-hidden />
+              )}
+            </div>
+          </motion.article>
+        ))}
+      </div>
+
+      {/* the line the section ends on */}
+      <motion.blockquote
         {...reveal()}
-        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        className="mt-16 sm:mt-20 max-w-[920px] pl-6 sm:pl-8 border-l-2 border-signal-orange"
       >
-        That engineering foundation evolved into Digital Twins, software, IoT,
-        edge intelligence and AI. Today, we build the connected intelligence and
-        execution layer that helps physical operations become clearer, safer
-        and continuously better.
-      </motion.p>
-
-      <motion.div {...reveal(1)} className="mt-12">
-        <Flow center steps={["Engineering", "Technology", "Physical Intelligence", "Execution"]} />
-      </motion.div>
-
-      <motion.div {...reveal(2)} className="mt-14 sm:mt-16">
-        <BigLine center>
-          We understood the physical world first. Then we started building
-          intelligence around it.
-        </BigLine>
-      </motion.div>
+        <p className="font-rams-heading text-[24px] sm:text-[32px] lg:text-[38px] font-bold tracking-[-0.03em] leading-[1.2] text-carbon">
+          We understood the physical world first.{" "}
+          <span className="text-graphite/45">Then we started building intelligence around it.</span>
+        </p>
+      </motion.blockquote>
     </Section>
   );
 }
 
 /* ── our vision ───────────────────────────────────────────────────── */
+
+/* Five stages of autonomy, each read by its icon: a hand, the join, the
+   processor, a hand-off with assistance, and the machine on its own. */
+const AUTONOMY = [
+  { title: "Manual", icon: Hand },
+  { title: "Connected", icon: Cable },
+  { title: "Intelligent", icon: Cpu },
+  { title: "Assisted", icon: Handshake },
+  { title: "Autonomous", icon: Bot },
+];
 
 export function AboutV2Vision() {
   return (
@@ -198,29 +276,76 @@ export function AboutV2Vision() {
         bottom="toward autonomous operations."
         size="long"
         width="wide"
-        body="RAMS helps facilities augment existing assets with sensors, edge processors, AI and connected intelligence—improving Safety, Productivity, Efficiency and Visibility without requiring wholesale replacement."
-        className="!mb-8 sm:!mb-10"
+        className="!mb-10 sm:!mb-12"
       />
 
-      <motion.p
+      <div className="max-w-[1040px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+        <motion.p {...reveal()} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+          RAMS helps facilities augment existing assets with sensors, edge
+          processors, AI and connected intelligence—improving Safety,
+          Productivity, Efficiency and Visibility without requiring wholesale
+          replacement.
+        </motion.p>
+        <motion.p {...reveal(1)} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+          As operations mature, mixed fleets, machines, AGVs and robots can
+          progress from manual to connected, assisted and, where technically
+          suitable, autonomous operation. RAMS provides one OEM-agnostic
+          operating platform while retaining the flexibility for manual
+          control.
+        </motion.p>
+      </div>
+
+      {/* the progression: one track, grey to orange */}
+      <div className="relative mt-16 sm:mt-20">
+        <div
+          aria-hidden
+          className="hidden lg:block absolute top-7 left-[10%] right-[10%] h-[2px]"
+          style={{ background: "linear-gradient(90deg, #D9D9DE 0%, #FF6A00 100%)" }}
+        />
+        <ol className="relative grid grid-cols-1 sm:grid-cols-5 gap-6 sm:gap-4">
+          {AUTONOMY.map((a, i) => {
+            const last = i === AUTONOMY.length - 1;
+            return (
+              <motion.li
+                key={a.title}
+                {...reveal(i)}
+                className="flex sm:flex-col items-center gap-4 sm:gap-0 sm:text-center"
+              >
+                <span
+                  className={
+                    "relative z-[1] flex items-center justify-center w-14 h-14 rounded-full shrink-0 " +
+                    (last ? "bg-signal-orange text-white" : "bg-white text-carbon")
+                  }
+                  style={last ? undefined : { boxShadow: "inset 0 0 0 1px #E0E0E6" }}
+                >
+                  <a.icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
+                </span>
+                <span className="sm:mt-4">
+                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                    0{i + 1}
+                  </span>
+                  <span className={"mt-1 block text-[17px] font-semibold tracking-[-0.02em] " + (last ? "text-signal-orange" : "text-carbon")}>
+                    {a.title}
+                  </span>
+                </span>
+              </motion.li>
+            );
+          })}
+        </ol>
+      </div>
+
+      {/* the closing lines, set apart */}
+      <motion.div
         {...reveal()}
-        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        className="mt-16 sm:mt-20 rounded-3xl px-7 sm:px-12 py-12 sm:py-14 text-center text-white"
+        style={{ background: SURFACE.darkTop }}
       >
-        As operations mature, mixed fleets, machines, AGVs and robots can
-        progress from manual to connected, assisted and, where technically
-        suitable, autonomous operation. RAMS provides one OEM-agnostic operating
-        platform while retaining the flexibility for manual control.
-      </motion.p>
-
-      <motion.div {...reveal(1)} className="mt-12">
-        <Flow center steps={["Manual", "Connected", "Intelligent", "Assisted", "Autonomous"]} />
-      </motion.div>
-
-      <motion.div {...reveal(2)} className="mt-14 sm:mt-16">
-        <BigLine center>
-          Different OEMs. Different Machines. One Operating Platform.
-        </BigLine>
-        <p className="mt-5 text-center text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+        <p className="font-rams-heading text-[24px] sm:text-[32px] lg:text-[38px] font-bold tracking-[-0.03em] leading-[1.2]">
+          Different OEMs. Different Machines.
+          <br className="hidden sm:block" />{" "}
+          <span className="text-white/50">One Operating Platform.</span>
+        </p>
+        <p className="mt-6 text-[12px] font-mono font-semibold tracking-[0.24em] uppercase text-signal-orange">
           Augment. Automate. Evolve.
         </p>
       </motion.div>
