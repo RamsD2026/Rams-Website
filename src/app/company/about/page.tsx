@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
-import { AboutHero } from "@/components/sections/about/AboutHero";
-import { AboutWhy } from "@/components/sections/about/AboutWhy";
-import { AboutStory } from "@/components/sections/about/AboutStory";
-import { AboutBuilt } from "@/components/sections/about/AboutBuilt";
-import { AboutDifferent } from "@/components/sections/about/AboutDifferent";
-import { AboutHow } from "@/components/sections/about/AboutHow";
-import { AboutPlatform } from "@/components/sections/about/AboutPlatform";
-import { AboutThink } from "@/components/sections/about/AboutThink";
-import { AboutTeam } from "@/components/sections/about/AboutTeam";
-import { AboutWhere } from "@/components/sections/about/AboutWhere";
-import { AboutCustomers } from "@/components/sections/about/AboutCustomers";
-import { AboutWork } from "@/components/sections/about/AboutWork";
-import { AboutReach } from "@/components/sections/about/AboutReach";
-import { AboutCTA } from "@/components/sections/about/AboutCTA";
+import {
+  AboutV2CTA,
+  AboutV2Hero,
+  AboutV2Story,
+  AboutV2Vision,
+} from "@/components/sections/about/AboutV2";
 
 export const metadata: Metadata = {
-  title: "About RAMS Digital — We Build Intelligence for the Physical World | RAMS",
+  title: "About RAMS Digital - Intelligence for the Physical World",
   description:
-    "RAMS Digital brings engineering, field operations, Digital Twin technology, IoT, AI and workflow software together, so organisations can understand and improve what is actually happening inside warehouses, factories and other built environments.",
+    "We connect physical facilities, assets and operations through Digital Twins, IoT, edge intelligence and AI—providing real-time visibility and a Physical Execution System that turns insights into measurable on-ground improvement.",
 };
 
 /**
@@ -100,22 +92,15 @@ export const metadata: Metadata = {
  * two source documents under `Downloads/06-09` if any of it is wanted back.
  */
 export default function AboutPage() {
+  /* Current version (2026-10-21), from the owner's reference. The previous
+     14-section page is commit 3223e63; its components remain in
+     sections/about. */
   return (
     <>
-      <AboutHero />
-      <AboutWhy />
-      <AboutStory />
-      <AboutBuilt />
-      <AboutDifferent />
-      <AboutHow />
-      <AboutPlatform />
-      <AboutThink />
-      <AboutTeam />
-      <AboutWhere />
-      <AboutCustomers />
-      <AboutWork />
-      <AboutReach />
-      <AboutCTA />
+      <AboutV2Hero />
+      <AboutV2Story />
+      <AboutV2Vision />
+      <AboutV2CTA />
     </>
   );
 }
