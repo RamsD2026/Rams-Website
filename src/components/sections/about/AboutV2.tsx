@@ -8,7 +8,6 @@ import { ArrowRight, ArrowUpRight, BrainCircuit, CircleCheckBig, Cpu, Ruler } fr
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { RiqClients } from "@/components/sections/rackiq/RiqClients";
-import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * /company/about — current version (2026-10-21).
@@ -20,7 +19,7 @@ import { useRailFollow } from "@/lib/use-rail-follow";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: story + statement, and step tiles
- *   Vision   offWhite header, then the stages as tabs over the stage's
+ *   Vision   offWhite header, then the stages as a stepper over the stage's
  *                     photograph, centred, advancing on its own
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
@@ -266,7 +265,7 @@ export function AboutV2Story() {
   );
 }
 
-/* The five stages as tabs over the stage's photograph, in one centred
+/* The five stages as a stepper over the stage's photograph, in one centred
    column. It advances on its own
    every 4.5s, holds while the pointer is over it, and a click takes over for
    good. The photographs are the site's own:
@@ -328,7 +327,6 @@ export function AboutV2Vision() {
   }, [reduce, manual, hover]);
 
   const stage = VISION_STAGES[active];
-  const rail = useRailFollow<HTMLDivElement>(active);
 
   return (
     <Section surface="offWhite" id="vision">
@@ -379,7 +377,7 @@ export function AboutV2Vision() {
         platform while retaining the flexibility for manual control.
       </motion.p>
 
-      {/* One centred column: the stage tabs, then the stage's photograph full
+      {/* One centred column: the stage stepper, then the stage's photograph full
           width under them, so the picture is never pushed off a phone. */}
       <motion.div
         {...reveal(1)}
@@ -387,48 +385,60 @@ export function AboutV2Vision() {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {/* the stages — the site's segmented pill; on a phone it slides on
-            one row and keeps the current stage in view */}
-        <div
-          ref={rail}
-          className="w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar lg:w-auto lg:mx-0 lg:px-0"
-        >
-          <div
-            role="tablist"
-            aria-label="Stages toward autonomous operations"
-            className="flex w-max mx-auto items-center bg-white rounded-full p-1.5 gap-0.5"
-            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
-          >
+        {/* the stages as a stepper: numbered nodes on one track, the track
+            filling orange up to the current stage. Five fit a phone's width,
+            so it never scrolls. */}
+        <div className="relative max-w-[920px] mx-auto">
+          <div aria-hidden className="absolute top-5 left-[10%] right-[10%] h-[2px] bg-[#E4E4E9]" />
+          <motion.div
+            aria-hidden
+            className="absolute top-5 left-[10%] h-[2px] bg-signal-orange origin-left"
+            initial={false}
+            animate={{ width: `${(active / (VISION_STAGES.length - 1)) * 80}%` }}
+            transition={{ duration: reduce ? 0 : 0.6, ease: EASE }}
+          />
+          <ol role="tablist" aria-label="Stages toward autonomous operations" className="relative grid grid-cols-5">
             {VISION_STAGES.map((s, i) => {
               const on = i === active;
+              const done = i < active;
               return (
-                <button
-                  key={s.title}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  onClick={() => {
-                    setManual(true);
-                    setActive(i);
-                  }}
-                  className={
-                    "shrink-0 inline-flex items-center gap-2 py-2.5 px-4 sm:px-5 rounded-full text-[13px] sm:text-[14px] font-semibold whitespace-nowrap transition-all duration-200 " +
-                    (on ? "bg-carbon text-white" : "text-graphite hover:text-signal-orange")
-                  }
-                >
-                  <span
-                    className={
-                      "text-[11px] font-mono font-bold tabular-nums " +
-                      (on ? "text-signal-orange" : "text-graphite/40")
-                    }
+                <li key={s.title} className="flex justify-center">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={on}
+                    onClick={() => {
+                      setManual(true);
+                      setActive(i);
+                    }}
+                    className="group flex flex-col items-center gap-2.5 sm:gap-3"
                   >
-                    0{i + 1}
-                  </span>
-                  {s.title}
-                </button>
+                    <span
+                      className={
+                        "flex items-center justify-center w-10 h-10 rounded-full text-[12px] font-mono font-bold tabular-nums transition-all duration-300 " +
+                        (on
+                          ? "bg-signal-orange text-white scale-110 shadow-[0_8px_20px_-8px_rgba(255,106,0,0.7)]"
+                          : done
+                            ? "bg-[#FFE7D3] text-signal-orange"
+                            : "bg-white text-graphite/45 group-hover:text-signal-orange")
+                      }
+                      style={on || done ? undefined : { boxShadow: "inset 0 0 0 1.5px #E0E0E6" }}
+                    >
+                      0{i + 1}
+                    </span>
+                    <span
+                      className={
+                        "text-[11px] sm:text-[14px] font-semibold tracking-[-0.01em] transition-colors duration-300 " +
+                        (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
+                      }
+                    >
+                      {s.title}
+                    </span>
+                  </button>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
 
         {/* the stage's photograph */}
