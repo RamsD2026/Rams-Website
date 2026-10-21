@@ -449,21 +449,16 @@ export function AboutV2Vision() {
           <p className="mt-3 text-center text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
             Augment. Automate. Evolve.
           </p>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+          <p className="mt-8 max-w-[880px] mx-auto text-center text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS helps facilities augment existing assets with sensors, edge
             processors, AI and connected intelligence—improving Safety,
             Productivity, Efficiency and Visibility without requiring
-            wholesale replacement.
+            wholesale replacement. As operations mature, mixed fleets,
+            machines, AGVs and robots can progress from manual to connected,
+            assisted and, where technically suitable, autonomous operation.
+            RAMS provides one OEM-agnostic operating platform while retaining
+            the flexibility for manual control.
           </p>
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            As operations mature, mixed fleets, machines, AGVs and robots can
-            progress from manual to connected, assisted and, where technically
-            suitable, autonomous operation. RAMS provides one OEM-agnostic
-            operating platform while retaining the flexibility for manual
-            control.
-          </p>
-          </div>
         </motion.div>
       </div>
     </Section>
