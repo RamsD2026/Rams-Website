@@ -533,22 +533,32 @@ export function AboutV2Vision() {
         </div>
       </div>
 
+      {/* the closing lines as a CTA card: the claim left, the action right */}
       <motion.div
         {...reveal()}
-        className="mt-14 sm:mt-16 max-w-[1240px] mx-auto px-6 sm:px-9 py-6 sm:py-7 text-center"
+        className="mt-14 sm:mt-16 max-w-[1240px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-10 px-7 sm:px-10 py-8 sm:py-9"
         style={{
-          borderRadius: 20,
+          borderRadius: 24,
           border: "1px solid rgba(255,106,0,0.22)",
           background: "linear-gradient(180deg, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 100%)",
         }}
       >
-        <p className="text-[18px] sm:text-[21px] font-semibold text-carbon leading-[1.4] tracking-[-0.01em]">
-          Different OEMs. Different Machines.{" "}
-          <span className="text-signal-orange">One Operating Platform.</span>
-        </p>
-        <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-          Augment. Automate. Evolve.
-        </p>
+        <div>
+          <p className="text-[20px] sm:text-[24px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
+            Different OEMs. Different Machines.{" "}
+            <span className="text-signal-orange">One Operating Platform.</span>
+          </p>
+          <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+            Augment. Automate. Evolve.
+          </p>
+        </div>
+        <Link
+          href="/company/contact"
+          className="self-start md:self-auto shrink-0 inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
+        >
+          Talk to Our Team
+          <ArrowRight className="w-4 h-4" aria-hidden />
+        </Link>
       </motion.div>
     </Section>
   );
