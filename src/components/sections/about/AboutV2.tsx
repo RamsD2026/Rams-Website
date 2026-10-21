@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: step tiles, and story + statement
- *   Vision   offWhite header; left, an animated stepper across and the two
- *                     paragraphs; right, the stage's photograph
+ *   Vision   offWhite header, a centred animated stepper, then the two
+ *                     paragraphs left and the stage's photograph right
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -265,8 +265,8 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: on the left an animated stepper across with the two
-   paragraphs below it, on the right the stage's photograph.
+/* Our Vision: an animated stepper centred across the top, then the two
+   paragraphs on the left and the stage's photograph on the right.
 
    The stepper advances on its own after a 4.5s dwell. While it waits, the
    rail from the current stage to the next fills orange, so the delay is
@@ -364,15 +364,13 @@ export function AboutV2Vision() {
       </div>
 
       <div
-        className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center"
+        className="max-w-[1240px] mx-auto"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {/* left — the stepper across, the paragraphs below it */}
-        <div className="lg:col-span-6">
         {/* the stepper, across: each node's rail to the next fills orange
             while it waits, full once passed. Five fit a phone's width. */}
-        <ol role="tablist" aria-label="Stages toward autonomous operations" className="grid grid-cols-5">
+        <ol role="tablist" aria-label="Stages toward autonomous operations" className="grid grid-cols-5 max-w-[920px] mx-auto">
           {VISION_STAGES.map((s, i) => {
             const on = i === active;
             const done = i < active;
@@ -453,7 +451,11 @@ export function AboutV2Vision() {
           })}
         </ol>
 
-          <div className="mt-10 sm:mt-12 space-y-5">
+        <div className="mt-12 sm:mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        {/* left — the two paragraphs */}
+        <div className="lg:col-span-6">
+
+          <div className="space-y-5">
             <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
               RAMS helps facilities augment existing assets with sensors, edge
               processors, AI and connected intelligence—improving Safety,
@@ -528,6 +530,7 @@ export function AboutV2Vision() {
           </div>
 
         </motion.div>
+        </div>
       </div>
 
       <motion.div
