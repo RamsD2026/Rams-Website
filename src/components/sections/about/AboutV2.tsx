@@ -8,6 +8,7 @@ import { ArrowRight, ArrowUpRight, BrainCircuit, CircleCheckBig, Cpu, Ruler } fr
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { RiqClients } from "@/components/sections/rackiq/RiqClients";
+import { useRailFollow } from "@/lib/use-rail-follow";
 
 /**
  * /company/about — current version (2026-10-21).
@@ -19,8 +20,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: story + statement, and step tiles
- *   Vision   offWhite header, then a stepper: the stages on the left, the
- *                     stage's photograph on the right, advancing on its own
+ *   Vision   offWhite header, then the stages as tabs over the stage's
+ *                     photograph, centred, advancing on its own
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -265,8 +266,8 @@ export function AboutV2Story() {
   );
 }
 
-/* The five stages as a stepper with a picture: the list on the left with a
-   progress rail, the stage's photograph on the right. It advances on its own
+/* The five stages as tabs over the stage's photograph, in one centred
+   column. It advances on its own
    every 4.5s, holds while the pointer is over it, and a click takes over for
    good. The photographs are the site's own:
 
@@ -327,6 +328,7 @@ export function AboutV2Vision() {
   }, [reduce, manual, hover]);
 
   const stage = VISION_STAGES[active];
+  const rail = useRailFollow<HTMLDivElement>(active);
 
   return (
     <Section surface="offWhite" id="vision">
@@ -366,83 +368,72 @@ export function AboutV2Vision() {
         </motion.p>
       </div>
 
-      {/* the stepper */}
-      <motion.div
+      {/* the paragraph that walks the stages */}
+      <motion.p
         {...reveal()}
-        className="mt-14 sm:mt-16 max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch"
+        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+      >
+        As operations mature, mixed fleets, machines, AGVs and robots can
+        progress from manual to connected, assisted and, where technically
+        suitable, autonomous operation. RAMS provides one OEM-agnostic operating
+        platform while retaining the flexibility for manual control.
+      </motion.p>
+
+      {/* One centred column: the stage tabs, then the stage's photograph full
+          width under them, so the picture is never pushed off a phone. */}
+      <motion.div
+        {...reveal(1)}
+        className="mt-12 sm:mt-14 max-w-[1080px] mx-auto"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {/* left — the stages and the paragraph that walks them */}
+        {/* the stages — the site's segmented pill; on a phone it slides on
+            one row and keeps the current stage in view */}
         <div
-          className="lg:col-span-5 flex flex-col p-7 sm:p-9"
-          style={{ borderRadius: 28, border: "1px solid #E8E8ED", background: "#FFFFFF" }}
+          ref={rail}
+          className="w-[calc(100%_+_2*var(--page-padding-x))] mx-[calc(-1*var(--page-padding-x))] px-[var(--page-padding-x)] overflow-x-auto no-scrollbar lg:w-auto lg:mx-0 lg:px-0"
         >
-          <p className="text-[14px] sm:text-[15px] leading-[1.65] text-graphite/65">
-            As operations mature, mixed fleets, machines, AGVs and robots can
-            progress from manual to connected, assisted and, where technically
-            suitable, autonomous operation. RAMS provides one OEM-agnostic
-            operating platform while retaining the flexibility for manual
-            control.
-          </p>
-
-          <ol className="mt-8 flex-1 flex flex-col justify-between" role="tablist" aria-label="Stages toward autonomous operations">
+          <div
+            role="tablist"
+            aria-label="Stages toward autonomous operations"
+            className="flex w-max mx-auto items-center bg-white rounded-full p-1.5 gap-0.5"
+            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+          >
             {VISION_STAGES.map((s, i) => {
               const on = i === active;
-              const done = i < active;
-              const last = i === VISION_STAGES.length - 1;
               return (
-                <li key={s.title} className={"relative " + (last ? "" : "pb-2")}>
-                  {!last && (
-                    <span
-                      aria-hidden
-                      className="absolute left-[19px] top-10 bottom-0 w-[2px] -translate-x-1/2 transition-colors duration-500"
-                      style={{ background: done || on ? "rgba(255,106,0,0.45)" : "#E8E8ED" }}
-                    />
-                  )}
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={on}
-                    onClick={() => {
-                      setManual(true);
-                      setActive(i);
-                    }}
+                <button
+                  key={s.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => {
+                    setManual(true);
+                    setActive(i);
+                  }}
+                  className={
+                    "shrink-0 inline-flex items-center gap-2 py-2.5 px-4 sm:px-5 rounded-full text-[13px] sm:text-[14px] font-semibold whitespace-nowrap transition-all duration-200 " +
+                    (on ? "bg-carbon text-white" : "text-graphite hover:text-signal-orange")
+                  }
+                >
+                  <span
                     className={
-                      "relative w-full flex items-center gap-4 rounded-xl px-0 py-2 text-left transition-colors duration-300 " +
-                      (on ? "" : "hover:opacity-80")
+                      "text-[11px] font-mono font-bold tabular-nums " +
+                      (on ? "text-signal-orange" : "text-graphite/40")
                     }
                   >
-                    <span
-                      className={
-                        "flex items-center justify-center w-10 h-10 rounded-full shrink-0 text-[12.5px] font-mono font-bold tabular-nums transition-colors duration-300 " +
-                        (on
-                          ? "bg-signal-orange text-white"
-                          : done
-                            ? "bg-[#FFF3E8] text-signal-orange"
-                            : "bg-[#F2F2F4] text-graphite/45")
-                      }
-                    >
-                      0{i + 1}
-                    </span>
-                    <span
-                      className={
-                        "text-[17px] sm:text-[19px] font-semibold tracking-[-0.02em] transition-colors duration-300 " +
-                        (on ? "text-carbon" : "text-graphite/50")
-                      }
-                    >
-                      {s.title}
-                    </span>
-                  </button>
-                </li>
+                    0{i + 1}
+                  </span>
+                  {s.title}
+                </button>
               );
             })}
-          </ol>
+          </div>
         </div>
 
-        {/* right — the stage's photograph */}
+        {/* the stage's photograph */}
         <div
-          className="lg:col-span-7 relative overflow-hidden min-h-[280px] sm:min-h-[380px] lg:min-h-0"
+          className="relative mt-6 sm:mt-8 overflow-hidden aspect-[4/3] sm:aspect-[16/9]"
           style={{ borderRadius: 28, background: "#0E0E10" }}
         >
           <AnimatePresence mode="sync">
@@ -458,7 +449,7 @@ export function AboutV2Vision() {
                 src={stage.img}
                 alt={stage.alt}
                 fill
-                sizes="(max-width: 1024px) 100vw, 720px"
+                sizes="(max-width: 1080px) 100vw, 1080px"
                 className="object-cover"
                 style={{
                   objectPosition: stage.pos ?? "50% 50%",
@@ -478,16 +469,15 @@ export function AboutV2Vision() {
             }}
           />
 
-          <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between gap-4 text-white">
+          <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9 flex items-end justify-between gap-4 text-white">
             <div>
               <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
                 0{active + 1} / 0{VISION_STAGES.length}
               </span>
-              <p className="mt-1.5 text-[24px] sm:text-[30px] font-bold tracking-[-0.03em] leading-none">
+              <p className="mt-1.5 text-[26px] sm:text-[36px] font-bold tracking-[-0.03em] leading-none">
                 {stage.title}
               </p>
             </div>
-            {/* the time left on this stage, while it runs on its own */}
             {!manual && !reduce && (
               <span aria-hidden className="relative w-24 h-[3px] rounded-full bg-white/20 overflow-hidden shrink-0">
                 <motion.span
