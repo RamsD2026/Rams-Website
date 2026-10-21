@@ -15,8 +15,8 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    dark     the careers page's "What you may build" structure
- *   Vision   offWhite the MHE page's "How it works" design (MheWorkflow)
+ *   Story    offWhite SectionHeader, then the story beside a stage timeline
+ *   Vision   white    SectionHeader, then the stages as numbered circles
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -154,113 +154,82 @@ export function AboutV2Hero() {
 
 /* ── our story / our vision ───────────────────────────────────────── */
 
-/* Our Vision takes the MHE page's "How it works" design (`MheWorkflow`):
-   header, then numbered circles on a faint track. The reference gives the
-   stages names only, so no stage carries body copy. */
+/* The company sub-pages' hierarchy (Partners, Careers): after the light hero,
+   light sections alternate offWhite → white, each opening on `SectionHeader`
+   at `compact`, and the dark close ends the page. No two sections share a
+   layout:
 
-function Header({ eyebrow, top, bottom, paras }: { eyebrow: string; top: string; bottom: string; paras: string[] }) {
-  return (
-    <div className="max-w-[900px] mx-auto text-center mb-20 sm:mb-24">
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.5 }}
-        className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
-      >
-        {eyebrow}
-      </motion.p>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.85, ease: EASE }}
-        className="text-[40px] sm:text-[60px] lg:text-[78px] font-bold text-carbon leading-[1.0] tracking-[-0.04em]"
-      >
-        {top} <br />
-        <span className="text-graphite/50">{bottom}</span>
-      </motion.h2>
-      {paras.map((p, i) => (
-        <motion.p
-          key={p}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.1 + i * 0.06, ease: EASE }}
-          className={(i === 0 ? "mt-6" : "mt-4") + " text-[14px] sm:text-[15px] text-graphite/65 leading-[1.55] max-w-[880px] mx-auto"}
-        >
-          {p}
-        </motion.p>
-      ))}
-    </div>
-  );
-}
+     Story   offWhite  header, then the story beside a vertical stage timeline
+     Vision  white     header, then the five stages as numbered circles on a
+                       track (the MHE "How it works" design)
 
-/** The section's closing line, under the stages. */
-function Closing({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div {...reveal()} className="mt-20 sm:mt-24 max-w-[760px] mx-auto text-center">
-      {children}
-    </motion.div>
-  );
-}
+   The reference's words are kept; how they are split across header, column
+   and timeline is the site's. */
 
-/* Our Story in the careers page's "What you may build" structure
-   (`CareersBuild`): a dark section, the header, then the stages as stacked
-   full-width layers with large orange numerals on an orange-tinted fade —
-   so the page does not repeat the centred card row. */
 const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
-const DHAIR = "rgba(255,255,255,0.09)";
 
 export function AboutV2Story() {
   return (
-    <Section surface="darkMid" id="story">
+    <Section surface="offWhite" id="story">
       <SectionHeader
         eyebrow="Our Story"
         top="We started with"
         bottom="the built environment."
-        tone="dark"
         size="compact"
         width="wide"
         body="RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time."
-        className="!mb-6 sm:!mb-8"
+        className="!mb-12 sm:!mb-14"
       />
-      <motion.p
-        {...reveal()}
-        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-white/60"
-      >
-        That engineering foundation evolved into Digital Twins, software, IoT,
-        edge intelligence and AI. Today, we build the connected intelligence and
-        execution layer that helps physical operations become clearer, safer
-        and continuously better.
-      </motion.p>
 
-      <div className="mt-12 sm:mt-14 max-w-[860px] mx-auto space-y-2.5">
-        {STORY_STAGES.map((t, i) => (
-          <motion.div
-            key={t}
-            {...reveal(i)}
-            className="flex items-center gap-4 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 rounded-2xl"
-            style={{
-              boxShadow: `inset 0 0 0 1px ${DHAIR}`,
-              background: `linear-gradient(90deg, rgba(255,106,0,${0.04 + (i + 1) * 0.03}) 0%, rgba(255,255,255,0.02) 100%)`,
-            }}
+      <div className="max-w-[1080px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-10 lg:gap-16 items-center">
+        <div>
+          <motion.p {...reveal()} className="text-[16px] sm:text-[17px] leading-[1.7] text-graphite/70">
+            That engineering foundation evolved into Digital Twins, software,
+            IoT, edge intelligence and AI. Today, we build the connected
+            intelligence and execution layer that helps physical operations
+            become clearer, safer and continuously better.
+          </motion.p>
+          <motion.p
+            {...reveal(1)}
+            className="mt-8 pl-5 border-l-2 border-signal-orange text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon"
           >
-            <span className="text-[22px] sm:text-[26px] font-bold tracking-[-0.03em] text-signal-orange tabular-nums w-10 shrink-0">
-              0{i + 1}
-            </span>
-            <p className="text-[15.5px] sm:text-[17px] font-semibold tracking-[-0.01em] text-white">{t}</p>
-          </motion.div>
-        ))}
-      </div>
+            We understood the physical world first. Then we started building
+            intelligence around it.
+          </motion.p>
+        </div>
 
-      <motion.p
-        {...reveal()}
-        className="mt-12 sm:mt-14 max-w-[760px] mx-auto text-center text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-white"
-      >
-        We understood the physical world first.{" "}
-        <span className="text-white/55">Then we started building intelligence around it.</span>
-      </motion.p>
+        {/* the stages, top to bottom */}
+        <motion.ol
+          {...reveal(2)}
+          className="p-7 sm:p-8 rounded-2xl bg-white"
+          style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+        >
+          {STORY_STAGES.map((t, i) => {
+            const last = i === STORY_STAGES.length - 1;
+            return (
+              <li key={t} className={"relative flex items-center gap-4 " + (last ? "" : "pb-7")}>
+                {!last && (
+                  <span
+                    aria-hidden
+                    className="absolute left-5 top-10 bottom-0 w-[2px] -translate-x-1/2 bg-signal-orange/25"
+                  />
+                )}
+                <span
+                  className={
+                    "relative flex items-center justify-center w-10 h-10 rounded-full shrink-0 text-[13px] font-mono font-bold tabular-nums " +
+                    (last ? "bg-signal-orange text-white" : "bg-[#FFF3E8] text-signal-orange")
+                  }
+                >
+                  0{i + 1}
+                </span>
+                <span className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.02em] text-carbon">
+                  {t}
+                </span>
+              </li>
+            );
+          })}
+        </motion.ol>
+      </div>
     </Section>
   );
 }
@@ -269,83 +238,90 @@ const VISION_STAGES = ["Manual", "Connected", "Intelligent", "Assisted", "Autono
 
 export function AboutV2Vision() {
   return (
-    <section id="vision" className="bg-[#F5F5F7] pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44">
-      <div className="rams-container">
-        <Header
-          eyebrow="Our Vision"
-          top="Evolve existing warehouses and factories"
-          bottom="toward autonomous operations."
-          paras={[
-            "RAMS helps facilities augment existing assets with sensors, edge processors, AI and connected intelligence—improving Safety, Productivity, Efficiency and Visibility without requiring wholesale replacement.",
-            "As operations mature, mixed fleets, machines, AGVs and robots can progress from manual to connected, assisted and, where technically suitable, autonomous operation. RAMS provides one OEM-agnostic operating platform while retaining the flexibility for manual control.",
-          ]}
-        />
+    <Section surface="white" id="vision">
+      <SectionHeader
+        eyebrow="Our Vision"
+        top="Evolve existing warehouses and factories"
+        bottom="toward autonomous operations."
+        size="compact"
+        width="wide"
+        body="RAMS helps facilities augment existing assets with sensors, edge processors, AI and connected intelligence—improving Safety, Productivity, Efficiency and Visibility without requiring wholesale replacement."
+        className="!mb-6 sm:!mb-8"
+      />
+      <motion.p
+        {...reveal()}
+        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+      >
+        As operations mature, mixed fleets, machines, AGVs and robots can
+        progress from manual to connected, assisted and, where technically
+        suitable, autonomous operation. RAMS provides one OEM-agnostic operating
+        platform while retaining the flexibility for manual control.
+      </motion.p>
 
-        <div className="relative max-w-[1240px] mx-auto">
-          <div
-            aria-hidden
-            className="hidden lg:block absolute left-0 right-0 top-[46px] h-px"
-            style={{
-              background:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.08) 88%, transparent 100%)",
-            }}
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1 gap-10 sm:gap-6">
-            {VISION_STAGES.map((t, i) => (
-              <motion.div
-                key={t}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
-                className="relative flex flex-col items-center text-center px-3"
-              >
-                <div className="relative mb-8">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-full blur-2xl opacity-70"
+      <div className="relative mt-16 sm:mt-20 max-w-[1240px] mx-auto">
+        <div
+          aria-hidden
+          className="hidden lg:block absolute left-0 right-0 top-[46px] h-px"
+          style={{
+            background:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.08) 88%, transparent 100%)",
+          }}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1 gap-10 sm:gap-6">
+          {VISION_STAGES.map((t, i) => (
+            <motion.div
+              key={t}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+              className="relative flex flex-col items-center text-center px-3"
+            >
+              <div className="relative mb-8">
+                <div
+                  aria-hidden
+                  className="absolute inset-0 rounded-full blur-2xl opacity-70"
+                  style={{
+                    background: "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)",
+                  }}
+                />
+                <div
+                  className="relative w-[92px] h-[92px] rounded-full flex items-center justify-center font-mono font-bold text-[18px] tracking-[0.02em] bg-white"
+                  style={{
+                    border: "1px solid #EBEBEF",
+                    color: "#0E0E0F",
+                    boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <span
                     style={{
-                      background: "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)",
-                    }}
-                  />
-                  <div
-                    className="relative w-[92px] h-[92px] rounded-full flex items-center justify-center font-mono font-bold text-[18px] tracking-[0.02em] bg-white"
-                    style={{
-                      border: "1px solid #EBEBEF",
-                      color: "#0E0E0F",
-                      boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
+                      background: "linear-gradient(135deg, #FF6A00 0%, #FF8A3C 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "transparent",
                     }}
                   >
-                    <span
-                      style={{
-                        background: "linear-gradient(135deg, #FF6A00 0%, #FF8A3C 100%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      0{i + 1}
-                    </span>
-                  </div>
+                    0{i + 1}
+                  </span>
                 </div>
-                <h3 className="text-[22px] sm:text-[26px] font-bold text-carbon tracking-[-0.025em] leading-[1.15]">
-                  {t}
-                </h3>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+              <h3 className="text-[22px] sm:text-[26px] font-bold text-carbon tracking-[-0.025em] leading-[1.15]">
+                {t}
+              </h3>
+            </motion.div>
+          ))}
         </div>
-
-        <Closing>
-          <p className="text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon">
-            Different OEMs. Different Machines. One Operating Platform.
-          </p>
-          <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-            Augment. Automate. Evolve.
-          </p>
-        </Closing>
       </div>
-    </section>
+
+      <motion.div {...reveal()} className="mt-20 sm:mt-24 max-w-[760px] mx-auto text-center">
+        <p className="text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon">
+          Different OEMs. Different Machines. One Operating Platform.
+        </p>
+        <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+          Augment. Automate. Evolve.
+        </p>
+      </motion.div>
+    </Section>
   );
 }
 
