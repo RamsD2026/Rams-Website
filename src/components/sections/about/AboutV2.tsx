@@ -13,11 +13,10 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  * Intelligence for the Physical World"), unchanged. The design is the
  * site's, not the reference's:
  *
- *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
- *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    offWhite SectionHeader, then the Inventory page's "How RAMS
+ *   Hero     dark     the solution pages' hero ground and buttons
+ *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: story + statement, and step tiles
- *   Vision   white    SectionHeader, then the stages as numbered circles
+ *   Vision   offWhite SectionHeader, then the stages as numbered circles
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -33,15 +32,17 @@ const reveal = (i = 0) => ({
 
 /* ── hero ─────────────────────────────────────────────────────────── */
 
+/* The solution pages' hero ground (MheHero, InvHero): the dark radial with
+   the orange glow, white type, the dark pill and the rounded-full buttons —
+   so About carries the same colours as the Solutions menu. */
 export function AboutV2Hero() {
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden text-white"
       id="top"
-      data-hero-tone="light"
       style={{
         background:
-          "radial-gradient(80% 100% at 50% 0%, #FFFFFF 0%, #FBFBFC 55%, #F5F5F7 100%)",
+          "radial-gradient(80% 100% at 50% 0%, #1D1D1F 0%, #0E0E0F 55%, #08080A 100%)",
       }}
     >
       <div
@@ -49,7 +50,7 @@ export function AboutV2Hero() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
         style={{
           background:
-            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.10), transparent 70%)",
+            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.22), transparent 70%)",
         }}
       />
       <div
@@ -57,8 +58,8 @@ export function AboutV2Hero() {
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(#F0F0F2 1px, transparent 1px)," +
-            "linear-gradient(90deg, #F0F0F2 1px, transparent 1px)",
+            "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
           backgroundSize: "72px 72px",
           maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
@@ -71,11 +72,10 @@ export function AboutV2Hero() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: EASE }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur"
-            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
-            <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/70">
+            <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/70">
               About RAMS Digital
             </span>
           </motion.div>
@@ -84,17 +84,17 @@ export function AboutV2Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-7 sm:mt-8 text-[46px] sm:text-[72px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-carbon"
+            className="mt-7 sm:mt-8 text-[46px] sm:text-[72px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-white"
           >
             <span className="block">We Build Intelligence</span>
-            <span className="block">for the Physical World.</span>
+            <span className="block text-white/45">for the Physical World.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
-            className="mt-7 max-w-[880px] mx-auto text-[15px] sm:text-[16px] text-graphite/65 leading-[1.6]"
+            className="mt-7 max-w-[880px] mx-auto text-[15px] sm:text-[16px] text-white/60 leading-[1.6]"
           >
             We connect physical facilities, assets and operations through
             Digital Twins, IoT, edge intelligence and AI—providing real-time
@@ -108,14 +108,10 @@ export function AboutV2Hero() {
             transition={{ duration: 0.7, delay: 0.29, ease: EASE }}
             className="mt-7 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-[15px] sm:text-[17px] font-bold tracking-[-0.01em]"
           >
-            {/* The five verbs as a sequence: a small orange dot between each,
-                and the last two — the action — in orange. */}
             {["Sense.", "Understand.", "Decide.", "Execute.", "Improve."].map((w, i) => (
               <span key={w} className="inline-flex items-center gap-x-3 sm:gap-x-4">
-                {i > 0 && (
-                  <span aria-hidden className="w-1 h-1 rounded-full bg-signal-orange/60" />
-                )}
-                <span className={i >= 3 ? "text-signal-orange" : "text-carbon"}>{w}</span>
+                {i > 0 && <span aria-hidden className="w-1 h-1 rounded-full bg-signal-orange/70" />}
+                <span className={i >= 3 ? "text-signal-orange" : "text-white"}>{w}</span>
               </span>
             ))}
           </motion.p>
@@ -126,28 +122,26 @@ export function AboutV2Hero() {
             transition={{ duration: 0.6, delay: 0.36, ease: EASE }}
             className="mt-9"
           >
-            <p className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/45">
+            <p className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-white/40">
               Turn physical insight into action
             </p>
             <div className="mt-4 flex items-center justify-center gap-3 flex-wrap">
               <Link
                 href="/company/contact"
-                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
+                className="group inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
               >
                 Request a Demo
                 <ArrowRight className="w-4 h-4" aria-hidden />
               </Link>
               <Link
                 href="/company/contact"
-                className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-[#F5F5F7]"
-                style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}
+                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 bg-white/[0.04] transition-colors duration-200 hover:bg-white/[0.08]"
               >
                 Talk to Our Team
               </Link>
             </div>
           </motion.div>
         </div>
-
       </div>
     </section>
   );
@@ -181,13 +175,13 @@ const STORY_STAGES = [
 const BOX: React.CSSProperties = {
   borderRadius: 28,
   border: "1px solid #E8E8ED",
-  background: "#FFFFFF",
+  background: "#FBFBFC",
   boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 24px 60px -36px rgba(0,0,0,0.12)",
 };
 
 export function AboutV2Story() {
   return (
-    <Section surface="offWhite" id="story">
+    <Section surface="white" id="story">
       <SectionHeader
         eyebrow="Our Story"
         top="We started with"
@@ -267,7 +261,7 @@ const VISION_STAGES = ["Manual", "Connected", "Intelligent", "Assisted", "Autono
 
 export function AboutV2Vision() {
   return (
-    <Section surface="white" id="vision">
+    <Section surface="offWhite" id="vision">
       <SectionHeader
         eyebrow="Our Vision"
         top="Evolve existing warehouses and factories"
