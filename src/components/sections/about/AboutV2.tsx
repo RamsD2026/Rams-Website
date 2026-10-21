@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BrainCircuit, CircleCheckBig, Cpu, Ruler } from "lucide-react";
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 
@@ -15,7 +15,8 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    offWhite SectionHeader, then the story beside a stage timeline
+ *   Story    offWhite SectionHeader, then the Inventory page's "How RAMS
+ *                     applies it" boxes: story + statement, and step tiles
  *   Vision   white    SectionHeader, then the stages as numbered circles
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
@@ -159,14 +160,30 @@ export function AboutV2Hero() {
    at `compact`, and the dark close ends the page. No two sections share a
    layout:
 
-     Story   offWhite  header, then the story beside a vertical stage timeline
+     Story   offWhite  header, then the story box beside a box of step tiles
      Vision  white     header, then the five stages as numbered circles on a
                        track (the MHE "How it works" design)
 
    The reference's words are kept; how they are split across header, column
    and timeline is the site's. */
 
-const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
+/* Our Story in the layout of the Inventory Intelligence page's "How RAMS
+   applies it" block (`InvABC`), on this section's own light ground: a wide
+   box with the story and an orange-tinted statement box, and beside it a
+   box of four step tiles. */
+const STORY_STAGES = [
+  { title: "Engineering", Icon: Ruler },
+  { title: "Technology", Icon: Cpu },
+  { title: "Physical Intelligence", Icon: BrainCircuit },
+  { title: "Execution", Icon: CircleCheckBig },
+];
+
+const BOX: React.CSSProperties = {
+  borderRadius: 28,
+  border: "1px solid #E8E8ED",
+  background: "#FFFFFF",
+  boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 24px 60px -36px rgba(0,0,0,0.12)",
+};
 
 export function AboutV2Story() {
   return (
@@ -177,58 +194,70 @@ export function AboutV2Story() {
         bottom="the built environment."
         size="compact"
         width="wide"
-        body="RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time."
         className="!mb-12 sm:!mb-14"
       />
 
-      <div className="max-w-[1080px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-10 lg:gap-16 items-center">
-        <div>
-          <motion.p {...reveal()} className="text-[16px] sm:text-[17px] leading-[1.7] text-graphite/70">
+      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        {/* left — the story and the statement (7 cols) */}
+        <motion.div {...reveal()} className="lg:col-span-7 p-8 sm:p-10 lg:p-12" style={BOX}>
+          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+            RAMS grew from years of working closely with physical
+            infrastructure—understanding structures, facilities, assets and how
+            real environments behave over time.
+          </p>
+          <p className="mt-5 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             That engineering foundation evolved into Digital Twins, software,
             IoT, edge intelligence and AI. Today, we build the connected
             intelligence and execution layer that helps physical operations
             become clearer, safer and continuously better.
-          </motion.p>
-          <motion.p
-            {...reveal(1)}
-            className="mt-8 pl-5 border-l-2 border-signal-orange text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon"
-          >
-            We understood the physical world first. Then we started building
-            intelligence around it.
-          </motion.p>
-        </div>
+          </p>
 
-        {/* the stages, top to bottom */}
-        <motion.ol
-          {...reveal(2)}
-          className="p-7 sm:p-8 rounded-2xl bg-white"
-          style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
-        >
-          {STORY_STAGES.map((t, i) => {
-            const last = i === STORY_STAGES.length - 1;
-            return (
-              <li key={t} className={"relative flex items-center gap-4 " + (last ? "" : "pb-7")}>
-                {!last && (
-                  <span
-                    aria-hidden
-                    className="absolute left-5 top-10 bottom-0 w-[2px] -translate-x-1/2 bg-signal-orange/25"
-                  />
-                )}
-                <span
-                  className={
-                    "relative flex items-center justify-center w-10 h-10 rounded-full shrink-0 text-[13px] font-mono font-bold tabular-nums " +
-                    (last ? "bg-signal-orange text-white" : "bg-[#FFF3E8] text-signal-orange")
-                  }
+          <div
+            className="mt-8 p-6 sm:p-7"
+            style={{
+              borderRadius: 18,
+              border: "1px solid rgba(255,106,0,0.22)",
+              background: "linear-gradient(180deg, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 100%)",
+            }}
+          >
+            <p className="text-[18px] sm:text-[21px] font-semibold text-carbon leading-[1.4] tracking-[-0.01em]">
+              We understood the physical world first.{" "}
+              <span className="text-signal-orange">Then we started building intelligence around it.</span>
+            </p>
+          </div>
+        </motion.div>
+
+        {/* right — the four steps (5 cols) */}
+        <motion.div {...reveal(1)} className="lg:col-span-5 p-8 sm:p-10" style={BOX}>
+          <ol className="grid grid-cols-2 auto-rows-fr gap-3 sm:gap-4 h-full">
+            {STORY_STAGES.map((s, i) => (
+              <motion.li
+                key={s.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.2 + i * 0.06, ease: EASE }}
+                className="flex flex-col justify-between gap-6 p-5 sm:p-6 min-h-[150px]"
+                style={{ borderRadius: 16, border: "1px solid #EDEDF0", background: "#FAFAFB" }}
+              >
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{ background: "rgba(255,106,0,0.10)", border: "1px solid rgba(255,106,0,0.20)" }}
                 >
-                  0{i + 1}
-                </span>
-                <span className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.02em] text-carbon">
-                  {t}
-                </span>
-              </li>
-            );
-          })}
-        </motion.ol>
+                  <s.Icon className="w-[18px] h-[18px] text-signal-orange" strokeWidth={2} aria-hidden />
+                </div>
+                <div>
+                  <div className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                    0{i + 1}
+                  </div>
+                  <div className="mt-1.5 text-[15px] sm:text-[16px] font-semibold text-carbon leading-[1.25] tracking-[-0.01em]">
+                    {s.title}
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </ol>
+        </motion.div>
       </div>
     </Section>
   );
