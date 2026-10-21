@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Clock, UserRound } from "lucide-react";
 import { Section } from "@/components/sections/rackiq/rackiq-shared";
 import { FEATURED, type Featured } from "./webinar-data";
 
@@ -147,8 +147,16 @@ function Card({ item }: { item: Featured }) {
         </h3>
 
         {item.body && (
-          <p className="mt-2 sm:mt-3 text-[12.5px] sm:text-[15px] text-white/60 leading-[1.5] sm:leading-[1.55] line-clamp-2 sm:line-clamp-none max-w-[560px]">
-            {item.body}
+          <p className="mt-2 sm:mt-3 flex items-center gap-2 text-[12.5px] sm:text-[15px] text-white/70 leading-[1.5] sm:leading-[1.55] max-w-[560px]">
+            <span
+              aria-hidden
+              className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full shrink-0"
+              style={{ background: "rgba(255,255,255,0.14)" }}
+            >
+              <UserRound className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </span>
+            <span className="sr-only">Speakers: </span>
+            <span className="line-clamp-1 sm:line-clamp-none">{item.body}</span>
           </p>
         )}
 
@@ -334,9 +342,21 @@ export function WebinarUpcoming() {
                 <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3]">
                   {f.title}
                 </p>
-                <p className="mt-1.5 text-[13.5px] text-graphite/60">
-                  {[f.time, f.body].filter(Boolean).join(" · ")}
-                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13.5px] text-graphite/65">
+                  {f.time && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-graphite/40" aria-hidden />
+                      {f.time}
+                    </span>
+                  )}
+                  {f.body && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <UserRound className="w-4 h-4 text-graphite/40" aria-hidden />
+                      <span className="sr-only">Speakers: </span>
+                      <span className="font-medium text-carbon/80">{f.body}</span>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
