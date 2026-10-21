@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Bot, Cable, Cpu, Hand, Handshake } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 
@@ -15,10 +15,9 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    white    heading left / story right, the four stages on a quiet
- *                     hairline track, and the closing line as a quote
- *   Vision   offWhite SectionHeader, the two paragraphs side by side, the five
- *                     stages as an icon track, the closing lines in a dark panel
+ *   Story    white    one centred column: heading, paragraphs, the stages
+ *                     as one small line, then the closing line
+ *   Vision   offWhite the same reading order
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -154,97 +153,80 @@ export function AboutV2Hero() {
   );
 }
 
-/* ── our story ────────────────────────────────────────────────────── */
+/* ── our story / our vision ───────────────────────────────────────── */
 
-/* The four stages, set quietly: a hairline track with a dot at each stage,
-   the number and the name under it — no boxes, no pictures. */
-const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
+/* Both sections read the same way, top to bottom in one centred column, so
+   there is one place to look at a time:
+
+     1  eyebrow + heading     the only large thing in the section
+     2  the paragraphs        one narrow column
+     3  the stages            a single small line, arrows between
+     4  the closing line      medium, and last
+
+   Nothing beside anything else, no boxes, no second focal point. */
+
+function Stages({ items }: { items: string[] }) {
+  return (
+    <ol className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+      {items.map((t, i) => (
+        <li key={t} className="inline-flex items-center gap-x-3">
+          {i > 0 && <ArrowRight className="w-3.5 h-3.5 text-signal-orange/70" aria-hidden />}
+          <span
+            className={
+              "text-[12px] sm:text-[12.5px] font-mono font-semibold tracking-[0.08em] uppercase " +
+              (i === items.length - 1 ? "text-signal-orange" : "text-graphite/60")
+            }
+          >
+            {t}
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+const PARA =
+  "text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65 text-center";
 
 export function AboutV2Story() {
   return (
     <Section surface="white" id="story">
-      {/* heading left, the story right */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-8 lg:gap-20 items-end">
-        <motion.div {...reveal()}>
-          <p className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-            Our Story
-          </p>
-          <h2 className="mt-5 text-[36px] sm:text-[54px] lg:text-[60px] font-bold tracking-[-0.04em] leading-[1.05] text-carbon">
-            We started with
-            <br />
-            <span className="text-graphite/50">the built environment.</span>
-          </h2>
+      <SectionHeader
+        eyebrow="Our Story"
+        top="We started with"
+        bottom="the built environment."
+        size="compact"
+        className="!mb-10 sm:!mb-12"
+      />
+
+      <div className="max-w-[720px] mx-auto">
+        <motion.p {...reveal()} className={PARA}>
+          RAMS grew from years of working closely with physical
+          infrastructure—understanding structures, facilities, assets and how
+          real environments behave over time.
+        </motion.p>
+        <motion.p {...reveal(1)} className={"mt-5 " + PARA}>
+          That engineering foundation evolved into Digital Twins, software, IoT,
+          edge intelligence and AI. Today, we build the connected intelligence
+          and execution layer that helps physical operations become clearer,
+          safer and continuously better.
+        </motion.p>
+
+        <motion.div {...reveal(2)} className="mt-10">
+          <Stages items={["Engineering", "Technology", "Physical Intelligence", "Execution"]} />
         </motion.div>
-        <div>
-          <motion.p {...reveal(1)} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
-            RAMS grew from years of working closely with physical
-            infrastructure—understanding structures, facilities, assets and how
-            real environments behave over time.
-          </motion.p>
-          <motion.p {...reveal(2)} className="mt-4 text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
-            That engineering foundation evolved into Digital Twins, software,
-            IoT, edge intelligence and AI. Today, we build the connected
-            intelligence and execution layer that helps physical operations
-            become clearer, safer and continuously better.
-          </motion.p>
-        </div>
+
+        <motion.p
+          {...reveal(3)}
+          className="mt-12 sm:mt-14 text-center text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon"
+        >
+          We understood the physical world first. Then we started building
+          intelligence around it.
+        </motion.p>
       </div>
-
-      {/* the four stages */}
-      <ol className="mt-14 sm:mt-20 grid grid-cols-1 sm:grid-cols-4">
-        {STORY_STAGES.map((t, i) => (
-          <motion.li
-            key={t}
-            {...reveal(i)}
-            className="relative pl-7 pb-8 sm:pl-0 sm:pb-0 sm:pt-8 sm:pr-6 border-l sm:border-l-0 sm:border-t border-[#E4E4E9] last:pb-0"
-          >
-            <span
-              aria-hidden
-              className={
-                "absolute -left-[5px] top-0 sm:left-0 sm:-top-[5px] w-[9px] h-[9px] rounded-full " +
-                (i === STORY_STAGES.length - 1 ? "bg-signal-orange" : "bg-white")
-              }
-              style={
-                i === STORY_STAGES.length - 1
-                  ? undefined
-                  : { boxShadow: "inset 0 0 0 1.5px #FF6A00" }
-              }
-            />
-            <span className="block -mt-1 sm:mt-0 text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-              0{i + 1}
-            </span>
-            <span className="mt-2 block text-[18px] sm:text-[20px] font-semibold tracking-[-0.02em] text-carbon leading-[1.25]">
-              {t}
-            </span>
-          </motion.li>
-        ))}
-      </ol>
-
-      {/* the line the section ends on */}
-      <motion.blockquote
-        {...reveal()}
-        className="mt-16 sm:mt-20 max-w-[920px] pl-6 sm:pl-8 border-l-2 border-signal-orange"
-      >
-        <p className="font-rams-heading text-[24px] sm:text-[32px] lg:text-[38px] font-bold tracking-[-0.03em] leading-[1.2] text-carbon">
-          We understood the physical world first.{" "}
-          <span className="text-graphite/45">Then we started building intelligence around it.</span>
-        </p>
-      </motion.blockquote>
     </Section>
   );
 }
-
-/* ── our vision ───────────────────────────────────────────────────── */
-
-/* Five stages of autonomy, each read by its icon: a hand, the join, the
-   processor, a hand-off with assistance, and the machine on its own. */
-const AUTONOMY = [
-  { title: "Manual", icon: Hand },
-  { title: "Connected", icon: Cable },
-  { title: "Intelligent", icon: Cpu },
-  { title: "Assisted", icon: Handshake },
-  { title: "Autonomous", icon: Bot },
-];
 
 export function AboutV2Vision() {
   return (
@@ -258,76 +240,34 @@ export function AboutV2Vision() {
         className="!mb-10 sm:!mb-12"
       />
 
-      <div className="max-w-[1040px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-        <motion.p {...reveal()} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+      <div className="max-w-[720px] mx-auto">
+        <motion.p {...reveal()} className={PARA}>
           RAMS helps facilities augment existing assets with sensors, edge
           processors, AI and connected intelligence—improving Safety,
           Productivity, Efficiency and Visibility without requiring wholesale
           replacement.
         </motion.p>
-        <motion.p {...reveal(1)} className="text-[15px] sm:text-[16px] leading-[1.7] text-graphite/65">
+        <motion.p {...reveal(1)} className={"mt-5 " + PARA}>
           As operations mature, mixed fleets, machines, AGVs and robots can
           progress from manual to connected, assisted and, where technically
           suitable, autonomous operation. RAMS provides one OEM-agnostic
           operating platform while retaining the flexibility for manual
           control.
         </motion.p>
-      </div>
 
-      {/* the progression: one track, grey to orange */}
-      <div className="relative mt-16 sm:mt-20">
-        <div
-          aria-hidden
-          className="hidden lg:block absolute top-7 left-[10%] right-[10%] h-[2px]"
-          style={{ background: "linear-gradient(90deg, #D9D9DE 0%, #FF6A00 100%)" }}
-        />
-        <ol className="relative grid grid-cols-1 sm:grid-cols-5 gap-6 sm:gap-4">
-          {AUTONOMY.map((a, i) => {
-            const last = i === AUTONOMY.length - 1;
-            return (
-              <motion.li
-                key={a.title}
-                {...reveal(i)}
-                className="flex sm:flex-col items-center gap-4 sm:gap-0 sm:text-center"
-              >
-                <span
-                  className={
-                    "relative z-[1] flex items-center justify-center w-14 h-14 rounded-full shrink-0 " +
-                    (last ? "bg-signal-orange text-white" : "bg-white text-carbon")
-                  }
-                  style={last ? undefined : { boxShadow: "inset 0 0 0 1px #E0E0E6" }}
-                >
-                  <a.icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
-                </span>
-                <span className="sm:mt-4">
-                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-                    0{i + 1}
-                  </span>
-                  <span className={"mt-1 block text-[17px] font-semibold tracking-[-0.02em] " + (last ? "text-signal-orange" : "text-carbon")}>
-                    {a.title}
-                  </span>
-                </span>
-              </motion.li>
-            );
-          })}
-        </ol>
-      </div>
+        <motion.div {...reveal(2)} className="mt-10">
+          <Stages items={["Manual", "Connected", "Intelligent", "Assisted", "Autonomous"]} />
+        </motion.div>
 
-      {/* the closing lines, set apart */}
-      <motion.div
-        {...reveal()}
-        className="mt-16 sm:mt-20 rounded-3xl px-7 sm:px-12 py-12 sm:py-14 text-center text-white"
-        style={{ background: SURFACE.darkTop }}
-      >
-        <p className="font-rams-heading text-[24px] sm:text-[32px] lg:text-[38px] font-bold tracking-[-0.03em] leading-[1.2]">
-          Different OEMs. Different Machines.
-          <br className="hidden sm:block" />{" "}
-          <span className="text-white/50">One Operating Platform.</span>
-        </p>
-        <p className="mt-6 text-[12px] font-mono font-semibold tracking-[0.24em] uppercase text-signal-orange">
-          Augment. Automate. Evolve.
-        </p>
-      </motion.div>
+        <motion.div {...reveal(3)} className="mt-12 sm:mt-14 text-center">
+          <p className="text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon">
+            Different OEMs. Different Machines. One Operating Platform.
+          </p>
+          <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+            Augment. Automate. Evolve.
+          </p>
+        </motion.div>
+      </div>
     </Section>
   );
 }
