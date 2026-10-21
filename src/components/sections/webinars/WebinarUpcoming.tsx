@@ -72,28 +72,23 @@ const GAP = 20;
 const PEEK = 0.12;
 const AUTOPLAY_MS = 6000;
 
-/** "RAMS session" or "Guest session". Guest sessions carry the orange. */
+/** "RAMS session" or "Guest session" — a quiet tint, the careers board's
+    badge, so it labels the card without competing with the title. */
 function HostTag({ host, onDark = false }: { host: Featured["host"]; onDark?: boolean }) {
   const guest = host === "guest";
+  const style = onDark
+    ? {
+        color: guest ? "#FFB27A" : "rgba(255,255,255,0.8)",
+        background: "rgba(255,255,255,0.10)",
+        backdropFilter: "blur(6px)",
+      }
+    : guest
+      ? { color: "#E05E00", background: "rgba(255,106,0,0.08)" }
+      : { color: "rgba(60,60,67,0.7)", background: "#F2F2F4" };
   return (
     <span
-      className={
-        "inline-flex items-center px-3 py-1.5 text-[10.5px] font-mono font-bold tracking-[0.16em] uppercase rounded-full whitespace-nowrap " +
-        (guest
-          ? "bg-signal-orange text-white"
-          : onDark
-            ? "text-white/90"
-            : "text-carbon bg-[#F2F2F2]")
-      }
-      style={
-        !guest && onDark
-          ? {
-              background: "rgba(255,255,255,0.13)",
-              backdropFilter: "blur(6px)",
-              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.20)",
-            }
-          : undefined
-      }
+      className="inline-flex items-center px-2.5 py-1 text-[10px] font-mono font-bold tracking-[0.14em] uppercase rounded-full whitespace-nowrap"
+      style={style}
     >
       {guest ? "Guest session" : "RAMS session"}
     </span>
@@ -308,14 +303,14 @@ export function WebinarUpcoming() {
       {/* The whole series, in the careers board's card: date tile, tag,
           title, then time and speakers, and the action on the right. */}
       <h3 className="mt-16 sm:mt-20 text-[22px] sm:text-[24px] font-bold tracking-[-0.025em] text-carbon">
-        All sessions
+        Upcoming webinar schedule
       </h3>
       <ol className="mt-6 space-y-3">
         {FEATURED.map((f) => (
           <li
             key={f.id}
             className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white transition-shadow duration-300 hover:shadow-[0_22px_44px_-30px_rgba(14,14,15,0.35)]"
-            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+            style={{ boxShadow: "inset 0 0 0 1px #F0F0F3" }}
           >
             <div className="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
               {/* date tile */}
