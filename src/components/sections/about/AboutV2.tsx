@@ -193,8 +193,8 @@ export function AboutV2Story() {
       />
 
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-        {/* left — the story and the statement (7 cols) */}
-        <motion.div {...reveal()} className="lg:col-span-7 p-8 sm:p-10 lg:p-12" style={BOX}>
+        {/* the story and the statement (7 cols, right on lg) */}
+        <motion.div {...reveal()} className="lg:col-span-7 lg:order-2 p-8 sm:p-10 lg:p-12" style={BOX}>
           <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
             infrastructure, understanding structures, facilities, assets and how
@@ -222,8 +222,8 @@ export function AboutV2Story() {
           </div>
         </motion.div>
 
-        {/* right — the four steps (5 cols) */}
-        <motion.div {...reveal(1)} className="lg:col-span-5 p-8 sm:p-10" style={BOX}>
+        {/* the four steps (5 cols, left on lg) */}
+        <motion.div {...reveal(1)} className="lg:col-span-5 lg:order-1 p-8 sm:p-10" style={BOX}>
           <ol className="grid grid-cols-2 auto-rows-fr gap-3 sm:gap-4 h-full">
             {STORY_STAGES.map((s, i) => (
               <motion.li
