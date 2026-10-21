@@ -451,7 +451,7 @@ export function AboutV2Vision() {
           })}
         </ol>
 
-        <div className="mt-12 sm:mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className="mt-12 sm:mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch">
         {/* left — the two paragraphs */}
         <div className="lg:col-span-6">
 
@@ -473,9 +473,10 @@ export function AboutV2Vision() {
         </div>
 
         {/* right — the stage's photograph */}
-        <motion.div {...reveal(1)} className="lg:col-span-6">
+        {/* on lg the photograph takes the paragraphs' height exactly */}
+        <motion.div {...reveal(1)} className="lg:col-span-6 lg:h-full">
           <div
-            className="relative overflow-hidden aspect-[4/3]"
+            className="relative overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[280px]"
             style={{ borderRadius: 28, background: "#0E0E10" }}
           >
             <AnimatePresence mode="sync">
