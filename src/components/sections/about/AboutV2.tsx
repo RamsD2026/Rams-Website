@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Bot, BrainCircuit, Cable, CircleCheckBig, Cpu, Hand, Handshake, Ruler } from "lucide-react";
 import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
@@ -17,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader, then the Inventory page's "How RAMS
  *                     applies it" boxes: step tiles, and story + statement
- *   Vision   offWhite header, then two open boxes: the stages as icon tiles,
- *                     and the progression with its closing lines
+ *   Vision   offWhite header, then an animated stepper left, and the stage's
+ *                     photograph with the two paragraphs right
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -263,30 +265,83 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision in the two-box layout Our Story used before (the Inventory
-   page's "How RAMS applies it"): the stages as icon tiles in one box, the
-   story of the progression and its closing lines in the other. The boxes
-   carry a border and no fill. */
-const VISION_STAGES = [
-  { title: "Manual", Icon: Hand },
-  { title: "Connected", Icon: Cable },
-  { title: "Intelligent", Icon: Cpu },
-  { title: "Assisted", Icon: Handshake },
-  { title: "Autonomous", Icon: Bot },
+/* Our Vision: an animated stepper on the left, the stage's photograph and
+   the two paragraphs on the right.
+
+   The stepper advances on its own after a 4.5s dwell. While it waits, the
+   rail from the current stage to the next fills orange, so the delay is
+   visible rather than a sudden jump; the current node pulses. It holds while
+   the pointer is over the section, a click takes over for good, and
+   `prefers-reduced-motion` turns the timer off.
+
+   The photographs are the site's own:
+     Manual       an operator driving a counterbalance truck
+     Connected    the OmniBox joining cameras, trucks and a robot
+     Intelligent  the AI Vision camera boxing people, pallets and trucks
+     Assisted     a supervisor's task queue, guided routes and alerts
+     Autonomous   the autonomous pallet robot, cropped from the MHE image */
+const VISION_STAGES: {
+  title: string;
+  Icon: typeof Hand;
+  img: string;
+  alt: string;
+  pos?: string;
+  zoom?: number;
+}[] = [
+  {
+    title: "Manual",
+    Icon: Hand,
+    img: "/MHE.png",
+    alt: "An operator in a high-visibility vest driving a loaded forklift down a warehouse aisle",
+  },
+  {
+    title: "Connected",
+    Icon: Cable,
+    img: "/OmniBox.png",
+    alt: "A RAMS OmniBox on a column, with glowing links to cameras, a forklift and a pallet robot across the warehouse",
+  },
+  {
+    title: "Intelligent",
+    Icon: Cpu,
+    img: "/AI Vision.png",
+    alt: "A RAMS AI Vision camera on a column, drawing detection boxes around workers, pallets and a forklift",
+  },
+  {
+    title: "Assisted",
+    Icon: Handshake,
+    img: "/Card 4 — Warehouse Execution.png",
+    alt: "A supervisor holding a tablet task queue while a forklift works inside a highlighted zone",
+  },
+  {
+    title: "Autonomous",
+    Icon: Bot,
+    img: "/Card 2 — MHE Safety and Productivity.png",
+    alt: "An autonomous pallet robot carrying a load along a marked path in a warehouse aisle",
+    pos: "88% 86%",
+    zoom: 2.1,
+  },
 ];
 
-const OPEN_BOX: React.CSSProperties = {
-  borderRadius: 28,
-  border: "1px solid #E4E4E9",
-  background: "transparent",
-};
+const VISION_MS = 4500;
 
 export function AboutV2Vision() {
+  const [active, setActive] = useState(0);
+  const [manual, setManual] = useState(false);
+  const [hover, setHover] = useState(false);
+  const reduce = useReducedMotion();
+  const running = !reduce && !manual && !hover;
+
+  useEffect(() => {
+    if (!running) return;
+    const t = setTimeout(() => setActive((i) => (i + 1) % VISION_STAGES.length), VISION_MS);
+    return () => clearTimeout(t);
+  }, [running, active]);
+
+  const stage = VISION_STAGES[active];
+
   return (
     <Section surface="offWhite" id="vision">
-      {/* SectionHeader's eyebrow, weights and colours, at a size that keeps
-          the longer line on one row from lg. */}
-      <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-14">
+      <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -306,81 +361,192 @@ export function AboutV2Vision() {
           <span className="block lg:whitespace-nowrap">Evolve existing warehouses and factories</span>
           <span className="block lg:whitespace-nowrap text-graphite/50">toward autonomous operations.</span>
         </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
-          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-        >
-          RAMS helps facilities augment existing assets with sensors, edge
-          processors, AI and connected intelligence—improving Safety,
-          Productivity, Efficiency and Visibility without requiring wholesale
-          replacement.
-        </motion.p>
       </div>
 
-      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-        {/* the progression and its closing lines (7 cols, right on lg) */}
-        <motion.div {...reveal()} className="lg:col-span-7 lg:order-2 flex flex-col p-8 sm:p-10 lg:p-12" style={OPEN_BOX}>
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            As operations mature, mixed fleets, machines, AGVs and robots can
-            progress from manual to connected, assisted and, where technically
-            suitable, autonomous operation. RAMS provides one OEM-agnostic
-            operating platform while retaining the flexibility for manual
-            control.
-          </p>
+      <div
+        className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {/* left — the stepper */}
+        <motion.ol
+          {...reveal()}
+          role="tablist"
+          aria-label="Stages toward autonomous operations"
+          className="lg:col-span-4 p-7 sm:p-8"
+          style={{ borderRadius: 28, border: "1px solid #E4E4E9" }}
+        >
+          {VISION_STAGES.map((s, i) => {
+            const on = i === active;
+            const done = i < active;
+            const last = i === VISION_STAGES.length - 1;
+            return (
+              <motion.li
+                key={s.title}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.15 + i * 0.12, ease: EASE }}
+                className={"relative " + (last ? "" : "pb-7")}
+              >
+                {/* the rail to the next stage: full when passed, filling
+                    while this stage waits, empty ahead */}
+                {!last && (
+                  <span aria-hidden className="absolute left-5 top-11 bottom-1 w-[2px] -translate-x-1/2 bg-[#E4E4E9] overflow-hidden rounded-full">
+                    <motion.span
+                      key={`${i}-${active}-${running}`}
+                      className="absolute inset-x-0 top-0 bg-signal-orange"
+                      initial={{ height: done ? "100%" : "0%" }}
+                      animate={{ height: done ? "100%" : on && running ? "100%" : "0%" }}
+                      transition={{ duration: on && running ? VISION_MS / 1000 : 0, ease: "linear" }}
+                    />
+                  </span>
+                )}
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => {
+                    setManual(true);
+                    setActive(i);
+                  }}
+                  className="group relative w-full flex items-center gap-4 text-left"
+                >
+                  <span className="relative flex items-center justify-center w-10 h-10 shrink-0">
+                    {on && !reduce && (
+                      <motion.span
+                        aria-hidden
+                        className="absolute inset-0 rounded-full bg-signal-orange"
+                        initial={{ opacity: 0.45, scale: 1 }}
+                        animate={{ opacity: 0, scale: 1.7 }}
+                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    )}
+                    <span
+                      className={
+                        "relative flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-300 " +
+                        (on
+                          ? "bg-signal-orange text-white"
+                          : done
+                            ? "bg-[#FFE7D3] text-signal-orange"
+                            : "bg-white text-graphite/40 group-hover:text-signal-orange")
+                      }
+                      style={on || done ? undefined : { boxShadow: "inset 0 0 0 1.5px #E0E0E6" }}
+                    >
+                      <s.Icon className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden />
+                    </span>
+                  </span>
+                  <span>
+                    <span className="block text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                      0{i + 1}
+                    </span>
+                    <span
+                      className={
+                        "block mt-0.5 text-[17px] sm:text-[19px] font-semibold tracking-[-0.02em] transition-colors duration-300 " +
+                        (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
+                      }
+                    >
+                      {s.title}
+                    </span>
+                  </span>
+                </button>
+              </motion.li>
+            );
+          })}
+        </motion.ol>
 
+        {/* right — the stage's photograph, then the two paragraphs */}
+        <motion.div {...reveal(1)} className="lg:col-span-8">
           <div
-            className="mt-8 lg:mt-auto p-6 sm:p-7"
-            style={{
-              borderRadius: 18,
-              border: "1px solid rgba(255,106,0,0.22)",
-              background: "linear-gradient(180deg, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 100%)",
-            }}
+            className="relative overflow-hidden aspect-[4/3] sm:aspect-[16/9]"
+            style={{ borderRadius: 28, background: "#0E0E10" }}
           >
-            <p className="text-[18px] sm:text-[21px] font-semibold text-carbon leading-[1.4] tracking-[-0.01em]">
-              Different OEMs. Different Machines.{" "}
-              <span className="text-signal-orange">One Operating Platform.</span>
+            <AnimatePresence mode="sync">
+              <motion.div
+                key={stage.title}
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduce ? 0 : 0.8, ease: EASE }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={stage.img}
+                  alt={stage.alt}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 820px"
+                  className="object-cover"
+                  style={{
+                    objectPosition: stage.pos ?? "50% 50%",
+                    transform: stage.zoom ? `scale(${stage.zoom})` : undefined,
+                    transformOrigin: stage.pos ?? "50% 50%",
+                  }}
+                />
+              </motion.div>
+            </AnimatePresence>
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(8,8,10,0.8) 0%, rgba(8,8,10,0.3) 35%, transparent 60%)",
+              }}
+            />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 text-white">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={stage.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : 0.2, ease: EASE }}
+                >
+                  <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
+                    0{active + 1} / 0{VISION_STAGES.length}
+                  </span>
+                  <p className="mt-1.5 text-[26px] sm:text-[34px] font-bold tracking-[-0.03em] leading-none">
+                    {stage.title}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+              RAMS helps facilities augment existing assets with sensors, edge
+              processors, AI and connected intelligence—improving Safety,
+              Productivity, Efficiency and Visibility without requiring
+              wholesale replacement.
             </p>
-            <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-              Augment. Automate. Evolve.
+            <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+              As operations mature, mixed fleets, machines, AGVs and robots can
+              progress from manual to connected, assisted and, where
+              technically suitable, autonomous operation. RAMS provides one
+              OEM-agnostic operating platform while retaining the flexibility
+              for manual control.
             </p>
           </div>
         </motion.div>
-
-        {/* the five stages (5 cols, left on lg) */}
-        <motion.div {...reveal(1)} className="lg:col-span-5 lg:order-1 p-8 sm:p-10" style={OPEN_BOX}>
-          <ol className="grid grid-cols-2 gap-3 sm:gap-4 [&>*:last-child]:col-span-2">
-            {VISION_STAGES.map((s, i) => (
-              <motion.li
-                key={s.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: 0.2 + i * 0.06, ease: EASE }}
-                className="flex flex-col justify-between gap-5 p-5 sm:p-6 min-h-[130px]"
-                style={{ borderRadius: 16, border: "1px solid #EDEDF0", background: "#FFFFFF" }}
-              >
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ background: "rgba(255,106,0,0.10)", border: "1px solid rgba(255,106,0,0.20)" }}
-                >
-                  <s.Icon className="w-[18px] h-[18px] text-signal-orange" strokeWidth={2} aria-hidden />
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-                    0{i + 1}
-                  </div>
-                  <div className="mt-1.5 text-[15px] sm:text-[16px] font-semibold text-carbon leading-[1.25] tracking-[-0.01em]">
-                    {s.title}
-                  </div>
-                </div>
-              </motion.li>
-            ))}
-          </ol>
-        </motion.div>
       </div>
+
+      <motion.div
+        {...reveal()}
+        className="mt-14 sm:mt-16 max-w-[1240px] mx-auto px-6 sm:px-9 py-6 sm:py-7 text-center"
+        style={{
+          borderRadius: 20,
+          border: "1px solid rgba(255,106,0,0.22)",
+          background: "linear-gradient(180deg, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 100%)",
+        }}
+      >
+        <p className="text-[18px] sm:text-[21px] font-semibold text-carbon leading-[1.4] tracking-[-0.01em]">
+          Different OEMs. Different Machines.{" "}
+          <span className="text-signal-orange">One Operating Platform.</span>
+        </p>
+        <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+          Augment. Automate. Evolve.
+        </p>
+      </motion.div>
     </Section>
   );
 }
