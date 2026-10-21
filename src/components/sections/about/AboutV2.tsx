@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Bot, BrainCircuit, Cable, CircleCheckBig, Cpu, Hand, Handshake, Ruler } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader; the steps as a vertical timeline left,
  *                     the statement and paragraphs open right
- *   Vision   offWhite header; the stepper over the photograph, centred;
- *                     the statement and the two paragraphs beneath
+ *   Vision   offWhite header; the five stages as picture cards; the
+ *                     statement and the two paragraphs beneath
  *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -314,14 +314,8 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: the stepper laid over the stage's photograph, centred — one
-   unit, the only thing on the section that moves — and the words beneath.
-
-   The stepper advances on its own after a 4.5s dwell. While it waits, the
-   rail from the current stage to the next fills orange, so the delay is
-   visible rather than a sudden jump; the current node pulses. It holds while
-   the pointer is over the section, a click takes over for good, and
-   `prefers-reduced-motion` turns the timer off.
+/* Our Vision: the five stages as picture cards in a row, and the words
+   beneath them.
 
    The photographs are the site's own:
      Manual       an operator driving a counterbalance truck
@@ -371,23 +365,7 @@ const VISION_STAGES: {
   },
 ];
 
-const VISION_MS = 4500;
-
 export function AboutV2Vision() {
-  const [active, setActive] = useState(0);
-  const [manual, setManual] = useState(false);
-  const [hover, setHover] = useState(false);
-  const reduce = useReducedMotion();
-  const running = !reduce && !manual && !hover;
-
-  useEffect(() => {
-    if (!running) return;
-    const t = setTimeout(() => setActive((i) => (i + 1) % VISION_STAGES.length), VISION_MS);
-    return () => clearTimeout(t);
-  }, [running, active]);
-
-  const stage = VISION_STAGES[active];
-
   return (
     <Section surface="offWhite" id="vision">
       <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
@@ -412,138 +390,56 @@ export function AboutV2Vision() {
         </motion.h2>
       </div>
 
-      {/* One centred column: the stepper and the photograph as one unit —
-          the only thing that moves — then the words beneath. */}
-      <div className="max-w-[1080px] mx-auto">
-
-        {/* the stepper on top of the photograph */}
-        <motion.div
-          {...reveal()}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        >
-          <div
-            className="relative overflow-hidden aspect-square sm:aspect-[16/9]"
-            style={{ borderRadius: 28, background: "#0E0E10" }}
-          >
-            <AnimatePresence mode="sync">
-              <motion.div
-                key={stage.title}
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduce ? 0 : 0.8, ease: EASE }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={stage.img}
-                  alt={stage.alt}
-                  fill
-                  sizes="(max-width: 1080px) 100vw, 1080px"
-                  className="object-cover"
-                  style={{
-                    objectPosition: stage.pos ?? "50% 50%",
-                    transform: stage.zoom ? `scale(${stage.zoom})` : undefined,
-                    transformOrigin: stage.pos ?? "50% 50%",
-                  }}
-                />
-              </motion.div>
-            </AnimatePresence>
-
-            {/* shade top and bottom so the stepper and the name read */}
-            <div
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to bottom, rgba(8,8,10,0.78) 0%, rgba(8,8,10,0.25) 30%, transparent 50%, rgba(8,8,10,0.25) 72%, rgba(8,8,10,0.8) 100%)",
-              }}
-            />
-
-            {/* the stepper, across the top of the photograph */}
-            <ol
-              role="tablist"
-              aria-label="Stages toward autonomous operations"
-              className="absolute inset-x-0 top-0 grid grid-cols-5 px-3 sm:px-6 pt-5 sm:pt-6"
+      {/* the five stages as picture cards, one per stage, in order */}
+      <div className="max-w-[1240px] mx-auto">
+        <ol className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1">
+          {VISION_STAGES.map((st, i) => (
+            <motion.li
+              key={st.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+              className="group relative overflow-hidden aspect-[3/4] transition-transform duration-300 hover:-translate-y-1"
+              style={{ borderRadius: 20, background: "#0E0E10" }}
             >
-              {VISION_STAGES.map((s, i) => {
-                const on = i === active;
-                const done = i < active;
-                const last = i === VISION_STAGES.length - 1;
-                return (
-                  <li key={s.title} className="relative flex justify-center">
-                    {!last && (
-                      <span
-                        aria-hidden
-                        className="absolute top-[18px] left-[calc(50%+22px)] right-[calc(-50%+22px)] h-[2px] -translate-y-1/2 bg-white/20 overflow-hidden rounded-full"
-                      >
-                        <motion.span
-                          key={`${i}-${active}-${running}`}
-                          className="absolute inset-y-0 left-0 bg-signal-orange"
-                          initial={{ width: done ? "100%" : "0%" }}
-                          animate={{ width: done ? "100%" : on && running ? "100%" : "0%" }}
-                          transition={{ duration: on && running ? VISION_MS / 1000 : 0, ease: "linear" }}
-                        />
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={on}
-                      onClick={() => {
-                        setManual(true);
-                        setActive(i);
-                      }}
-                      className="group relative flex flex-col items-center gap-2 text-center"
-                    >
-                      <span
-                        className={
-                          "flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 " +
-                          (on
-                            ? "bg-signal-orange text-white"
-                            : done
-                              ? "bg-signal-orange/25 text-white"
-                              : "bg-white/10 text-white/60 group-hover:text-white")
-                        }
-                        style={on ? undefined : { boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.25)", backdropFilter: "blur(6px)" }}
-                      >
-                        <s.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
-                      </span>
-                      <span
-                        className={
-                          "text-[10.5px] sm:text-[12.5px] font-semibold transition-colors duration-300 " +
-                          (on ? "text-white" : "text-white/55 group-hover:text-white/85")
-                        }
-                      >
-                        {s.title}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-
-            {/* the current stage, bottom left */}
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 text-white">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={stage.title}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : 0.2, ease: EASE }}
+              <Image
+                src={st.img}
+                alt={st.alt}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                style={{
+                  objectPosition: st.pos ?? "50% 50%",
+                  transform: st.zoom ? `scale(${st.zoom})` : undefined,
+                  transformOrigin: st.pos ?? "50% 50%",
+                }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(8,8,10,0.88) 0%, rgba(8,8,10,0.4) 38%, transparent 62%)",
+                }}
+              />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                <span
+                  className="flex items-center justify-center w-9 h-9 rounded-full text-white mb-3"
+                  style={{ background: i === VISION_STAGES.length - 1 ? "#FF6A00" : "rgba(255,255,255,0.14)", backdropFilter: "blur(6px)" }}
                 >
-                  <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
-                    0{active + 1} / 0{VISION_STAGES.length}
-                  </span>
-                  <p className="mt-1.5 text-[26px] sm:text-[34px] font-bold tracking-[-0.03em] leading-none">
-                    {stage.title}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </motion.div>
+                  <st.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
+                </span>
+                <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
+                  0{i + 1}
+                </span>
+                <span className="block mt-1 text-[18px] sm:text-[20px] font-bold tracking-[-0.02em] leading-[1.15]">
+                  {st.title}
+                </span>
+              </div>
+            </motion.li>
+          ))}
+        </ol>
 
         <motion.div {...reveal(1)} className="mt-12 sm:mt-14">
           <p className="text-center text-[20px] sm:text-[24px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
