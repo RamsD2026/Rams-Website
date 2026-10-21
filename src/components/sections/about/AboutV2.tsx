@@ -1,150 +1,142 @@
 "use client";
 
-import { Fragment } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
+import {
+  BigLine,
+  EASE,
+  Flow,
+  SURFACE,
+  Section,
+} from "@/components/sections/rackiq/rackiq-shared";
+import { SectionHeader } from "@/components/sections/SectionHeader";
 
 /**
  * /company/about — current version (2026-10-21).
  *
- * Built from the owner's reference page ("About RAMS Digital — Intelligence
- * for the Physical World"): hero, Our Story, Our Vision, and a closing band.
- * Every word is the reference's; the layout is the site's own — its dark
- * hero ground, `Section` rhythm, eyebrow, type scale and pill buttons.
+ * The words are the owner's reference page ("About RAMS Digital —
+ * Intelligence for the Physical World"), unchanged. The design is the
+ * site's, not the reference's:
+ *
+ *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
+ *                    subline and rounded-lg buttons (Partners, Careers)
+ *   Story    white   `SectionHeader` compact, then `Flow` and `BigLine`
+ *   Vision   offWhite the same, centred
+ *   Close    dark    the site's unified close (Partners, platform pages)
  *
  * The previous 14-section page is commit 3223e63; its components are still
  * in this folder.
  */
 
 const reveal = (i = 0) => ({
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.3 },
-  transition: { duration: 0.6, delay: i * 0.08, ease: EASE },
+  viewport: { once: true, amount: 0.4 },
+  transition: { duration: 0.65, delay: i * 0.08, ease: EASE },
 });
-
-/** The site's eyebrow: a short orange rule and spaced capitals. */
-function Eyebrow({ children, center = false }: { children: React.ReactNode; center?: boolean }) {
-  return (
-    <p
-      className={
-        "flex items-center gap-3 text-[11px] font-semibold tracking-[0.22em] uppercase text-signal-orange " +
-        (center ? "justify-center" : "")
-      }
-    >
-      {!center && <span aria-hidden className="w-6 h-px bg-signal-orange" />}
-      {children}
-    </p>
-  );
-}
-
-/** A row of stage pills joined by orange arrows. */
-function Steps({ items, dark = false }: { items: string[]; dark?: boolean }) {
-  return (
-    <ol className={"flex flex-wrap items-center gap-x-2.5 gap-y-3 " + (dark ? "justify-center" : "")}>
-      {items.map((it, i) => (
-        <Fragment key={it}>
-          <li
-            className={
-              "px-4 py-2 rounded-full text-[12.5px] sm:text-[13px] font-semibold " +
-              (dark ? "text-white" : "text-carbon bg-white")
-            }
-            style={{
-              boxShadow: dark ? "inset 0 0 0 1px rgba(255,255,255,0.18)" : "inset 0 0 0 1px #E0E0E6",
-              background: dark ? "rgba(255,255,255,0.04)" : undefined,
-            }}
-          >
-            {it}
-          </li>
-          {i < items.length - 1 && (
-            <li aria-hidden className="text-signal-orange">
-              <ArrowRight className="w-4 h-4" />
-            </li>
-          )}
-        </Fragment>
-      ))}
-    </ol>
-  );
-}
 
 /* ── hero ─────────────────────────────────────────────────────────── */
 
 export function AboutV2Hero() {
   return (
     <section
+      className="relative overflow-hidden"
       id="top"
-      className="relative overflow-hidden text-white"
-      style={{ background: SURFACE.darkTop }}
+      data-hero-tone="light"
+      style={{
+        background:
+          "radial-gradient(80% 100% at 50% 0%, #FFFFFF 0%, #FBFBFC 55%, #F5F5F7 100%)",
+      }}
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 right-[-10%] w-[900px] h-[700px]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
         style={{
-          background: "radial-gradient(50% 50% at 50% 50%, rgba(255,106,0,0.16), transparent 70%)",
+          background:
+            "radial-gradient(60% 60% at 50% 20%, rgba(255,106,0,0.10), transparent 70%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(#F0F0F2 1px, transparent 1px)," +
+            "linear-gradient(90deg, #F0F0F2 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
         }}
       />
 
-      <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-20 sm:pb-24 lg:pb-28">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: EASE }}
-        >
-          <Eyebrow>About RAMS Digital</Eyebrow>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-          className="mt-7 max-w-[1100px] text-[44px] sm:text-[60px] lg:text-[88px] font-bold leading-[1.02] tracking-[-0.045em]"
-        >
-          We Build Intelligence for the{" "}
-          <span className="text-signal-orange">Physical World.</span>
-        </motion.h1>
-
-        <div className="mt-10 sm:mt-12 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-10 lg:gap-16 items-end">
+      <div className="relative rams-container pt-36 sm:pt-44 lg:pt-52 pb-20 sm:pb-24 lg:pb-28">
+        <div className="relative z-[1] max-w-[1180px] mx-auto text-center">
           <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur"
+            style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
+            <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/70">
+              About RAMS Digital
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
+            className="mt-7 sm:mt-8 text-[46px] sm:text-[72px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-carbon"
+          >
+            <span className="block">We Build Intelligence</span>
+            <span className="block">for the Physical World.</span>
+          </motion.h1>
+
+          <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
-            className="max-w-[640px]"
+            className="mt-7 max-w-[880px] mx-auto text-[15px] sm:text-[16px] text-graphite/65 leading-[1.6]"
           >
-            <p className="text-[16px] sm:text-[18px] leading-[1.65] text-white/70">
-              We connect physical facilities, assets and operations through
-              Digital Twins, IoT, edge intelligence and AI—providing real-time
-              visibility and a Physical Execution System that turns insights
-              into measurable on-ground improvement.
-            </p>
-            <p className="mt-6 text-[14px] sm:text-[15px] font-bold tracking-[-0.01em] text-white">
-              Sense. Understand. Decide.{" "}
-              <span className="text-signal-orange">Execute. Improve.</span>
-            </p>
-          </motion.div>
+            We connect physical facilities, assets and operations through
+            Digital Twins, IoT, edge intelligence and AI—providing real-time
+            visibility and a Physical Execution System that turns insights into
+            measurable on-ground improvement.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.29, ease: EASE }}
+            className="mt-6 text-[15px] sm:text-[16px] font-bold tracking-[-0.01em] text-carbon"
+          >
+            Sense. Understand. Decide. Execute. Improve.
+          </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.32, ease: EASE }}
-            className="lg:pl-10 lg:border-l lg:border-white/10"
+            transition={{ duration: 0.6, delay: 0.36, ease: EASE }}
+            className="mt-9"
           >
-            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-white/45">
+            <p className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/45">
               Turn physical insight into action
             </p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex items-center justify-center gap-3 flex-wrap">
               <Link
                 href="/company/contact"
-                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-px hover:bg-signal-orange-hover"
+                className="inline-flex items-center gap-2 bg-signal-orange text-white text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-signal-orange-hover"
               >
                 Request a Demo
-                <ArrowUpRight className="w-4 h-4" aria-hidden />
+                <ArrowRight className="w-4 h-4" aria-hidden />
               </Link>
               <Link
                 href="/company/contact"
-                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full transition-colors duration-200 hover:bg-white hover:text-carbon"
-                style={{ boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.22)" }}
+                className="inline-flex items-center gap-2 bg-white text-carbon text-[14px] font-semibold px-6 py-3 rounded-lg transition-colors duration-200 hover:bg-[#F5F5F7]"
+                style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}
               >
                 Talk to Our Team
               </Link>
@@ -161,40 +153,36 @@ export function AboutV2Hero() {
 export function AboutV2Story() {
   return (
     <Section surface="white" id="story">
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-20">
-        <motion.div {...reveal()}>
-          <Eyebrow>Our Story</Eyebrow>
-          <h2 className="mt-6 text-[38px] sm:text-[52px] lg:text-[60px] font-bold tracking-[-0.04em] leading-[1.04] text-carbon">
-            We started with the built environment.
-          </h2>
-        </motion.div>
+      <SectionHeader
+        eyebrow="Our Story"
+        top="We started with"
+        bottom="the built environment."
+        size="compact"
+        width="wide"
+        body="RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time."
+        className="!mb-8 sm:!mb-10"
+      />
 
-        <div className="lg:pt-10">
-          <motion.p {...reveal(1)} className="text-[16px] sm:text-[17px] leading-[1.7] text-graphite/70">
-            RAMS grew from years of working closely with physical
-            infrastructure—understanding structures, facilities, assets and how
-            real environments behave over time.
-          </motion.p>
-          <motion.p {...reveal(2)} className="mt-5 text-[16px] sm:text-[17px] leading-[1.7] text-graphite/70">
-            That engineering foundation evolved into Digital Twins, software,
-            IoT, edge intelligence and AI. Today, we build the connected
-            intelligence and execution layer that helps physical operations
-            become clearer, safer and continuously better.
-          </motion.p>
+      <motion.p
+        {...reveal()}
+        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+      >
+        That engineering foundation evolved into Digital Twins, software, IoT,
+        edge intelligence and AI. Today, we build the connected intelligence and
+        execution layer that helps physical operations become clearer, safer
+        and continuously better.
+      </motion.p>
 
-          <motion.div {...reveal(3)} className="mt-9">
-            <Steps items={["Engineering", "Technology", "Physical Intelligence", "Execution"]} />
-          </motion.div>
+      <motion.div {...reveal(1)} className="mt-12">
+        <Flow center steps={["Engineering", "Technology", "Physical Intelligence", "Execution"]} />
+      </motion.div>
 
-          <motion.p
-            {...reveal(4)}
-            className="mt-10 text-[24px] sm:text-[30px] font-bold tracking-[-0.03em] leading-[1.25] text-graphite/60"
-          >
-            We understood the physical world first. Then we started building
-            intelligence around it.
-          </motion.p>
-        </div>
-      </div>
+      <motion.div {...reveal(2)} className="mt-14 sm:mt-16">
+        <BigLine center>
+          We understood the physical world first. Then we started building
+          intelligence around it.
+        </BigLine>
+      </motion.div>
     </Section>
   );
 }
@@ -203,41 +191,39 @@ export function AboutV2Story() {
 
 export function AboutV2Vision() {
   return (
-    <Section surface="inkTeal" id="vision">
-      <div className="max-w-[960px] mx-auto text-center">
-        <motion.div {...reveal()}>
-          <Eyebrow center>Our Vision</Eyebrow>
-          <h2 className="mt-6 text-[38px] sm:text-[54px] lg:text-[68px] font-bold tracking-[-0.04em] leading-[1.04] text-white">
-            Evolve existing warehouses and factories toward autonomous
-            operations.
-          </h2>
-        </motion.div>
+    <Section surface="offWhite" id="vision">
+      <SectionHeader
+        eyebrow="Our Vision"
+        top="Evolve existing warehouses and factories"
+        bottom="toward autonomous operations."
+        size="long"
+        width="wide"
+        body="RAMS helps facilities augment existing assets with sensors, edge processors, AI and connected intelligence—improving Safety, Productivity, Efficiency and Visibility without requiring wholesale replacement."
+        className="!mb-8 sm:!mb-10"
+      />
 
-        <motion.p {...reveal(1)} className="mt-8 max-w-[780px] mx-auto text-[16px] sm:text-[17px] leading-[1.7] text-white/65">
-          RAMS helps facilities augment existing assets with sensors, edge
-          processors, AI and connected intelligence—improving Safety,
-          Productivity, Efficiency and Visibility without requiring wholesale
-          replacement.
-        </motion.p>
-        <motion.p {...reveal(2)} className="mt-5 max-w-[780px] mx-auto text-[16px] sm:text-[17px] leading-[1.7] text-white/65">
-          As operations mature, mixed fleets, machines, AGVs and robots can
-          progress from manual to connected, assisted and, where technically
-          suitable, autonomous operation. RAMS provides one OEM-agnostic
-          operating platform while retaining the flexibility for manual
-          control.
-        </motion.p>
+      <motion.p
+        {...reveal()}
+        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+      >
+        As operations mature, mixed fleets, machines, AGVs and robots can
+        progress from manual to connected, assisted and, where technically
+        suitable, autonomous operation. RAMS provides one OEM-agnostic operating
+        platform while retaining the flexibility for manual control.
+      </motion.p>
 
-        <motion.div {...reveal(3)} className="mt-10">
-          <Steps dark items={["Manual", "Connected", "Intelligent", "Assisted", "Autonomous"]} />
-        </motion.div>
+      <motion.div {...reveal(1)} className="mt-12">
+        <Flow center steps={["Manual", "Connected", "Intelligent", "Assisted", "Autonomous"]} />
+      </motion.div>
 
-        <motion.p {...reveal(4)} className="mt-12 text-[20px] sm:text-[26px] font-bold tracking-[-0.025em] text-white">
+      <motion.div {...reveal(2)} className="mt-14 sm:mt-16">
+        <BigLine center>
           Different OEMs. Different Machines. One Operating Platform.
-        </motion.p>
-        <motion.p {...reveal(5)} className="mt-4 text-[13px] sm:text-[14px] font-bold tracking-[0.12em] uppercase text-signal-orange">
+        </BigLine>
+        <p className="mt-5 text-center text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
           Augment. Automate. Evolve.
-        </motion.p>
-      </div>
+        </p>
+      </motion.div>
     </Section>
   );
 }
@@ -246,18 +232,43 @@ export function AboutV2Vision() {
 
 export function AboutV2CTA() {
   return (
-    <section id="start" className="relative overflow-hidden bg-signal-orange">
-      <div className="relative rams-container py-20 sm:py-24 lg:py-28 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-8 lg:gap-16 items-center">
+    <section
+      className="relative overflow-hidden text-white"
+      style={{ background: SURFACE.darkBottom }}
+      id="start"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[520px]"
+        style={{
+          background:
+            "radial-gradient(58% 60% at 50% 100%, rgba(255,106,0,0.16), transparent 70%)",
+        }}
+      />
+
+      <div className="relative rams-container text-center pt-32 sm:pt-40 lg:pt-44 pb-32 sm:pb-40 lg:pb-44">
         <motion.h2
-          {...reveal()}
-          className="max-w-[760px] text-[34px] sm:text-[46px] lg:text-[54px] font-bold tracking-[-0.04em] leading-[1.06] text-carbon"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.85, ease: EASE }}
+          className="text-[32px] sm:text-[46px] lg:text-[58px] font-bold tracking-[-0.04em] leading-[1.06] mx-auto"
         >
-          Bring intelligence and execution to your physical operation.
+          <span className="text-white">Bring intelligence and execution</span>
+          <br />
+          <span className="text-white/45">to your physical operation.</span>
         </motion.h2>
-        <motion.div {...reveal(1)}>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+          className="mt-10 flex items-center justify-center"
+        >
           <Link
             href="/company/contact"
-            className="inline-flex items-center gap-2 bg-carbon text-white text-[15px] font-semibold px-7 py-4 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:bg-black"
+            className="inline-flex items-center gap-2 bg-signal-orange text-white text-[16px] font-semibold px-8 py-4 rounded-full transition-all duration-200 hover:bg-signal-orange-hover hover:-translate-y-0.5"
           >
             Start a Conversation
             <ArrowUpRight className="w-4 h-4" aria-hidden />
