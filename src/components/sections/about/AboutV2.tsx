@@ -196,7 +196,7 @@ export function AboutV2Story() {
         <motion.div {...reveal()} className="lg:col-span-7 p-8 sm:p-10 lg:p-12" style={BOX}>
           <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
-            infrastructure—understanding structures, facilities, assets and how
+            infrastructure, understanding structures, facilities, assets and how
             real environments behave over time.
           </p>
           <p className="mt-5 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
