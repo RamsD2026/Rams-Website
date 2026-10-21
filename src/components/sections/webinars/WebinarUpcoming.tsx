@@ -317,12 +317,12 @@ export function WebinarUpcoming() {
         {FEATURED.map((f) => (
           <li
             key={f.id}
-            className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#ECECEF] transition-all duration-300 hover:-translate-y-0.5 hover:border-signal-orange/20 hover:shadow-[0_14px_32px_-22px_rgba(14,14,15,0.14)]"
+            className="group flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#ECECEF] transition-all duration-300 hover:-translate-y-0.5"
           >
             <div className="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
               {/* date tile */}
               <div
-                className="flex flex-col items-center justify-center w-[72px] h-[80px] rounded-xl shrink-0 text-center bg-[#F5F5F7] transition-colors duration-300 group-hover:bg-[#FFF3E8]"
+                className="flex flex-col items-center justify-center w-[72px] h-[80px] rounded-xl shrink-0 text-center bg-[#F5F5F7]"
               >
                 <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/50">
                   {f.date.weekday}
@@ -337,7 +337,7 @@ export function WebinarUpcoming() {
 
               <div className="min-w-0">
                 <HostTag host={f.host} />
-                <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3] transition-colors duration-200 group-hover:text-signal-orange">
+                <p className="mt-2.5 text-[17px] sm:text-[18px] font-bold tracking-[-0.02em] text-carbon leading-[1.3]">
                   {f.title}
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13.5px] text-graphite/65">
