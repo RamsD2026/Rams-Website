@@ -149,7 +149,7 @@ export function CareersIntro() {
         />
 
         <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-20 sm:pb-24">
-          <div className="max-w-[920px] mx-auto text-center">
+          <div className="max-w-[1180px] mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,10 +166,13 @@ export function CareersIntro() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.08, ease: EASE }}
-              className="mt-7 text-[38px] sm:text-[58px] lg:text-[72px] font-bold leading-[1.04] tracking-[-0.04em]"
+              className="mt-7 text-[36px] sm:text-[48px] md:text-[56px] lg:text-[64px] xl:text-[72px] font-bold leading-[1.04] tracking-[-0.04em]"
             >
-              <span className="block text-white">Build technology that changes</span>
-              <span className="block text-white/45">what happens on the ground.</span>
+              {/* Two lines, and they stay two from lg: each line is its own
+                  block and does not wrap, sized so the longer one fits the
+                  1180 measure at 1024px. */}
+              <span className="block text-white lg:whitespace-nowrap">Build technology that changes</span>
+              <span className="block text-white/45 lg:whitespace-nowrap">what happens on the ground.</span>
             </motion.h1>
 
             <motion.p
