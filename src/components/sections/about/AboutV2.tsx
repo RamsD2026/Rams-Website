@@ -17,8 +17,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * site's, not the reference's:
  *
  *   Hero     dark     the solution pages' hero ground and buttons
- *   Story    white    SectionHeader, then the Inventory page's "How RAMS
- *                     applies it" boxes: step tiles, and story + statement
+ *   Story    white    SectionHeader; the steps as a vertical timeline left,
+ *                     the statement and paragraphs open right
  *   Vision   offWhite header; the paragraphs and closing line left; the
  *                     stepper over the stage's photograph right
  *   Close    white    the careers talent-network card (dark), as a CTA
@@ -169,23 +169,16 @@ export function AboutV2Hero() {
    The reference's words are kept; how they are split across header, column
    and timeline is the site's. */
 
-/* Our Story in the layout of the Inventory Intelligence page's "How RAMS
-   applies it" block (`InvABC`), on this section's own light ground: a wide
-   box with the story and an orange-tinted statement box, and beside it a
-   box of four step tiles. */
+/* Our Story, as Our Vision's sibling: no boxes. On the left the four steps
+   as a vertical timeline — numbered dots on one line, read top to bottom —
+   and on the right the statement as the lead with the two paragraphs open
+   beneath it. Static; Our Vision is the section that moves. */
 const STORY_STAGES = [
   { title: "Engineering", Icon: Ruler },
   { title: "Technology", Icon: Cpu },
   { title: "Physical Intelligence", Icon: BrainCircuit },
   { title: "Execution", Icon: CircleCheckBig },
 ];
-
-const BOX: React.CSSProperties = {
-  borderRadius: 28,
-  border: "1px solid #E8E8ED",
-  background: "transparent",
-  boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 24px 60px -36px rgba(0,0,0,0.12)",
-};
 
 export function AboutV2Story() {
   return (
@@ -196,13 +189,17 @@ export function AboutV2Story() {
         bottom="the built environment."
         size="compact"
         width="wide"
-        className="!mb-12 sm:!mb-14"
+        className="!mb-12 sm:!mb-16"
       />
 
-      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-        {/* the story and the statement (7 cols, right on lg) */}
-        <motion.div {...reveal()} className="lg:col-span-7 lg:order-2 p-8 sm:p-10 lg:p-12" style={BOX}>
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        {/* the words (right on lg) */}
+        <motion.div {...reveal()} className="lg:col-span-7 lg:order-2">
+          <p className="text-[22px] sm:text-[28px] font-bold text-carbon leading-[1.25] tracking-[-0.025em]">
+            We understood the physical world first.{" "}
+            <span className="text-signal-orange">Then we started building intelligence around it.</span>
+          </p>
+          <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
             infrastructure, understanding structures, facilities, assets and how
             real environments behave over time.
@@ -213,53 +210,48 @@ export function AboutV2Story() {
             intelligence and execution layer that helps physical operations
             become clearer, safer and continuously better.
           </p>
-
-          <div
-            className="mt-8 p-6 sm:p-7"
-            style={{
-              borderRadius: 18,
-              border: "1px solid rgba(255,106,0,0.22)",
-              background: "linear-gradient(180deg, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 100%)",
-            }}
-          >
-            <p className="text-[18px] sm:text-[21px] font-semibold text-carbon leading-[1.4] tracking-[-0.01em]">
-              We understood the physical world first.{" "}
-              <span className="text-signal-orange">Then we started building intelligence around it.</span>
-            </p>
-          </div>
         </motion.div>
 
-        {/* the four steps (5 cols, left on lg) */}
-        <motion.div {...reveal(1)} className="lg:col-span-5 lg:order-1 p-8 sm:p-10" style={BOX}>
-          <ol className="grid grid-cols-2 auto-rows-fr gap-3 sm:gap-4 h-full">
-            {STORY_STAGES.map((s, i) => (
+        {/* the timeline (left on lg) */}
+        <ol className="lg:col-span-5 lg:order-1">
+          {STORY_STAGES.map((s, i) => {
+            const last = i === STORY_STAGES.length - 1;
+            return (
               <motion.li
                 key={s.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: 0.2 + i * 0.06, ease: EASE }}
-                className="flex flex-col justify-between gap-6 p-5 sm:p-6 min-h-[150px]"
-                style={{ borderRadius: 16, border: "1px solid #EDEDF0", background: "#FAFAFB" }}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: EASE }}
+                className={"relative flex items-center gap-5 " + (last ? "" : "pb-9")}
               >
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ background: "rgba(255,106,0,0.10)", border: "1px solid rgba(255,106,0,0.20)" }}
+                {!last && (
+                  <span
+                    aria-hidden
+                    className="absolute left-6 top-12 bottom-0 w-[2px] -translate-x-1/2"
+                    style={{ background: "linear-gradient(to bottom, rgba(255,106,0,0.45), rgba(255,106,0,0.15))" }}
+                  />
+                )}
+                <span
+                  className={
+                    "relative flex items-center justify-center w-12 h-12 rounded-full shrink-0 " +
+                    (last ? "bg-signal-orange text-white" : "bg-[#FFF3E8] text-signal-orange")
+                  }
                 >
-                  <s.Icon className="w-[18px] h-[18px] text-signal-orange" strokeWidth={2} aria-hidden />
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                  <s.Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
+                </span>
+                <span>
+                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
                     0{i + 1}
-                  </div>
-                  <div className="mt-1.5 text-[15px] sm:text-[16px] font-semibold text-carbon leading-[1.25] tracking-[-0.01em]">
+                  </span>
+                  <span className="block mt-0.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] text-carbon">
                     {s.title}
-                  </div>
-                </div>
+                  </span>
+                </span>
               </motion.li>
-            ))}
-          </ol>
-        </motion.div>
+            );
+          })}
+        </ol>
       </div>
     </Section>
   );
