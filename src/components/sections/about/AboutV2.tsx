@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, BrainCircuit, CircleCheckBig, Cpu, Ruler } from "lucide-react";
-import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { EASE, SURFACE, Section } from "@/components/sections/rackiq/rackiq-shared";
+import { SectionHeader } from "@/components/sections/SectionHeader";
 
 /**
  * /company/about — current version (2026-10-21).
@@ -14,7 +15,7 @@ import { EASE, SURFACE } from "@/components/sections/rackiq/rackiq-shared";
  *
  *   Hero     light   the company heroes' ground, pill, two-line 92px h1,
  *                    subline and rounded-lg buttons (Partners, Careers)
- *   Story    white    the MHE page's "Built for" design (MheWhy)
+ *   Story    dark     the careers page's "What you may build" structure
  *   Vision   offWhite the MHE page's "How it works" design (MheWorkflow)
  *   Close    dark     the site's unified close (Partners, platform pages)
  *
@@ -153,11 +154,9 @@ export function AboutV2Hero() {
 
 /* ── our story / our vision ───────────────────────────────────────── */
 
-/* Both sections take an MHE page section's design, at the owner's request:
-   Our Story is `MheWhy` ("Built for": header, then four icon cards with the
-   orange border shine on hover), Our Vision is `MheWorkflow` ("How it works":
-   header, then numbered circles on a faint track). The reference gives the
-   stages names only, so neither carries body copy under a stage. */
+/* Our Vision takes the MHE page's "How it works" design (`MheWorkflow`):
+   header, then numbered circles on a faint track. The reference gives the
+   stages names only, so no stage carries body copy. */
 
 function Header({ eyebrow, top, bottom, paras }: { eyebrow: string; top: string; bottom: string; paras: string[] }) {
   return (
@@ -206,111 +205,63 @@ function Closing({ children }: { children: React.ReactNode }) {
   );
 }
 
-const STORY_STAGES = [
-  { title: "Engineering", Icon: Ruler },
-  { title: "Technology", Icon: Cpu },
-  { title: "Physical Intelligence", Icon: BrainCircuit },
-  { title: "Execution", Icon: CircleCheckBig },
-];
+/* Our Story in the careers page's "What you may build" structure
+   (`CareersBuild`): a dark section, the header, then the stages as stacked
+   full-width layers with large orange numerals on an orange-tinted fade —
+   so the page does not repeat the centred card row. */
+const STORY_STAGES = ["Engineering", "Technology", "Physical Intelligence", "Execution"];
+const DHAIR = "rgba(255,255,255,0.09)";
 
 export function AboutV2Story() {
   return (
-    <section id="story" className="bg-white pt-28 sm:pt-36 lg:pt-44 pb-28 sm:pb-36 lg:pb-44 overflow-hidden">
-      <style>{`
-        @property --abtstory-shine-angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-        .abtstory-card { position: relative; isolation: isolate; }
-        .abtstory-card::before {
-          content: "";
-          position: absolute;
-          inset: -1px;
-          border-radius: inherit;
-          padding: 1px;
-          background: conic-gradient(
-            from var(--abtstory-shine-angle),
-            transparent 0deg,
-            transparent 300deg,
-            rgba(255,106,0,0.9) 340deg,
-            transparent 360deg
-          );
-          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-                  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-                  mask-composite: exclude;
-          opacity: 0;
-          transition: opacity 0.35s ease;
-          pointer-events: none;
-          z-index: 1;
-        }
-        .abtstory-card:hover::before {
-          opacity: 1;
-          animation: abtstory-shine 2.4s linear infinite;
-        }
-        @keyframes abtstory-shine {
-          to { --abtstory-shine-angle: 360deg; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .abtstory-card:hover::before { animation: none; }
-        }
-      `}</style>
+    <Section surface="darkMid" id="story">
+      <SectionHeader
+        eyebrow="Our Story"
+        top="We started with"
+        bottom="the built environment."
+        tone="dark"
+        size="compact"
+        width="wide"
+        body="RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time."
+        className="!mb-6 sm:!mb-8"
+      />
+      <motion.p
+        {...reveal()}
+        className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-white/60"
+      >
+        That engineering foundation evolved into Digital Twins, software, IoT,
+        edge intelligence and AI. Today, we build the connected intelligence and
+        execution layer that helps physical operations become clearer, safer
+        and continuously better.
+      </motion.p>
 
-      <div className="rams-container">
-        <Header
-          eyebrow="Our Story"
-          top="We started with"
-          bottom="the built environment."
-          paras={[
-            "RAMS grew from years of working closely with physical infrastructure—understanding structures, facilities, assets and how real environments behave over time.",
-            "That engineering foundation evolved into Digital Twins, software, IoT, edge intelligence and AI. Today, we build the connected intelligence and execution layer that helps physical operations become clearer, safer and continuously better.",
-          ]}
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {STORY_STAGES.map((s, i) => (
-            <motion.article
-              key={s.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-              className="abtstory-card group relative flex flex-col p-7 sm:p-8 bg-white transition-all duration-300 hover:-translate-y-1"
-              style={{
-                borderRadius: 12,
-                border: "1px solid #E8E8ED",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 8px 24px -12px rgba(0,0,0,0.06)",
-              }}
-            >
-              <div
-                className="w-12 h-12 flex items-center justify-center mb-6"
-                style={{
-                  borderRadius: 8,
-                  background: "rgba(255,106,0,0.08)",
-                  border: "1px solid rgba(255,106,0,0.18)",
-                }}
-              >
-                <s.Icon className="w-[22px] h-[22px] text-signal-orange" strokeWidth={2} aria-hidden />
-              </div>
-              <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-                0{i + 1}
-              </span>
-              <h3 className="mt-2 text-[21px] sm:text-[23px] font-bold text-carbon leading-[1.2] tracking-[-0.02em]">
-                {s.title}
-              </h3>
-            </motion.article>
-          ))}
-        </div>
-
-        <Closing>
-          <p className="text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-carbon">
-            We understood the physical world first. Then we started building
-            intelligence around it.
-          </p>
-        </Closing>
+      <div className="mt-12 sm:mt-14 max-w-[860px] mx-auto space-y-2.5">
+        {STORY_STAGES.map((t, i) => (
+          <motion.div
+            key={t}
+            {...reveal(i)}
+            className="flex items-center gap-4 sm:gap-6 px-5 sm:px-7 py-4 sm:py-5 rounded-2xl"
+            style={{
+              boxShadow: `inset 0 0 0 1px ${DHAIR}`,
+              background: `linear-gradient(90deg, rgba(255,106,0,${0.04 + (i + 1) * 0.03}) 0%, rgba(255,255,255,0.02) 100%)`,
+            }}
+          >
+            <span className="text-[22px] sm:text-[26px] font-bold tracking-[-0.03em] text-signal-orange tabular-nums w-10 shrink-0">
+              0{i + 1}
+            </span>
+            <p className="text-[15.5px] sm:text-[17px] font-semibold tracking-[-0.01em] text-white">{t}</p>
+          </motion.div>
+        ))}
       </div>
-    </section>
+
+      <motion.p
+        {...reveal()}
+        className="mt-12 sm:mt-14 max-w-[760px] mx-auto text-center text-[20px] sm:text-[24px] font-semibold tracking-[-0.02em] leading-[1.35] text-white"
+      >
+        We understood the physical world first.{" "}
+        <span className="text-white/55">Then we started building intelligence around it.</span>
+      </motion.p>
+    </Section>
   );
 }
 
