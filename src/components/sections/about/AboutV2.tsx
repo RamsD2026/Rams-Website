@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader; the steps as a vertical timeline left,
  *                     the statement and paragraphs open right
- *   Vision   offWhite header; the paragraphs and closing line left; the
- *                     stepper over the stage's photograph right
+ *   Vision   offWhite header; the stepper over the photograph, centred;
+ *                     the statement and the two paragraphs beneath
  *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -257,9 +257,8 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: the words on the left, and on the right the stepper laid over
-   the stage's photograph — one unit, the only thing on the section that
-   moves.
+/* Our Vision: the stepper laid over the stage's photograph, centred — one
+   unit, the only thing on the section that moves — and the words beneath.
 
    The stepper advances on its own after a 4.5s dwell. While it waits, the
    rail from the current stage to the next fills orange, so the delay is
@@ -356,43 +355,18 @@ export function AboutV2Vision() {
         </motion.h2>
       </div>
 
-      {/* Two columns, one focal point: the words open on the left, and on the
-          right the stepper and the photograph as one unit — the only thing
-          that moves. */}
-      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        {/* left — the statement, then the paragraphs */}
-        <motion.div {...reveal()} className="lg:col-span-5">
-          <p className="text-[20px] sm:text-[23px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
-            Different OEMs. Different Machines.{" "}
-            <span className="text-signal-orange">One Operating Platform.</span>
-          </p>
-          <p className="mt-3 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
-            Augment. Automate. Evolve.
-          </p>
-          <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            RAMS helps facilities augment existing assets with sensors, edge
-            processors, AI and connected intelligence—improving Safety,
-            Productivity, Efficiency and Visibility without requiring
-            wholesale replacement.
-          </p>
-          <p className="mt-5 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            As operations mature, mixed fleets, machines, AGVs and robots can
-            progress from manual to connected, assisted and, where technically
-            suitable, autonomous operation. RAMS provides one OEM-agnostic
-            operating platform while retaining the flexibility for manual
-            control.
-          </p>
-        </motion.div>
+      {/* One centred column: the stepper and the photograph as one unit —
+          the only thing that moves — then the words beneath. */}
+      <div className="max-w-[1080px] mx-auto">
 
-        {/* right — the stepper on top of the photograph */}
+        {/* the stepper on top of the photograph */}
         <motion.div
-          {...reveal(1)}
-          className="lg:col-span-7"
+          {...reveal()}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
           <div
-            className="relative overflow-hidden aspect-square sm:aspect-[16/11]"
+            className="relative overflow-hidden aspect-square sm:aspect-[16/9]"
             style={{ borderRadius: 28, background: "#0E0E10" }}
           >
             <AnimatePresence mode="sync">
@@ -408,7 +382,7 @@ export function AboutV2Vision() {
                   src={stage.img}
                   alt={stage.alt}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 720px"
+                  sizes="(max-width: 1080px) 100vw, 1080px"
                   className="object-cover"
                   style={{
                     objectPosition: stage.pos ?? "50% 50%",
@@ -511,6 +485,31 @@ export function AboutV2Vision() {
                 </motion.div>
               </AnimatePresence>
             </div>
+          </div>
+        </motion.div>
+
+        <motion.div {...reveal(1)} className="mt-12 sm:mt-14">
+          <p className="text-center text-[20px] sm:text-[24px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
+            Different OEMs. Different Machines.{" "}
+            <span className="text-signal-orange">One Operating Platform.</span>
+          </p>
+          <p className="mt-3 text-center text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+            Augment. Automate. Evolve.
+          </p>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
+          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+            RAMS helps facilities augment existing assets with sensors, edge
+            processors, AI and connected intelligence—improving Safety,
+            Productivity, Efficiency and Visibility without requiring
+            wholesale replacement.
+          </p>
+          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+            As operations mature, mixed fleets, machines, AGVs and robots can
+            progress from manual to connected, assisted and, where technically
+            suitable, autonomous operation. RAMS provides one OEM-agnostic
+            operating platform while retaining the flexibility for manual
+            control.
+          </p>
           </div>
         </motion.div>
       </div>
