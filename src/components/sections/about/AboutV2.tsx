@@ -533,7 +533,7 @@ export function AboutV2Vision() {
    a line on the left, the actions on the right. */
 export function AboutV2CTA() {
   return (
-    <Section surface="darkMid" padding="tight" id="start">
+    <Section surface="white" padding="tight" id="start">
       <motion.div
         {...reveal()}
         className="relative overflow-hidden rounded-3xl p-8 sm:p-12 lg:p-14 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-8 items-center"
