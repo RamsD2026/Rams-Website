@@ -84,10 +84,11 @@ export function AboutV2Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-            className="mt-7 sm:mt-8 text-[46px] sm:text-[72px] lg:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-white"
+            className="mt-7 sm:mt-8 text-[42px] sm:text-[56px] md:text-[60px] lg:text-[80px] xl:text-[92px] font-bold leading-[1.04] tracking-[-0.045em] text-white"
           >
-            <span className="block">We Build Intelligence</span>
-            <span className="block text-white/45">for the Physical World.</span>
+            {/* two lines, held from md */}
+            <span className="block md:whitespace-nowrap">We Build Intelligence</span>
+            <span className="block md:whitespace-nowrap text-white/45">for the Physical World.</span>
           </motion.h1>
 
           <motion.p
@@ -262,15 +263,42 @@ const VISION_STAGES = ["Manual", "Connected", "Intelligent", "Assisted", "Autono
 export function AboutV2Vision() {
   return (
     <Section surface="offWhite" id="vision">
-      <SectionHeader
-        eyebrow="Our Vision"
-        top="Evolve existing warehouses and factories"
-        bottom="toward autonomous operations."
-        size="compact"
-        width="wide"
-        body="RAMS helps facilities augment existing assets with sensors, edge processors, AI and connected intelligence—improving Safety, Productivity, Efficiency and Visibility without requiring wholesale replacement."
-        className="!mb-6 sm:!mb-8"
-      />
+      {/* SectionHeader's eyebrow, weights and colours, at a size that keeps
+          the longer line — "Evolve existing warehouses and factories" — on one
+          row from lg, so the heading is two lines like every other. */}
+      <div className="max-w-[1180px] mx-auto text-center mb-6 sm:mb-8">
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
+          className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
+        >
+          Our Vision
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.85, ease: EASE }}
+          className="text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[58px] leading-[1.08] font-bold tracking-[-0.04em] text-carbon"
+        >
+          <span className="block lg:whitespace-nowrap">Evolve existing warehouses and factories</span>
+          <span className="block lg:whitespace-nowrap text-graphite/50">toward autonomous operations.</span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        >
+          RAMS helps facilities augment existing assets with sensors, edge
+          processors, AI and connected intelligence—improving Safety,
+          Productivity, Efficiency and Visibility without requiring wholesale
+          replacement.
+        </motion.p>
+      </div>
       <motion.p
         {...reveal()}
         className="max-w-[880px] mx-auto text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
