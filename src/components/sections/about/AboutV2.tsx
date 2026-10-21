@@ -172,7 +172,7 @@ export function AboutV2Hero() {
 /* Our Story, as Our Vision's sibling: no boxes. On the left the four steps
    as a vertical timeline — numbered dots on one line, read top to bottom —
    and on the right the statement as the lead with the two paragraphs open
-   beneath it. Static; Our Vision is the section that moves. */
+   beneath it. The timeline lights its steps in turn, every 3s. */
 const STORY_STAGES = [
   { title: "Engineering", Icon: Ruler },
   { title: "Technology", Icon: Cpu },
@@ -180,7 +180,21 @@ const STORY_STAGES = [
   { title: "Execution", Icon: CircleCheckBig },
 ];
 
+const STORY_MS = 3000;
+
 export function AboutV2Story() {
+  const [active, setActive] = useState(0);
+  const [manual, setManual] = useState(false);
+  const [hover, setHover] = useState(false);
+  const reduce = useReducedMotion();
+  const running = !reduce && !manual && !hover;
+
+  useEffect(() => {
+    if (!running) return;
+    const t = setTimeout(() => setActive((i) => (i + 1) % STORY_STAGES.length), STORY_MS);
+    return () => clearTimeout(t);
+  }, [running, active]);
+
   return (
     <Section surface="white" id="story">
       <SectionHeader
@@ -212,10 +226,18 @@ export function AboutV2Story() {
           </p>
         </motion.div>
 
-        {/* the timeline (left on lg) */}
-        <ol className="lg:col-span-5 lg:order-1">
+        {/* the timeline (left on lg): it lights the steps in turn — the rail
+            to the next fills while the current step waits — and loops. */}
+        <ol
+          className="lg:col-span-5 lg:order-1"
+          aria-label="From engineering to execution"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
           {STORY_STAGES.map((s, i) => {
             const last = i === STORY_STAGES.length - 1;
+            const on = i === active;
+            const done = i < active;
             return (
               <motion.li
                 key={s.title}
@@ -223,31 +245,66 @@ export function AboutV2Story() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: EASE }}
-                className={"relative flex items-center gap-5 " + (last ? "" : "pb-9")}
+                className={"relative " + (last ? "" : "pb-9")}
               >
                 {!last && (
-                  <span
-                    aria-hidden
-                    className="absolute left-6 top-12 bottom-0 w-[2px] -translate-x-1/2"
-                    style={{ background: "linear-gradient(to bottom, rgba(255,106,0,0.45), rgba(255,106,0,0.15))" }}
-                  />
+                  <span aria-hidden className="absolute left-6 top-12 bottom-0 w-[2px] -translate-x-1/2 bg-[#EDEDF0] overflow-hidden rounded-full">
+                    <motion.span
+                      key={`${i}-${active}-${running}`}
+                      className="absolute inset-x-0 top-0 bg-signal-orange"
+                      initial={{ height: done ? "100%" : "0%" }}
+                      animate={{ height: done ? "100%" : on && running ? "100%" : "0%" }}
+                      transition={{ duration: on && running ? STORY_MS / 1000 : 0, ease: "linear" }}
+                    />
+                  </span>
                 )}
-                <span
-                  className={
-                    "relative flex items-center justify-center w-12 h-12 rounded-full shrink-0 " +
-                    (last ? "bg-signal-orange text-white" : "bg-[#FFF3E8] text-signal-orange")
-                  }
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManual(true);
+                    setActive(i);
+                  }}
+                  aria-current={on ? "step" : undefined}
+                  className="group relative w-full flex items-center gap-5 text-left"
                 >
-                  <s.Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
-                </span>
-                <span>
-                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-                    0{i + 1}
+                  <span className="relative flex items-center justify-center w-12 h-12 shrink-0">
+                    {on && !reduce && (
+                      <motion.span
+                        aria-hidden
+                        className="absolute inset-0 rounded-full bg-signal-orange"
+                        initial={{ opacity: 0.45, scale: 1 }}
+                        animate={{ opacity: 0, scale: 1.7 }}
+                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    )}
+                    <span
+                      className={
+                        "relative flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 " +
+                        (on
+                          ? "bg-signal-orange text-white"
+                          : done
+                            ? "bg-[#FFF3E8] text-signal-orange"
+                            : "bg-white text-graphite/40 group-hover:text-signal-orange")
+                      }
+                      style={on || done ? undefined : { boxShadow: "inset 0 0 0 1.5px #E0E0E6" }}
+                    >
+                      <s.Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
+                    </span>
                   </span>
-                  <span className="block mt-0.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] text-carbon">
-                    {s.title}
+                  <span>
+                    <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
+                      0{i + 1}
+                    </span>
+                    <span
+                      className={
+                        "block mt-0.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] transition-colors duration-300 " +
+                        (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
+                      }
+                    >
+                      {s.title}
+                    </span>
                   </span>
-                </span>
+                </button>
               </motion.li>
             );
           })}
