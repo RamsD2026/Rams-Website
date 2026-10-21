@@ -21,7 +21,7 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *                     applies it" boxes: step tiles, and story + statement
  *   Vision   offWhite header; the paragraphs and closing line left; the
  *                     stepper over the stage's photograph right
- *   Close    dark     the careers talent-network card, as a CTA
+ *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
  * in this folder.
@@ -528,8 +528,8 @@ export function AboutV2Vision() {
 
 /* ── close ────────────────────────────────────────────────────────── */
 
-/* The close as the careers page's talent-network card (`CareersTalent`): a
-   dark section holding one card with the orange corner glow, the claim and
+/* The close as the careers page's talent-network card (`CareersTalent`): on
+   a white section, so it stands apart from the dark footer, one dark card with the orange corner glow, the claim and
    a line on the left, the actions on the right. */
 export function AboutV2CTA() {
   return (
