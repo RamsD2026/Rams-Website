@@ -16,10 +16,10 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * site's, not the reference's:
  *
  *   Hero     dark     the solution pages' hero ground and buttons
- *   Story    white    centred heading, statement and paragraphs, then the
- *                     four steps centred on the MHE How it works circles
- *   Vision   offWhite heading + introduction, the five stages as an
- *                     expanding image strip, then the closing line
+ *   Story    white    heading, statement and paragraph, then the four steps
+ *                     as an expanding image strip with descriptions
+ *   Vision   offWhite heading and introduction, the five stages on the
+ *                     animated stepper with descriptions, the closing line
  *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -168,22 +168,167 @@ export function AboutV2Hero() {
    The reference's words are kept; how they are split across header, column
    and timeline is the site's. */
 
-/* Our Story in the site's section order and its existing parts: the
-   centred heading with the statement and the two paragraphs as its
-   introduction, then the four steps centred in one row on the MHE page's
-   "How it works" circles (`MheWorkflow`). The steps light in turn: the
-   current circle fills orange, the track to the next fills while it waits,
-   and it loops — holding on hover, stopping on a click. */
-const STORY_STAGES = [
-  { title: "Engineering", Icon: Ruler },
-  { title: "Technology", Icon: Cpu },
-  { title: "Physical Intelligence", Icon: BrainCircuit },
-  { title: "Execution", Icon: CircleCheckBig },
-];
+/* The two sections share two parts, swapped between them at the owner's
+   request: Our Story uses the expanding image strip, Our Vision the centred
+   animated stepper. Every stage carries its name and a short description in
+   both parts. */
 
-const STORY_MS = 3000;
+type Stage = {
+  title: string;
+  /** a few lines under the stage's name */
+  body: string;
+  Icon: typeof Hand;
+  img?: string;
+  alt?: string;
+  /** object-position + zoom, to crop a detail out of a wider frame */
+  pos?: string;
+  zoom?: number;
+};
 
-export function AboutV2Story() {
+/** The stage heading used by both sections: eyebrow, two-line h2, then
+    whatever introduction follows. */
+function StageHeader({
+  eyebrow,
+  l1,
+  l2,
+  children,
+}: {
+  eyebrow: string;
+  l1: string;
+  l2: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.5 }}
+        className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
+      >
+        {eyebrow}
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.85, ease: EASE }}
+        className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
+      >
+        <span className="block lg:whitespace-nowrap">{l1}</span>
+        <span className="block lg:whitespace-nowrap text-graphite/50">{l2}</span>
+      </motion.h2>
+      {children}
+    </div>
+  );
+}
+
+const INTRO = "mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65";
+
+/* ── the image strip ── */
+
+/** The stages as one expanding strip: on lg the stage under the pointer (or
+    focused) opens wide with its name and description, the rest narrow to
+    slivers showing their number. Below lg, a plain grid of cards. */
+function ImageStrip({ stages }: { stages: Stage[] }) {
+  const [open, setOpen] = useState<number | null>(null);
+  const odd = stages.length % 2 === 1;
+  return (
+    <ol
+      className={
+        "max-w-[1240px] mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 lg:flex lg:gap-3 lg:h-[460px] " +
+        (odd ? "sm:[&>*:last-child]:col-span-2" : "")
+      }
+      onMouseLeave={() => setOpen(null)}
+    >
+      {stages.map((st, i) => {
+        const isOpen = (open ?? 0) === i;
+        return (
+          <motion.li
+            key={st.title}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+            onMouseEnter={() => setOpen(i)}
+            onFocus={() => setOpen(i)}
+            tabIndex={0}
+            className={
+              "group relative overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-full outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-[flex-grow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] " +
+              (isOpen ? "lg:flex-[4]" : "lg:flex-[1]")
+            }
+            style={{ borderRadius: 20, background: "#0E0E10" }}
+          >
+            {st.img && (
+              <Image
+                src={st.img}
+                alt={st.alt ?? ""}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
+                className="object-cover"
+                style={{
+                  objectPosition: st.pos ?? "50% 50%",
+                  transform: st.zoom ? `scale(${st.zoom})` : undefined,
+                  transformOrigin: st.pos ?? "50% 50%",
+                }}
+              />
+            )}
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background: isOpen
+                  ? "linear-gradient(to top, rgba(8,8,10,0.88) 0%, rgba(8,8,10,0.35) 40%, transparent 65%)"
+                  : "linear-gradient(to top, rgba(8,8,10,0.9) 0%, rgba(8,8,10,0.55) 50%, rgba(8,8,10,0.35) 100%)",
+              }}
+            />
+            <div className="absolute inset-x-0 bottom-0 p-5 lg:p-6 text-white">
+              <span
+                className="flex items-center justify-center w-9 h-9 rounded-full text-white mb-3"
+                style={{
+                  background: i === stages.length - 1 ? "#FF6A00" : "rgba(255,255,255,0.14)",
+                  backdropFilter: "blur(6px)",
+                }}
+              >
+                <st.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
+              </span>
+              <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
+                0{i + 1}
+              </span>
+              <span
+                className={
+                  "block mt-1 text-[18px] sm:text-[20px] lg:text-[28px] font-bold tracking-[-0.02em] leading-[1.15] whitespace-nowrap transition-opacity duration-300 " +
+                  (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0")
+                }
+              >
+                {st.title}
+              </span>
+              <span
+                className={
+                  "block mt-2 max-w-[380px] text-[13px] sm:text-[13.5px] leading-[1.5] text-white/70 transition-opacity duration-300 " +
+                  (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0 lg:hidden")
+                }
+              >
+                {st.body}
+              </span>
+            </div>
+          </motion.li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/* ── the stepper ── */
+
+const STEP_MS = 3000;
+
+/** The stages centred on MheWorkflow's circles, each with its description
+    under its name. They light in turn — the current circle fills orange and
+    the track to the next fills while it waits — and loop, holding on hover
+    and stopping on a click. */
+function StepTrack({ stages, label }: { stages: Stage[]; label: string }) {
   const [active, setActive] = useState(0);
   const [manual, setManual] = useState(false);
   const [hover, setHover] = useState(false);
@@ -192,350 +337,230 @@ export function AboutV2Story() {
 
   useEffect(() => {
     if (!running) return;
-    const t = setTimeout(() => setActive((i) => (i + 1) % STORY_STAGES.length), STORY_MS);
+    const t = setTimeout(() => setActive((i) => (i + 1) % stages.length), STEP_MS);
     return () => clearTimeout(t);
-  }, [running, active]);
+  }, [running, active, stages.length]);
+
+  const odd = stages.length % 2 === 1;
+  const lgCols = stages.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4";
 
   return (
+    <div
+      className="relative max-w-[1240px] mx-auto"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <ol
+        aria-label={label}
+        className={
+          `grid grid-cols-1 sm:grid-cols-2 ${lgCols} gap-y-12 gap-x-6 ` +
+          (odd ? "sm:[&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-1" : "")
+        }
+      >
+        {stages.map((s, i) => {
+          const on = i === active;
+          const done = i < active;
+          const last = i === stages.length - 1;
+          return (
+            <motion.li
+              key={s.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+              className="relative flex flex-col items-center text-center px-2"
+            >
+              {!last && (
+                <span
+                  aria-hidden
+                  className="hidden lg:block absolute top-[46px] left-[calc(50%+54px)] right-[calc(-50%+54px)] h-[2px] -translate-y-1/2 bg-[#E4E4E9] overflow-hidden rounded-full"
+                >
+                  <motion.span
+                    key={`${i}-${active}-${running}`}
+                    className="absolute inset-y-0 left-0 bg-signal-orange"
+                    initial={{ width: done ? "100%" : "0%" }}
+                    animate={{ width: done ? "100%" : on && running ? "100%" : "0%" }}
+                    transition={{ duration: on && running ? STEP_MS / 1000 : 0, ease: "linear" }}
+                  />
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setManual(true);
+                  setActive(i);
+                }}
+                aria-current={on ? "step" : undefined}
+                className="group flex flex-col items-center"
+              >
+                <span className="relative mb-6">
+                  <span
+                    aria-hidden
+                    className={
+                      "absolute inset-0 rounded-full blur-2xl transition-opacity duration-500 " +
+                      (on ? "opacity-90" : "opacity-40")
+                    }
+                    style={{ background: "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)" }}
+                  />
+                  <span
+                    className={
+                      "relative w-[92px] h-[92px] rounded-full flex flex-col items-center justify-center gap-1 transition-colors duration-500 " +
+                      (on ? "bg-signal-orange text-white" : "bg-white text-signal-orange")
+                    }
+                    style={{
+                      border: on ? "1px solid #FF6A00" : "1px solid #EBEBEF",
+                      boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <s.Icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
+                    <span className={"text-[11px] font-mono font-bold tabular-nums " + (on ? "text-white/80" : "text-graphite/45")}>
+                      0{i + 1}
+                    </span>
+                  </span>
+                </span>
+                <span
+                  className={
+                    "text-[19px] sm:text-[21px] font-bold tracking-[-0.025em] leading-[1.15] transition-colors duration-300 " +
+                    (on ? "text-carbon" : "text-graphite/55 group-hover:text-carbon")
+                  }
+                >
+                  {s.title}
+                </span>
+              </button>
+              <p className="mt-3 max-w-[260px] text-[13.5px] leading-[1.55] text-graphite/60">{s.body}</p>
+            </motion.li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+/* ── our story ── */
+
+/* The four steps, with the old About story's photographs: an engineer at a
+   rack frame, an asset being scanned, a sensor over an aisle, the floor
+   control desk. The descriptions are drawn from the story's own words. */
+const STORY_STAGES: Stage[] = [
+  {
+    title: "Engineering",
+    body: "Years of working closely with physical infrastructure, understanding structures, facilities, assets and how real environments behave over time.",
+    Icon: Ruler,
+    img: "/about/story/field.webp",
+    alt: "An engineer in a high-visibility vest crouched at the base of a warehouse racking frame, examining a bent steel upright",
+  },
+  {
+    title: "Technology",
+    body: "That engineering foundation evolved into Digital Twins, software, IoT, edge intelligence and AI.",
+    Icon: Cpu,
+    img: "/about/story/identity.webp",
+    alt: "A gloved hand holding a rugged scanner up to an asset label fixed to a racking upright",
+  },
+  {
+    title: "Physical Intelligence",
+    body: "Assets, places and live operating data connected into one intelligence layer for the physical operation.",
+    Icon: BrainCircuit,
+    img: "/about/story/live.webp",
+    alt: "A sensor unit and camera mounted high on a warehouse column, with a forklift crossing an aisle below",
+  },
+  {
+    title: "Execution",
+    body: "An execution layer that helps physical operations become clearer, safer and continuously better.",
+    Icon: CircleCheckBig,
+    img: "/about/story/platform.webp",
+    alt: "Two operations staff at a warehouse-floor control desk, the racking visible through the glass behind them",
+  },
+];
+
+export function AboutV2Story() {
+  return (
     <Section surface="white" id="story">
-      <div className="max-w-[1180px] mx-auto text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
-          className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
-        >
-          Our Story
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.85, ease: EASE }}
-          className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
-        >
-          <span className="block lg:whitespace-nowrap">We started with</span>
-          <span className="block lg:whitespace-nowrap text-graphite/50">the built environment.</span>
-        </motion.h2>
+      <StageHeader eyebrow="Our Story" l1="We started with" l2="the built environment.">
         <motion.h3
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+          {...reveal()}
           className="mt-6 mx-auto max-w-[880px] text-[16px] sm:text-[19px] font-medium text-graphite/60 leading-[1.5] tracking-[-0.01em]"
         >
           We understood the physical world first. Then we started building
           intelligence around it.
         </motion.h3>
-      </div>
+        <motion.p {...reveal(1)} className={"mt-5 " + INTRO}>
+          RAMS grew from years of working closely with physical infrastructure,
+          understanding structures, facilities, assets and how real environments
+          behave over time. That engineering foundation evolved into Digital
+          Twins, software, IoT, edge intelligence and AI. Today, we build the
+          connected intelligence and execution layer that helps physical
+          operations become clearer, safer and continuously better.
+        </motion.p>
+      </StageHeader>
 
-      {/* the steps, centred: MheWorkflow's circles on one track */}
-      <div
-        className="relative mt-16 sm:mt-20 max-w-[1040px] mx-auto"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
-        <ol className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-6" aria-label="From engineering to execution">
-          {STORY_STAGES.map((s, i) => {
-            const on = i === active;
-            const done = i < active;
-            const last = i === STORY_STAGES.length - 1;
-            return (
-              <motion.li
-                key={s.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
-                className="relative flex flex-col items-center text-center px-3"
-              >
-                {/* the track to the next step (lg, one row) */}
-                {!last && (
-                  <span
-                    aria-hidden
-                    className="hidden lg:block absolute top-[46px] left-[calc(50%+54px)] right-[calc(-50%+54px)] h-[2px] -translate-y-1/2 bg-[#ECECEF] overflow-hidden rounded-full"
-                  >
-                    <motion.span
-                      key={`${i}-${active}-${running}`}
-                      className="absolute inset-y-0 left-0 bg-signal-orange"
-                      initial={{ width: done ? "100%" : "0%" }}
-                      animate={{ width: done ? "100%" : on && running ? "100%" : "0%" }}
-                      transition={{ duration: on && running ? STORY_MS / 1000 : 0, ease: "linear" }}
-                    />
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setManual(true);
-                    setActive(i);
-                  }}
-                  aria-current={on ? "step" : undefined}
-                  className="group flex flex-col items-center"
-                >
-                  <span className="relative mb-6">
-                    <span
-                      aria-hidden
-                      className={
-                        "absolute inset-0 rounded-full blur-2xl transition-opacity duration-500 " +
-                        (on ? "opacity-90" : "opacity-40")
-                      }
-                      style={{
-                        background: "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)",
-                      }}
-                    />
-                    <span
-                      className={
-                        "relative w-[92px] h-[92px] rounded-full flex flex-col items-center justify-center gap-1 transition-colors duration-500 " +
-                        (on ? "bg-signal-orange text-white" : "bg-white text-signal-orange")
-                      }
-                      style={{
-                        border: on ? "1px solid #FF6A00" : "1px solid #EBEBEF",
-                        boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
-                      }}
-                    >
-                      <s.Icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
-                      <span className={"text-[11px] font-mono font-bold tabular-nums " + (on ? "text-white/80" : "text-graphite/45")}>
-                        0{i + 1}
-                      </span>
-                    </span>
-                  </span>
-                  <span
-                    className={
-                      "text-[19px] sm:text-[22px] font-bold tracking-[-0.025em] leading-[1.15] transition-colors duration-300 " +
-                      (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
-                    }
-                  >
-                    {s.title}
-                  </span>
-                </button>
-              </motion.li>
-            );
-          })}
-        </ol>
-      </div>
-
-      <motion.p
-        {...reveal()}
-        className="mt-14 sm:mt-16 mx-auto max-w-[880px] text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-      >
-        RAMS grew from years of working closely with physical infrastructure,
-        understanding structures, facilities, assets and how real environments
-        behave over time. That engineering foundation evolved into Digital
-        Twins, software, IoT, edge intelligence and AI. Today, we build the
-        connected intelligence and execution layer that helps physical
-        operations become clearer, safer and continuously better.
-      </motion.p>
+      <ImageStrip stages={STORY_STAGES} />
     </Section>
   );
 }
 
-/* Our Vision, in the site's section order: the heading with its
-   introduction (SectionHeader's look), the five stages as picture cards,
-   then the closing line.
+/* ── our vision ── */
 
-   The photographs are the site's own:
-     Manual       an operator driving a counterbalance truck
-     Connected    the OmniBox joining cameras, trucks and a robot
-     Intelligent  the AI Vision camera boxing people, pallets and trucks
-     Assisted     a supervisor's task queue, guided routes and alerts
-     Autonomous   the autonomous pallet robot, cropped from the MHE image */
-const VISION_STAGES: {
-  title: string;
-  /** three lines under the stage's name */
-  body: string;
-  Icon: typeof Hand;
-  img: string;
-  alt: string;
-  pos?: string;
-  zoom?: number;
-}[] = [
+/* The five stages toward autonomy; the descriptions are drawn from the
+   vision's own paragraphs. */
+const VISION_STAGES: Stage[] = [
   {
     title: "Manual",
     body: "Operators run the machines by hand. Activity, safety and usage are known only through supervision and paper records.",
     Icon: Hand,
-    img: "/MHE.png",
-    alt: "An operator in a high-visibility vest driving a loaded forklift down a warehouse aisle",
   },
   {
     title: "Connected",
     body: "Sensors and edge processors are added to the assets already on site, so every machine reports where it is and what it does.",
     Icon: Cable,
-    img: "/OmniBox.png",
-    alt: "A RAMS OmniBox on a column, with glowing links to cameras, a forklift and a pallet robot across the warehouse",
   },
   {
     title: "Intelligent",
     body: "AI turns that live data into context, recognising people, pallets and machines and flagging the risks that need attention.",
     Icon: Cpu,
-    img: "/AI Vision.png",
-    alt: "A RAMS AI Vision camera on a column, drawing detection boxes around workers, pallets and a forklift",
   },
   {
     title: "Assisted",
     body: "Operators and supervisors are guided in the moment by alerts and prompts, while manual control stays in their hands.",
     Icon: Handshake,
-    img: "/Card 4 — Warehouse Execution.png",
-    alt: "A supervisor holding a tablet task queue while a forklift works inside a highlighted zone",
   },
   {
     title: "Autonomous",
     body: "Where technically suitable, machines, AGVs and robots run on their own, on one OEM-agnostic operating platform.",
     Icon: Bot,
-    img: "/Card 2 — MHE Safety and Productivity.png",
-    alt: "An autonomous pallet robot carrying a load along a marked path in a warehouse aisle",
-    pos: "88% 86%",
-    zoom: 2.1,
   },
 ];
 
 export function AboutV2Vision() {
-  const [open, setOpen] = useState<number | null>(null);
-
   return (
     <Section surface="offWhite" id="vision">
-      <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
-          className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
-        >
-          Our Vision
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.85, ease: EASE }}
-          className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
-        >
-          <span className="block lg:whitespace-nowrap">Evolve existing warehouses and factories</span>
-          <span className="block lg:whitespace-nowrap text-graphite/50">toward autonomous operations.</span>
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
-          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-        >
+      <StageHeader eyebrow="Our Vision" l1="Evolve existing warehouses and factories" l2="toward autonomous operations.">
+        <motion.p {...reveal()} className={"mt-6 " + INTRO}>
           RAMS helps facilities augment existing assets with sensors, edge
           processors, AI and connected intelligence—improving Safety,
           Productivity, Efficiency and Visibility without requiring wholesale
           replacement.
         </motion.p>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
-          className="mt-4 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-        >
+        <motion.p {...reveal(1)} className={"mt-4 " + INTRO}>
           As operations mature, mixed fleets, machines, AGVs and robots can
           progress from manual to connected, assisted and, where technically
           suitable, autonomous operation. RAMS provides one OEM-agnostic
           operating platform while retaining the flexibility for manual
           control.
         </motion.p>
-      </div>
+      </StageHeader>
 
-      {/* The five stages as one expanding strip: on lg the stage under the
-          pointer (or tapped) opens wide with its name, the rest narrow to
-          slivers showing their number. Below lg, a plain two-column grid. */}
-      <div className="max-w-[1240px] mx-auto">
-        <ol
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:[&>*:last-child]:col-span-2 lg:flex lg:gap-3 lg:h-[460px]"
-          onMouseLeave={() => setOpen(null)}
-        >
-          {VISION_STAGES.map((st, i) => {
-            const isOpen = (open ?? 0) === i;
-            return (
-              <motion.li
-                key={st.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-                onMouseEnter={() => setOpen(i)}
-                onFocus={() => setOpen(i)}
-                tabIndex={0}
-                className={
-                  "group relative overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-full outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-[flex-grow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] " +
-                  (isOpen ? "lg:flex-[4]" : "lg:flex-[1]")
-                }
-                style={{ borderRadius: 20, background: "#0E0E10" }}
-              >
-                <Image
-                  src={st.img}
-                  alt={st.alt}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 640px"
-                  className="object-cover"
-                  style={{
-                    objectPosition: st.pos ?? "50% 50%",
-                    transform: st.zoom ? `scale(${st.zoom})` : undefined,
-                    transformOrigin: st.pos ?? "50% 50%",
-                  }}
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{
-                    background: isOpen
-                      ? "linear-gradient(to top, rgba(8,8,10,0.88) 0%, rgba(8,8,10,0.35) 40%, transparent 65%)"
-                      : "linear-gradient(to top, rgba(8,8,10,0.9) 0%, rgba(8,8,10,0.55) 50%, rgba(8,8,10,0.35) 100%)",
-                  }}
-                />
-                <div className="absolute inset-x-0 bottom-0 p-5 lg:p-6 text-white">
-                  <span
-                    className="flex items-center justify-center w-9 h-9 rounded-full text-white mb-3"
-                    style={{
-                      background: i === VISION_STAGES.length - 1 ? "#FF6A00" : "rgba(255,255,255,0.14)",
-                      backdropFilter: "blur(6px)",
-                    }}
-                  >
-                    <st.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
-                  </span>
-                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
-                    0{i + 1}
-                  </span>
-                  {/* the name: always below lg; on lg only on the open stage */}
-                  <span
-                    className={
-                      "block mt-1 text-[18px] sm:text-[20px] lg:text-[28px] font-bold tracking-[-0.02em] leading-[1.15] whitespace-nowrap transition-opacity duration-300 " +
-                      (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0")
-                    }
-                  >
-                    {st.title}
-                  </span>
-                  <span
-                    className={
-                      "block mt-2 max-w-[360px] text-[13px] sm:text-[13.5px] leading-[1.5] text-white/70 transition-opacity duration-300 " +
-                      (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0 lg:hidden")
-                    }
-                  >
-                    {st.body}
-                  </span>
-                </div>
-              </motion.li>
-            );
-          })}
-        </ol>
+      <StepTrack stages={VISION_STAGES} label="Stages toward autonomous operations" />
 
-        {/* the conclusion, as the site's closing line */}
-        <motion.div {...reveal(1)} className="mt-16 sm:mt-20 text-center">
-          <p className="mx-auto max-w-[24ch] sm:max-w-none font-rams-heading text-[22px] sm:text-[28px] lg:text-[32px] font-bold tracking-[-0.025em] leading-[1.2] text-carbon">
-            Different OEMs. Different Machines.{" "}
-            <span className="text-signal-orange">One Operating Platform.</span>
-          </p>
-          <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-graphite/45">
-            Augment. Automate. Evolve.
-          </p>
-        </motion.div>
-      </div>
+      {/* the conclusion, as the site's closing line */}
+      <motion.div {...reveal(1)} className="mt-16 sm:mt-20 text-center">
+        <p className="mx-auto max-w-[24ch] sm:max-w-none font-rams-heading text-[22px] sm:text-[28px] lg:text-[32px] font-bold tracking-[-0.025em] leading-[1.2] text-carbon">
+          Different OEMs. Different Machines.{" "}
+          <span className="text-signal-orange">One Operating Platform.</span>
+        </p>
+        <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-graphite/45">
+          Augment. Automate. Evolve.
+        </p>
+      </motion.div>
     </Section>
   );
 }
