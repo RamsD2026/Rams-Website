@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
 import { CareersIntro } from "@/components/sections/careers/CareersIntro";
-import {
-  CareersBuild,
-  CareersClose,
-  CareersFAQ,
-  CareersHiring,
-  CareersHowWeWork,
-  CareersTalent,
-  CareersTeams,
-  CareersWhy,
-} from "@/components/sections/careers/CareersSections";
+import { CareersClose } from "@/components/sections/careers/CareersSections";
 
 export const metadata: Metadata = {
   title: "Careers | RAMS Digital",
   description:
-    "Build technology that changes what happens on the ground. Explore career areas at RAMS Digital and share your profile with the team.",
+    "Build technology that changes what happens on the ground. See open roles at RAMS Digital and share your profile with the team.",
 };
 
 /**
@@ -37,14 +28,9 @@ export const metadata: Metadata = {
 export default function CareersPage() {
   return (
     <>
+      {/* Trimmed at the owner's request (2026-10-22): hero, open roles and
+          the Join close. The full page is commit 662f6c0. */}
       <CareersIntro />
-      <CareersTalent />
-      <CareersWhy />
-      <CareersTeams />
-      <CareersBuild />
-      <CareersHowWeWork />
-      <CareersHiring />
-      <CareersFAQ />
       <CareersClose />
     </>
   );
