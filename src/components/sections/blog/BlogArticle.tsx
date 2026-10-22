@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { LightHeroGround } from "@/components/sections/LightHero";
 import type { BlogPost } from "./content/posts";
 import { BLOG_CSS } from "./blog-styles";
@@ -31,14 +31,7 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
         <LightHeroGround />
         <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-12 sm:pb-14">
           <div className="max-w-[920px] mx-auto text-center">
-            <Link
-              href="/resources/insights"
-              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-graphite/55 hover:text-carbon transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden />
-              All articles
-            </Link>
-            <div className="mt-6">
+            <div>
               <span
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur"
                 style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
