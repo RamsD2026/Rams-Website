@@ -228,20 +228,6 @@ export function AboutV2Story() {
           We understood the physical world first. Then we started building
           intelligence around it.
         </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
-          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-        >
-          RAMS grew from years of working closely with physical infrastructure,
-          understanding structures, facilities, assets and how real environments
-          behave over time. That engineering foundation evolved into Digital
-          Twins, software, IoT, edge intelligence and AI. Today, we build the
-          connected intelligence and execution layer that helps physical
-          operations become clearer, safer and continuously better.
-        </motion.p>
       </div>
 
       {/* the steps, centred: MheWorkflow's circles on one track */}
@@ -329,6 +315,18 @@ export function AboutV2Story() {
           })}
         </ol>
       </div>
+
+      <motion.p
+        {...reveal()}
+        className="mt-14 sm:mt-16 mx-auto max-w-[880px] text-center text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+      >
+        RAMS grew from years of working closely with physical infrastructure,
+        understanding structures, facilities, assets and how real environments
+        behave over time. That engineering foundation evolved into Digital
+        Twins, software, IoT, edge intelligence and AI. Today, we build the
+        connected intelligence and execution layer that helps physical
+        operations become clearer, safer and continuously better.
+      </motion.p>
     </Section>
   );
 }
