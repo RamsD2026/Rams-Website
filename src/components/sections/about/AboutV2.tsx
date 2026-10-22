@@ -453,11 +453,14 @@ export function AboutV2Vision() {
             RAMS helps facilities augment existing assets with sensors, edge
             processors, AI and connected intelligence—improving Safety,
             Productivity, Efficiency and Visibility without requiring
-            wholesale replacement. As operations mature, mixed fleets,
-            machines, AGVs and robots can progress from manual to connected,
-            assisted and, where technically suitable, autonomous operation.
-            RAMS provides one OEM-agnostic operating platform while retaining
-            the flexibility for manual control.
+            wholesale replacement.
+          </p>
+          <p className="mt-5 max-w-[880px] mx-auto text-center text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+            As operations mature, mixed fleets, machines, AGVs and robots can
+            progress from manual to connected, assisted and, where technically
+            suitable, autonomous operation. RAMS provides one OEM-agnostic
+            operating platform while retaining the flexibility for manual
+            control.
           </p>
         </motion.div>
       </div>
