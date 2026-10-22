@@ -5,6 +5,7 @@ import {
   AboutV2Story,
   AboutV2Vision,
 } from "@/components/sections/about/AboutV2";
+import { AboutClients } from "@/components/sections/about/AboutClients";
 
 export const metadata: Metadata = {
   title: "About RAMS Digital - Intelligence for the Physical World",
@@ -100,6 +101,7 @@ export default function AboutPage() {
       <AboutV2Hero />
       <AboutV2Story />
       <AboutV2Vision />
+      <AboutClients />
       <AboutV2CTA />
     </>
   );
