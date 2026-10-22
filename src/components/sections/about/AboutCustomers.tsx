@@ -72,7 +72,7 @@ import { SectionHeader } from "@/components/sections/SectionHeader";
  * commercial site, and an AI-drawn one is a forgery of it.
  */
 
-type Voice = {
+export type Voice = {
   quote: string;
   /** 1–5. Only ship a number somebody actually gave. */
   rating: number;
@@ -84,7 +84,7 @@ type Voice = {
   avatar?: string;
 };
 
-const VOICES: Voice[] = [
+export const VOICES: Voice[] = [
   {
     quote:
       "We stopped arguing about whether a rack was damaged and started arguing about how fast we could close it. That is a much better argument to be having.",
