@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { LightHeroGround } from "@/components/sections/LightHero";
 import type { BlogPost } from "./content/posts";
+import { BLOG_CSS } from "./blog-styles";
 
 /**
  * One article of the Rack Safety Series.
@@ -10,21 +11,20 @@ import type { BlogPost } from "./content/posts";
  * label pill, the h1 and standfirst), the docs pages' sticky contents column,
  * and a "More from the series" row of the blog's cards.
  *
- * The article itself is the source file's, as written — its HTML, its inline
- * illustrations and its components (cards, tables, call-outs, the
- * Green / Amber / Red lists), styled by the source's own rules scoped to
- * `.bp-NN` (content/post-NN.ts). Only the fonts are swapped for the site's.
+ * The words are the source file's, as written. The design is the site's: the
+ * components are drawn by BLOG_CSS (blog-styles.ts) from the site's own
+ * parts, and the illustrations are recoloured into the animated-screen theme
+ * of the Solutions heroes (content/post-NN.ts, generated).
  */
 
-type Full = BlogPost & { heroSvg: string; html: string; css: string };
+type Full = BlogPost & { heroSvg: string; html: string };
 
 export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { thumb: string })[] }) {
-  const scope = `bp-${post.num}`;
   const hasToc = post.toc.length > 0;
 
   return (
     <>
-      <style>{`${post.css}\n.${scope} [id]{scroll-margin-top:110px}`}</style>
+      <style>{BLOG_CSS}</style>
 
       {/* ── hero ─────────────────────────────────────── */}
       <section className="relative overflow-hidden" id="top" data-hero-tone="light" style={{ background: "#FFFFFF" }}>
@@ -70,9 +70,9 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
           </div>
 
           {/* the article's own hero illustration */}
-          <figure className={`${scope} mt-12 max-w-[1080px] mx-auto`}>
+          <figure className="blog-art mt-12 max-w-[1080px] mx-auto">
             <div dangerouslySetInnerHTML={{ __html: post.heroSvg }} />
-            {post.heroCaption && <figcaption className="text-center">{post.heroCaption}</figcaption>}
+            {post.heroCaption && <figcaption>{post.heroCaption}</figcaption>}
           </figure>
         </div>
       </section>
@@ -106,7 +106,7 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
               </ul>
             </nav>
           )}
-          <div className={`${scope} min-w-0 ${hasToc ? "" : "max-w-[46rem] mx-auto"}`}>
+          <div className={`blog-body min-w-0 ${hasToc ? "" : "max-w-[46rem] mx-auto"}`}>
             <article dangerouslySetInnerHTML={{ __html: post.html }} />
           </div>
         </div>
@@ -134,7 +134,7 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
                   className="group flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ECECEF] transition-transform duration-300 hover:-translate-y-1"
                 >
                   <div
-                    className="relative aspect-[16/9] overflow-hidden bg-white border-b border-[#ECECEF] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
+                    className="relative aspect-[16/9] overflow-hidden bg-[#0B1016] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
                     aria-hidden
                     dangerouslySetInnerHTML={{ __html: p.thumb }}
                   />

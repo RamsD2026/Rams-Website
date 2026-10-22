@@ -9,8 +9,8 @@ import * as p08 from "./post-08";
 import * as p09 from "./post-09";
 import { POSTS, type BlogPost } from "./posts";
 
-/** Each post's illustration, article HTML and scoped styles, by number. */
-const BODIES: Record<string, { heroSvg: string; html: string; css: string }> = {
+/** Each post's illustration and article HTML, by number. */
+const BODIES: Record<string, { heroSvg: string; html: string }> = {
   "01": p01,
   "02": p02,
   "03": p03,
