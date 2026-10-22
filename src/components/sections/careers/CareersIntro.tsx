@@ -7,7 +7,7 @@ import { ArrowDown, ArrowRight, Bookmark, BookmarkCheck } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { FilterBar } from "@/components/sections/FilterBar";
-import { APPLY_EVENT, FAMILIES } from "./careers-data";
+import { APPLY_EVENT, CAREERS_EMAIL, FAMILIES } from "./careers-data";
 import { listedJobs, type FamilyCode, type Job } from "./jobs-data";
 import { useSavedJobs } from "./career-store";
 import { ApplyDialog, JobMeta, jobLabel, postedLabel } from "./CareerDialogs";
@@ -186,6 +186,12 @@ export function CareersIntro() {
                   : "View open roles"}
                 <ArrowDown className="w-4 h-4" aria-hidden />
               </button>
+              <a
+                href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent("Careers at RAMS Digital")}`}
+                className="inline-flex items-center gap-2 text-white text-[14px] font-semibold px-6 py-3.5 rounded-full border border-white/15 transition-all duration-200 hover:bg-white/[0.06]"
+              >
+                Contact HR
+              </a>
             </motion.div>
 
           </div>
