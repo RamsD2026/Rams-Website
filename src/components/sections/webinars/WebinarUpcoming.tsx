@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Clock, UserRound } from "lucide-react";
 import { Section } from "@/components/sections/rackiq/rackiq-shared";
 import { FEATURED, type Featured } from "./webinar-data";
+import { RegisterDialog } from "./RegisterDialog";
 
 /**
  * 02 — The featured sessions.
@@ -95,13 +96,15 @@ function HostTag({ host, onDark = false }: { host: Featured["host"]; onDark?: bo
   );
 }
 
-function Card({ item }: { item: Featured }) {
+function Card({ item, onRegister }: { item: Featured; onRegister: () => void }) {
   const live = item.kind === "live";
 
   return (
-    <a
-      href={item.href}
-      className="group relative block w-full overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]"
+    <button
+      type="button"
+      onClick={onRegister}
+      aria-label={`Register for ${item.title}`}
+      className="group relative block w-full text-left overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]"
       style={{ borderRadius: 20, background: "#08080A" }}
     >
       <Image
@@ -165,11 +168,12 @@ function Card({ item }: { item: Featured }) {
           <ArrowUpRight className="w-4 h-4" aria-hidden />
         </span>
       </div>
-    </a>
+    </button>
   );
 }
 
 export function WebinarUpcoming() {
+  const [registering, setRegistering] = useState<Featured | null>(null);
   const [index, setIndex] = useState(0);
   const [manual, setManual] = useState(false);
   const [hover, setHover] = useState(false);
@@ -261,7 +265,7 @@ export function WebinarUpcoming() {
         >
           {FEATURED.map((f) => (
             <div key={f.id} style={{ width: cardWidth, flexShrink: 0 }}>
-              <Card item={f} />
+              <Card item={f} onRegister={() => setRegistering(f)} />
             </div>
           ))}
         </motion.div>
@@ -358,16 +362,23 @@ export function WebinarUpcoming() {
               </div>
             </div>
 
-            <a
-              href={f.href}
+            <button
+              type="button"
+              onClick={() => setRegistering(f)}
               className="inline-flex items-center justify-center gap-1.5 px-5 h-11 rounded-full bg-signal-orange text-white text-[13.5px] font-semibold transition-colors hover:bg-signal-orange-hover shrink-0"
             >
               {f.cta}
               <ArrowUpRight className="w-4 h-4" aria-hidden />
-            </a>
+            </button>
           </li>
         ))}
       </ol>
+
+      <AnimatePresence>
+        {registering && (
+          <RegisterDialog key={registering.id} session={registering} onClose={() => setRegistering(null)} />
+        )}
+      </AnimatePresence>
     </Section>
   );
 }
