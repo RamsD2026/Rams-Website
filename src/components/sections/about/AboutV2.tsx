@@ -404,7 +404,7 @@ function StepTrack({ stages, label }: { stages: Stage[]; label: string }) {
                   />
                   <span
                     className={
-                      "relative w-[92px] h-[92px] rounded-full flex flex-col items-center justify-center gap-1 transition-colors duration-500 " +
+                      "relative w-[92px] h-[92px] rounded-full flex items-center justify-center transition-colors duration-500 " +
                       (on ? "bg-signal-orange text-white" : "bg-white text-signal-orange")
                     }
                     style={{
@@ -412,11 +412,11 @@ function StepTrack({ stages, label }: { stages: Stage[]; label: string }) {
                       boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
                     }}
                   >
-                    <s.Icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
-                    <span className={"text-[11px] font-mono font-bold tabular-nums " + (on ? "text-white/80" : "text-graphite/45")}>
-                      0{i + 1}
-                    </span>
+                    <s.Icon className="w-7 h-7" strokeWidth={1.75} aria-hidden />
                   </span>
+                </span>
+                <span className={"text-[11px] font-mono font-bold tracking-[0.18em] tabular-nums mb-1.5 " + (on ? "text-signal-orange" : "text-graphite/40")}>
+                  0{i + 1}
                 </span>
                 <span
                   className={
