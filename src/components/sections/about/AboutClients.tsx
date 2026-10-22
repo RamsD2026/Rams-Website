@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
-import { Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import { CLIENTS } from "@/data/clients";
 import { Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
@@ -102,72 +102,108 @@ function VoiceCard({ v }: { v: Voice }) {
 }
 
 /**
- * The review row: one card at a time slides in after a pause (STEP_MS),
- * looping seamlessly, holding while the pointer is over it, and still under
+ * The review row: a horizontal rail the reader can scroll themselves —
+ * swipe on a phone, trackpad or the arrow buttons on a desktop — with cards
+ * snapping into place. It also steps one card on its own every STEP_MS,
+ * returning to the start after the last, and holds while the pointer is over
+ * it, a finger is on it or it is being scrolled, and under
  * `prefers-reduced-motion`.
  *
  * THESE ARE THE PREVIOUS PAGE'S PLACEHOLDER REVIEWS (AboutCustomers' VOICES)
- * and each card carries a Sample tag until real testimonials replace them. Swap VOICES for real ones and
- * drop the labels then.
+ * and each card carries a Sample tag until real testimonials replace them.
+ * Swap VOICES for real ones and drop the tag then.
  */
+/** Move a rail one card along, or back to the start from the last card. */
+function advance(el: HTMLDivElement | null, dir: 1 | -1) {
+  if (!el) return;
+  const card = el.querySelector<HTMLElement>("[data-card]");
+  const step = card ? card.offsetWidth + GAP : 420;
+  const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+  if (dir === 1 && end) el.scrollTo({ left: 0, behavior: "smooth" });
+  else el.scrollBy({ left: dir * step, behavior: "smooth" });
+}
+
 function Voices() {
   const reduce = useReducedMotion();
-  const box = useRef<HTMLDivElement>(null);
-  const [w, setW] = useState(400);
-  const [index, setIndex] = useState(0);
-  const [animate, setAnimate] = useState(true);
-  const [hover, setHover] = useState(false);
-  const items = [...VOICES, ...VOICES];
+  const rail = useRef<HTMLDivElement>(null);
+  const [hold, setHold] = useState(false);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const idle = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // true while the rail is moving on its own, so that scroll is not taken
+  // for the reader's hand
+  const auto = useRef(false);
 
-  useEffect(() => {
-    const el = box.current;
+  const go = (dir: 1 | -1) => advance(rail.current, dir);
+
+  // the edges, for the arrows
+  const onScroll = () => {
+    const el = rail.current;
     if (!el) return;
-    const fit = () => setW(Math.min(400, Math.round(el.clientWidth * 0.86)));
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+    setAtStart(el.scrollLeft <= 4);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+    if (auto.current) return;
+    // a hand on the rail holds the auto-step until it has been still a while
+    setHold(true);
+    if (idle.current) clearTimeout(idle.current);
+    idle.current = setTimeout(() => setHold(false), STEP_MS);
+  };
 
   useEffect(() => {
-    if (reduce || hover) return;
-    const t = setTimeout(() => {
-      setAnimate(true);
-      setIndex((i) => i + 1);
+    if (reduce || hold) return;
+    const t = setInterval(() => {
+      auto.current = true;
+      advance(rail.current, 1);
+      setTimeout(() => {
+        auto.current = false;
+      }, 900);
     }, STEP_MS);
-    return () => clearTimeout(t);
-  }, [index, hover, reduce]);
+    return () => clearInterval(t);
+  }, [reduce, hold]);
+
+  useEffect(() => () => {
+    if (idle.current) clearTimeout(idle.current);
+  }, []);
 
   return (
     <div className="mt-14 sm:mt-16">
       <div
-        ref={box}
-        className="relative overflow-hidden"
-        style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
+        ref={rail}
+        onScroll={onScroll}
+        onMouseEnter={() => setHold(true)}
+        onMouseLeave={() => setHold(false)}
+        onTouchStart={() => setHold(true)}
+        className="flex items-stretch overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-1 pb-2"
+        style={{ gap: GAP }}
+        aria-label="Testimonials"
+        tabIndex={0}
       >
-        <div
-          className="flex items-stretch"
-          style={{
-            gap: GAP,
-            transform: `translateX(${-index * (w + GAP)}px)`,
-            transition: animate ? "transform 0.7s cubic-bezier(0.22,1,0.36,1)" : "none",
-          }}
-          onTransitionEnd={() => {
-            // past the first set: jump back to the same card in it, unseen
-            if (index >= VOICES.length) {
-              setAnimate(false);
-              setIndex(index - VOICES.length);
-            }
-          }}
-        >
-          {items.map((v, i) => (
-            <div key={i} className="shrink-0" style={{ width: w }} aria-hidden={i >= VOICES.length}>
-              <VoiceCard v={v} />
-            </div>
-          ))}
-        </div>
+        {VOICES.map((v) => (
+          <div
+            key={v.name}
+            data-card
+            className="shrink-0 snap-start w-[86%] sm:w-[400px]"
+          >
+            <VoiceCard v={v} />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex items-center justify-center gap-3">
+        {([-1, 1] as const).map((dir) => (
+          <button
+            key={dir}
+            type="button"
+            onClick={() => go(dir)}
+            disabled={dir === -1 && atStart}
+            aria-label={dir === -1 ? "Previous testimonials" : "Next testimonials"}
+            className="flex items-center justify-center w-11 h-11 rounded-full bg-white text-carbon transition-colors hover:bg-[#F5F5F7] disabled:opacity-40 disabled:cursor-default"
+            style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
+          >
+            {dir === -1 ? <ArrowLeft className="w-4 h-4" aria-hidden /> : <ArrowRight className="w-4 h-4" aria-hidden />}
+          </button>
+        ))}
+        <span className="sr-only">{atEnd ? "End of testimonials" : ""}</span>
       </div>
     </div>
   );
