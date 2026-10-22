@@ -19,8 +19,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  *   Hero     dark     the solution pages' hero ground and buttons
  *   Story    white    SectionHeader; the steps as a vertical timeline left,
  *                     the statement and paragraphs open right
- *   Vision   offWhite header; the five stages as picture cards; the
- *                     statement and the two paragraphs beneath
+ *   Vision   offWhite heading + introduction, the five stages as picture
+ *                     cards, then the closing line
  *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -314,8 +314,9 @@ export function AboutV2Story() {
   );
 }
 
-/* Our Vision: the five stages as picture cards in a row, and the words
-   beneath them.
+/* Our Vision, in the site's section order: the heading with its
+   introduction (SectionHeader's look), the five stages as picture cards,
+   then the closing line.
 
    The photographs are the site's own:
      Manual       an operator driving a counterbalance truck
@@ -388,6 +389,31 @@ export function AboutV2Vision() {
           <span className="block lg:whitespace-nowrap">Evolve existing warehouses and factories</span>
           <span className="block lg:whitespace-nowrap text-graphite/50">toward autonomous operations.</span>
         </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        >
+          RAMS helps facilities augment existing assets with sensors, edge
+          processors, AI and connected intelligence—improving Safety,
+          Productivity, Efficiency and Visibility without requiring wholesale
+          replacement.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
+          className="mt-4 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        >
+          As operations mature, mixed fleets, machines, AGVs and robots can
+          progress from manual to connected, assisted and, where technically
+          suitable, autonomous operation. RAMS provides one OEM-agnostic
+          operating platform while retaining the flexibility for manual
+          control.
+        </motion.p>
       </div>
 
       {/* the five stages as picture cards, one per stage, in order */}
@@ -441,26 +467,14 @@ export function AboutV2Vision() {
           ))}
         </ol>
 
-        <motion.div {...reveal(1)} className="mt-12 sm:mt-14">
-          <p className="text-center text-[20px] sm:text-[24px] font-bold text-carbon leading-[1.3] tracking-[-0.02em]">
+        {/* the conclusion, as the site's closing line */}
+        <motion.div {...reveal(1)} className="mt-16 sm:mt-20 text-center">
+          <p className="mx-auto max-w-[24ch] sm:max-w-none font-rams-heading text-[22px] sm:text-[28px] lg:text-[32px] font-bold tracking-[-0.025em] leading-[1.2] text-carbon">
             Different OEMs. Different Machines.{" "}
             <span className="text-signal-orange">One Operating Platform.</span>
           </p>
-          <p className="mt-3 text-center text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange">
+          <p className="mt-4 text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-graphite/45">
             Augment. Automate. Evolve.
-          </p>
-          <p className="mt-8 max-w-[880px] mx-auto text-center text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            RAMS helps facilities augment existing assets with sensors, edge
-            processors, AI and connected intelligence—improving Safety,
-            Productivity, Efficiency and Visibility without requiring
-            wholesale replacement.
-          </p>
-          <p className="mt-5 max-w-[880px] mx-auto text-center text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            As operations mature, mixed fleets, machines, AGVs and robots can
-            progress from manual to connected, assisted and, where technically
-            suitable, autonomous operation. RAMS provides one OEM-agnostic
-            operating platform while retaining the flexibility for manual
-            control.
           </p>
         </motion.div>
       </div>
