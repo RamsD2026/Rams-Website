@@ -16,8 +16,8 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * site's, not the reference's:
  *
  *   Hero     dark     the solution pages' hero ground and buttons
- *   Story    white    SectionHeader's look; the steps as a timeline left,
- *                     the statement and paragraphs open right
+ *   Story    white    centred heading, statement and paragraphs, then the
+ *                     four steps centred on the MHE How it works circles
  *   Vision   offWhite heading + introduction, the five stages as an
  *                     expanding image strip, then the closing line
  *   Close    white    the careers talent-network card (dark), as a CTA
@@ -168,10 +168,12 @@ export function AboutV2Hero() {
    The reference's words are kept; how they are split across header, column
    and timeline is the site's. */
 
-/* Our Story, as Our Vision's sibling: no boxes. On the left the four steps
-   as a vertical timeline — numbered dots on one line, read top to bottom —
-   and on the right the statement as the lead with the two paragraphs open
-   beneath it. The timeline lights its steps in turn, every 3s. */
+/* Our Story in the site's section order and its existing parts: the
+   centred heading with the statement and the two paragraphs as its
+   introduction, then the four steps centred in one row on the MHE page's
+   "How it works" circles (`MheWorkflow`). The steps light in turn: the
+   current circle fills orange, the track to the next fills while it waits,
+   and it loops — holding on hover, stopping on a click. */
 const STORY_STAGES = [
   { title: "Engineering", Icon: Ruler },
   { title: "Technology", Icon: Cpu },
@@ -196,9 +198,7 @@ export function AboutV2Story() {
 
   return (
     <Section surface="white" id="story">
-      {/* SectionHeader's eyebrow, weights and colours, at a size where each
-          line of the heading holds one row from lg */}
-      <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
+      <div className="max-w-[1180px] mx-auto text-center">
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -228,52 +228,62 @@ export function AboutV2Story() {
           We understood the physical world first. Then we started building
           intelligence around it.
         </motion.h3>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
+          className="mt-6 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        >
+          RAMS grew from years of working closely with physical infrastructure,
+          understanding structures, facilities, assets and how real environments
+          behave over time.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.22, ease: EASE }}
+          className="mt-4 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
+        >
+          That engineering foundation evolved into Digital Twins, software, IoT,
+          edge intelligence and AI. Today, we build the connected intelligence
+          and execution layer that helps physical operations become clearer,
+          safer and continuously better.
+        </motion.p>
       </div>
 
-      <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        {/* the words (right on lg) */}
-        <motion.div {...reveal()} className="lg:col-span-7 lg:order-2">
-          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            RAMS grew from years of working closely with physical
-            infrastructure, understanding structures, facilities, assets and how
-            real environments behave over time.
-          </p>
-          <p className="mt-5 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
-            That engineering foundation evolved into Digital Twins, software,
-            IoT, edge intelligence and AI. Today, we build the connected
-            intelligence and execution layer that helps physical operations
-            become clearer, safer and continuously better.
-          </p>
-        </motion.div>
-
-        {/* the timeline (left on lg): it lights the steps in turn — the rail
-            to the next fills while the current step waits — and loops. */}
-        <ol
-          className="lg:col-span-5 lg:order-1"
-          aria-label="From engineering to execution"
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        >
+      {/* the steps, centred: MheWorkflow's circles on one track */}
+      <div
+        className="relative mt-16 sm:mt-20 max-w-[1040px] mx-auto"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <ol className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-6" aria-label="From engineering to execution">
           {STORY_STAGES.map((s, i) => {
-            const last = i === STORY_STAGES.length - 1;
             const on = i === active;
             const done = i < active;
+            const last = i === STORY_STAGES.length - 1;
             return (
               <motion.li
                 key={s.title}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: EASE }}
-                className={"relative " + (last ? "" : "pb-9")}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+                className="relative flex flex-col items-center text-center px-3"
               >
+                {/* the track to the next step (lg, one row) */}
                 {!last && (
-                  <span aria-hidden className="absolute left-6 top-12 bottom-0 w-[2px] -translate-x-1/2 bg-[#EDEDF0] overflow-hidden rounded-full">
+                  <span
+                    aria-hidden
+                    className="hidden lg:block absolute top-[46px] left-[calc(50%+54px)] right-[calc(-50%+54px)] h-[2px] -translate-y-1/2 bg-[#ECECEF] overflow-hidden rounded-full"
+                  >
                     <motion.span
                       key={`${i}-${active}-${running}`}
-                      className="absolute inset-x-0 top-0 bg-signal-orange"
-                      initial={{ height: done ? "100%" : "0%" }}
-                      animate={{ height: done ? "100%" : on && running ? "100%" : "0%" }}
+                      className="absolute inset-y-0 left-0 bg-signal-orange"
+                      initial={{ width: done ? "100%" : "0%" }}
+                      animate={{ width: done ? "100%" : on && running ? "100%" : "0%" }}
                       transition={{ duration: on && running ? STORY_MS / 1000 : 0, ease: "linear" }}
                     />
                   </span>
@@ -285,44 +295,42 @@ export function AboutV2Story() {
                     setActive(i);
                   }}
                   aria-current={on ? "step" : undefined}
-                  className="group relative w-full flex items-center gap-5 text-left"
+                  className="group flex flex-col items-center"
                 >
-                  <span className="relative flex items-center justify-center w-12 h-12 shrink-0">
-                    {on && !reduce && (
-                      <motion.span
-                        aria-hidden
-                        className="absolute inset-0 rounded-full bg-signal-orange"
-                        initial={{ opacity: 0.45, scale: 1 }}
-                        animate={{ opacity: 0, scale: 1.7 }}
-                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                      />
-                    )}
+                  <span className="relative mb-6">
+                    <span
+                      aria-hidden
+                      className={
+                        "absolute inset-0 rounded-full blur-2xl transition-opacity duration-500 " +
+                        (on ? "opacity-90" : "opacity-40")
+                      }
+                      style={{
+                        background: "radial-gradient(closest-side, rgba(255,106,0,0.35), transparent 70%)",
+                      }}
+                    />
                     <span
                       className={
-                        "relative flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 " +
-                        (on
-                          ? "bg-signal-orange text-white"
-                          : done
-                            ? "bg-[#FFF3E8] text-signal-orange"
-                            : "bg-white text-graphite/40 group-hover:text-signal-orange")
+                        "relative w-[92px] h-[92px] rounded-full flex flex-col items-center justify-center gap-1 transition-colors duration-500 " +
+                        (on ? "bg-signal-orange text-white" : "bg-white text-signal-orange")
                       }
-                      style={on || done ? undefined : { boxShadow: "inset 0 0 0 1.5px #E0E0E6" }}
+                      style={{
+                        border: on ? "1px solid #FF6A00" : "1px solid #EBEBEF",
+                        boxShadow: "0 10px 30px -12px rgba(0,0,0,0.12), 0 2px 6px -1px rgba(0,0,0,0.04)",
+                      }}
                     >
-                      <s.Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
+                      <s.Icon className="w-6 h-6" strokeWidth={1.75} aria-hidden />
+                      <span className={"text-[11px] font-mono font-bold tabular-nums " + (on ? "text-white/80" : "text-graphite/45")}>
+                        0{i + 1}
+                      </span>
                     </span>
                   </span>
-                  <span>
-                    <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 tabular-nums">
-                      0{i + 1}
-                    </span>
-                    <span
-                      className={
-                        "block mt-0.5 text-[19px] sm:text-[22px] font-semibold tracking-[-0.02em] transition-colors duration-300 " +
-                        (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
-                      }
-                    >
-                      {s.title}
-                    </span>
+                  <span
+                    className={
+                      "text-[19px] sm:text-[22px] font-bold tracking-[-0.025em] leading-[1.15] transition-colors duration-300 " +
+                      (on ? "text-carbon" : "text-graphite/50 group-hover:text-carbon")
+                    }
+                  >
+                    {s.title}
                   </span>
                 </button>
               </motion.li>
