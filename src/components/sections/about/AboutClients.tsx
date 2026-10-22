@@ -107,8 +107,7 @@ function VoiceCard({ v }: { v: Voice }) {
  * `prefers-reduced-motion`.
  *
  * THESE ARE THE PREVIOUS PAGE'S PLACEHOLDER REVIEWS (AboutCustomers' VOICES)
- * and are shown labelled as samples — a note above the row and a tag on each
- * card — until real testimonials replace them. Swap VOICES for real ones and
+ * and each card carries a Sample tag until real testimonials replace them. Swap VOICES for real ones and
  * drop the labels then.
  */
 function Voices() {
@@ -141,9 +140,6 @@ function Voices() {
 
   return (
     <div className="mt-14 sm:mt-16">
-      <p className="mb-6 text-center text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/45">
-        Sample testimonials — illustrative only, not customer reviews
-      </p>
       <div
         ref={box}
         className="relative overflow-hidden"
