@@ -6,7 +6,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Bot, BrainCircuit, Cable, CircleCheckBig, Cpu, Hand, Handshake, Ruler } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
-import { SectionHeader } from "@/components/sections/SectionHeader";
 import { RiqClients } from "@/components/sections/rackiq/RiqClients";
 
 /**
@@ -17,10 +16,10 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * site's, not the reference's:
  *
  *   Hero     dark     the solution pages' hero ground and buttons
- *   Story    white    SectionHeader; the steps as a vertical timeline left,
+ *   Story    white    the statement as the heading; the steps as a timeline left,
  *                     the statement and paragraphs open right
- *   Vision   offWhite heading + introduction, the five stages as picture
- *                     cards, then the closing line
+ *   Vision   offWhite heading + introduction, the five stages as an
+ *                     expanding image strip, then the closing line
  *   Close    white    the careers talent-network card (dark), as a CTA
  *
  * The previous 14-section page is commit 3223e63; its components are still
@@ -197,21 +196,35 @@ export function AboutV2Story() {
 
   return (
     <Section surface="white" id="story">
-      <SectionHeader
-        eyebrow="Our Story"
-        top="We started with"
-        bottom="the built environment."
-        size="compact"
-        width="wide"
-        className="!mb-12 sm:!mb-16"
-      />
+      {/* SectionHeader's eyebrow, weights and colours, at a size where each
+          line of the heading holds one row from lg */}
+      <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
+          className="text-[11px] font-mono font-semibold tracking-[0.22em] uppercase text-signal-orange mb-5"
+        >
+          Our Story
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.85, ease: EASE }}
+          className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
+        >
+          <span className="block lg:whitespace-nowrap">We understood the physical world first.</span>
+          <span className="block lg:whitespace-nowrap text-graphite/50">Then we started building intelligence around it.</span>
+        </motion.h2>
+      </div>
 
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* the words (right on lg) */}
         <motion.div {...reveal()} className="lg:col-span-7 lg:order-2">
           <p className="text-[22px] sm:text-[28px] font-bold text-carbon leading-[1.25] tracking-[-0.025em]">
-            We understood the physical world first.{" "}
-            <span className="text-signal-orange">Then we started building intelligence around it.</span>
+            We started with the built environment.
           </p>
           <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
@@ -367,6 +380,8 @@ const VISION_STAGES: {
 ];
 
 export function AboutV2Vision() {
+  const [open, setOpen] = useState<number | null>(null);
+
   return (
     <Section surface="offWhite" id="vision">
       <div className="max-w-[1180px] mx-auto text-center mb-12 sm:mb-16">
@@ -384,7 +399,7 @@ export function AboutV2Vision() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.85, ease: EASE }}
-          className="text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[58px] leading-[1.08] font-bold tracking-[-0.04em] text-carbon"
+          className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
         >
           <span className="block lg:whitespace-nowrap">Evolve existing warehouses and factories</span>
           <span className="block lg:whitespace-nowrap text-graphite/50">toward autonomous operations.</span>
@@ -416,55 +431,79 @@ export function AboutV2Vision() {
         </motion.p>
       </div>
 
-      {/* the five stages as picture cards, one per stage, in order */}
+      {/* The five stages as one expanding strip: on lg the stage under the
+          pointer (or tapped) opens wide with its name, the rest narrow to
+          slivers showing their number. Below lg, a plain two-column grid. */}
       <div className="max-w-[1240px] mx-auto">
-        <ol className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1">
-          {VISION_STAGES.map((st, i) => (
-            <motion.li
-              key={st.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-              className="group relative overflow-hidden aspect-[3/4] transition-transform duration-300 hover:-translate-y-1"
-              style={{ borderRadius: 20, background: "#0E0E10" }}
-            >
-              <Image
-                src={st.img}
-                alt={st.alt}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                style={{
-                  objectPosition: st.pos ?? "50% 50%",
-                  transform: st.zoom ? `scale(${st.zoom})` : undefined,
-                  transformOrigin: st.pos ?? "50% 50%",
-                }}
-              />
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(8,8,10,0.88) 0%, rgba(8,8,10,0.4) 38%, transparent 62%)",
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <span
-                  className="flex items-center justify-center w-9 h-9 rounded-full text-white mb-3"
-                  style={{ background: i === VISION_STAGES.length - 1 ? "#FF6A00" : "rgba(255,255,255,0.14)", backdropFilter: "blur(6px)" }}
-                >
-                  <st.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
-                </span>
-                <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
-                  0{i + 1}
-                </span>
-                <span className="block mt-1 text-[18px] sm:text-[20px] font-bold tracking-[-0.02em] leading-[1.15]">
-                  {st.title}
-                </span>
-              </div>
-            </motion.li>
-          ))}
+        <ol
+          className="grid grid-cols-2 sm:grid-cols-3 gap-4 [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1 lg:flex lg:gap-3 lg:h-[460px]"
+          onMouseLeave={() => setOpen(null)}
+        >
+          {VISION_STAGES.map((st, i) => {
+            const isOpen = (open ?? 0) === i;
+            return (
+              <motion.li
+                key={st.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+                onMouseEnter={() => setOpen(i)}
+                onFocus={() => setOpen(i)}
+                tabIndex={0}
+                className={
+                  "group relative overflow-hidden aspect-[3/4] lg:aspect-auto lg:h-full outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-[flex-grow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] " +
+                  (isOpen ? "lg:flex-[4]" : "lg:flex-[1]")
+                }
+                style={{ borderRadius: 20, background: "#0E0E10" }}
+              >
+                <Image
+                  src={st.img}
+                  alt={st.alt}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 640px"
+                  className="object-cover"
+                  style={{
+                    objectPosition: st.pos ?? "50% 50%",
+                    transform: st.zoom ? `scale(${st.zoom})` : undefined,
+                    transformOrigin: st.pos ?? "50% 50%",
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{
+                    background: isOpen
+                      ? "linear-gradient(to top, rgba(8,8,10,0.88) 0%, rgba(8,8,10,0.35) 40%, transparent 65%)"
+                      : "linear-gradient(to top, rgba(8,8,10,0.9) 0%, rgba(8,8,10,0.55) 50%, rgba(8,8,10,0.35) 100%)",
+                  }}
+                />
+                <div className="absolute inset-x-0 bottom-0 p-5 lg:p-6 text-white">
+                  <span
+                    className="flex items-center justify-center w-9 h-9 rounded-full text-white mb-3"
+                    style={{
+                      background: i === VISION_STAGES.length - 1 ? "#FF6A00" : "rgba(255,255,255,0.14)",
+                      backdropFilter: "blur(6px)",
+                    }}
+                  >
+                    <st.Icon className="w-4 h-4" strokeWidth={2} aria-hidden />
+                  </span>
+                  <span className="block text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange tabular-nums">
+                    0{i + 1}
+                  </span>
+                  {/* the name: always below lg; on lg only on the open stage */}
+                  <span
+                    className={
+                      "block mt-1 text-[18px] sm:text-[20px] lg:text-[28px] font-bold tracking-[-0.02em] leading-[1.15] whitespace-nowrap transition-opacity duration-300 " +
+                      (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0")
+                    }
+                  >
+                    {st.title}
+                  </span>
+                </div>
+              </motion.li>
+            );
+          })}
         </ol>
 
         {/* the conclusion, as the site's closing line */}
