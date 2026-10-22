@@ -505,27 +505,27 @@ export function AboutV2Story() {
 const VISION_STAGES: Stage[] = [
   {
     title: "Manual",
-    body: "Operators run the machines by hand. Activity, safety and usage are known only through supervision and paper records.",
+    body: "Machines run by hand, unmonitored.",
     Icon: Hand,
   },
   {
     title: "Connected",
-    body: "Sensors and edge processors are added to the assets already on site, so every machine reports where it is and what it does.",
+    body: "Sensors added to existing assets.",
     Icon: Cable,
   },
   {
     title: "Intelligent",
-    body: "AI turns that live data into context, recognising people, pallets and machines and flagging the risks that need attention.",
+    body: "AI turns data into context.",
     Icon: Cpu,
   },
   {
     title: "Assisted",
-    body: "Operators and supervisors are guided in the moment by alerts and prompts, while manual control stays in their hands.",
+    body: "Operators guided by real-time alerts.",
     Icon: Handshake,
   },
   {
     title: "Autonomous",
-    body: "Where technically suitable, machines, AGVs and robots run on their own, on one OEM-agnostic operating platform.",
+    body: "Machines run on their own.",
     Icon: Bot,
   },
 ];
