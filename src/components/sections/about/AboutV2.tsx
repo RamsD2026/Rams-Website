@@ -16,7 +16,7 @@ import { RiqClients } from "@/components/sections/rackiq/RiqClients";
  * site's, not the reference's:
  *
  *   Hero     dark     the solution pages' hero ground and buttons
- *   Story    white    the statement as the heading; the steps as a timeline left,
+ *   Story    white    SectionHeader's look; the steps as a timeline left,
  *                     the statement and paragraphs open right
  *   Vision   offWhite heading + introduction, the five stages as an
  *                     expanding image strip, then the closing line
@@ -215,17 +215,18 @@ export function AboutV2Story() {
           transition={{ duration: 0.85, ease: EASE }}
           className="text-[30px] sm:text-[36px] lg:text-[42px] xl:text-[50px] leading-[1.1] font-bold tracking-[-0.04em] text-carbon"
         >
-          <span className="block lg:whitespace-nowrap">We understood the physical world first.</span>
-          <span className="block lg:whitespace-nowrap text-graphite/50">Then we started building intelligence around it.</span>
+          <span className="block lg:whitespace-nowrap">We started with</span>
+          <span className="block lg:whitespace-nowrap text-graphite/50">the built environment.</span>
         </motion.h2>
       </div>
 
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* the words (right on lg) */}
         <motion.div {...reveal()} className="lg:col-span-7 lg:order-2">
-          <p className="text-[22px] sm:text-[28px] font-bold text-carbon leading-[1.25] tracking-[-0.025em]">
-            We started with the built environment.
-          </p>
+          <h3 className="text-[22px] sm:text-[28px] font-bold text-carbon leading-[1.25] tracking-[-0.025em]">
+            We understood the physical world first.{" "}
+            <span className="text-signal-orange">Then we started building intelligence around it.</span>
+          </h3>
           <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
             infrastructure, understanding structures, facilities, assets and how
@@ -339,6 +340,8 @@ export function AboutV2Story() {
      Autonomous   the autonomous pallet robot, cropped from the MHE image */
 const VISION_STAGES: {
   title: string;
+  /** three lines under the stage's name */
+  body: string;
   Icon: typeof Hand;
   img: string;
   alt: string;
@@ -347,30 +350,35 @@ const VISION_STAGES: {
 }[] = [
   {
     title: "Manual",
+    body: "Operators run the machines by hand. Activity, safety and usage are known only through supervision and paper records.",
     Icon: Hand,
     img: "/MHE.png",
     alt: "An operator in a high-visibility vest driving a loaded forklift down a warehouse aisle",
   },
   {
     title: "Connected",
+    body: "Sensors and edge processors are added to the assets already on site, so every machine reports where it is and what it does.",
     Icon: Cable,
     img: "/OmniBox.png",
     alt: "A RAMS OmniBox on a column, with glowing links to cameras, a forklift and a pallet robot across the warehouse",
   },
   {
     title: "Intelligent",
+    body: "AI turns that live data into context, recognising people, pallets and machines and flagging the risks that need attention.",
     Icon: Cpu,
     img: "/AI Vision.png",
     alt: "A RAMS AI Vision camera on a column, drawing detection boxes around workers, pallets and a forklift",
   },
   {
     title: "Assisted",
+    body: "Operators and supervisors are guided in the moment by alerts and prompts, while manual control stays in their hands.",
     Icon: Handshake,
     img: "/Card 4 — Warehouse Execution.png",
     alt: "A supervisor holding a tablet task queue while a forklift works inside a highlighted zone",
   },
   {
     title: "Autonomous",
+    body: "Where technically suitable, machines, AGVs and robots run on their own, on one OEM-agnostic operating platform.",
     Icon: Bot,
     img: "/Card 2 — MHE Safety and Productivity.png",
     alt: "An autonomous pallet robot carrying a load along a marked path in a warehouse aisle",
@@ -436,7 +444,7 @@ export function AboutV2Vision() {
           slivers showing their number. Below lg, a plain two-column grid. */}
       <div className="max-w-[1240px] mx-auto">
         <ol
-          className="grid grid-cols-2 sm:grid-cols-3 gap-4 [&>*:last-child]:col-span-2 sm:[&>*:last-child]:col-span-1 lg:flex lg:gap-3 lg:h-[460px]"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:[&>*:last-child]:col-span-2 lg:flex lg:gap-3 lg:h-[460px]"
           onMouseLeave={() => setOpen(null)}
         >
           {VISION_STAGES.map((st, i) => {
@@ -452,7 +460,7 @@ export function AboutV2Vision() {
                 onFocus={() => setOpen(i)}
                 tabIndex={0}
                 className={
-                  "group relative overflow-hidden aspect-[3/4] lg:aspect-auto lg:h-full outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-[flex-grow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] " +
+                  "group relative overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-full outline-none focus-visible:ring-2 focus-visible:ring-signal-orange transition-[flex-grow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] " +
                   (isOpen ? "lg:flex-[4]" : "lg:flex-[1]")
                 }
                 style={{ borderRadius: 20, background: "#0E0E10" }}
@@ -499,6 +507,14 @@ export function AboutV2Vision() {
                     }
                   >
                     {st.title}
+                  </span>
+                  <span
+                    className={
+                      "block mt-2 max-w-[360px] text-[13px] sm:text-[13.5px] leading-[1.5] text-white/70 transition-opacity duration-300 " +
+                      (isOpen ? "lg:opacity-100 lg:delay-200" : "lg:opacity-0 lg:hidden")
+                    }
+                  >
+                    {st.body}
                   </span>
                 </div>
               </motion.li>
