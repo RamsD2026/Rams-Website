@@ -270,8 +270,8 @@ export const TRACKS: { title: string; body: string; href: string }[] = [
  * in the owner's order and words. Titles, dates, times and speakers are as
  * supplied; a time or speaker the schedule does not give is left out.
  *
- * The pictures are the page's existing webinar photographs, matched to each
- * session's subject.
+ * The pictures are the owner's images for the series (public/webinars/series),
+ * one per session, matched to its subject.
  */
 export type Featured = {
   id: string;
@@ -351,8 +351,8 @@ export const FEATURED: Featured[] = [
     title: "What We See Inside Warehouses: Lessons from Real Rack Inspections",
     when: "Wed, 25th Nov 2026 · 11am IST",
     speakers: "Darren Whyte, Greeba and Sean",
-    img: "/webinars/identify-damage.webp",
-    alt: "Gloved hands examining a bent steel rack upright under a torch beam in a dark warehouse aisle.",
+    img: "/webinars/series/nov-2026.webp",
+    alt: "An inspector in a hard hat and hi-vis vest examining a damaged rack upright with a tablet.",
   }),
   SESSION({
     id: "dec-2026",
@@ -360,8 +360,8 @@ export const FEATURED: Featured[] = [
     month: "December",
     title: "Your Racking Was Designed to Be Safe. What Changed?",
     when: "Wed, 23rd Dec 2026 · 11am IST",
-    img: "/webinars/load-capacity.webp",
-    alt: "Looking up a very tall loaded pallet racking bay, wrapped pallets on several beam levels.",
+    img: "/webinars/series/dec-2026.webp",
+    alt: "An inspector crouched in a warehouse aisle, studying a bent upright at the base of the racking.",
   }),
   SESSION({
     id: "jan-2027",
@@ -370,8 +370,8 @@ export const FEATURED: Featured[] = [
     title: "From Inspection to Closure: Building an Effective Rack Safety Program",
     when: "Thu, 28th Jan 2027 · 11am IST",
     speakers: "Greeba and Sean",
-    img: "/webinars/rack-programme.webp",
-    alt: "A clean, undamaged blue steel rack upright bolted to a warehouse floor, tall racking receding into a dark aisle.",
+    img: "/webinars/series/jan-2027.webp",
+    alt: "An inspector with a tablet standing beside protected rack uprights in a warehouse aisle.",
   }),
   SESSION({
     id: "feb-2027",
@@ -380,8 +380,8 @@ export const FEATURED: Featured[] = [
     title: "Forklifts vs Racks: Preventing Warehouse Impacts",
     when: "Wed, 24th Feb 2027 · 11am IST",
     speakers: "Godrej Rentrust",
-    img: "/webinars/people-forklifts.webp",
-    alt: "A worker in a hi-vis vest crossing a warehouse traffic aisle as a forklift approaches in the blurred background.",
+    img: "/webinars/series/feb-2027.webp",
+    alt: "A forklift driving past racking fitted with yellow upright protectors and barriers.",
   }),
   SESSION({
     id: "mar-2027",
@@ -390,7 +390,7 @@ export const FEATURED: Featured[] = [
     title: "Beyond Annual Inspections: Moving Towards Continuous Rack Safety",
     when: "Wed, 17th March 2027 · 11am IST",
     speakers: "MAB",
-    img: "/webinars/upcoming.webp",
-    alt: "A safety manager with a tablet standing at the end of a tall pallet racking aisle, looking up at the uprights.",
+    img: "/webinars/series/mar-2027.webp",
+    alt: "An inspector with a tablet in a racking aisle, digital status tags glowing on the uprights.",
   }),
 ];
