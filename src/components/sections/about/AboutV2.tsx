@@ -218,16 +218,22 @@ export function AboutV2Story() {
           <span className="block lg:whitespace-nowrap">We started with</span>
           <span className="block lg:whitespace-nowrap text-graphite/50">the built environment.</span>
         </motion.h2>
+        <motion.h3
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
+          className="mt-6 mx-auto max-w-[880px] text-[18px] sm:text-[22px] font-semibold text-carbon leading-[1.4] tracking-[-0.015em]"
+        >
+          We understood the physical world first.{" "}
+          <span className="text-signal-orange">Then we started building intelligence around it.</span>
+        </motion.h3>
       </div>
 
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* the words (right on lg) */}
         <motion.div {...reveal()} className="lg:col-span-7 lg:order-2">
-          <h3 className="text-[22px] sm:text-[28px] font-bold text-carbon leading-[1.25] tracking-[-0.025em]">
-            We understood the physical world first.{" "}
-            <span className="text-signal-orange">Then we started building intelligence around it.</span>
-          </h3>
-          <p className="mt-8 text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
+          <p className="text-[15px] sm:text-[16px] text-graphite/70 leading-[1.7]">
             RAMS grew from years of working closely with physical
             infrastructure, understanding structures, facilities, assets and how
             real environments behave over time.
