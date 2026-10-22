@@ -237,19 +237,10 @@ export function AboutV2Story() {
         >
           RAMS grew from years of working closely with physical infrastructure,
           understanding structures, facilities, assets and how real environments
-          behave over time.
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.65, delay: 0.22, ease: EASE }}
-          className="mt-4 mx-auto max-w-[880px] text-[14px] sm:text-[15px] leading-[1.55] text-graphite/65"
-        >
-          That engineering foundation evolved into Digital Twins, software, IoT,
-          edge intelligence and AI. Today, we build the connected intelligence
-          and execution layer that helps physical operations become clearer,
-          safer and continuously better.
+          behave over time. That engineering foundation evolved into Digital
+          Twins, software, IoT, edge intelligence and AI. Today, we build the
+          connected intelligence and execution layer that helps physical
+          operations become clearer, safer and continuously better.
         </motion.p>
       </div>
 
