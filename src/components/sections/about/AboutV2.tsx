@@ -223,10 +223,10 @@ export function AboutV2Story() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.65, delay: 0.1, ease: EASE }}
-          className="mt-6 mx-auto max-w-[880px] text-[18px] sm:text-[22px] font-semibold text-carbon leading-[1.4] tracking-[-0.015em]"
+          className="mt-6 mx-auto max-w-[880px] text-[16px] sm:text-[19px] font-medium text-graphite/60 leading-[1.5] tracking-[-0.01em]"
         >
-          We understood the physical world first.{" "}
-          <span className="text-signal-orange">Then we started building intelligence around it.</span>
+          We understood the physical world first. Then we started building
+          intelligence around it.
         </motion.h3>
       </div>
 
