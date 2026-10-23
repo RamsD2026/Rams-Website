@@ -352,7 +352,7 @@ function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
 }
 
 /** How long the rail shows a review: longer for a longer quote. */
-const showFor = (v: Testimonial) => Math.min(8000, 3500 + v.quote.length * 14);
+const showFor = (v: Testimonial) => Math.min(6500, 3500 + v.quote.length * 10);
 
 /** The first card wholly in view at the rail's left edge. */
 function leadCard(el: HTMLDivElement) {
@@ -363,17 +363,14 @@ function leadCard(el: HTMLDivElement) {
 }
 
 /*
- * The rail runs a showcase on its own while it is in view: the first card's
- * review grows into the middle of the window, holds for a reading time,
- * goes back, the rail steps one card on, and the next card's review comes
- * up. A click on any card opens its review as usual and holds the showcase
+ * The rail scrolls on its own while it is in view, one card at a time, and
+ * the first card's review is always up in the middle of the window: when
+ * the rail steps, the review passes to the card that now leads. A click on any card opens its review as usual and holds the showcase
  * until that review is closed; a hand on the rail, or the pointer resting
  * on a review, holds it too.
  */
 function Voices() {
   const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect; auto: boolean } | null>(null);
-  // the rail's review has just been shown, so the next move is a step
-  const [shown, setShown] = useState(false);
   const [inView, setInView] = useState(false);
   const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
@@ -400,7 +397,6 @@ function Voices() {
   };
   const close = useCallback(() => {
     setOpen(null);
-    setShown(true);
     setPaused(false);
     holdAWhile();
   }, [holdAWhile]);
@@ -432,31 +428,28 @@ function Voices() {
     return () => io.disconnect();
   }, []);
 
-  // the showcase: show the first card's review, put it back, step, repeat
+  // the showcase: the first card's review is up; after a reading time the
+  // rail steps and the review passes to the card that now leads
   useEffect(() => {
     if (hold || paused || !inView) return;
     if (open && !open.auto) return;
-    const wait = open ? showFor(open.v) : shown ? 700 : 600;
+    const el = rail.current;
+    if (!el) return;
+    const lead = () => {
+      const card = leadCard(el);
+      if (card) setOpen({ v: TESTIMONIALS[Number(card.dataset.i)], from: card.getBoundingClientRect(), auto: true });
+    };
     const t = setTimeout(() => {
-      const el = rail.current;
-      if (!el) return;
-      if (open) {
-        setOpen(null);
-        setShown(true);
-      } else if (shown) {
-        auto.current = true;
-        advance(el, 1, !reduce);
-        setTimeout(() => {
-          auto.current = false;
-          setShown(false);
-        }, 900);
-      } else {
-        const card = leadCard(el);
-        if (card) setOpen({ v: TESTIMONIALS[Number(card.dataset.i)], from: card.getBoundingClientRect(), auto: true });
-      }
-    }, wait);
+      if (!open) return lead();
+      auto.current = true;
+      advance(el, 1, !reduce);
+      setTimeout(() => {
+        auto.current = false;
+        lead();
+      }, 700);
+    }, open ? showFor(open.v) : 600);
     return () => clearTimeout(t);
-  }, [open, shown, hold, paused, inView, reduce]);
+  }, [open, hold, paused, inView, reduce]);
 
   useEffect(() => () => {
     if (idle.current) clearTimeout(idle.current);
