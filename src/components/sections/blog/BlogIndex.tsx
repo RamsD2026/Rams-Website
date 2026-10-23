@@ -163,9 +163,8 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               transition={{ duration: 0.7, delay: 0.22, ease: EASE }}
               className="mt-6 text-[14px] sm:text-[16px] text-graphite/65 leading-[1.6] max-w-[760px] mx-auto"
             >
-              {POSTS.length} articles from RAMS on rack safety, inspection, load
-              capacity and the culture that keeps warehouses safe — from first
-              awareness to deep technical detail.
+              Expert perspectives on rack safety, inspection, load capacity and
+              the practices that keep warehouses safe, productive and compliant.
             </motion.p>
 
             <motion.div
