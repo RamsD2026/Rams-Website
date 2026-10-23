@@ -92,7 +92,7 @@ function GroupLabel({ children, live = false }: { children: React.ReactNode; liv
 /** "Read article" with an arrow that nudges on hover. */
 function ReadMore({ className = "" }: { className?: string }) {
   return (
-    <span className={"inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-carbon " + className}>
+    <span className={"inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-carbon transition-colors duration-200 group-hover:text-signal-orange " + className}>
       Read article
       <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
     </span>
@@ -227,7 +227,7 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
             <GroupLabel live>Latest post</GroupLabel>
             <Link
               href={`/resources/insights/${featured.slug}`}
-              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center rounded-2xl p-3 -m-3 transition-colors duration-300 hover:bg-[#EAEAED]"
+              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
             >
               <Thumb post={featured} className="lg:col-span-7 aspect-[16/9]" />
               <div className="lg:col-span-5">
@@ -258,7 +258,7 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.06, ease: EASE }}
             >
-              <Link href={`/resources/insights/${p.slug}`} className="group flex flex-col h-full rounded-2xl p-3 -m-3 transition-colors duration-300 hover:bg-[#EAEAED]">
+              <Link href={`/resources/insights/${p.slug}`} className="group flex flex-col h-full">
                 <Thumb post={p} className="aspect-[16/10]" />
                 <BlogMeta author={p.author} date={p.date} className="mt-5" />
                 <h2 className="mt-3 text-[19px] sm:text-[20px] font-bold tracking-[-0.025em] leading-[1.28] text-carbon">
