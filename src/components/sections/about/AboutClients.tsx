@@ -281,7 +281,11 @@ function ReviewPop({
       ref={scope}
       role="dialog"
       aria-label={`Review from ${v.name}`}
-      onPointerEnter={onKeep}
+      // a review that comes up under a resting pointer does not hold the
+      // rail; a hand moving over it does
+      onPointerMove={(e) => {
+        if (e.pointerType === "mouse" && (e.movementX || e.movementY)) onKeep();
+      }}
       onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
       className="fixed z-[200] max-h-[calc(100svh-32px)] overflow-auto bg-white p-8 sm:p-9 origin-top-left"
       style={{
