@@ -157,7 +157,7 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
                   {/* author, date and read time, then the action */}
                   <div className="mt-auto pt-5">
                     <div className="pt-4 border-t border-[#ECECEF] flex items-center justify-between gap-3">
-                      <BlogMeta author={p.author} date={p.date} readTime={p.readTime} />
+                      <BlogMeta author={p.author} date={p.date} />
                       <ArrowRight
                         className="w-4 h-4 shrink-0 text-carbon transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-signal-orange"
                         aria-label="Read article"
