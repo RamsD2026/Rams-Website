@@ -31,9 +31,17 @@ export function getPost(slug: string) {
   return { ...post, ...BODIES[post.num], date: DATES[post.slug] };
 }
 
+/* Card framing for illustrations whose drawing sits small inside its
+   frame: a tighter viewBox (16:10) so it fills the card like the rest. */
+const THUMB_VIEW: Record<string, string> = {
+  "04": "453 30 664 415",
+};
+
 /** An illustration cropped to fill a card's frame rather than letterboxed. */
 export function thumbSvg(num: string) {
-  return BODIES[num].heroSvg.replace("<svg ", '<svg preserveAspectRatio="xMidYMid slice" ');
+  let svg = BODIES[num].heroSvg;
+  if (THUMB_VIEW[num]) svg = svg.replace(/viewBox="[^"]*"/, 'viewBox="' + THUMB_VIEW[num] + '"');
+  return svg.replace("<svg ", '<svg preserveAspectRatio="xMidYMid slice" ');
 }
 
 /** A post's publish date (ISO), once one is set in dates.ts. */
