@@ -55,14 +55,15 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
               <p className="mt-5 max-w-[720px] text-[16px] sm:text-[19px] leading-[1.55] text-graphite/65">
                 {post.standfirst}
               </p>
-              <div className="mt-7 pt-5 border-t border-[#ECECEF] flex flex-wrap items-center justify-between gap-3">
-                <BlogMeta author={post.author} date={post.date} className="text-[13.5px]" />
-                {post.series && (
-                  <span className="text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-graphite/45">
-                    {post.series}
-                  </span>
-                )}
-              </div>
+            </div>
+            {/* the rule runs the full width, the same as the picture under it */}
+            <div className="mt-7 pt-5 border-t border-[#ECECEF] flex flex-wrap items-center justify-between gap-3">
+              <BlogMeta author={post.author} date={post.date} className="text-[13.5px]" />
+              {post.series && (
+                <span className="text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-graphite/45">
+                  {post.series}
+                </span>
+              )}
             </div>
           </div>
 
