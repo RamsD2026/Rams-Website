@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { LightHeroGround } from "@/components/sections/LightHero";
 import type { BlogPost } from "./content/posts";
 import { BLOG_CSS } from "./blog-styles";
+import { BlogMeta } from "./BlogMeta";
 
 /**
  * One article of the Rack Safety Series.
@@ -17,7 +18,7 @@ import { BLOG_CSS } from "./blog-styles";
  * of the Solutions heroes (content/post-NN.ts, generated).
  */
 
-type Full = BlogPost & { heroSvg: string; html: string };
+type Full = BlogPost & { heroSvg: string; html: string; date?: string };
 
 export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { thumb: string })[] }) {
   const hasToc = post.toc.length > 0;
@@ -30,20 +31,39 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
       <section className="relative overflow-hidden" id="top" data-hero-tone="light" style={{ background: "#FFFFFF" }}>
         <LightHeroGround />
         <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-12 sm:pb-14">
-          <div className="max-w-[920px] mx-auto text-center">
-            {/* one plain label, the title, the standfirst, one meta line */}
-            <p className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-signal-orange">
-              {post.kicker}
-            </p>
-            <h1 className="mt-5 text-[34px] sm:text-[48px] lg:text-[58px] font-bold leading-[1.06] tracking-[-0.04em] text-carbon">
-              {post.title}
-            </h1>
-            <p className="mt-5 mx-auto max-w-[720px] text-[16px] sm:text-[19px] leading-[1.55] text-graphite/65">
-              {post.standfirst}
-            </p>
-            <p className="mt-6 text-[13.5px] text-graphite/50">
-              {[post.author && `By ${post.author}`, post.readTime, post.series].filter(Boolean).join(" · ")}
-            </p>
+          {/* left-aligned editorial hero: breadcrumb, label, title,
+              standfirst, then author / date / read time */}
+          <div className="max-w-[1080px] mx-auto">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-graphite/50">
+                <li><Link href="/" className="hover:text-carbon transition-colors">Home</Link></li>
+                <li aria-hidden>›</li>
+                <li><Link href="/resources/insights" className="hover:text-carbon transition-colors">Resources</Link></li>
+                <li aria-hidden>›</li>
+                <li><Link href="/resources/insights" className="hover:text-carbon transition-colors">Blogs</Link></li>
+                <li aria-hidden>›</li>
+                <li aria-current="page" className="text-carbon/80 font-medium truncate max-w-[60vw] sm:max-w-[420px]">{post.title}</li>
+              </ol>
+            </nav>
+            <div className="max-w-[860px]">
+              <p className="mt-10 text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-signal-orange">
+                {post.kicker}
+              </p>
+              <h1 className="mt-4 text-[34px] sm:text-[46px] lg:text-[56px] font-bold leading-[1.06] tracking-[-0.04em] text-carbon">
+                {post.title}
+              </h1>
+              <p className="mt-5 max-w-[720px] text-[16px] sm:text-[19px] leading-[1.55] text-graphite/65">
+                {post.standfirst}
+              </p>
+              <div className="mt-7 pt-5 border-t border-[#ECECEF] flex flex-wrap items-center justify-between gap-3">
+                <BlogMeta author={post.author} date={post.date} readTime={post.readTime} className="text-[13.5px]" />
+                {post.series && (
+                  <span className="text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-graphite/45">
+                    {post.series}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* the article's own hero illustration */}

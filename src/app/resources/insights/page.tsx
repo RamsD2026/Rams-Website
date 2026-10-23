@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { BlogIndex } from "@/components/sections/blog/BlogIndex";
-import { POSTS, thumbSvg } from "@/components/sections/blog/content";
+import { POSTS, postDate, thumbSvg } from "@/components/sections/blog/content";
 
 export const metadata: Metadata = {
   title: "Blogs — Rack Safety Series | RAMS Digital",
@@ -17,6 +17,6 @@ export const metadata: Metadata = {
  * sections/newsroom.
  */
 export default function BlogsPage() {
-  const posts = POSTS.map((p) => ({ ...p, thumb: thumbSvg(p.num) }));
+  const posts = POSTS.map((p) => ({ ...p, thumb: thumbSvg(p.num), date: postDate(p.slug) }));
   return <BlogIndex posts={posts} />;
 }

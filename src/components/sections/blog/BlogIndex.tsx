@@ -7,10 +7,11 @@ import { ArrowRight } from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
 import { LightHeroGround } from "@/components/sections/LightHero";
 import { FilterBar } from "@/components/sections/FilterBar";
+import { BlogMeta } from "./BlogMeta";
 import type { BlogPost } from "./content/posts";
 
 /** A post with its card illustration, prepared on the server. */
-export type BlogCard = BlogPost & { thumb: string };
+export type BlogCard = BlogPost & { thumb: string; date?: string };
 
 /**
  * /resources/insights — the blog: the RAMS Inspect "Rack Safety Series".
@@ -146,20 +147,23 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
                   dangerouslySetInnerHTML={{ __html: p.thumb }}
                 />
                 <div className="flex flex-col flex-1 p-6">
-                  <div className="flex items-center gap-2.5 text-[12px] text-graphite/55">
-                    <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange px-2.5 py-1 rounded-full bg-[rgba(255,106,0,0.08)]">
-                      {p.tier}
-                    </span>
-                    <span>{p.readTime}</span>
-                  </div>
+                  <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange">
+                    {p.tier}
+                  </span>
                   <h2 className="mt-3.5 text-[19px] font-bold tracking-[-0.02em] leading-[1.3] text-carbon group-hover:text-signal-orange transition-colors">
                     {p.title}
                   </h2>
                   <p className="mt-2.5 text-[14px] leading-[1.6] text-graphite/65 line-clamp-3">{p.standfirst}</p>
-                  <span className="mt-auto pt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-carbon group-hover:text-signal-orange transition-colors">
-                    Read article
-                    <ArrowRight className="w-4 h-4" aria-hidden />
-                  </span>
+                  {/* author, date and read time, then the action */}
+                  <div className="mt-auto pt-5">
+                    <div className="pt-4 border-t border-[#ECECEF] flex items-center justify-between gap-3">
+                      <BlogMeta author={p.author} date={p.date} readTime={p.readTime} />
+                      <ArrowRight
+                        className="w-4 h-4 shrink-0 text-carbon transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-signal-orange"
+                        aria-label="Read article"
+                      />
+                    </div>
+                  </div>
                 </div>
               </Link>
             </motion.article>
