@@ -89,14 +89,12 @@ function GroupLabel({ children, live = false }: { children: React.ReactNode; liv
   );
 }
 
-/** "Read article" with a round arrow that fills orange on hover. */
+/** "Read article" with an arrow that nudges on hover. */
 function ReadMore({ className = "" }: { className?: string }) {
   return (
-    <span className={"inline-flex items-center gap-3 text-[13.5px] font-semibold text-carbon " + className}>
+    <span className={"inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-carbon " + className}>
       Read article
-      <span className="flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 group-hover:bg-signal-orange group-hover:text-white" style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}>
-        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
-      </span>
+      <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
     </span>
   );
 }
@@ -229,12 +227,12 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
             <GroupLabel live>Latest post</GroupLabel>
             <Link
               href={`/resources/insights/${featured.slug}`}
-              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
+              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center rounded-2xl p-3 -m-3 transition-colors duration-300 hover:bg-[#EAEAED]"
             >
               <Thumb post={featured} className="lg:col-span-7 aspect-[16/9]" />
               <div className="lg:col-span-5">
                 <BlogMeta author={featured.author} date={featured.date} />
-                <h2 className="mt-4 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] leading-[1.15] text-carbon transition-colors group-hover:text-signal-orange">
+                <h2 className="mt-4 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] leading-[1.15] text-carbon">
                   {featured.title}
                 </h2>
                 <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.65] text-graphite/65 line-clamp-3">
@@ -260,10 +258,10 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.06, ease: EASE }}
             >
-              <Link href={`/resources/insights/${p.slug}`} className="group flex flex-col h-full">
+              <Link href={`/resources/insights/${p.slug}`} className="group flex flex-col h-full rounded-2xl p-3 -m-3 transition-colors duration-300 hover:bg-[#EAEAED]">
                 <Thumb post={p} className="aspect-[16/10]" />
                 <BlogMeta author={p.author} date={p.date} className="mt-5" />
-                <h2 className="mt-3 text-[19px] sm:text-[20px] font-bold tracking-[-0.025em] leading-[1.28] text-carbon transition-colors group-hover:text-signal-orange">
+                <h2 className="mt-3 text-[19px] sm:text-[20px] font-bold tracking-[-0.025em] leading-[1.28] text-carbon">
                   {p.title}
                 </h2>
                 <p className="mt-2.5 text-[14.5px] leading-[1.6] text-graphite/60 line-clamp-2">{p.standfirst}</p>
