@@ -53,14 +53,14 @@ import { RegisterDialog } from "./RegisterDialog";
  * where that set is chosen; give it two more live sessions and they take
  * those slots unchanged.
  *
- * ── It advances on its own, and stops when you touch it ─────────────
- * A 6s interval steps the track and wraps at the end. It pauses while the
- * pointer is over the viewport, and a press on any dot stops it for good —
- * `manual` latches — because a carousel that keeps moving after somebody has
- * chosen a slide takes the page back off them.
+ * ── It advances on its own, all the time ────────────────────────────
+ * A 5s interval steps the track and wraps at the end, whether or not the
+ * pointer is over it. A press on a dot shows that slide and holds the track
+ * there for a while (`HOLD_MS`) before it moves on again; an open
+ * registration form holds it until the form is closed.
  *
- * `prefers-reduced-motion` disables the timer entirely rather than shortening
- * it, and the spring collapses to a zero-duration jump.
+ * `prefers-reduced-motion` keeps the steps but drops the slide: the spring
+ * collapses to a zero-duration jump.
  *
  * ── The pulse says live ─────────────────────────────────────────────
  * One dot with a ring expanding out of it, and the keyframes are namespaced
@@ -71,7 +71,8 @@ import { RegisterDialog } from "./RegisterDialog";
 
 const GAP = 20;
 const PEEK = 0.12;
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 5000;
+const HOLD_MS = 10000;
 
 /** "RAMS session" or "Guest session" — a quiet tint, the careers board's
     badge, so it labels the card without competing with the title. */
@@ -175,8 +176,8 @@ function Card({ item, onRegister }: { item: Featured; onRegister: () => void }) 
 export function WebinarUpcoming() {
   const [registering, setRegistering] = useState<Featured | null>(null);
   const [index, setIndex] = useState(0);
-  const [manual, setManual] = useState(false);
-  const [hover, setHover] = useState(false);
+  // bumped by a press on a dot, which holds the track there a while
+  const [picked, setPicked] = useState(0);
   const [width, setWidth] = useState(0);
   const viewport = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -196,13 +197,19 @@ export function WebinarUpcoming() {
   const maxIndex = Math.max(0, FEATURED.length - 1);
 
   useEffect(() => {
-    if (reduce || manual || hover || maxIndex === 0) return;
-    const t = setInterval(
-      () => setIndex((i) => (i >= maxIndex ? 0 : i + 1)),
-      AUTOPLAY_MS,
-    );
-    return () => clearInterval(t);
-  }, [reduce, manual, hover, maxIndex]);
+    if (registering || maxIndex === 0) return;
+    let t: ReturnType<typeof setInterval> | undefined;
+    const start = () => {
+      t = setInterval(() => setIndex((i) => (i >= maxIndex ? 0 : i + 1)), AUTOPLAY_MS);
+    };
+    // after a pick, wait out the hold before stepping again
+    const h = picked ? setTimeout(start, HOLD_MS - AUTOPLAY_MS) : undefined;
+    if (!picked) start();
+    return () => {
+      if (h) clearTimeout(h);
+      if (t) clearInterval(t);
+    };
+  }, [registering, maxIndex, picked]);
 
   return (
     <Section surface="white" id="upcoming" padding="tight">
@@ -250,8 +257,6 @@ export function WebinarUpcoming() {
       <div
         ref={viewport}
         className="relative w-full overflow-hidden"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
       >
         <motion.div
           className="flex"
@@ -290,7 +295,7 @@ export function WebinarUpcoming() {
                 key={f.id}
                 type="button"
                 onClick={() => {
-                  setManual(true);
+                  setPicked((n) => n + 1);
                   setIndex(i);
                 }}
                 aria-label={`Go to slide ${i + 1}`}
