@@ -27,6 +27,41 @@ export type BlogCard = BlogPost & { thumb: string; date?: string };
 
 const ALL = "All articles";
 
+/** The card picture: the article's illustration in a rounded frame, its tier
+    on a frosted tag and its place in the series, zooming a touch on hover. */
+function Thumb({ post, className = "" }: { post: BlogCard; className?: string }) {
+  return (
+    <div className={"relative overflow-hidden rounded-[20px] bg-[#0B1016] " + className}>
+      <div
+        aria-hidden
+        className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
+        dangerouslySetInnerHTML={{ __html: post.thumb }}
+      />
+      <span
+        className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-white"
+        style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)" }}
+      >
+        {post.tier}
+      </span>
+      <span className="absolute top-4 right-4 text-[10.5px] font-mono font-bold tracking-[0.14em] uppercase text-white/60 tabular-nums">
+        No. {post.num}
+      </span>
+    </div>
+  );
+}
+
+/** "Read article" with a round arrow that fills orange on hover. */
+function ReadMore({ className = "" }: { className?: string }) {
+  return (
+    <span className={"inline-flex items-center gap-3 text-[13.5px] font-semibold text-carbon " + className}>
+      Read article
+      <span className="flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 group-hover:bg-signal-orange group-hover:text-white" style={{ boxShadow: "inset 0 0 0 1px #E0E0E6" }}>
+        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
+      </span>
+    </span>
+  );
+}
+
 export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
   const TIERS = ["Awareness", "Educational", "Deep Technical", "Thought Leadership"].filter((t) =>
     POSTS.some((p) => p.tier === t),
@@ -47,6 +82,10 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
       return [p.title, p.standfirst, p.kicker].join(" ").toLowerCase().includes(term);
     });
   }, [POSTS, tier, q]);
+
+  const browsing = tier === ALL && !q.trim();
+  const featured = browsing ? shown[0] : undefined;
+  const rest = featured ? shown.slice(1) : shown;
 
   return (
     <>
@@ -128,8 +167,37 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
           counts={counts}
         />
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {shown.map((p, i) => (
+        {/* With no filter or search, the first article leads in a wide
+            feature card; the rest follow in the grid. */}
+        {featured && (
+          <motion.article
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="mt-10"
+          >
+            <Link
+              href={`/resources/insights/${featured.slug}`}
+              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
+            >
+              <Thumb post={featured} className="lg:col-span-7 aspect-[16/9]" />
+              <div className="lg:col-span-5">
+                <BlogMeta author={featured.author} date={featured.date} />
+                <h2 className="mt-4 text-[26px] sm:text-[32px] font-bold tracking-[-0.03em] leading-[1.15] text-carbon transition-colors group-hover:text-signal-orange">
+                  {featured.title}
+                </h2>
+                <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.65] text-graphite/65 line-clamp-3">
+                  {featured.standfirst}
+                </p>
+                <ReadMore className="mt-7" />
+              </div>
+            </Link>
+          </motion.article>
+        )}
+
+        <div className={(featured ? "mt-14 sm:mt-16" : "mt-10") + " grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12"}>
+          {rest.map((p, i) => (
             <motion.article
               key={p.slug}
               initial={{ opacity: 0, y: 20 }}
@@ -137,34 +205,14 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.06, ease: EASE }}
             >
-              <Link
-                href={`/resources/insights/${p.slug}`}
-                className="group flex flex-col h-full overflow-hidden rounded-2xl bg-white border border-[#ECECEF] transition-transform duration-300 hover:-translate-y-1"
-              >
-                <div
-                  className="blog-thumb relative aspect-[16/9] overflow-hidden bg-[#0B1016] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
-                  aria-hidden
-                  dangerouslySetInnerHTML={{ __html: p.thumb }}
-                />
-                <div className="flex flex-col flex-1 p-6">
-                  <span className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-signal-orange">
-                    {p.tier}
-                  </span>
-                  <h2 className="mt-3.5 text-[19px] font-bold tracking-[-0.02em] leading-[1.3] text-carbon group-hover:text-signal-orange transition-colors">
-                    {p.title}
-                  </h2>
-                  <p className="mt-2.5 text-[14px] leading-[1.6] text-graphite/65 line-clamp-3">{p.standfirst}</p>
-                  {/* author, date and read time, then the action */}
-                  <div className="mt-auto pt-5">
-                    <div className="pt-4 border-t border-[#ECECEF] flex items-center justify-between gap-3">
-                      <BlogMeta author={p.author} date={p.date} />
-                      <ArrowRight
-                        className="w-4 h-4 shrink-0 text-carbon transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-signal-orange"
-                        aria-label="Read article"
-                      />
-                    </div>
-                  </div>
-                </div>
+              <Link href={`/resources/insights/${p.slug}`} className="group flex flex-col h-full">
+                <Thumb post={p} className="aspect-[16/10]" />
+                <BlogMeta author={p.author} date={p.date} className="mt-5" />
+                <h2 className="mt-3 text-[19px] sm:text-[20px] font-bold tracking-[-0.025em] leading-[1.28] text-carbon transition-colors group-hover:text-signal-orange">
+                  {p.title}
+                </h2>
+                <p className="mt-2.5 text-[14.5px] leading-[1.6] text-graphite/60 line-clamp-2">{p.standfirst}</p>
+                <ReadMore className="mt-auto pt-5" />
               </Link>
             </motion.article>
           ))}
