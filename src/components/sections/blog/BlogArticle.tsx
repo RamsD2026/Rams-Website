@@ -131,7 +131,7 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
                   className="group flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ECECEF] transition-transform duration-300 hover:-translate-y-1"
                 >
                   <div
-                    className="relative aspect-[16/9] overflow-hidden bg-[#0B1016] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
+                    className="relative aspect-[16/9] overflow-hidden bg-[#0B1016] rounded-t-xl [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
                     aria-hidden
                     dangerouslySetInnerHTML={{ __html: p.thumb }}
                   />

@@ -3,9 +3,22 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Boxes,
+  ClipboardCheck,
+  FileText,
+  Forklift,
+  Gauge,
+  Layers,
+  Ruler,
+  ShieldCheck,
+  Wrench,
+} from "lucide-react";
 import { EASE, Section } from "@/components/sections/rackiq/rackiq-shared";
-import { LightHeroGround } from "@/components/sections/LightHero";
+import { HeroTiles, LightHeroGround, type HeroTile } from "@/components/sections/LightHero";
+import { ClientStrip } from "@/components/sections/ClientStrip";
 import { FilterBar } from "@/components/sections/FilterBar";
 import { BlogMeta } from "./BlogMeta";
 import type { BlogPost } from "./content/posts";
@@ -27,11 +40,26 @@ export type BlogCard = BlogPost & { thumb: string; date?: string };
 
 const ALL = "All articles";
 
+/* The orbit of tiles the Resources heroes carry (webinars, videos, news),
+   with the subjects of this series. */
+const TILES: HeroTile[] = [
+  { icon: BookOpen, tint: "#3E63DD" },
+  { icon: ShieldCheck, tint: "#F76808" },
+  { icon: Forklift, tint: "#0891B2" },
+  { icon: Layers, tint: "#DB2777" },
+  { icon: Gauge, tint: "#6647F0" },
+  { icon: FileText, tint: "#299764" },
+  { icon: ClipboardCheck, tint: "#CA8A04" },
+  { icon: Boxes, tint: "#E5484D" },
+  { icon: Wrench, tint: "#65A30D" },
+  { icon: Ruler, tint: "#0F766E" },
+];
+
 /** The card picture: the article's illustration in a rounded frame, its tier
     on a frosted tag and its place in the series, zooming a touch on hover. */
 function Thumb({ post, className = "" }: { post: BlogCard; className?: string }) {
   return (
-    <div className={"relative overflow-hidden rounded-[20px] bg-[#0B1016] " + className}>
+    <div className={"relative overflow-hidden rounded-xl bg-[#0B1016] " + className}>
       <div
         aria-hidden
         className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
@@ -103,7 +131,8 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
       {/* ── hero ─────────────────────────────────────── */}
       <section className="relative overflow-hidden" id="top" data-hero-tone="light" style={{ background: "#FFFFFF" }}>
         <LightHeroGround />
-        <div className="relative rams-container pt-40 sm:pt-48 lg:pt-56 pb-16 sm:pb-20">
+        <div className="relative rams-container pt-40 sm:pt-52 lg:pt-60 pb-20 sm:pb-24 lg:pb-28">
+          <HeroTiles tiles={TILES} />
           <div className="max-w-[1080px] mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -122,7 +151,7 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.95, delay: 0.1, ease: EASE }}
-              className="mt-8 text-[44px] sm:text-[68px] lg:text-[88px] font-bold leading-[1.06] tracking-[-0.045em]"
+              className="mt-8 text-[46px] sm:text-[72px] lg:text-[96px] font-bold leading-[1.06] tracking-[-0.045em]"
             >
               <span className="block text-carbon">Rack Safety</span>
               <span className="block text-graphite/50">Series.</span>
@@ -161,6 +190,16 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
               </Link>
             </motion.div>
           </div>
+
+          {/* the client strip, in the slot the other Resources heroes put it in */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
+            className="relative mt-24 sm:mt-28 lg:mt-32"
+          >
+            <ClientStrip label="Trusted on the warehouse floor" />
+          </motion.div>
         </div>
       </section>
 

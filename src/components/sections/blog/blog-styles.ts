@@ -112,7 +112,7 @@ export const BLOG_CSS = `
 
 /* illustrations: the animated-screen ground, quietly framed */
 .blog-body figure{margin:40px 0}
-.blog-art svg,.blog-body svg.art{width:100%;height:auto;display:block;border-radius:16px;background:#0B1016}
+.blog-art svg,.blog-body svg.art{width:100%;height:auto;display:block;border-radius:10px;background:#0B1016}
 .blog-art svg text,.blog-body svg.art text{font-family:var(--font-heading),system-ui,sans-serif}
 .blog-art svg text[font-family*="Mono"],.blog-body svg.art text[font-family*="Mono"]{font-family:var(--font-mono),ui-monospace,monospace}
 .blog-body figcaption,.blog-art figcaption{margin-top:12px;font-size:13.5px;line-height:1.55;color:${MUTED};text-align:left}
