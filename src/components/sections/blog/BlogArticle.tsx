@@ -76,36 +76,40 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
       </section>
 
       {/* ── the article ──────────────────────────────── */}
+      {/* the contents and the text sit in the same 1080 as the picture above,
+          edge to edge with it */}
       <section className="bg-white pb-24 sm:pb-28">
-        <div
-          className={
-            "rams-container pt-6 sm:pt-10 " +
-            (hasToc ? "lg:grid lg:grid-cols-[220px_minmax(0,42rem)] lg:justify-center lg:gap-14 lg:items-start" : "")
-          }
-        >
-          {hasToc && (
-            <nav aria-label="In this article" className="hidden lg:block sticky top-28 pt-2">
-              {post.tocTitle && (
-                <p className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 mb-3">
-                  {post.tocTitle}
-                </p>
-              )}
-              <ul className="space-y-0.5">
-                {post.toc.map((t) => (
-                  <li key={t.id}>
-                    <a
-                      href={`#${t.id}`}
-                      className="block border-l-2 border-[#ECECEF] pl-3.5 py-1.5 text-[13.5px] leading-[1.35] text-graphite/60 hover:text-carbon hover:border-signal-orange transition-colors"
-                    >
-                      {t.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
-          <div className={`blog-body min-w-0 ${hasToc ? "" : "max-w-[46rem] mx-auto"}`}>
-            <article dangerouslySetInnerHTML={{ __html: post.html }} />
+        <div className="rams-container pt-6 sm:pt-10">
+          <div
+            className={
+              "max-w-[1080px] mx-auto " +
+              (hasToc ? "lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14 lg:items-start" : "")
+            }
+          >
+            {hasToc && (
+              <nav aria-label="In this article" className="hidden lg:block sticky top-28 pt-2">
+                {post.tocTitle && (
+                  <p className="text-[10.5px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/45 mb-3">
+                    {post.tocTitle}
+                  </p>
+                )}
+                <ul className="space-y-0.5">
+                  {post.toc.map((t) => (
+                    <li key={t.id}>
+                      <a
+                        href={`#${t.id}`}
+                        className="block border-l-2 border-[#ECECEF] pl-3.5 py-1.5 text-[13.5px] leading-[1.35] text-graphite/60 hover:text-carbon hover:border-signal-orange transition-colors"
+                      >
+                        {t.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <div className="blog-body min-w-0">
+              <article dangerouslySetInnerHTML={{ __html: post.html }} />
+            </div>
           </div>
         </div>
       </section>
