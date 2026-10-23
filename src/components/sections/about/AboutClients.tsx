@@ -151,27 +151,13 @@ function Who({ v }: { v: Testimonial }) {
 }
 
 /** One testimonial card, all the same height: who, a hairline, the quote
-    clamped to three lines. Hovering it (or a tap) brings up the full review. */
-function VoiceCard({
-  v,
-  onOpen,
-  onEnter,
-  onLeave,
-}: {
-  v: Testimonial;
-  onOpen: (el: HTMLElement) => void;
-  onEnter: (el: HTMLElement) => void;
-  onLeave: () => void;
-}) {
+    clamped to three lines. A click (or a tap) brings up the full review. */
+function VoiceCard({ v, onOpen }: { v: Testimonial; onOpen: (el: HTMLElement) => void }) {
   return (
     <button
       type="button"
       onClick={(e) => onOpen(e.currentTarget)}
-      onPointerMove={(e) => {
-        if (e.pointerType === "mouse" && (e.movementX || e.movementY)) onEnter(e.currentTarget);
-      }}
-      onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
-      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-shadow duration-300 ease-out hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
+      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-pointer transition-shadow duration-300 ease-out hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
       style={{
         borderRadius: 16,
         border: `1px solid ${HAIR}`,
@@ -190,11 +176,11 @@ const POP_W = 540;
 const EDGE = 16;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** The full review, lifted out of its card: the white card grows out of the
-    one under the pointer into a larger one in the middle of the window, then the company's mark, the
-    quote and the person rise in — no dimmed page behind it. It shrinks back
-    into the card when the pointer leaves it, on a tap elsewhere, on scroll,
-    on the ✕ or on Escape. */
+/** The full review, lifted out of its card: the white card grows out of
+    its card into a larger one in the middle of the window, then the
+    company's mark, the quote and the person rise in — no dimmed page behind
+    it. It shrinks back into the card on a tap elsewhere, on scroll, on the
+    ✕ or on Escape (and, shown by the rail, when its time is up). */
 function ReviewPop({
   v,
   from,
@@ -249,7 +235,7 @@ function ReviewPop({
       { duration: 0.6, ease: EASE },
     );
     animate(
-      "[data-in]",
+      parts(el),
       { opacity: [0, 1], y: [14, 0] },
       { duration: 0.6, ease: EASE, delay: stagger(0.1, { startDelay: 0.3 }) },
     );
@@ -361,32 +347,31 @@ function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
   else el.scrollBy({ left: dir * step, behavior });
 }
 
+/** How long the rail shows a review: longer for a longer quote. */
+const showFor = (v: Testimonial) => Math.min(8000, 3500 + v.quote.length * 14);
+
+/** The first card wholly in view at the rail's left edge. */
+function leadCard(el: HTMLDivElement) {
+  const left = el.getBoundingClientRect().left - 4;
+  return [...el.querySelectorAll<HTMLElement>("[data-card]")].find(
+    (c) => c.getBoundingClientRect().left >= left,
+  );
+}
+
+/*
+ * The rail runs a showcase on its own while it is in view: the first card's
+ * review grows into the middle of the window, holds for a reading time,
+ * goes back, the rail steps one card on, and the next card's review comes
+ * up. A click on any card opens its review as usual and holds the showcase
+ * until that review is closed; a hand on the rail, or the pointer resting
+ * on a review, holds it too.
+ */
 function Voices() {
-  const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect } | null>(null);
-  const closing = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const stop = () => {
-    if (closing.current) clearTimeout(closing.current);
-  };
-  const show = (v: Testimonial, el: HTMLElement) => {
-    stop();
-    setOpen({ v, from: el.getBoundingClientRect() });
-  };
-  // moving the mouse over a card opens its review at once: any card, the
-  // left and right ones too, and straight on from another open review
-  const enter = (v: Testimonial, el: HTMLElement) => {
-    if (open?.v === v) return stop();
-    show(v, el);
-  };
-  const close = useCallback(() => {
-    if (closing.current) clearTimeout(closing.current);
-    setOpen(null);
-  }, []);
-  // the review holds while the pointer is on its card or on the review
-  // itself, and goes a moment after it has left both
-  const drop = () => {
-    stop();
-    closing.current = setTimeout(close, 500);
-  };
+  const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect; auto: boolean } | null>(null);
+  // the rail's review has just been shown, so the next move is a step
+  const [shown, setShown] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
   const rail = useRef<HTMLDivElement>(null);
   const [hold, setHold] = useState(false);
@@ -399,6 +384,23 @@ function Voices() {
 
   const go = (dir: 1 | -1) => advance(rail.current, dir);
 
+  // the showcase waits a while after the reader has had a hand in it
+  const holdAWhile = useCallback(() => {
+    setHold(true);
+    if (idle.current) clearTimeout(idle.current);
+    idle.current = setTimeout(() => setHold(false), STEP_MS);
+  }, []);
+
+  const show = (v: Testimonial, el: HTMLElement) => {
+    setOpen({ v, from: el.getBoundingClientRect(), auto: false });
+  };
+  const close = useCallback(() => {
+    setOpen(null);
+    setShown(true);
+    setPaused(false);
+    holdAWhile();
+  }, [holdAWhile]);
+
   // the edges, for the arrows
   const onScroll = () => {
     const el = rail.current;
@@ -406,33 +408,54 @@ function Voices() {
     setAtStart(el.scrollLeft <= 4);
     setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
     if (auto.current) return;
-    // a hand on the rail holds the auto-step until it has been still a while
-    setHold(true);
-    if (idle.current) clearTimeout(idle.current);
-    idle.current = setTimeout(() => setHold(false), STEP_MS);
+    // a hand on the rail holds the showcase until it has been still a while
+    holdAWhile();
   };
 
-  // a finger lifted lets it run again after a pause
-  const release = () => {
-    if (idle.current) clearTimeout(idle.current);
-    idle.current = setTimeout(() => setHold(false), STEP_MS);
-  };
-
+  // only while the rail is (nearly) all in view; out of it, its review goes
   useEffect(() => {
-    if (hold || open) return;
-    const t = setInterval(() => {
-      auto.current = true;
-      advance(rail.current, 1, !reduce);
-      setTimeout(() => {
-        auto.current = false;
-      }, 900);
-    }, STEP_MS);
-    return () => clearInterval(t);
-  }, [reduce, hold, open]);
+    const el = rail.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        const yes = e.intersectionRatio >= 0.9;
+        setInView(yes);
+        if (!yes) setOpen((o) => (o?.auto ? null : o));
+      },
+      { threshold: [0, 0.5, 0.9, 1] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // the showcase: show the first card's review, put it back, step, repeat
+  useEffect(() => {
+    if (hold || paused || !inView) return;
+    if (open && !open.auto) return;
+    const wait = open ? showFor(open.v) : shown ? 700 : 600;
+    const t = setTimeout(() => {
+      const el = rail.current;
+      if (!el) return;
+      if (open) {
+        setOpen(null);
+        setShown(true);
+      } else if (shown) {
+        auto.current = true;
+        advance(el, 1, !reduce);
+        setTimeout(() => {
+          auto.current = false;
+          setShown(false);
+        }, 900);
+      } else {
+        const card = leadCard(el);
+        if (card) setOpen({ v: TESTIMONIALS[Number(card.dataset.i)], from: card.getBoundingClientRect(), auto: true });
+      }
+    }, wait);
+    return () => clearTimeout(t);
+  }, [open, shown, hold, paused, inView, reduce]);
 
   useEffect(() => () => {
     if (idle.current) clearTimeout(idle.current);
-    stop();
   }, []);
 
   return (
@@ -441,24 +464,20 @@ function Voices() {
         ref={rail}
         onScroll={onScroll}
         onTouchStart={() => setHold(true)}
-        onTouchEnd={release}
+        onTouchEnd={holdAWhile}
         className="flex items-stretch overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-1 pb-2"
         style={{ gap: GAP }}
         aria-label="Testimonials"
         tabIndex={0}
       >
-        {TESTIMONIALS.map((v) => (
+        {TESTIMONIALS.map((v, i) => (
           <div
             key={v.name}
             data-card
+            data-i={i}
             className="shrink-0 snap-start w-[86%] sm:w-[400px]"
           >
-            <VoiceCard
-              v={v}
-              onOpen={(el) => show(v, el)}
-              onEnter={(el) => enter(v, el)}
-              onLeave={drop}
-            />
+            <VoiceCard v={v} onOpen={(el) => show(v, el)} />
           </div>
         ))}
       </div>
@@ -481,7 +500,16 @@ function Voices() {
       </div>
 
       <AnimatePresence>
-        {open && <ReviewPop key={open.v.name} v={open.v} from={open.from} onKeep={stop} onLeave={drop} onClose={close} />}
+        {open && (
+          <ReviewPop
+            key={open.v.name}
+            v={open.v}
+            from={open.from}
+            onKeep={() => setPaused(true)}
+            onLeave={() => setPaused(false)}
+            onClose={close}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
