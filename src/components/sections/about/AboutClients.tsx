@@ -167,8 +167,9 @@ function VoiceCard({
     <button
       type="button"
       onClick={(e) => onOpen(e.currentTarget)}
-      onPointerEnter={(e) => e.pointerType === "mouse" && onEnter(e.currentTarget)}
-      onPointerMove={(e) => e.pointerType === "mouse" && onEnter(e.currentTarget)}
+      onPointerMove={(e) => {
+        if (e.pointerType === "mouse" && (e.movementX || e.movementY)) onEnter(e.currentTarget);
+      }}
       onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
       className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-shadow duration-300 ease-out hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
       style={{
@@ -370,11 +371,10 @@ function Voices() {
     stop();
     setOpen({ v, from: el.getBoundingClientRect() });
   };
-  // hover opens a card's review at once: any card, the left and right ones
-  // too, and straight on from another open review
+  // moving the mouse over a card opens its review at once: any card, the
+  // left and right ones too, and straight on from another open review
   const enter = (v: Testimonial, el: HTMLElement) => {
     if (open?.v === v) return stop();
-    if (auto.current) return;
     show(v, el);
   };
   const close = useCallback(() => {
