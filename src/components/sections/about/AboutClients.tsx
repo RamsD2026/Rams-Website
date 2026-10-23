@@ -197,11 +197,13 @@ function ReviewPop({
   v,
   from,
   onKeep,
+  onLeave,
   onClose,
 }: {
   v: Testimonial;
   from: DOMRect;
   onKeep: () => void;
+  onLeave: () => void;
   onClose: () => void;
 }) {
   const mark = v.logo ? LOGOS.get(v.logo) : undefined;
@@ -238,16 +240,16 @@ function ReviewPop({
       return;
     }
     const c = toCard(el);
-    animate(el, { opacity: [0, 1] }, { duration: 0.12 });
+    animate(el, { opacity: [0, 1] }, { duration: 0.25 });
     animate(
       el,
       { x: [c.x, 0], y: [c.y, 0], scaleX: [c.scaleX, 1], scaleY: [c.scaleY, 1] },
-      { type: "spring", stiffness: 320, damping: 32, mass: 0.9 },
+      { duration: 0.75, ease: EASE },
     );
     animate(
       "[data-in]",
       { opacity: [0, 1], y: [14, 0] },
-      { duration: 0.45, ease: EASE, delay: stagger(0.07, { startDelay: 0.18 }) },
+      { duration: 0.6, ease: EASE, delay: stagger(0.12, { startDelay: 0.4 }) },
     );
   }, [from, width, reduce, toCard]);
 
@@ -260,8 +262,8 @@ function ReviewPop({
       if (reduce) {
         await animate(el, { opacity: 0 }, { duration: 0.15 });
       } else {
-        animate(parts(el), { opacity: 0 }, { duration: 0.12 });
-        await animate(el, { ...toCard(el), opacity: 0 }, { duration: 0.32, ease: EASE });
+        animate(parts(el), { opacity: 0 }, { duration: 0.2 });
+        await animate(el, { ...toCard(el), opacity: 0 }, { duration: 0.55, ease: EASE });
       }
       safeToRemove?.();
     };
@@ -292,7 +294,7 @@ function ReviewPop({
       role="dialog"
       aria-label={`Review from ${v.name}`}
       onPointerEnter={onKeep}
-      onPointerLeave={(e) => e.pointerType === "mouse" && onClose()}
+      onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
       className="fixed z-[200] max-h-[calc(100svh-32px)] overflow-auto bg-white p-8 sm:p-9 origin-top-left"
       style={{
         left: from.left,
@@ -374,10 +376,14 @@ function Voices() {
     stop();
     opening.current = setTimeout(() => show(v, el), 260);
   };
-  // time enough to move from the card onto the review
+  // leaving the card only cancels a review not yet open: an open one holds
+  // until the pointer leaves it, with a moment to come back
   const leave = () => {
+    if (opening.current) clearTimeout(opening.current);
+  };
+  const drop = () => {
     stop();
-    closing.current = setTimeout(() => setOpen(null), 450);
+    closing.current = setTimeout(() => setOpen(null), 700);
   };
   const close = useCallback(() => {
     stop();
@@ -477,7 +483,7 @@ function Voices() {
       </div>
 
       <AnimatePresence>
-        {open && <ReviewPop key={open.v.name} v={open.v} from={open.from} onKeep={stop} onClose={close} />}
+        {open && <ReviewPop key={open.v.name} v={open.v} from={open.from} onKeep={stop} onLeave={drop} onClose={close} />}
       </AnimatePresence>
     </div>
   );
