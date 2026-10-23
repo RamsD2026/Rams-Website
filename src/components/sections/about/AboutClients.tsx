@@ -156,16 +156,19 @@ function VoiceCard({
   v,
   onOpen,
   onEnter,
+  onLeave,
 }: {
   v: Testimonial;
   onOpen: (el: HTMLElement) => void;
   onEnter: (el: HTMLElement) => void;
+  onLeave: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={(e) => onOpen(e.currentTarget)}
       onPointerEnter={(e) => e.pointerType === "mouse" && onEnter(e.currentTarget)}
+      onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
       className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-shadow duration-300 ease-out hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
       style={{
         borderRadius: 16,
@@ -376,10 +379,11 @@ function Voices() {
     if (closing.current) clearTimeout(closing.current);
     setOpen(null);
   }, []);
-  // a moment to come back after the pointer leaves the review
+  // the review holds while the pointer is on its card or on the review
+  // itself, and goes a moment after it has left both
   const drop = () => {
     stop();
-    closing.current = setTimeout(close, 300);
+    closing.current = setTimeout(close, 500);
   };
   const reduce = useReducedMotion();
   const rail = useRef<HTMLDivElement>(null);
@@ -451,6 +455,7 @@ function Voices() {
               v={v}
               onOpen={(el) => show(v, el)}
               onEnter={(el) => enter(v, el)}
+              onLeave={drop}
             />
           </div>
         ))}
