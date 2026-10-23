@@ -56,7 +56,7 @@ const TILES: HeroTile[] = [
 ];
 
 /** The card picture: the article's illustration in a rounded frame, its tier
-    on a frosted tag and its place in the series, zooming a touch on hover. */
+    on a frosted tag, zooming a touch on hover. */
 function Thumb({ post, className = "" }: { post: BlogCard; className?: string }) {
   return (
     <div className={"relative overflow-hidden rounded-xl bg-[#0B1016] " + className}>
@@ -70,9 +70,6 @@ function Thumb({ post, className = "" }: { post: BlogCard; className?: string })
         style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)" }}
       >
         {post.tier}
-      </span>
-      <span className="absolute top-4 right-4 text-[10.5px] font-mono font-bold tracking-[0.14em] uppercase text-white/60 tabular-nums">
-        No. {post.num}
       </span>
     </div>
   );
