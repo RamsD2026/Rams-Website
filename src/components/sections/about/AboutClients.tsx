@@ -100,8 +100,19 @@ const TESTIMONIALS: Testimonial[] = [
 
 const LOGOS = new Map(CLIENTS.map((c) => [c.slug, c]));
 
-/** One testimonial: the company's mark, the quote under a large orange
-    quotation mark, then the person and the company. */
+/** Up to two initials, for the monogram. */
+function initials(s: string) {
+  return s
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
+
+/** One testimonial: who said it first — monogram, name and company, the
+    company's mark at the right — then the quote under an orange
+    quotation mark. */
 function VoiceCard({ v }: { v: Testimonial }) {
   const mark = v.logo ? LOGOS.get(v.logo) : undefined;
   return (
@@ -113,32 +124,35 @@ function VoiceCard({ v }: { v: Testimonial }) {
         boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 10px 30px -14px rgba(0,0,0,0.07)",
       }}
     >
-      <div className="h-8 flex items-center">
-        {mark ? (
+      <div className="flex items-center gap-3">
+        <span
+          aria-hidden
+          className="flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-[12px] font-mono font-bold text-signal-orange"
+          style={{ background: "rgba(255,106,0,0.08)", border: "1px solid rgba(255,106,0,0.18)" }}
+        >
+          {initials(v.name)}
+        </span>
+        <span className="flex flex-col min-w-0 flex-1">
+          <span className="text-[14px] font-semibold text-carbon leading-[1.3] truncate">{v.name}</span>
+          <span className="mt-0.5 text-[12px] text-graphite/55 leading-[1.35] line-clamp-2">{v.company}</span>
+        </span>
+        {mark && (
           <Image
             src={`/clients/${mark.slug}.png`}
-            alt={mark.name}
+            alt=""
             width={mark.w}
             height={mark.h}
-            className="h-6 w-auto max-w-[140px] object-contain object-left grayscale opacity-60"
+            className="h-5 w-auto max-w-[84px] shrink-0 object-contain grayscale opacity-55"
           />
-        ) : (
-          <span className="text-[13px] font-bold tracking-[-0.01em] text-graphite/60">{v.company}</span>
         )}
       </div>
 
-      <span aria-hidden className="mt-5 block font-rams-heading text-[44px] leading-[0.6] text-signal-orange">
+      <span aria-hidden className="my-6 block" style={{ height: 1, background: HAIR }} />
+
+      <span aria-hidden className="block font-rams-heading text-[40px] leading-[0.6] text-signal-orange">
         &ldquo;
       </span>
       <p className="mt-3 text-[14.5px] leading-[1.7] text-carbon/75">{v.quote}</p>
-
-      <span className="mt-auto pt-6">
-        <span aria-hidden className="block mb-5" style={{ height: 1, background: HAIR }} />
-        <span className="block text-[14px] font-semibold text-carbon leading-[1.3]">{v.name}</span>
-        <span className="mt-1 block text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/45 leading-[1.5]">
-          {v.company}
-        </span>
-      </span>
     </article>
   );
 }
