@@ -50,6 +50,17 @@ function Thumb({ post, className = "" }: { post: BlogCard; className?: string })
   );
 }
 
+/** A small label over a group of cards, ruled off to the right. */
+function GroupLabel({ children, live = false }: { children: React.ReactNode; live?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 mb-6">
+      {live && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-signal-orange" />}
+      <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-carbon">{children}</span>
+      <span aria-hidden className="flex-1 h-px bg-[#E4E4E9]" />
+    </div>
+  );
+}
+
 /** "Read article" with a round arrow that fills orange on hover. */
 function ReadMore({ className = "" }: { className?: string }) {
   return (
@@ -167,8 +178,8 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
           counts={counts}
         />
 
-        {/* With no filter or search, the first article leads in a wide
-            feature card; the rest follow in the grid. */}
+        {/* With no filter or search, the first article leads as the latest
+            post in a wide card; the rest follow under More articles. */}
         {featured && (
           <motion.article
             initial={{ opacity: 0, y: 20 }}
@@ -177,6 +188,7 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
             transition={{ duration: 0.6, ease: EASE }}
             className="mt-10"
           >
+            <GroupLabel live>Latest post</GroupLabel>
             <Link
               href={`/resources/insights/${featured.slug}`}
               className="group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
@@ -196,7 +208,12 @@ export function BlogIndex({ posts: POSTS }: { posts: BlogCard[] }) {
           </motion.article>
         )}
 
-        <div className={(featured ? "mt-14 sm:mt-16" : "mt-10") + " grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12"}>
+        {featured && rest.length > 0 && (
+          <div className="mt-16 sm:mt-20">
+            <GroupLabel>More articles</GroupLabel>
+          </div>
+        )}
+        <div className={(featured ? "" : "mt-10 ") + "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12"}>
           {rest.map((p, i) => (
             <motion.article
               key={p.slug}
