@@ -14,6 +14,15 @@
  *   - tables and illustrations quiet, with room around them
  *   - one dark call to action at the end (the talent-network card)
  *
+ * One type scale for every article, so no part of one reads off on its own:
+ *
+ *   label 11 · small 15 · body 17 · lead 19 · h3 21 · quote 23 · h2 28
+ *
+ * "small" is everything secondary — notes, tables, captions, the card
+ * summaries; "body" is every paragraph and list, call-outs and card lists
+ * included. On a phone each steps down one notch (see the media query at
+ * the end).
+ *
  * Scoped to `.blog-body`.
  */
 
@@ -26,16 +35,17 @@ const G = "#2BCB74";
 const A = "#E9A21B";
 const R = "#FF4D4D";
 const LABEL = `font-family:var(--font-mono),ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase`;
+const SMALL = `font-size:15px;line-height:1.6`;
 
 export const BLOG_CSS = `
-.blog-body{color:${BODY};font-size:17.5px;line-height:1.8}
+.blog-body{color:${BODY};font-size:17px;line-height:1.75}
 .blog-body article > *:first-child{margin-top:0}
 .blog-body p{margin:0 0 22px}
-.blog-body .lead{font-size:20px;line-height:1.7;color:${CARBON}}
+.blog-body .lead{font-size:19px;line-height:1.65;color:${CARBON}}
 .blog-body strong,.blog-body b{color:${CARBON};font-weight:600}
-.blog-body h2{font-family:var(--font-heading),system-ui,sans-serif;font-weight:700;font-size:clamp(24px,2.8vw,30px);line-height:1.2;letter-spacing:-0.025em;color:${CARBON};margin:64px 0 18px}
+.blog-body h2{font-family:var(--font-heading),system-ui,sans-serif;font-weight:700;font-size:28px;line-height:1.2;letter-spacing:-0.025em;color:${CARBON};margin:64px 0 18px}
 .blog-body h2.top{margin-top:12px}
-.blog-body h3{font-family:var(--font-heading),system-ui,sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.015em;color:${CARBON};margin:36px 0 10px}
+.blog-body h3{font-family:var(--font-heading),system-ui,sans-serif;font-weight:700;font-size:21px;line-height:1.3;letter-spacing:-0.015em;color:${CARBON};margin:36px 0 10px}
 .blog-body a{color:${CARBON};text-decoration:underline;text-decoration-color:rgba(255,106,0,0.5);text-underline-offset:3px}
 
 /* lists: plain, grey bullets */
@@ -54,17 +64,17 @@ export const BLOG_CSS = `
 .blog-body .lbl{display:block;margin-bottom:6px;${LABEL};color:${MUTED}}
 
 /* the pull quote */
-.blog-body .pquote{font-family:var(--font-heading),system-ui,sans-serif;font-size:clamp(21px,2.4vw,25px);line-height:1.4;letter-spacing:-0.015em;color:${CARBON};font-weight:600;border-left:2px solid ${O};padding:2px 0 2px 22px;margin:44px 0}
+.blog-body .pquote{font-family:var(--font-heading),system-ui,sans-serif;font-size:23px;line-height:1.4;letter-spacing:-0.015em;color:${CARBON};font-weight:600;border-left:2px solid ${O};padding:2px 0 2px 22px;margin:44px 0}
 
 /* the card grid, as quiet sections */
 .blog-body .cards{display:block;margin:12px 0 30px;border-top:1px solid ${HAIR}}
 .blog-body .card{padding:20px 0;border-bottom:1px solid ${HAIR}}
 .blog-body .card .ic{display:none}
-.blog-body .card h3{margin:0;font-size:18px}
-.blog-body .card .one{margin:2px 0 8px;color:${MUTED};font-size:15px}
+.blog-body .card h3{margin:0}
+.blog-body .card .one{margin:2px 0 8px;color:${MUTED};${SMALL}}
 .blog-body .card ul{margin:0}
-.blog-body .card li{font-size:15.5px;padding:3px 0 3px 18px;line-height:1.6}
-.blog-body .card li:before{top:13px}
+.blog-body .card li{padding:3px 0 3px 18px}
+.blog-body .card li:before{top:15px}
 
 /* the three words */
 .blog-body .approach{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 16px;${LABEL};color:${CARBON}}
@@ -75,11 +85,11 @@ export const BLOG_CSS = `
 .blog-body .callout,.blog-body .illus,.blog-body .smenote{margin:32px 0;padding:2px 0 2px 20px;border-left:2px solid ${HAIR}}
 .blog-body .callout{border-left-color:${O};color:${CARBON}}
 .blog-body .callout .lbl{color:${O}}
-.blog-body .smenote{font-size:14.5px;line-height:1.65;color:${MUTED}}
-.blog-body .disc{font-size:13.5px;color:${MUTED};font-style:italic}
+.blog-body .smenote{${SMALL};color:${MUTED}}
+.blog-body .disc{${SMALL};color:${MUTED};font-style:italic}
 
 /* tables */
-.blog-body table.tbl{width:100%;border-collapse:collapse;margin:10px 0 32px;font-size:15px;line-height:1.55}
+.blog-body table.tbl{width:100%;border-collapse:collapse;margin:10px 0 32px;${SMALL}}
 .blog-body .tbl th{text-align:left;${LABEL};color:${MUTED};padding:0 14px 12px 0;border-bottom:1px solid ${CARBON}}
 .blog-body .tbl td{padding:13px 14px 13px 0;border-bottom:1px solid ${HAIR};vertical-align:top}
 .blog-body .tbl .m{color:${CARBON};font-weight:600}
@@ -106,7 +116,7 @@ export const BLOG_CSS = `
 /* the one call to action: the talent-network card */
 .blog-body .cta{position:relative;overflow:hidden;margin:64px 0 0;padding:34px 32px;border-radius:24px;color:rgba(255,255,255,0.6);background:radial-gradient(70% 120% at 0% 0%,rgba(255,106,0,0.22) 0%,transparent 60%),linear-gradient(135deg,#17171B 0%,#0C0C0F 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.09)}
 .blog-body .cta h3{margin:0 0 8px;color:#fff;font-size:24px;letter-spacing:-0.025em}
-.blog-body .cta p{margin:0 0 22px;font-size:15px;line-height:1.65}
+.blog-body .cta p{margin:0 0 22px;${SMALL}}
 .blog-body .cta .btn{display:inline-flex;align-items:center;gap:8px;background:${O};color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;transition:background .2s}
 .blog-body .cta .btn:hover{background:#E55F00}
 
@@ -115,7 +125,18 @@ export const BLOG_CSS = `
 .blog-art svg,.blog-body svg.art{width:100%;height:auto;display:block;border-radius:10px;background:#0B1016}
 .blog-art svg text,.blog-body svg.art text{font-family:var(--font-heading),system-ui,sans-serif}
 .blog-art svg text[font-family*="Mono"],.blog-body svg.art text[font-family*="Mono"]{font-family:var(--font-mono),ui-monospace,monospace}
-.blog-body figcaption,.blog-art figcaption{margin-top:12px;font-size:13.5px;line-height:1.55;color:${MUTED};text-align:left}
+.blog-body figcaption,.blog-art figcaption{margin-top:12px;${SMALL};color:${MUTED};text-align:left}
 .blog-art figcaption{text-align:center}
 .blog-body [id]{scroll-margin-top:110px}
+.blog-body p[style]{font-size:15px !important;line-height:1.6;color:${MUTED} !important}
+
+/* phones: each size one notch down */
+@media(max-width:640px){
+  .blog-body{font-size:16px}
+  .blog-body .lead{font-size:18px}
+  .blog-body h2{font-size:24px;margin-top:52px}
+  .blog-body h3{font-size:19px}
+  .blog-body .pquote{font-size:20px}
+  .blog-body .card .one,.blog-body .smenote,.blog-body .disc,.blog-body table.tbl,.blog-body figcaption,.blog-art figcaption,.blog-body .cta p{font-size:14px}
+}
 `;
