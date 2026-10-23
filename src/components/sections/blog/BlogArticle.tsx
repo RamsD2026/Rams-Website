@@ -31,35 +31,19 @@ export function BlogArticle({ post, more }: { post: Full; more: (BlogPost & { th
         <LightHeroGround />
         <div className="relative rams-container pt-36 sm:pt-44 lg:pt-48 pb-12 sm:pb-14">
           <div className="max-w-[920px] mx-auto text-center">
-            <div>
-              <span
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur"
-                style={{ boxShadow: "inset 0 0 0 1px #E8E8ED" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-signal-orange" />
-                <span className="text-[11px] font-mono font-semibold tracking-[0.18em] uppercase text-graphite/70">
-                  {post.kicker}
-                </span>
-              </span>
-            </div>
-            <h1 className="mt-6 text-[34px] sm:text-[48px] lg:text-[60px] font-bold leading-[1.06] tracking-[-0.04em] text-carbon">
+            {/* one plain label, the title, the standfirst, one meta line */}
+            <p className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-signal-orange">
+              {post.kicker}
+            </p>
+            <h1 className="mt-5 text-[34px] sm:text-[48px] lg:text-[58px] font-bold leading-[1.06] tracking-[-0.04em] text-carbon">
               {post.title}
             </h1>
             <p className="mt-5 mx-auto max-w-[720px] text-[16px] sm:text-[19px] leading-[1.55] text-graphite/65">
               {post.standfirst}
             </p>
-            <div className="mt-7 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[13.5px] text-graphite/55">
-              <span className="text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-signal-orange px-2.5 py-1 rounded-full bg-[rgba(255,106,0,0.08)]">
-                {post.tier}
-              </span>
-              {post.author && (
-                <span>
-                  By <b className="font-semibold text-carbon">{post.author}</b>
-                </span>
-              )}
-              {post.readTime && <span>· {post.readTime}</span>}
-              {post.series && <span>· {post.series}</span>}
-            </div>
+            <p className="mt-6 text-[13.5px] text-graphite/50">
+              {[post.author && `By ${post.author}`, post.readTime, post.series].filter(Boolean).join(" · ")}
+            </p>
           </div>
 
           {/* the article's own hero illustration */}
