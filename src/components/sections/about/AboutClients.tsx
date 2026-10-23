@@ -359,9 +359,6 @@ function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
 function Voices() {
   const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect } | null>(null);
   const closing = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // a closing review leaves the pointer over a card again; that card must
-  // not open it straight back, so hover is ignored for a moment after
-  const quiet = useRef(false);
   const stop = () => {
     if (closing.current) clearTimeout(closing.current);
   };
@@ -369,23 +366,20 @@ function Voices() {
     stop();
     setOpen({ v, from: el.getBoundingClientRect() });
   };
-  // hover opens at once; an open review holds until the pointer leaves it
+  // hover opens a card's review at once: any card, the left and right ones
+  // too, and straight on from another open review
   const enter = (v: Testimonial, el: HTMLElement) => {
-    if (open || quiet.current) return;
+    if (open?.v === v) return stop();
     show(v, el);
   };
   const close = useCallback(() => {
     if (closing.current) clearTimeout(closing.current);
-    quiet.current = true;
-    setTimeout(() => {
-      quiet.current = false;
-    }, 900);
     setOpen(null);
   }, []);
   // a moment to come back after the pointer leaves the review
   const drop = () => {
     stop();
-    closing.current = setTimeout(close, 450);
+    closing.current = setTimeout(close, 300);
   };
   const reduce = useReducedMotion();
   const rail = useRef<HTMLDivElement>(null);
