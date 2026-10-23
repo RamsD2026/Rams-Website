@@ -3,16 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CLIENTS } from "@/data/clients";
 import { Section } from "@/components/sections/rackiq/rackiq-shared";
 import { SectionHeader } from "@/components/sections/SectionHeader";
-import { VOICES, type Voice } from "./AboutCustomers";
 
 /**
- * Customers & collaboration — the client band and the review cards from the
- * previous About page (`AboutCustomers`). The reviews are that page's
- * placeholders, shown labelled as samples until real ones replace them.
+ * Customers & collaboration — the client band from the previous About page
+ * (`AboutCustomers`), then real customer testimonials in a scrolling row.
  *
  * The band runs every mark in `src/data/clients.ts` — RAMS's own asset pack
  * — in greyscale at 0.55, full colour on hover, looping at 92s, holding on
@@ -29,32 +27,83 @@ const HAIR = "#E8E8ED";
 const STEP_MS = 3500;
 const GAP = 20;
 
-function Rating({ n }: { n: number }) {
-  return (
-    <span className="flex items-center gap-[3px] shrink-0" aria-label={`${n} out of 5`}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          aria-hidden
-          className="w-[13px] h-[13px]"
-          strokeWidth={0}
-          style={{ fill: i <= n ? "#FF6A00" : "rgba(255,106,0,0.18)" }}
-        />
-      ))}
-    </span>
-  );
-}
+/* The owner's testimonials (Testimonials.docx, 2026-10-23), quotes as
+   written. `logo` is the company's mark from src/data/clients.ts where RAMS
+   holds one; without it the card names the company in text. */
+type Testimonial = {
+  quote: string;
+  name: string;
+  company: string;
+  logo?: string;
+};
 
-function initials(s: string) {
-  return s
-    .split(/[\s-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join("");
-}
+const TESTIMONIALS: Testimonial[] = [
+  {
+    quote:
+      "A good technical expertise on racking system evaluation & Assessment. in EK case, A through study was carried out by competent engineers and elaborative Assessment has been shared on time which is quite appreciable. I appreciate their support & transferring technical knowhow to customer especially on Racking system.....Good Job...Keep it up!!!",
+    name: "Dhananjay Joshi",
+    company: "Elringklinger India",
+    logo: "elringklinger",
+  },
+  {
+    quote:
+      "It's a valuable experience to conduct audits and generate reports from RAMS. Currently, we perform manual audits, such as removing materials from bin locations after supplier inspections. However, implementing machine-based audits to identify materials would be beneficial and more efficient for warehouse operations.",
+    name: "Haridass Kristan",
+    company: "Caterpillar Pvt Ltd",
+    logo: "caterpillar",
+  },
+  {
+    quote: "The RAMS team's innovative concept has been highly beneficial to our business and end users.",
+    name: "Kunal Kishor",
+    company: "GE Vernova (LM Wind Power Blades India Pvt Ltd)",
+    logo: "ge-vernova",
+  },
+  {
+    quote: "Response is good and prompt.",
+    name: "Mahesh Kapadi",
+    company: "Koerber Supply Chain IN Ltd",
+  },
+  {
+    quote: "Overall service is good",
+    name: "Logeshkumar Chandru",
+    company: "Amalgamations Valeo Clutch Private Limited",
+    logo: "valeo",
+  },
+  {
+    quote: "Good service and immediate response",
+    name: "Dinesh Pandey",
+    company: "JM Baxi Ports and Logistics",
+    logo: "jm-baxi",
+  },
+  {
+    quote:
+      "We had a great experience working with Rams. The team consists of qualified personnel who communicate politely and professionally. The execution of the work was smooth and handled in a highly professional manner. We look forward to collaborating with Rams again in the future.",
+    name: "Nishant Sonawane",
+    company: "Yamazaki Mazak Machine Tools Pvt. Ltd.",
+    logo: "mazak",
+  },
+  {
+    quote:
+      "We appreciate the efforts put in during the Rack Audit. However, there is scope for improving the overall experience. Timely coordination, clearer communication on observations, and quicker turnaround on the final report would make the process more efficient. Enhancing the detailing of findings with supporting photos and recommendations will also help us take corrective actions faster.",
+    name: "Prasad Ghadigaonkar",
+    company: "Rhenus Logistics India Pvt. Ltd.",
+    logo: "rhenus-logistics",
+  },
+  {
+    quote:
+      "Audit was done with professionals & results were in line with the expectation. Results sharing & data representation is very good & effective",
+    name: "Sumit Aggarwal",
+    company: "Continental Automotive Components India Private Limited",
+    logo: "continental",
+  },
+];
 
-function VoiceCard({ v }: { v: Voice }) {
+const LOGOS = new Map(CLIENTS.map((c) => [c.slug, c]));
+
+/** One testimonial: the company's mark, the quote under a large orange
+    quotation mark, then the person and the company. */
+function VoiceCard({ v }: { v: Testimonial }) {
+  const mark = v.logo ? LOGOS.get(v.logo) : undefined;
   return (
     <article
       className="flex flex-col h-full bg-white p-7"
@@ -64,55 +113,36 @@ function VoiceCard({ v }: { v: Voice }) {
         boxShadow: "0 1px 2px rgba(0,0,0,0.02), 0 10px 30px -14px rgba(0,0,0,0.07)",
       }}
     >
-      <div className="flex items-center gap-3">
-        {v.avatar ? (
+      <div className="h-8 flex items-center">
+        {mark ? (
           <Image
-            src={v.avatar}
-            alt=""
-            width={120}
-            height={120}
-            className="w-11 h-11 shrink-0 rounded-full object-cover"
-            style={{ border: `1px solid ${HAIR}` }}
+            src={`/clients/${mark.slug}.png`}
+            alt={mark.name}
+            width={mark.w}
+            height={mark.h}
+            className="h-6 w-auto max-w-[140px] object-contain object-left grayscale opacity-60"
           />
         ) : (
-          <span
-            aria-hidden
-            className="flex items-center justify-center w-11 h-11 shrink-0 text-[12px] font-mono font-bold text-signal-orange"
-            style={{ borderRadius: 999, background: "rgba(255,106,0,0.08)", border: "1px solid rgba(255,106,0,0.18)" }}
-          >
-            {initials(v.name)}
-          </span>
+          <span className="text-[13px] font-bold tracking-[-0.01em] text-graphite/60">{v.company}</span>
         )}
-        <span className="flex flex-col min-w-0 flex-1">
-          <span className="text-[14px] font-semibold text-carbon leading-[1.3] truncate">{v.name}</span>
-          <span className="mt-0.5 text-[12px] text-graphite/55 leading-[1.35] truncate">{v.role}</span>
-        </span>
-        <Rating n={v.rating} />
       </div>
-      <span aria-hidden className="my-6 block" style={{ height: 1, background: HAIR }} />
-      <p className="text-[14.5px] leading-[1.7] text-carbon/75">{v.quote}</p>
-      <span className="mt-auto pt-6 flex items-center justify-between gap-3">
-        <span className="text-[10px] font-mono font-bold tracking-[0.18em] uppercase text-graphite/40">{v.company}</span>
-        <span className="text-[9.5px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/50 px-2 py-0.5 rounded-full bg-[#F2F2F2]">
-          Sample
+
+      <span aria-hidden className="mt-5 block font-rams-heading text-[44px] leading-[0.6] text-signal-orange">
+        &ldquo;
+      </span>
+      <p className="mt-3 text-[14.5px] leading-[1.7] text-carbon/75">{v.quote}</p>
+
+      <span className="mt-auto pt-6">
+        <span aria-hidden className="block mb-5" style={{ height: 1, background: HAIR }} />
+        <span className="block text-[14px] font-semibold text-carbon leading-[1.3]">{v.name}</span>
+        <span className="mt-1 block text-[10px] font-mono font-bold tracking-[0.16em] uppercase text-graphite/45 leading-[1.5]">
+          {v.company}
         </span>
       </span>
     </article>
   );
 }
 
-/**
- * The review row: a horizontal rail the reader can scroll themselves —
- * swipe on a phone, trackpad or the arrow buttons on a desktop — with cards
- * snapping into place. It also steps one card on its own every STEP_MS,
- * returning to the start after the last. It holds only while a finger is on
- * it or it is being scrolled, and starts again a moment after; under
- * `prefers-reduced-motion` it still steps, without the slide.
- *
- * THESE ARE THE PREVIOUS PAGE'S PLACEHOLDER REVIEWS (AboutCustomers' VOICES)
- * and each card carries a Sample tag until real testimonials replace them.
- * Swap VOICES for real ones and drop the tag then.
- */
 /** Move a rail one card along, or back to the start from the last card. */
 function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
   if (!el) return;
@@ -184,7 +214,7 @@ function Voices() {
         aria-label="Testimonials"
         tabIndex={0}
       >
-        {VOICES.map((v) => (
+        {TESTIMONIALS.map((v) => (
           <div
             key={v.name}
             data-card
