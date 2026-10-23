@@ -156,20 +156,17 @@ function VoiceCard({
   v,
   onOpen,
   onEnter,
-  onLeave,
 }: {
   v: Testimonial;
   onOpen: (el: HTMLElement) => void;
   onEnter: (el: HTMLElement) => void;
-  onLeave: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={(e) => onOpen(e.currentTarget)}
       onPointerEnter={(e) => e.pointerType === "mouse" && onEnter(e.currentTarget)}
-      onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
-      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
+      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-shadow duration-300 ease-out hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
       style={{
         borderRadius: 16,
         border: `1px solid ${HAIR}`,
@@ -240,16 +237,16 @@ function ReviewPop({
       return;
     }
     const c = toCard(el);
-    animate(el, { opacity: [0, 1] }, { duration: 0.25 });
+    animate(el, { opacity: 1 }, { duration: 0 });
     animate(
       el,
       { x: [c.x, 0], y: [c.y, 0], scaleX: [c.scaleX, 1], scaleY: [c.scaleY, 1] },
-      { duration: 0.75, ease: EASE },
+      { duration: 0.6, ease: EASE },
     );
     animate(
       "[data-in]",
       { opacity: [0, 1], y: [14, 0] },
-      { duration: 0.6, ease: EASE, delay: stagger(0.12, { startDelay: 0.4 }) },
+      { duration: 0.6, ease: EASE, delay: stagger(0.1, { startDelay: 0.3 }) },
     );
   }, [from, width, reduce, toCard]);
 
@@ -361,34 +358,35 @@ function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
 
 function Voices() {
   const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect } | null>(null);
-  // hover opens after a short dwell, so passing over a card does not
-  const opening = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closing = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // a closing review leaves the pointer over a card again; that card must
+  // not open it straight back, so hover is ignored for a moment after
+  const quiet = useRef(false);
   const stop = () => {
-    if (opening.current) clearTimeout(opening.current);
     if (closing.current) clearTimeout(closing.current);
   };
   const show = (v: Testimonial, el: HTMLElement) => {
     stop();
     setOpen({ v, from: el.getBoundingClientRect() });
   };
+  // hover opens at once; an open review holds until the pointer leaves it
   const enter = (v: Testimonial, el: HTMLElement) => {
-    stop();
-    opening.current = setTimeout(() => show(v, el), 260);
-  };
-  // leaving the card only cancels a review not yet open: an open one holds
-  // until the pointer leaves it, with a moment to come back
-  const leave = () => {
-    if (opening.current) clearTimeout(opening.current);
-  };
-  const drop = () => {
-    stop();
-    closing.current = setTimeout(() => setOpen(null), 700);
+    if (open || quiet.current) return;
+    show(v, el);
   };
   const close = useCallback(() => {
-    stop();
+    if (closing.current) clearTimeout(closing.current);
+    quiet.current = true;
+    setTimeout(() => {
+      quiet.current = false;
+    }, 900);
     setOpen(null);
   }, []);
+  // a moment to come back after the pointer leaves the review
+  const drop = () => {
+    stop();
+    closing.current = setTimeout(close, 450);
+  };
   const reduce = useReducedMotion();
   const rail = useRef<HTMLDivElement>(null);
   const [hold, setHold] = useState(false);
@@ -459,7 +457,6 @@ function Voices() {
               v={v}
               onOpen={(el) => show(v, el)}
               onEnter={(el) => enter(v, el)}
-              onLeave={leave}
             />
           </div>
         ))}
