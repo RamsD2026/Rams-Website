@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, animate, stagger, usePresence, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Star, X } from "lucide-react";
 import { CLIENTS } from "@/data/clients";
 import { Section } from "@/components/sections/rackiq/rackiq-shared";
@@ -169,7 +169,7 @@ function VoiceCard({
       onClick={(e) => onOpen(e.currentTarget)}
       onPointerEnter={(e) => e.pointerType === "mouse" && onEnter(e.currentTarget)}
       onPointerLeave={(e) => e.pointerType === "mouse" && onLeave()}
-      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default focus-visible:outline-2 focus-visible:outline-signal-orange"
+      className="flex flex-col w-full h-full text-left bg-white p-7 cursor-default transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_22px_44px_-26px_rgba(0,0,0,0.28)] focus-visible:outline-2 focus-visible:outline-signal-orange"
       style={{
         borderRadius: 16,
         border: `1px solid ${HAIR}`,
@@ -186,11 +186,13 @@ function VoiceCard({
 
 const POP_W = 540;
 const EDGE = 16;
+const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** The full review, lifted out of its card: a larger card that grows from
-    the one under the pointer, with the company's mark — no dimmed page
-    behind it. Closes when the pointer leaves it, on a tap elsewhere, on
-    scroll, on the ✕ or on Escape. */
+/** The full review, lifted out of its card: the white card grows out of the
+    one under the pointer into a larger one in the middle of the window, then the company's mark, the
+    quote and the person rise in — no dimmed page behind it. It shrinks back
+    into the card when the pointer leaves it, on a tap elsewhere, on scroll,
+    on the ✕ or on Escape. */
 function ReviewPop({
   v,
   from,
@@ -204,28 +206,75 @@ function ReviewPop({
 }) {
   const mark = v.logo ? LOGOS.get(v.logo) : undefined;
   const reduce = useReducedMotion();
-  const box = useRef<HTMLElement>(null);
+  const scope = useRef<HTMLElement>(null);
+  const parts = (el: HTMLElement) => el.querySelectorAll("[data-in]");
+  const [isPresent, safeToRemove] = usePresence();
   const width = Math.min(POP_W, window.innerWidth - EDGE * 2);
 
-  // centred on the card it came from, kept inside the window
+  // the move from the card's box to the popup's, as a transform
+  const toCard = useCallback(
+    (el: HTMLElement) => ({
+      x: from.left - parseFloat(el.style.left),
+      y: from.top - parseFloat(el.style.top),
+      scaleX: from.width / el.offsetWidth,
+      scaleY: from.height / el.offsetHeight,
+    }),
+    [from],
+  );
+
+  // placed in the middle of the window, then grown out of its card
   useLayoutEffect(() => {
-    const el = box.current;
+    const el = scope.current;
     if (!el) return;
     const h = el.offsetHeight;
-    const cx = from.left + from.width / 2;
-    const cy = from.top + from.height / 2;
-    const left = Math.min(Math.max(cx - width / 2, EDGE), window.innerWidth - EDGE - width);
-    const top = Math.min(Math.max(cy - h / 2, EDGE), Math.max(EDGE, window.innerHeight - EDGE - h));
+    const left = (window.innerWidth - width) / 2;
+    const top = Math.max(EDGE, (window.innerHeight - h) / 2);
     el.style.left = `${left}px`;
     el.style.top = `${top}px`;
-  }, [from, width]);
+
+    if (reduce) {
+      animate(el, { opacity: [0, 1] }, { duration: 0.2 });
+      animate(parts(el), { opacity: [0, 1] }, { duration: 0.2 });
+      return;
+    }
+    const c = toCard(el);
+    animate(el, { opacity: [0, 1] }, { duration: 0.12 });
+    animate(
+      el,
+      { x: [c.x, 0], y: [c.y, 0], scaleX: [c.scaleX, 1], scaleY: [c.scaleY, 1] },
+      { type: "spring", stiffness: 320, damping: 32, mass: 0.9 },
+    );
+    animate(
+      "[data-in]",
+      { opacity: [0, 1], y: [14, 0] },
+      { duration: 0.45, ease: EASE, delay: stagger(0.07, { startDelay: 0.18 }) },
+    );
+  }, [from, width, reduce, toCard]);
+
+  // leaving: the content fades, then the card shrinks back into its place
+  useEffect(() => {
+    if (isPresent) return;
+    const el = scope.current;
+    if (!el) return;
+    const run = async () => {
+      if (reduce) {
+        await animate(el, { opacity: 0 }, { duration: 0.15 });
+      } else {
+        animate(parts(el), { opacity: 0 }, { duration: 0.12 });
+        await animate(el, { ...toCard(el), opacity: 0 }, { duration: 0.32, ease: EASE });
+      }
+      safeToRemove?.();
+    };
+    run();
+  }, [isPresent, safeToRemove, reduce, toCard]);
 
   useEffect(() => {
+    if (!isPresent) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     const onDown = (e: PointerEvent) => {
-      if (box.current && !box.current.contains(e.target as Node)) onClose();
+      if (scope.current && !scope.current.contains(e.target as Node)) onClose();
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("scroll", onClose, { passive: true });
@@ -235,39 +284,39 @@ function ReviewPop({
       window.removeEventListener("scroll", onClose);
       document.removeEventListener("pointerdown", onDown);
     };
-  }, [onClose]);
+  }, [onClose, isPresent]);
 
   return createPortal(
-    <motion.article
-      ref={box}
+    <article
+      ref={scope}
       role="dialog"
       aria-label={`Review from ${v.name}`}
       onPointerEnter={onKeep}
       onPointerLeave={(e) => e.pointerType === "mouse" && onClose()}
-      className="fixed z-[200] max-h-[calc(100svh-32px)] overflow-auto bg-white p-8 sm:p-9"
-      initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 8 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 4 }}
-      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed z-[200] max-h-[calc(100svh-32px)] overflow-auto bg-white p-8 sm:p-9 origin-top-left"
       style={{
         left: from.left,
         top: from.top,
         width,
+        opacity: 0,
         borderRadius: 20,
         border: `1px solid ${HAIR}`,
         boxShadow: "0 2px 6px rgba(14,14,15,0.04), 0 32px 80px -24px rgba(14,14,15,0.30)",
+        pointerEvents: isPresent ? "auto" : "none",
       }}
     >
       <button
         type="button"
         onClick={onClose}
         aria-label="Close"
+        data-in
+        style={{ opacity: 0 }}
         className="absolute top-4 right-4 flex items-center justify-center w-8 h-8 rounded-full text-graphite/50 hover:text-carbon hover:bg-[#F2F2F2] transition-colors"
       >
         <X className="w-4 h-4" strokeWidth={2} aria-hidden />
       </button>
 
-      <div className="h-8 flex items-center pr-10">
+      <div data-in style={{ opacity: 0 }} className="h-8 flex items-center pr-10">
         {mark ? (
           <Image
             src={`/clients/${mark.slug}.png`}
@@ -281,14 +330,18 @@ function ReviewPop({
         )}
       </div>
 
-      <span aria-hidden className="mt-6 block font-rams-heading text-[46px] leading-[0.6] text-signal-orange">
-        &ldquo;
-      </span>
-      <p className="mt-3 text-[15.5px] sm:text-[16px] leading-[1.75] text-carbon/80">{v.quote}</p>
+      <div data-in style={{ opacity: 0 }}>
+        <span aria-hidden className="mt-6 block font-rams-heading text-[46px] leading-[0.6] text-signal-orange">
+          &ldquo;
+        </span>
+        <p className="mt-3 text-[15.5px] sm:text-[16px] leading-[1.75] text-carbon/80">{v.quote}</p>
+      </div>
 
-      <span aria-hidden className="my-6 block" style={{ height: 1, background: HAIR }} />
-      <Who v={v} />
-    </motion.article>,
+      <div data-in style={{ opacity: 0 }}>
+        <span aria-hidden className="my-6 block" style={{ height: 1, background: HAIR }} />
+        <Who v={v} />
+      </div>
+    </article>,
     document.body,
   );
 }
@@ -321,9 +374,10 @@ function Voices() {
     stop();
     opening.current = setTimeout(() => show(v, el), 260);
   };
+  // time enough to move from the card onto the review
   const leave = () => {
     stop();
-    closing.current = setTimeout(() => setOpen(null), 140);
+    closing.current = setTimeout(() => setOpen(null), 450);
   };
   const close = useCallback(() => {
     stop();
