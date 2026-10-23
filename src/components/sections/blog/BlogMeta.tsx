@@ -25,7 +25,7 @@ export function BlogMeta({
         <span className="inline-flex items-center gap-1.5">
           <UserRound className="w-3.5 h-3.5 text-graphite/40" aria-hidden />
           <span className="sr-only">Author: </span>
-          <span className="font-medium text-carbon/80">{author}</span>
+          <span>{author}</span>
         </span>
       )}
       {when && (
