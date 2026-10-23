@@ -105,22 +105,23 @@ function VoiceCard({ v }: { v: Voice }) {
  * The review row: a horizontal rail the reader can scroll themselves —
  * swipe on a phone, trackpad or the arrow buttons on a desktop — with cards
  * snapping into place. It also steps one card on its own every STEP_MS,
- * returning to the start after the last, and holds while the pointer is over
- * it, a finger is on it or it is being scrolled, and under
- * `prefers-reduced-motion`.
+ * returning to the start after the last. It holds only while a finger is on
+ * it or it is being scrolled, and starts again a moment after; under
+ * `prefers-reduced-motion` it still steps, without the slide.
  *
  * THESE ARE THE PREVIOUS PAGE'S PLACEHOLDER REVIEWS (AboutCustomers' VOICES)
  * and each card carries a Sample tag until real testimonials replace them.
  * Swap VOICES for real ones and drop the tag then.
  */
 /** Move a rail one card along, or back to the start from the last card. */
-function advance(el: HTMLDivElement | null, dir: 1 | -1) {
+function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
   if (!el) return;
   const card = el.querySelector<HTMLElement>("[data-card]");
   const step = card ? card.offsetWidth + GAP : 420;
   const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-  if (dir === 1 && end) el.scrollTo({ left: 0, behavior: "smooth" });
-  else el.scrollBy({ left: dir * step, behavior: "smooth" });
+  const behavior: ScrollBehavior = smooth ? "smooth" : "auto";
+  if (dir === 1 && end) el.scrollTo({ left: 0, behavior });
+  else el.scrollBy({ left: dir * step, behavior });
 }
 
 function Voices() {
@@ -149,11 +150,17 @@ function Voices() {
     idle.current = setTimeout(() => setHold(false), STEP_MS);
   };
 
+  // a finger lifted lets it run again after a pause
+  const release = () => {
+    if (idle.current) clearTimeout(idle.current);
+    idle.current = setTimeout(() => setHold(false), STEP_MS);
+  };
+
   useEffect(() => {
-    if (reduce || hold) return;
+    if (hold) return;
     const t = setInterval(() => {
       auto.current = true;
-      advance(rail.current, 1);
+      advance(rail.current, 1, !reduce);
       setTimeout(() => {
         auto.current = false;
       }, 900);
@@ -170,9 +177,8 @@ function Voices() {
       <div
         ref={rail}
         onScroll={onScroll}
-        onMouseEnter={() => setHold(true)}
-        onMouseLeave={() => setHold(false)}
         onTouchStart={() => setHold(true)}
+        onTouchEnd={release}
         className="flex items-stretch overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-1 pb-2"
         style={{ gap: GAP }}
         aria-label="Testimonials"
