@@ -25,7 +25,8 @@ const EDGE_FADE =
 /* ── the review cards ─────────────────────────────────────────────── */
 
 const HAIR = "#E8E8ED";
-const STEP_MS = 3500;
+// the rail's glide, px a second
+const SPEED = 46;
 const GAP = 20;
 
 /* The owner's testimonials (Testimonials.docx, 2026-10-23), quotes as
@@ -335,95 +336,157 @@ function ReviewPop({
   );
 }
 
-/** Move a rail one card along, or back to the start from the last card. */
-function advance(el: HTMLDivElement | null, dir: 1 | -1, smooth = true) {
-  if (!el) return;
-  const card = el.querySelector<HTMLElement>("[data-card]");
-  const step = card ? card.offsetWidth + GAP : 420;
-  const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-  const behavior: ScrollBehavior = smooth ? "smooth" : "auto";
-  if (dir === 1 && end) el.scrollTo({ left: 0, behavior });
-  else el.scrollBy({ left: dir * step, behavior });
-}
-
 /*
- * The rail steps one card on every few seconds on its own, back to the start
- * after the last. A hand on it (a scroll, a swipe, the arrows) holds it until
- * it has been still a while; an open review holds it until it is closed.
+ * The rail glides on its own, like the logo band above it: one unbroken run
+ * of cards, the list twice over so that it loops without a seam. It rests
+ * while a pointer is over it, while a review is open and while a finger is
+ * on it; the arrows slide it a card either way, and a swipe drags it.
  */
 function Voices() {
   const [open, setOpen] = useState<{ v: Testimonial; from: DOMRect } | null>(null);
   const reduce = useReducedMotion();
-  const rail = useRef<HTMLDivElement>(null);
-  const [hold, setHold] = useState(false);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-  const idle = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // true while the rail is moving on its own, so that scroll is not taken
-  // for the reader's hand
-  const auto = useRef(false);
+  const track = useRef<HTMLDivElement>(null);
+  // where the track is, in px, and how far it runs before it repeats
+  const x = useRef(0);
+  const loop = useRef(0);
+  const hover = useRef(false);
+  const busy = useRef(false); // an arrow slide or a drag in hand
+  const opened = useRef(false);
+  const drag = useRef<{ id: number; from: number; x0: number; moved: boolean } | null>(null);
 
-  const go = (dir: 1 | -1) => advance(rail.current, dir);
-
-  // the rail waits a while after the reader has had a hand in it
-  const holdAWhile = useCallback(() => {
-    setHold(true);
-    if (idle.current) clearTimeout(idle.current);
-    idle.current = setTimeout(() => setHold(false), STEP_MS);
+  const place = useCallback(() => {
+    const el = track.current;
+    if (!el) return;
+    const L = loop.current;
+    if (L > 0) x.current = ((x.current % L) + L) % L;
+    el.style.transform = `translate3d(${-x.current}px,0,0)`;
   }, []);
+
+  useEffect(() => {
+    opened.current = !!open;
+  }, [open]);
+
+  // how long one lap is: from the first card to its copy
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const measure = () => {
+      const copy = el.querySelector<HTMLElement>("[data-copy]");
+      loop.current = copy ? copy.offsetLeft : 0;
+      place();
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [place]);
+
+  // the glide
+  useEffect(() => {
+    if (reduce) return;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 64);
+      last = now;
+      if (!hover.current && !busy.current && !opened.current) {
+        x.current += (SPEED * dt) / 1000;
+        place();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduce, place]);
+
+  // an arrow: slide one card along
+  const go = (dir: 1 | -1) => {
+    const card = track.current?.querySelector<HTMLElement>("[data-card]");
+    const step = card ? card.offsetWidth + GAP : 420;
+    busy.current = true;
+    animate(x.current, x.current + dir * step, {
+      duration: reduce ? 0 : 0.6,
+      ease: EASE,
+      onUpdate: (v) => {
+        x.current = v;
+        place();
+      },
+      onComplete: () => {
+        busy.current = false;
+      },
+    });
+  };
 
   const show = (v: Testimonial, el: HTMLElement) => {
     setOpen({ v, from: el.getBoundingClientRect() });
   };
   const close = useCallback(() => setOpen(null), []);
 
-  // the edges, for the arrows
-  const onScroll = () => {
-    const el = rail.current;
-    if (!el) return;
-    setAtStart(el.scrollLeft <= 4);
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
-    if (auto.current) return;
-    holdAWhile();
-  };
-
-  useEffect(() => {
-    if (hold || open) return;
-    const t = setInterval(() => {
-      auto.current = true;
-      advance(rail.current, 1, !reduce);
-      setTimeout(() => {
-        auto.current = false;
-      }, 900);
-    }, STEP_MS);
-    return () => clearInterval(t);
-  }, [reduce, hold, open]);
-
-  useEffect(() => () => {
-    if (idle.current) clearTimeout(idle.current);
-  }, []);
-
   return (
     <div className="mt-14 sm:mt-16">
       <div
-        ref={rail}
-        onScroll={onScroll}
-        onTouchStart={() => setHold(true)}
-        onTouchEnd={holdAWhile}
-        className="flex items-stretch overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-1 pb-2"
-        style={{ gap: GAP }}
+        className="relative overflow-hidden pb-2 touch-pan-y"
+        style={{ WebkitMaskImage: EDGE_FADE, maskImage: EDGE_FADE }}
         aria-label="Testimonials"
-        tabIndex={0}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "mouse") hover.current = true;
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === "mouse") hover.current = false;
+        }}
+        onFocus={() => (hover.current = true)}
+        onBlur={() => (hover.current = false)}
+        // a finger drags the rail; the mouse clicks the cards
+        onPointerDown={(e) => {
+          if (e.pointerType === "mouse") return;
+          drag.current = { id: e.pointerId, from: e.clientX, x0: x.current, moved: false };
+          busy.current = true;
+        }}
+        onPointerMove={(e) => {
+          const d = drag.current;
+          if (!d || d.id !== e.pointerId) return;
+          const dx = e.clientX - d.from;
+          if (!d.moved && Math.abs(dx) > 6) {
+            d.moved = true;
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }
+          if (d.moved) {
+            x.current = d.x0 - dx;
+            place();
+          }
+        }}
+        onPointerUp={() => {
+          busy.current = false;
+          // let the click that follows a drag know it was one
+          setTimeout(() => (drag.current = null), 0);
+        }}
+        onPointerCancel={() => {
+          busy.current = false;
+          drag.current = null;
+        }}
+        onClickCapture={(e) => {
+          if (drag.current?.moved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
       >
-        {TESTIMONIALS.map((v) => (
-          <div
-            key={v.name}
-            data-card
-            className="shrink-0 snap-start w-[86%] sm:w-[400px]"
-          >
-            <VoiceCard v={v} onOpen={(el) => show(v, el)} />
-          </div>
-        ))}
+        <div ref={track} className="flex items-stretch w-max will-change-transform" style={{ gap: GAP }}>
+          {[0, 1].map((copy) =>
+            TESTIMONIALS.map((v, i) => (
+              <div
+                key={`${copy}-${v.name}`}
+                data-card
+                data-copy={copy === 1 && i === 0 ? "" : undefined}
+                aria-hidden={copy === 1 || undefined}
+                inert={copy === 1 || undefined}
+                className="shrink-0 w-[80vw] sm:w-[400px]"
+              >
+                <VoiceCard v={v} onOpen={(el) => show(v, el)} />
+              </div>
+            )),
+          )}
+        </div>
       </div>
 
       <div className="mt-6 flex items-center justify-center gap-3">
@@ -432,15 +495,13 @@ function Voices() {
             key={dir}
             type="button"
             onClick={() => go(dir)}
-            disabled={dir === -1 && atStart}
             aria-label={dir === -1 ? "Previous testimonials" : "Next testimonials"}
-            className="flex items-center justify-center w-11 h-11 rounded-full bg-white text-carbon transition-colors hover:bg-[#F5F5F7] disabled:opacity-40 disabled:cursor-default"
+            className="flex items-center justify-center w-11 h-11 rounded-full bg-white text-carbon transition-colors hover:bg-[#F5F5F7]"
             style={{ boxShadow: `inset 0 0 0 1px ${HAIR}` }}
           >
             {dir === -1 ? <ArrowLeft className="w-4 h-4" aria-hidden /> : <ArrowRight className="w-4 h-4" aria-hidden />}
           </button>
         ))}
-        <span className="sr-only">{atEnd ? "End of testimonials" : ""}</span>
       </div>
 
       <AnimatePresence>
